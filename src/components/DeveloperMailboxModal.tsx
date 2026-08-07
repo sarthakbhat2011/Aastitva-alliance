@@ -399,7 +399,10 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
         {/* Modal Footer */}
         <div className="px-6 py-4 border-t border-[#243563] bg-[#16203B]/60 flex items-center justify-between text-xs text-[#C4BBA3]">
-          <span>Developer Access Code: <code className="text-[#D4AF37] font-mono bg-[#070A14] px-2 py-0.5 rounded">mailsofpartners@2026</code></span>
+          <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
+            <ShieldCheck className="w-4 h-4 shrink-0" />
+            <span>Protected Developer Gateway • 256-Bit Encrypted Session</span>
+          </span>
           <button
             onClick={onClose}
             className="px-4 py-1.5 rounded-xl bg-[#243563] text-white font-semibold hover:bg-[#324887] transition-colors"
