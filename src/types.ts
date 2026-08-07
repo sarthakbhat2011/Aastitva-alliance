@@ -120,3 +120,16 @@ export interface AnalyticsStats {
   renderStatus: string;
   cdmCachedRatio: string;
 }
+
+export interface PartnerMailEntry {
+  id: string;
+  timestamp: string;
+  schoolName: string;
+  contactPerson: string;
+  email: string;
+  phone: string;
+  eventType: string;
+  preferredDate?: string;
+  message: string;
+  status: 'New' | 'In Review' | 'Approved' | 'Contacted';
+}

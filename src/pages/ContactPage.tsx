@@ -41,6 +41,36 @@ export const ContactPage: React.FC = () => {
       // Fallback
     }
 
+    // Save strictly to Developer Mailbox (localStorage)
+    try {
+      const now = new Date();
+      const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(
+        now.getDate()
+      ).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+      const newPartnerEntry = {
+        id: 'partner-' + Date.now(),
+        timestamp: formattedDate,
+        schoolName: form.schoolName,
+        contactPerson: form.contactPerson,
+        email: form.email,
+        phone: form.phone,
+        eventType: form.eventType,
+        preferredDate: form.preferredDate,
+        message: form.message,
+        status: 'New' as const,
+      };
+
+      const existingStored = localStorage.getItem('astitva_partner_mailbox');
+      const existingList = existingStored ? JSON.parse(existingStored) : [];
+      const updatedList = [newPartnerEntry, ...existingList];
+      localStorage.setItem('astitva_partner_mailbox', JSON.stringify(updatedList));
+
+      window.dispatchEvent(new Event('astitva_partner_submitted'));
+    } catch (err) {
+      console.log('Error saving to Developer Mailbox:', err);
+    }
+
     setLoading(false);
     setSubmitted(true);
     confetti({

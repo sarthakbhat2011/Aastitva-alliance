@@ -5,9 +5,10 @@ import { Mail, Phone, MapPin, Shield, Heart, ArrowUp, ExternalLink } from 'lucid
 
 interface Props {
   onNavigate: (page: Page) => void;
+  onOpenDevMailbox?: () => void;
 }
 
-export const Footer: React.FC<Props> = ({ onNavigate }) => {
+export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox }) => {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -127,6 +128,15 @@ export const Footer: React.FC<Props> = ({ onNavigate }) => {
       <div className="max-w-7xl mx-auto pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#768074]">
         <p>© {new Date().getFullYear()} Aastitva Alliance. All rights reserved. Built for Jammu's Youth.</p>
         <div className="flex items-center gap-4">
+          {onOpenDevMailbox && (
+            <button
+              onClick={onOpenDevMailbox}
+              className="px-3 py-1 rounded-xl bg-[#16203B] hover:bg-[#243563] text-[#D4AF37] border border-[#D4AF37]/30 transition-colors flex items-center gap-1.5 font-bold"
+              title="Open Developer Partner Mailbox"
+            >
+              <span>🔑 Dev Partner Mailbox</span>
+            </button>
+          )}
           <button onClick={scrollToTop} className="flex items-center gap-1 text-[#C4BBA3] hover:text-[#D4AF37]">
             Back to Top <ArrowUp className="w-3.5 h-3.5" />
           </button>

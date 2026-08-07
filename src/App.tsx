@@ -5,6 +5,7 @@ import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { TechnicalAuditModal } from './components/TechnicalAuditModal';
 import { AdminContentDrawer } from './components/AdminContentDrawer';
+import { DeveloperMailboxModal } from './components/DeveloperMailboxModal';
 import { LoadingScreen } from './components/LoadingScreen';
 import { GlobalBackground } from './components/GlobalBackground';
 import { ScrollControls } from './components/ScrollControls';
@@ -28,6 +29,7 @@ export default function App() {
   // Modals / Drawers
   const [auditOpen, setAuditOpen] = useState(false);
   const [adminOpen, setAdminOpen] = useState(false);
+  const [devMailboxOpen, setDevMailboxOpen] = useState(false);
 
   // Live countdown state
   const [countdown, setCountdown] = useState<CountdownTime>({
@@ -159,7 +161,16 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <Footer onNavigate={handleNavigate} />
+      <Footer 
+        onNavigate={handleNavigate} 
+        onOpenDevMailbox={() => setDevMailboxOpen(true)}
+      />
+
+      {/* Developer Partner Mailbox Modal */}
+      <DeveloperMailboxModal
+        isOpen={devMailboxOpen}
+        onClose={() => setDevMailboxOpen(false)}
+      />
 
       {/* Technical Audit Modal */}
       <TechnicalAuditModal
