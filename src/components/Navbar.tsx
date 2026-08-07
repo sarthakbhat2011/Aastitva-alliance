@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Sparkles, ChevronRight, ArrowUpRight, ShieldCheck, Settings } from 'lucide-react';
+import { Menu, X, Sparkles, ChevronRight, ArrowUpRight, ShieldCheck, Settings, Clock } from 'lucide-react';
 import { AstitvaLogo } from './AstitvaLogo';
 import { Page, SummitConfig, CountdownTime } from '../types';
 
@@ -21,6 +21,7 @@ export const Navbar: React.FC<Props> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [countdown, setCountdown] = useState<CountdownTime>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [istTime, setIstTime] = useState<string>('');
 
   // Handle scroll threshold for sticky floating state
   useEffect(() => {
@@ -29,6 +30,23 @@ export const Navbar: React.FC<Props> = ({
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Live IST Clock (Indian Standard Time)
+  useEffect(() => {
+    const updateIstClock = () => {
+      const options: Intl.DateTimeFormatOptions = {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+      };
+      setIstTime(new Date().toLocaleTimeString('en-IN', options));
+    };
+    updateIstClock();
+    const interval = setInterval(updateIstClock, 1000);
+    return () => clearInterval(interval);
   }, []);
 
   // Live countdown logic
@@ -84,8 +102,9 @@ export const Navbar: React.FC<Props> = ({
               {countdown.seconds.toString().padStart(2, '0')}s
             </span>
             <span className="hidden sm:inline text-[#243563]">|</span>
-            <span className="hidden sm:inline text-[#C4BBA3]/80 font-medium">
-              {summitConfig.partnerSchool}
+            <span className="hidden sm:flex items-center gap-1.5 text-[#D4AF37] font-mono font-semibold text-[11px] bg-[#16203B]/80 px-2.5 py-0.5 rounded-full border border-[#D4AF37]/30 shadow-sm">
+              <Clock className="w-3 h-3 text-[#D4AF37] animate-pulse shrink-0" />
+              <span>IST {istTime} (UTC+5:30)</span>
             </span>
           </div>
 

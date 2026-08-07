@@ -88,7 +88,9 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
       }
     };
 
-    loadMails();
+    if (isOpen) {
+      loadMails();
+    }
 
     const handleCustomSubmit = () => loadMails();
     window.addEventListener('astitva_partner_submitted', handleCustomSubmit);
@@ -98,7 +100,7 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
       window.removeEventListener('astitva_partner_submitted', handleCustomSubmit);
       window.removeEventListener('storage', loadMails);
     };
-  }, []);
+  }, [isOpen]);
 
   const saveMailsToStorage = (updated: PartnerMailEntry[]) => {
     setMails(updated);

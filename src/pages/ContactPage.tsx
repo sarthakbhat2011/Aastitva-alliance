@@ -31,17 +31,7 @@ export const ContactPage: React.FC = () => {
     e.preventDefault();
     setLoading(true);
 
-    try {
-      await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
-    } catch (err) {
-      // Fallback
-    }
-
-    // Save strictly to Developer Mailbox (localStorage)
+    // Save strictly to Developer Mailbox (localStorage) instantly
     try {
       const now = new Date();
       const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(
@@ -67,8 +57,19 @@ export const ContactPage: React.FC = () => {
       localStorage.setItem('astitva_partner_mailbox', JSON.stringify(updatedList));
 
       window.dispatchEvent(new Event('astitva_partner_submitted'));
+      window.dispatchEvent(new Event('storage'));
     } catch (err) {
       console.log('Error saving to Developer Mailbox:', err);
+    }
+
+    try {
+      await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+    } catch (err) {
+      // Fallback
     }
 
     setLoading(false);
