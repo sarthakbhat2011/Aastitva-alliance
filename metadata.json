@@ -1,0 +1,6 @@
+{
+  "name": "Astitva Alliance",
+  "description": "Academic Event Infrastructure Partner in Jammu for MUNs, Debates, Quizzes, and Cultural Events.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
