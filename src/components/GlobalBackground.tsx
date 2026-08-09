@@ -258,7 +258,7 @@ export const GlobalBackground: React.FC = () => {
       <div className="absolute top-2/3 -left-30 w-[550px] h-[550px] bg-gradient-to-r from-[#243563]/25 via-[#0B1021]/15 to-transparent rounded-full blur-[130px] animate-float" />
 
       {/* Interactive Canvas layer */}
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-90" />
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-[var(--canvas-opacity)] transition-opacity duration-500" />
     </div>
   );
 };

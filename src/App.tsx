@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Page, SummitConfig, CountdownTime, AnalyticsStats } from './types';
 import { INITIAL_SUMMIT_CONFIG } from './data';
+import { ThemeProvider } from './context/ThemeContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { TechnicalAuditModal } from './components/TechnicalAuditModal';
@@ -136,56 +137,58 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#070A14] text-[#FAF5EF] flex flex-col font-sans selection:bg-[#D4AF37] selection:text-[#070A14] relative">
-      {/* Pre-loader Screen */}
-      {loading && <LoadingScreen onComplete={() => setLoading(false)} />}
+    <ThemeProvider>
+      <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-primary)] flex flex-col font-sans selection:bg-[#D4AF37] selection:text-[#070A14] relative transition-colors duration-500">
+        {/* Pre-loader Screen */}
+        {loading && <LoadingScreen onComplete={() => setLoading(false)} />}
 
-      {/* Global Interactive Canvas & Ambient Lighting Background */}
-      <GlobalBackground />
+        {/* Global Interactive Canvas & Ambient Lighting Background */}
+        <GlobalBackground />
 
-      {/* Top Scroll Reading Progress & Floating Scroll Top Button */}
-      <ScrollControls />
+        {/* Top Scroll Reading Progress & Floating Scroll Top Button */}
+        <ScrollControls />
 
-      {/* Navigation Header */}
-      <Navbar
-        currentPage={currentPage}
-        onNavigate={handleNavigate}
-        summitConfig={summitConfig}
-        onOpenAudit={() => setAuditOpen(true)}
-        onOpenAdmin={() => setAdminOpen(true)}
-      />
+        {/* Navigation Header */}
+        <Navbar
+          currentPage={currentPage}
+          onNavigate={handleNavigate}
+          summitConfig={summitConfig}
+          onOpenAudit={() => setAuditOpen(true)}
+          onOpenAdmin={() => setAdminOpen(true)}
+        />
 
-      {/* Main Content Area with Route Transition */}
-      <main key={currentPage} className="flex-1 z-10 animate-page-enter">
-        {renderPage()}
-      </main>
+        {/* Main Content Area with Route Transition */}
+        <main key={currentPage} className="flex-1 z-10 animate-page-enter">
+          {renderPage()}
+        </main>
 
-      {/* Footer */}
-      <Footer 
-        onNavigate={handleNavigate} 
-        onOpenDevMailbox={() => setDevMailboxOpen(true)}
-      />
+        {/* Footer */}
+        <Footer 
+          onNavigate={handleNavigate} 
+          onOpenDevMailbox={() => setDevMailboxOpen(true)}
+        />
 
-      {/* Developer Partner Mailbox Modal */}
-      <DeveloperMailboxModal
-        isOpen={devMailboxOpen}
-        onClose={() => setDevMailboxOpen(false)}
-      />
+        {/* Developer Partner Mailbox Modal */}
+        <DeveloperMailboxModal
+          isOpen={devMailboxOpen}
+          onClose={() => setDevMailboxOpen(false)}
+        />
 
-      {/* Technical Audit Modal */}
-      <TechnicalAuditModal
-        isOpen={auditOpen}
-        onClose={() => setAuditOpen(false)}
-        stats={analytics}
-      />
+        {/* Technical Audit Modal */}
+        <TechnicalAuditModal
+          isOpen={auditOpen}
+          onClose={() => setAuditOpen(false)}
+          stats={analytics}
+        />
 
-      {/* Admin Live Content Drawer */}
-      <AdminContentDrawer
-        isOpen={adminOpen}
-        onClose={() => setAdminOpen(false)}
-        config={summitConfig}
-        onUpdateConfig={handleUpdateConfig}
-      />
-    </div>
+        {/* Admin Live Content Drawer */}
+        <AdminContentDrawer
+          isOpen={adminOpen}
+          onClose={() => setAdminOpen(false)}
+          config={summitConfig}
+          onUpdateConfig={handleUpdateConfig}
+        />
+      </div>
+    </ThemeProvider>
   );
 }

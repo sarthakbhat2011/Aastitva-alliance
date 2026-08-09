@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Sparkles, ChevronRight, ArrowUpRight, ShieldCheck, Settings, Clock } from 'lucide-react';
 import { AstitvaLogo } from './AstitvaLogo';
+import { ThemeToggle } from './ThemeToggle';
 import { Page, SummitConfig, CountdownTime } from '../types';
 
 interface Props {
@@ -108,12 +109,12 @@ export const Navbar: React.FC<Props> = ({
             </span>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0 text-[11px]">
+          <div className="flex items-center gap-2.5 shrink-0 text-[11px]">
             <a
               href="https://aquitas-aastitva11.onrender.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:flex items-center gap-1 text-[#D4AF37] hover:text-[#FAF5EF] transition-colors font-medium"
+              className="hidden md:flex items-center gap-1 text-[#D4AF37] hover:text-[#FAF5EF] transition-colors font-medium"
             >
               <span>Aequitas Site</span>
               <ArrowUpRight className="w-3 h-3" />
@@ -134,6 +135,11 @@ export const Navbar: React.FC<Props> = ({
             >
               <Settings className="w-3.5 h-3.5" />
             </button>
+
+            {/* Header Corner Theme Toggle */}
+            <div className="hidden xs:block sm:block ml-1">
+              <ThemeToggle variant="full" />
+            </div>
           </div>
         </div>
       </div>
@@ -183,7 +189,12 @@ export const Navbar: React.FC<Props> = ({
             </div>
 
             {/* CTA Button & Mobile Toggle */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* Header Corner Theme Switcher (Mobile fallback) */}
+              <div className="block xs:hidden">
+                <ThemeToggle variant="compact" />
+              </div>
+
               <button
                 onClick={() => handleNavClick('contact')}
                 className="hidden sm:flex items-center gap-2 px-5 py-2.5 rounded-xl shimmer-btn text-[#070A14] text-xs sm:text-sm font-bold shadow-[0_4px_20px_rgba(212,175,55,0.35)] hover:brightness-110 active:scale-95 transition-all"
