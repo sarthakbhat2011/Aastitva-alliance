@@ -24,43 +24,43 @@
 }
 
 [data-theme="light"] {
-  --bg-main: #F4F6FB;
+  --bg-main: #F1F4F9;
   --bg-secondary: #FFFFFF;
-  --bg-card: rgba(255, 255, 255, 0.88);
+  --bg-card: rgba(255, 255, 255, 0.92);
   --bg-card-hover: rgba(255, 255, 255, 0.98);
-  --bg-nav: rgba(255, 255, 255, 0.92);
-  --bg-ticker: rgba(241, 245, 249, 0.95);
-  --border-color: rgba(212, 175, 55, 0.35);
-  --border-color-hover: rgba(212, 175, 55, 0.65);
+  --bg-nav: rgba(255, 255, 255, 0.95);
+  --bg-ticker: rgba(241, 245, 249, 0.98);
+  --border-color: rgba(180, 138, 26, 0.45);
+  --border-color-hover: rgba(180, 138, 26, 0.8);
   --text-primary: #0F172A;
-  --text-secondary: #334155;
-  --text-muted: #64748B;
+  --text-secondary: #1E293B;
+  --text-muted: #475569;
   --accent-gold: #B48A1A;
-  --card-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08);
-  --scrollbar-bg: #F4F6FB;
-  --scrollbar-thumb: #CBD5E1;
-  --canvas-opacity: 0.45;
-  --gold-gradient: linear-gradient(135deg, #0F172A 0%, #1E293B 30%, #B48A1A 70%, #85640D 100%);
-  --silver-gradient: linear-gradient(135deg, #0F172A 0%, #334155 50%, #64748B 100%);
+  --card-shadow: 0 12px 32px -5px rgba(15, 23, 42, 0.12);
+  --scrollbar-bg: #F1F4F9;
+  --scrollbar-thumb: #94A3B8;
+  --canvas-opacity: 0.9;
+  --gold-gradient: linear-gradient(135deg, #0F172A 0%, #1E3A8A 35%, #B48A1A 75%, #78350F 100%);
+  --silver-gradient: linear-gradient(135deg, #0F172A 0%, #1E293B 40%, #475569 100%);
 }
 
 [data-theme="dark"] {
-  --bg-main: #04060C;
-  --bg-secondary: #0A0F1E;
-  --bg-card: rgba(10, 14, 26, 0.85);
-  --bg-card-hover: rgba(16, 23, 42, 0.92);
-  --bg-nav: rgba(10, 14, 26, 0.95);
-  --bg-ticker: rgba(4, 6, 12, 0.95);
-  --border-color: rgba(212, 175, 55, 0.22);
-  --border-color-hover: rgba(212, 175, 55, 0.55);
+  --bg-main: #000000;
+  --bg-secondary: #020306;
+  --bg-card: rgba(6, 8, 14, 0.95);
+  --bg-card-hover: rgba(12, 16, 28, 0.97);
+  --bg-nav: rgba(4, 5, 10, 0.98);
+  --bg-ticker: rgba(0, 0, 0, 0.99);
+  --border-color: rgba(212, 175, 55, 0.28);
+  --border-color-hover: rgba(212, 175, 55, 0.65);
   --text-primary: #FFFFFF;
-  --text-secondary: #CBD5E1;
+  --text-secondary: #F1F5F9;
   --text-muted: #94A3B8;
   --accent-gold: #D4AF37;
-  --card-shadow: 0 14px 40px -10px rgba(0, 0, 0, 0.9);
-  --scrollbar-bg: #04060C;
+  --card-shadow: 0 18px 50px -10px rgba(0, 0, 0, 0.98);
+  --scrollbar-bg: #000000;
   --scrollbar-thumb: #1E293B;
-  --canvas-opacity: 0.95;
+  --canvas-opacity: 0.98;
   --gold-gradient: linear-gradient(135deg, #FFFFFF 0%, #FDE68A 30%, #D4AF37 70%, #92400E 100%);
   --silver-gradient: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 40%, #94A3B8 100%);
 }
@@ -114,7 +114,7 @@
 
 .glass-card:hover {
   border-color: var(--border-color-hover);
-  box-shadow: 0 18px 40px -5px rgba(212, 175, 55, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  box-shadow: 0 18px 40px -5px rgba(212, 175, 55, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.15);
   transform: translateY(-2px);
 }
 
@@ -145,6 +145,57 @@
   background: var(--silver-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+/* LIGHT MODE OVERRIDES for 100% Crisp Visibility & High Contrast */
+[data-theme="light"] {
+  color: #0F172A;
+}
+
+[data-theme="light"] [class*="text-[#FAF5EF]"],
+[data-theme="light"] [class*="text-white"] {
+  color: #0F172A !important;
+}
+
+[data-theme="light"] [class*="text-[#C4BBA3]"] {
+  color: #334155 !important;
+}
+
+[data-theme="light"] [class*="text-[#8E8570]"],
+[data-theme="light"] [class*="text-[#9E93C4]"] {
+  color: #475569 !important;
+}
+
+/* Background overrides for inputs, cards, containers in Light Mode */
+[data-theme="light"] [class*="bg-[#070A14]"] {
+  background-color: #F1F4F9 !important;
+}
+
+[data-theme="light"] [class*="bg-[#0D1427]"],
+[data-theme="light"] [class*="bg-[#171026]"] {
+  background-color: rgba(255, 255, 255, 0.94) !important;
+  color: #0F172A !important;
+}
+
+[data-theme="light"] [class*="bg-[#16203B]"],
+[data-theme="light"] [class*="bg-[#231B42]"] {
+  background-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+[data-theme="light"] [class*="border-[#243563]"],
+[data-theme="light"] [class*="border-[#52459E]"] {
+  border-color: rgba(180, 138, 26, 0.35) !important;
+}
+
+/* ULTRA DARK MODE OVERRIDES for Pitch Black OLED Experience */
+[data-theme="dark"] [class*="bg-[#070A14]"] {
+  background-color: #000000 !important;
+}
+
+[data-theme="dark"] [class*="bg-[#0D1427]"],
+[data-theme="dark"] [class*="bg-[#171026]"] {
+  background-color: #03050A !important;
 }
 
 /* Shimmer Light Effect */

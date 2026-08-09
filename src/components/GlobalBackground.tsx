@@ -1,7 +1,9 @@
 import React, { useEffect, useRef } from 'react';
+import { useTheme } from '../context/ThemeContext';
 
 export const GlobalBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { theme } = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -33,7 +35,18 @@ export const GlobalBackground: React.FC = () => {
     }
 
     const particles: Particle[] = [];
-    const colors = ['#D4AF37', '#FAF5EF', '#F3E5AB', '#243563', '#3A4F8A', '#7C67EE'];
+    
+    // Select theme-adapted particle color palettes
+    const getColors = () => {
+      if (theme === 'light') {
+        return ['#B48A1A', '#1E3A8A', '#2563EB', '#6D28D9', '#D97706', '#0284C7'];
+      } else if (theme === 'dark') {
+        return ['#D4AF37', '#FFFFFF', '#38BDF8', '#818CF8', '#F59E0B', '#C084FC'];
+      }
+      return ['#D4AF37', '#FAF5EF', '#F3E5AB', '#243563', '#3A4F8A', '#7C67EE'];
+    };
+
+    const colors = getColors();
     const shapes: ('circle' | 'diamond' | 'ring')[] = ['circle', 'circle', 'circle', 'diamond', 'ring'];
 
     for (let i = 0; i < particleCount; i++) {
@@ -107,11 +120,17 @@ export const GlobalBackground: React.FC = () => {
 
       ctx.clearRect(0, 0, width, height);
 
-      // 1. Draw Mouse Interactive Radiant Glow Aura (Dark Royal Blue + Gold)
+      // 1. Draw Mouse Interactive Radiant Glow Aura
       const mouseGlow = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 240);
-      mouseGlow.addColorStop(0, 'rgba(212, 175, 55, 0.2)');
-      mouseGlow.addColorStop(0.5, 'rgba(36, 53, 99, 0.15)');
-      mouseGlow.addColorStop(1, 'rgba(7, 10, 20, 0)');
+      if (theme === 'light') {
+        mouseGlow.addColorStop(0, 'rgba(180, 138, 26, 0.25)');
+        mouseGlow.addColorStop(0.5, 'rgba(37, 99, 235, 0.18)');
+        mouseGlow.addColorStop(1, 'rgba(241, 245, 249, 0)');
+      } else {
+        mouseGlow.addColorStop(0, 'rgba(212, 175, 55, 0.22)');
+        mouseGlow.addColorStop(0.5, 'rgba(36, 53, 99, 0.18)');
+        mouseGlow.addColorStop(1, 'rgba(7, 10, 20, 0)');
+      }
       ctx.fillStyle = mouseGlow;
       ctx.beginPath();
       ctx.arc(mouseX, mouseY, 240, 0, Math.PI * 2);
@@ -128,9 +147,9 @@ export const GlobalBackground: React.FC = () => {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            const lineAlpha = (1 - dist / 135) * 0.22;
-            ctx.strokeStyle = `rgba(212, 175, 55, ${lineAlpha})`;
-            ctx.lineWidth = 0.8;
+            const lineAlpha = (1 - dist / 135) * (theme === 'light' ? 0.35 : 0.22);
+            ctx.strokeStyle = theme === 'light' ? `rgba(30, 58, 138, ${lineAlpha})` : `rgba(212, 175, 55, ${lineAlpha})`;
+            ctx.lineWidth = theme === 'light' ? 1.0 : 0.8;
             ctx.stroke();
           }
         }
@@ -143,9 +162,9 @@ export const GlobalBackground: React.FC = () => {
           ctx.beginPath();
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(mouseX, mouseY);
-          const mouseLineAlpha = (1 - mdist / 165) * 0.38;
-          ctx.strokeStyle = `rgba(243, 229, 171, ${mouseLineAlpha})`;
-          ctx.lineWidth = 1.0;
+          const mouseLineAlpha = (1 - mdist / 165) * 0.42;
+          ctx.strokeStyle = theme === 'light' ? `rgba(180, 138, 26, ${mouseLineAlpha})` : `rgba(243, 229, 171, ${mouseLineAlpha})`;
+          ctx.lineWidth = 1.1;
           ctx.stroke();
         }
       }
@@ -181,7 +200,7 @@ export const GlobalBackground: React.FC = () => {
         ctx.rotate(p.angle);
         ctx.fillStyle = p.color;
         ctx.strokeStyle = p.color;
-        ctx.globalAlpha = Math.max(0.1, Math.min(1, p.alpha));
+        ctx.globalAlpha = Math.max(0.15, Math.min(1, p.alpha));
         ctx.shadowColor = p.color;
         ctx.shadowBlur = p.radius * 4;
 
@@ -217,9 +236,15 @@ export const GlobalBackground: React.FC = () => {
         const endY = star.y + Math.sin(star.angle) * star.length;
 
         const starGrad = ctx.createLinearGradient(star.x, star.y, endX, endY);
-        starGrad.addColorStop(0, `rgba(255, 255, 255, ${star.alpha})`);
-        starGrad.addColorStop(0.5, `rgba(212, 175, 55, ${star.alpha * 0.8})`);
-        starGrad.addColorStop(1, 'rgba(212, 175, 55, 0)');
+        if (theme === 'light') {
+          starGrad.addColorStop(0, `rgba(37, 99, 235, ${star.alpha})`);
+          starGrad.addColorStop(0.5, `rgba(180, 138, 26, ${star.alpha * 0.8})`);
+          starGrad.addColorStop(1, 'rgba(180, 138, 26, 0)');
+        } else {
+          starGrad.addColorStop(0, `rgba(255, 255, 255, ${star.alpha})`);
+          starGrad.addColorStop(0.5, `rgba(212, 175, 55, ${star.alpha * 0.8})`);
+          starGrad.addColorStop(1, 'rgba(212, 175, 55, 0)');
+        }
 
         ctx.beginPath();
         ctx.moveTo(star.x, star.y);
@@ -247,15 +272,34 @@ export const GlobalBackground: React.FC = () => {
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [theme]);
 
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-      {/* Dark Obsidian Blue Atmospheric Nebulas */}
-      <div className="absolute -top-40 -left-40 w-[750px] h-[750px] bg-gradient-to-br from-[#1C2A4F]/40 via-[#10172D]/25 to-transparent rounded-full blur-[140px] animate-pulse-glow" />
-      <div className="absolute top-1/4 -right-40 w-[700px] h-[700px] bg-gradient-to-l from-[#D4AF37]/22 via-[#243563]/20 to-transparent rounded-full blur-[150px] animate-float" />
-      <div className="absolute bottom-10 left-1/3 w-[850px] h-[850px] bg-gradient-to-tr from-[#070A14] via-[#16203B]/30 to-transparent rounded-full blur-[160px] animate-pulse-glow" />
-      <div className="absolute top-2/3 -left-30 w-[550px] h-[550px] bg-gradient-to-r from-[#243563]/25 via-[#0B1021]/15 to-transparent rounded-full blur-[130px] animate-float" />
+      {/* Dynamic Theme Atmospheric Nebulas */}
+      <div className={`absolute -top-40 -left-40 w-[750px] h-[750px] rounded-full blur-[140px] animate-pulse-glow transition-all duration-500 ${
+        theme === 'light'
+          ? 'bg-gradient-to-br from-[#3B82F6]/25 via-[#6366F1]/18 to-transparent'
+          : theme === 'dark'
+          ? 'bg-gradient-to-br from-[#1E1B4B]/50 via-[#0F172A]/40 to-transparent'
+          : 'bg-gradient-to-br from-[#1C2A4F]/40 via-[#10172D]/25 to-transparent'
+      }`} />
+
+      <div className={`absolute top-1/4 -right-40 w-[700px] h-[700px] rounded-full blur-[150px] animate-float transition-all duration-500 ${
+        theme === 'light'
+          ? 'bg-gradient-to-l from-[#F59E0B]/25 via-[#3B82F6]/20 to-transparent'
+          : theme === 'dark'
+          ? 'bg-gradient-to-l from-[#D4AF37]/25 via-[#0284C7]/20 to-transparent'
+          : 'bg-gradient-to-l from-[#D4AF37]/22 via-[#243563]/20 to-transparent'
+      }`} />
+
+      <div className={`absolute bottom-10 left-1/3 w-[850px] h-[850px] rounded-full blur-[160px] animate-pulse-glow transition-all duration-500 ${
+        theme === 'light'
+          ? 'bg-gradient-to-tr from-[#F1F4F9] via-[#93C5FD]/25 to-transparent'
+          : theme === 'dark'
+          ? 'bg-gradient-to-tr from-[#000000] via-[#090D16]/80 to-transparent'
+          : 'bg-gradient-to-tr from-[#070A14] via-[#16203B]/30 to-transparent'
+      }`} />
 
       {/* Interactive Canvas layer */}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-[var(--canvas-opacity)] transition-opacity duration-500" />
