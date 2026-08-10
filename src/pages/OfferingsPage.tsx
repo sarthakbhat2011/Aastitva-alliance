@@ -3,6 +3,7 @@ import { Page } from '../types';
 import { OFFERINGS } from '../data';
 import { ChevronDown, ChevronUp, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
+import { ScrollIndicator } from '../components/ScrollIndicator';
 
 interface Props {
   onNavigate: (page: Page) => void;
@@ -34,10 +35,14 @@ export const OfferingsPage: React.FC<Props> = ({ onNavigate }) => {
         <div className="lg:col-span-4 h-48 sm:h-60 relative flex items-center justify-center">
           <Astitva3DCanvas variant="hero" />
         </div>
+
+        <div className="col-span-12 flex justify-center pt-2">
+          <ScrollIndicator targetId="offerings-list" label="Explore Modules" />
+        </div>
       </div>
 
       {/* Expandable Offerings Cards */}
-      <div className="space-y-8">
+      <div id="offerings-list" className="space-y-8">
         {OFFERINGS.map((offering) => {
           const isExpanded = expandedCard === offering.id;
 

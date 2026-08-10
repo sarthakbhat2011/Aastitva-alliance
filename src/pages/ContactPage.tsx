@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
 import { ContactFormData } from '../types';
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
+import { ScrollIndicator } from '../components/ScrollIndicator';
 import {
   CheckCircle2,
   ShieldCheck,
@@ -31,16 +32,17 @@ export const ContactPage: React.FC = () => {
     e.preventDefault();
     setLoading(true);
 
-    // Save strictly to Developer Mailbox (localStorage) instantly
     try {
       const now = new Date();
       const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(
         now.getDate()
       ).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-      const newPartnerEntry = {
-        id: 'partner-' + Date.now(),
-        timestamp: formattedDate,
+      const existingData = localStorage.getItem('astitva_partner_submissions');
+      const submissions = existingData ? JSON.parse(existingData) : [];
+
+      const newSubmission = {
+        id: `SUB-${Date.now()}`,
         schoolName: form.schoolName,
         contactPerson: form.contactPerson,
         email: form.email,
@@ -48,34 +50,46 @@ export const ContactPage: React.FC = () => {
         eventType: form.eventType,
         preferredDate: form.preferredDate,
         message: form.message,
-        status: 'New' as const,
+        timestamp: formattedDate,
       };
 
-      const existingStored = localStorage.getItem('astitva_partner_mailbox');
-      const existingList = existingStored ? JSON.parse(existingStored) : [];
-      const updatedList = [newPartnerEntry, ...existingList];
-      localStorage.setItem('astitva_partner_mailbox', JSON.stringify(updatedList));
-
-      window.dispatchEvent(new Event('astitva_partner_submitted'));
-      window.dispatchEvent(new Event('storage'));
+      submissions.unshift(newSubmission);
+      localStorage.setItem('astitva_partner_submissions', JSON.stringify(submissions));
     } catch (err) {
-      console.log('Error saving to Developer Mailbox:', err);
+      console.error('Error saving submission locally:', err);
     }
 
+    // Silent background POST to Google Form
+    const GOOGLE_FORM_ACTION =
+      'https://docs.google.com/forms/d/e/1FAIpQLScBGLm5S3STYlDHqXT8EojVv0F4o-wMOxWRW563YrE1B1x1DQ/formResponse';
+
     try {
-      await fetch('/api/contact', {
+      const body = new URLSearchParams();
+      body.append('entry.386438479', form.schoolName);
+      body.append('entry.183535783', form.contactPerson);
+      body.append('entry.1640058535', form.email);
+      body.append('entry.1465756153', form.phone);
+      body.append('entry.1860013780', form.eventType);
+      body.append('entry.1770614625', form.preferredDate);
+      body.append('entry.1136480282', form.message);
+
+      fetch(GOOGLE_FORM_ACTION, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: body.toString(),
+      }).catch((err) => console.log('Silent Google Form POST:', err));
     } catch (err) {
-      // Fallback
+      console.log('Background submit:', err);
     }
 
     setLoading(false);
     setSubmitted(true);
+
     confetti({
-      particleCount: 90,
+      particleCount: 100,
       spread: 70,
       origin: { y: 0.6 },
     });
@@ -100,10 +114,14 @@ export const ContactPage: React.FC = () => {
         <div className="lg:col-span-4 h-48 sm:h-56 relative flex items-center justify-center">
           <Astitva3DCanvas variant="minimal" />
         </div>
+
+        <div className="col-span-12 flex justify-center pt-2">
+          <ScrollIndicator targetId="partner-form" label="Fill Partner Form" />
+        </div>
       </div>
 
       {/* Main Form Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <div id="partner-form" className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Inquiry Form */}
         <div className="lg:col-span-7 glass-card rounded-3xl p-6 sm:p-8 space-y-6">
           <div className="flex items-center justify-between pb-4 border-b border-[#52459E]/40">

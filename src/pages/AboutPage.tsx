@@ -2,6 +2,7 @@ import React from 'react';
 import { Page } from '../types';
 import { Target, Compass, ShieldAlert, Award, CheckCircle2, HeartHandshake, Sparkles, ArrowRight } from 'lucide-react';
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
+import { ScrollIndicator } from '../components/ScrollIndicator';
 
 interface Props {
   onNavigate: (page: Page) => void;
@@ -50,10 +51,14 @@ export const AboutPage: React.FC<Props> = ({ onNavigate }) => {
         <div className="lg:col-span-4 h-48 sm:h-60 relative flex items-center justify-center">
           <Astitva3DCanvas variant="hero" />
         </div>
+
+        <div className="col-span-12 flex justify-center pt-2">
+          <ScrollIndicator targetId="genesis-section" label="Discover Our Story" />
+        </div>
       </div>
 
       {/* Our Story Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center glass-card p-8 sm:p-12 rounded-3xl">
+      <div id="genesis-section" className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center glass-card p-8 sm:p-12 rounded-3xl">
         <div className="space-y-4">
           <span className="text-xs text-[#D4AF37] uppercase tracking-widest font-bold">
             Genesis & Mission

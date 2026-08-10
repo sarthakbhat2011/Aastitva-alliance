@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
 import { Page, SummitConfig, CountdownTime, RegistrationFormData } from '../types';
 import { COMMITTEES } from '../data';
+import { ScrollIndicator } from '../components/ScrollIndicator';
 import {
   Sparkles,
   Calendar,
@@ -140,11 +141,15 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown }) => {
               <span>Visit Live Aequitas Website ↗</span>
             </a>
           </div>
+
+          <div className="flex justify-center pt-6">
+            <ScrollIndicator targetId="summit-clock-banner" label="Scroll for Conference Clock" />
+          </div>
         </div>
       </section>
 
       {/* 2. FULL-WIDTH LIVE COUNTDOWN BANNER (GOLD BACKGROUND) */}
-      <section className="bg-gradient-to-r from-[#D4AF37] via-[#F9E2C8] to-[#C59B67] text-[#070A14] py-6 px-4 shadow-xl">
+      <section id="summit-clock-banner" className="bg-gradient-to-r from-[#D4AF37] via-[#F9E2C8] to-[#C59B67] text-[#070A14] py-6 px-4 shadow-xl">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
           <div>
             <span className="text-xs uppercase tracking-widest font-extrabold opacity-85 block">

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BLOG_POSTS } from '../data';
 import { Clock, User, ArrowRight, Search, Sparkles } from 'lucide-react';
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
+import { ScrollIndicator } from '../components/ScrollIndicator';
 
 export const BlogPage: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
@@ -35,10 +36,14 @@ export const BlogPage: React.FC = () => {
         <div className="lg:col-span-4 h-48 sm:h-56 relative flex items-center justify-center">
           <Astitva3DCanvas variant="hero" />
         </div>
+
+        <div className="col-span-12 flex justify-center pt-2">
+          <ScrollIndicator targetId="journal-search" label="Browse Resource Articles" />
+        </div>
       </div>
 
       {/* Search Bar */}
-      <div className="relative max-w-md mx-auto">
+      <div id="journal-search" className="relative max-w-md mx-auto">
         <Search className="w-5 h-5 text-[#D4AF37] absolute left-4 top-1/2 -translate-y-1/2" />
         <input
           type="text"

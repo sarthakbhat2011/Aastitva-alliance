@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Page, SummitConfig, CountdownTime, RegistrationFormData } from '../types';
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
 import { ConsultationModal } from '../components/ConsultationModal';
+import { ScrollIndicator } from '../components/ScrollIndicator';
 import { OFFERINGS, COMMITTEES, BLOG_POSTS } from '../data';
 import confetti from 'canvas-confetti';
 import {
@@ -335,19 +336,12 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown 
                   <div className="text-xs font-bold text-white font-inter">Verified EB Roster</div>
                   <div className="text-[10px] text-[#B8A9C9] font-inter">100% UN ROP Compliance</div>
                 </div>
-              </div>
             </div>
           </div>
-        </div>
 
         {/* Scroll Down Cue */}
-        <div className="w-full z-10 flex flex-col items-center justify-center pt-8 cursor-pointer group" onClick={scrollToNextSection}>
-          <span className="text-[11px] uppercase tracking-[0.25em] text-[#B8A9C9] group-hover:text-[#E8A53E] transition-colors mb-2 font-semibold">
-            Scroll to Explore
-          </span>
-          <div className="w-10 h-10 rounded-full bg-[#0B1120] border border-[#D4AF37]/40 flex items-center justify-center shadow-lg group-hover:border-[#E8A53E] transition-all animate-bounce">
-            <ArrowDown className="w-5 h-5 text-[#E8A53E]" />
-          </div>
+        <div className="w-full z-10 flex flex-col items-center justify-center pt-6">
+          <ScrollIndicator targetId="explore-section" label="Scroll to Explore" />
         </div>
       </section>
 
