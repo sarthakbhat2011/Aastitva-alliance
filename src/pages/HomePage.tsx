@@ -336,8 +336,10 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown 
                   <div className="text-xs font-bold text-white font-inter">Verified EB Roster</div>
                   <div className="text-[10px] text-[#B8A9C9] font-inter">100% UN ROP Compliance</div>
                 </div>
+              </div>
             </div>
           </div>
+        </div>
 
         {/* Scroll Down Cue */}
         <div className="w-full z-10 flex flex-col items-center justify-center pt-6">
