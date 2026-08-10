@@ -564,83 +564,34 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {BLOG_POSTS.slice(0, 3).map((post) => (
             <div
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {COMMITTEES.map((committee) => (
-              <div key={committee.id} className="glass-card p-6 rounded-3xl space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="px-3 py-1 rounded-lg bg-[#52459E]/40 text-[#D4AF37] font-mono font-bold text-xs border border-[#D4AF37]/30">
-                    {committee.code}
+              key={post.id}
+              onClick={() => onNavigate('blog')}
+              className="glass-card rounded-3xl overflow-hidden cursor-pointer lusion-hover-tilt border border-[#D4AF37]/30 flex flex-col justify-between"
+            >
+              <img
+                src={post.image}
+                alt={post.title}
+                className="w-full h-48 object-cover"
+              />
+              <div className="p-6 space-y-3 flex-1 flex flex-col justify-between">
+                <div className="space-y-2">
+                  <span className="text-[10px] font-bold text-[#E8A53E] uppercase tracking-wider">
+                    {post.category} • {post.readTime}
                   </span>
-                  <span className="text-xs text-[#C4BBA3] font-medium">
-                    Seats: <strong className="text-white">{committee.seats} Delegates</strong>
-                  </span>
+                  <h3 className="text-lg font-playfair font-bold text-white hover:text-[#E8A53E] transition-colors">
+                    {post.title}
+                  </h3>
+                  <p className="text-xs text-[#cecece] line-clamp-2">
+                    {post.excerpt}
+                  </p>
                 </div>
-
-                <h3 className="text-xl font-serif font-bold text-[#FAF5EF]">
-                  {committee.name}
-                </h3>
-
-                <div className="bg-[#171026]/80 p-3 rounded-xl border border-[#52459E]/30 text-xs space-y-1">
-                  <span className="text-[10px] text-[#D4AF37] uppercase font-bold tracking-wider">
-                    Official Agenda:
-                  </span>
-                  <p className="text-white font-medium italic">"{committee.agenda}"</p>
+                <div className="pt-3 border-t border-[#D4AF37]/20 flex items-center justify-between text-xs text-[#B8A9C9]">
+                  <span>{post.date}</span>
+                  <span className="text-[#E8A53E] font-bold">Read →</span>
                 </div>
-
-                <p className="text-xs text-[#C4BBA3] leading-relaxed">
-                  {committee.description}
-               {/* Left Hero Text Column (Exact PDF Specification) */}
-          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E8A53E]/15 border border-[#E8A53E]/30 text-[#E8A53E] text-xs font-semibold">
-              <Trophy className="w-3.5 h-3.5" />
-              <span>Academic Event Infrastructure Partner</span>
+              </div>
             </div>
-
-            {/* HEADLINE: Playfair Display 52px, #FFFFFF (Add glow that sort of embosses) */}
-            <h1 className="hero-headline-text">
-              The First & Only Academic Event Infrastructure Partner in Jammu
-            </h1>
-
-            {/* SUBHEADLINE: Inter 20px, #D3C5E5 */}
-            <p className="hero-subheadline-text font-inter">
-              One partnership. Everything covered.
-            </p>
-
-            {/* BODY PARAGRAPH: Inter 19px, #cecece */}
-            <p className="body-paragraph-text font-inter max-w-2xl mx-auto lg:mx-0">
-              We partner with leading educational institutions in Jammu to power MUNs, debate summits, quizzes, and literary festivals. From certified Executive Board deployment to technical logistics, we manage end-to-end event execution.
-            </p>
-
-            {/* THREE HERO BUTTONS (PDF Page 1 Specification) */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-3">
-              {/* Button 1: "Partner With Us" (leads to form) */}
-              <button
-                onClick={() => onNavigate('contact')}
-                className="px-7 py-3.5 rounded-xl shimmer-btn text-[#050811] text-sm font-bold shadow-[0_6px_25px_rgba(232,165,62,0.35)] hover:brightness-110 active:scale-95 transition-all flex items-center gap-2"
-              >
-                <span>Partner With Us</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-
-              {/* Button 2: "Explore Offerings" (redirects to the offerings tab) */}
-              <button
-                onClick={() => onNavigate('offerings')}
-                className="px-6 py-3.5 rounded-xl bg-[#0B1120] border border-[#D4AF37]/40 text-[#FAF5EF] text-sm font-semibold hover:border-[#E8A53E] hover:text-[#E8A53E] transition-all flex items-center gap-2"
-              >
-                <span>Explore Offerings</span>
-                <ChevronRight className="w-3.5 h-3.5 text-[#E8A53E]" />
-              </button>
-
-              {/* Button 3: "Book a Free Consultation Call" (15-minute call directly on a calendar) */}
-              <button
-                onClick={() => setConsultationModalOpen(true)}
-                className="px-6 py-3.5 rounded-xl bg-[#050811] border border-[#B8A9C9]/40 text-[#D3C5E5] text-sm font-semibold hover:border-[#E8A53E] hover:text-white transition-all flex items-center gap-2 shadow-lg"
-              >
-                <Video className="w-4 h-4 text-[#E8A53E]" />
-                <span>Book a Free Consultation Call</span>
-              </button>
-            </div>
-          </div>          </div>
+          ))}
         </div>
       </section>
 
