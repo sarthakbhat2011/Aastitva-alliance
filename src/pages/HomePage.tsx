@@ -415,14 +415,22 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown 
             </div>
           </div>
 
-          {/* Real-time live partnership link line as requested in PDF Page 2 */}
-          <div className="pt-4">
+          {/* Live Summit CTA buttons next to the countdown */}
+          <div className="pt-4 flex flex-wrap items-center justify-center gap-3.5">
             <button
               onClick={() => onNavigate('summit')}
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[#E8A53E] hover:text-white transition-colors bg-[#050811] px-5 py-2.5 rounded-full border border-[#D4AF37]/30 shadow-lg"
+              className="px-6 py-3.5 rounded-full shimmer-btn text-[#050811] text-sm font-bold shadow-[0_6px_25px_rgba(232,165,62,0.35)] hover:brightness-110 active:scale-95 transition-all flex items-center gap-2"
+            >
+              <span>Explore the Summit Live</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+
+            <button
+              onClick={() => onNavigate('summit')}
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#E8A53E] hover:text-white transition-colors bg-[#050811] px-5 py-3 rounded-full border border-[#D4AF37]/30 shadow-lg"
             >
               <span>Follow our first live partnership in real time</span>
-              <ArrowRight className="w-4 h-4" />
+              <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         </div>
