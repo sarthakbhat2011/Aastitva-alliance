@@ -421,3 +421,43 @@
 .animate-page-enter {
   animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* Solar System Planetary Orbital Animations for Brand Logo */
+@keyframes spinOrbit1 {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes spinOrbit2 {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes spinOrbit3 {
+  0% { transform: rotate(120deg); }
+  100% { transform: rotate(480deg); }
+}
+
+.animate-orbit-fast {
+  animation: spinOrbit1 8s linear infinite;
+}
+
+.animate-orbit-med {
+  animation: spinOrbit2 15s linear infinite;
+}
+
+.animate-orbit-slow {
+  animation: spinOrbit3 25s linear infinite;
+}
+
+.group:hover .animate-orbit-fast {
+  animation-duration: 3.5s;
+}
+
+.group:hover .animate-orbit-med {
+  animation-duration: 6s;
+}
+
+.group:hover .animate-orbit-slow {
+  animation-duration: 10s;
+}
