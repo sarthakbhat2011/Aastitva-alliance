@@ -387,31 +387,31 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown 
           {/* Massive, translucent countdown numbers dissolving smoothly as seconds change */}
           <div className="grid grid-cols-4 gap-3 sm:gap-6 max-w-4xl mx-auto">
             <div className="glass-card p-4 sm:p-8 rounded-3xl border border-[#D4AF37]/40 shadow-2xl lusion-hover-tilt">
-              <div className="text-4xl sm:text-6xl lg:text-7xl font-mono font-extrabold text-[#FFFFFF] drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]">
-                {countdown.days}
+              <div className="text-4xl sm:text-6xl lg:text-7xl font-mono font-extrabold countdown-val-text">
+                {countdown.days.toString().padStart(2, '0')}
               </div>
-              <div className="text-xs sm:text-sm font-bold text-[#E8A53E] tracking-widest mt-2 uppercase">DAYS</div>
+              <div className="text-xs sm:text-sm font-bold text-[#E8A53E] countdown-val-accent tracking-widest mt-2 uppercase">DAYS</div>
             </div>
 
             <div className="glass-card p-4 sm:p-8 rounded-3xl border border-[#D4AF37]/40 shadow-2xl lusion-hover-tilt">
-              <div className="text-4xl sm:text-6xl lg:text-7xl font-mono font-extrabold text-[#FFFFFF] drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]">
+              <div className="text-4xl sm:text-6xl lg:text-7xl font-mono font-extrabold countdown-val-text">
                 {countdown.hours.toString().padStart(2, '0')}
               </div>
-              <div className="text-xs sm:text-sm font-bold text-[#E8A53E] tracking-widest mt-2 uppercase">HOURS</div>
+              <div className="text-xs sm:text-sm font-bold text-[#E8A53E] countdown-val-accent tracking-widest mt-2 uppercase">HOURS</div>
             </div>
 
             <div className="glass-card p-4 sm:p-8 rounded-3xl border border-[#D4AF37]/40 shadow-2xl lusion-hover-tilt">
-              <div className="text-4xl sm:text-6xl lg:text-7xl font-mono font-extrabold text-[#FFFFFF] drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]">
+              <div className="text-4xl sm:text-6xl lg:text-7xl font-mono font-extrabold countdown-val-text">
                 {countdown.minutes.toString().padStart(2, '0')}
               </div>
-              <div className="text-xs sm:text-sm font-bold text-[#E8A53E] tracking-widest mt-2 uppercase">MINUTES</div>
+              <div className="text-xs sm:text-sm font-bold text-[#E8A53E] countdown-val-accent tracking-widest mt-2 uppercase">MINUTES</div>
             </div>
 
             <div className="glass-card p-4 sm:p-8 rounded-3xl border border-[#D4AF37]/40 shadow-2xl lusion-hover-tilt">
-              <div className="text-4xl sm:text-6xl lg:text-7xl font-mono font-extrabold text-[#E8A53E] drop-shadow-[0_0_25px_rgba(232,165,62,0.6)] animate-pulse">
+              <div className="text-4xl sm:text-6xl lg:text-7xl font-mono font-extrabold text-[#E8A53E] countdown-val-accent animate-pulse">
                 {countdown.seconds.toString().padStart(2, '0')}
               </div>
-              <div className="text-xs sm:text-sm font-bold text-[#E8A53E] tracking-widest mt-2 uppercase">SECONDS</div>
+              <div className="text-xs sm:text-sm font-bold text-[#E8A53E] countdown-val-accent tracking-widest mt-2 uppercase">SECONDS</div>
             </div>
           </div>
 

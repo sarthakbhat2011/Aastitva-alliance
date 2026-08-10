@@ -53,11 +53,11 @@ export const GlobalBackground: React.FC = () => {
       particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        radius: Math.random() * 2.5 + 0.8,
+        radius: theme === 'light' ? Math.random() * 3.2 + 1.2 : Math.random() * 2.5 + 0.8,
         vx: (Math.random() - 0.5) * 0.7,
         vy: (Math.random() - 0.5) * 0.7,
-        alpha: Math.random() * 0.6 + 0.2,
-        maxAlpha: Math.random() * 0.7 + 0.3,
+        alpha: theme === 'light' ? Math.random() * 0.5 + 0.4 : Math.random() * 0.6 + 0.2,
+        maxAlpha: theme === 'light' ? 0.95 : Math.random() * 0.7 + 0.3,
         pulseSpeed: Math.random() * 0.02 + 0.008,
         color: colors[Math.floor(Math.random() * colors.length)],
         shape: shapes[Math.floor(Math.random() * shapes.length)],
@@ -121,10 +121,10 @@ export const GlobalBackground: React.FC = () => {
       ctx.clearRect(0, 0, width, height);
 
       // 1. Draw Mouse Interactive Radiant Glow Aura
-      const mouseGlow = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 240);
+      const mouseGlow = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 260);
       if (theme === 'light') {
-        mouseGlow.addColorStop(0, 'rgba(180, 138, 26, 0.25)');
-        mouseGlow.addColorStop(0.5, 'rgba(37, 99, 235, 0.18)');
+        mouseGlow.addColorStop(0, 'rgba(180, 138, 26, 0.45)');
+        mouseGlow.addColorStop(0.5, 'rgba(37, 99, 235, 0.35)');
         mouseGlow.addColorStop(1, 'rgba(241, 245, 249, 0)');
       } else {
         mouseGlow.addColorStop(0, 'rgba(212, 175, 55, 0.22)');
@@ -133,7 +133,7 @@ export const GlobalBackground: React.FC = () => {
       }
       ctx.fillStyle = mouseGlow;
       ctx.beginPath();
-      ctx.arc(mouseX, mouseY, 240, 0, Math.PI * 2);
+      ctx.arc(mouseX, mouseY, 260, 0, Math.PI * 2);
       ctx.fill();
 
       // 2. Draw Constellation Network Lines
@@ -143,13 +143,13 @@ export const GlobalBackground: React.FC = () => {
           const dy = particles[i].y - particles[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
-          if (dist < 135) {
+          if (dist < 140) {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            const lineAlpha = (1 - dist / 135) * (theme === 'light' ? 0.35 : 0.22);
-            ctx.strokeStyle = theme === 'light' ? `rgba(30, 58, 138, ${lineAlpha})` : `rgba(212, 175, 55, ${lineAlpha})`;
-            ctx.lineWidth = theme === 'light' ? 1.0 : 0.8;
+            const lineAlpha = (1 - dist / 140) * (theme === 'light' ? 0.65 : 0.25);
+            ctx.strokeStyle = theme === 'light' ? `rgba(29, 78, 216, ${lineAlpha})` : `rgba(212, 175, 55, ${lineAlpha})`;
+            ctx.lineWidth = theme === 'light' ? 1.4 : 0.8;
             ctx.stroke();
           }
         }
@@ -158,13 +158,13 @@ export const GlobalBackground: React.FC = () => {
         const mdx = particles[i].x - mouseX;
         const mdy = particles[i].y - mouseY;
         const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
-        if (mdist < 165) {
+        if (mdist < 175) {
           ctx.beginPath();
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(mouseX, mouseY);
-          const mouseLineAlpha = (1 - mdist / 165) * 0.42;
+          const mouseLineAlpha = (1 - mdist / 175) * (theme === 'light' ? 0.75 : 0.45);
           ctx.strokeStyle = theme === 'light' ? `rgba(180, 138, 26, ${mouseLineAlpha})` : `rgba(243, 229, 171, ${mouseLineAlpha})`;
-          ctx.lineWidth = 1.1;
+          ctx.lineWidth = theme === 'light' ? 1.5 : 1.1;
           ctx.stroke();
         }
       }
@@ -191,7 +191,7 @@ export const GlobalBackground: React.FC = () => {
 
         // Alpha pulsing
         p.alpha += p.pulseSpeed;
-        if (p.alpha > p.maxAlpha || p.alpha < 0.15) {
+        if (p.alpha > p.maxAlpha || p.alpha < 0.2) {
           p.pulseSpeed *= -1;
         }
 
@@ -200,9 +200,9 @@ export const GlobalBackground: React.FC = () => {
         ctx.rotate(p.angle);
         ctx.fillStyle = p.color;
         ctx.strokeStyle = p.color;
-        ctx.globalAlpha = Math.max(0.15, Math.min(1, p.alpha));
+        ctx.globalAlpha = Math.max(0.2, Math.min(1, p.alpha));
         ctx.shadowColor = p.color;
-        ctx.shadowBlur = p.radius * 4;
+        ctx.shadowBlur = p.radius * (theme === 'light' ? 5 : 4);
 
         if (p.shape === 'circle') {
           ctx.beginPath();
@@ -219,7 +219,7 @@ export const GlobalBackground: React.FC = () => {
         } else if (p.shape === 'ring') {
           ctx.beginPath();
           ctx.arc(0, 0, p.radius * 1.6, 0, Math.PI * 2);
-          ctx.lineWidth = 0.8;
+          ctx.lineWidth = theme === 'light' ? 1.2 : 0.8;
           ctx.stroke();
         }
 
@@ -238,7 +238,7 @@ export const GlobalBackground: React.FC = () => {
         const starGrad = ctx.createLinearGradient(star.x, star.y, endX, endY);
         if (theme === 'light') {
           starGrad.addColorStop(0, `rgba(37, 99, 235, ${star.alpha})`);
-          starGrad.addColorStop(0.5, `rgba(180, 138, 26, ${star.alpha * 0.8})`);
+          starGrad.addColorStop(0.5, `rgba(180, 138, 26, ${star.alpha * 0.9})`);
           starGrad.addColorStop(1, 'rgba(180, 138, 26, 0)');
         } else {
           starGrad.addColorStop(0, `rgba(255, 255, 255, ${star.alpha})`);
@@ -250,7 +250,7 @@ export const GlobalBackground: React.FC = () => {
         ctx.moveTo(star.x, star.y);
         ctx.lineTo(endX, endY);
         ctx.strokeStyle = starGrad;
-        ctx.lineWidth = 1.8;
+        ctx.lineWidth = theme === 'light' ? 2.4 : 1.8;
         ctx.stroke();
 
         star.x += Math.cos(star.angle) * star.speed;
@@ -279,7 +279,7 @@ export const GlobalBackground: React.FC = () => {
       {/* Dynamic Theme Atmospheric Nebulas */}
       <div className={`absolute -top-40 -left-40 w-[750px] h-[750px] rounded-full blur-[140px] animate-pulse-glow transition-all duration-500 ${
         theme === 'light'
-          ? 'bg-gradient-to-br from-[#3B82F6]/25 via-[#6366F1]/18 to-transparent'
+          ? 'bg-gradient-to-br from-[#3B82F6]/35 via-[#6366F1]/25 to-transparent'
           : theme === 'dark'
           ? 'bg-gradient-to-br from-[#1E1B4B]/50 via-[#0F172A]/40 to-transparent'
           : 'bg-gradient-to-br from-[#1C2A4F]/40 via-[#10172D]/25 to-transparent'
@@ -287,7 +287,7 @@ export const GlobalBackground: React.FC = () => {
 
       <div className={`absolute top-1/4 -right-40 w-[700px] h-[700px] rounded-full blur-[150px] animate-float transition-all duration-500 ${
         theme === 'light'
-          ? 'bg-gradient-to-l from-[#F59E0B]/25 via-[#3B82F6]/20 to-transparent'
+          ? 'bg-gradient-to-l from-[#F59E0B]/35 via-[#3B82F6]/25 to-transparent'
           : theme === 'dark'
           ? 'bg-gradient-to-l from-[#D4AF37]/25 via-[#0284C7]/20 to-transparent'
           : 'bg-gradient-to-l from-[#D4AF37]/22 via-[#243563]/20 to-transparent'
@@ -295,7 +295,7 @@ export const GlobalBackground: React.FC = () => {
 
       <div className={`absolute bottom-10 left-1/3 w-[850px] h-[850px] rounded-full blur-[160px] animate-pulse-glow transition-all duration-500 ${
         theme === 'light'
-          ? 'bg-gradient-to-tr from-[#F1F4F9] via-[#93C5FD]/25 to-transparent'
+          ? 'bg-gradient-to-tr from-[#93C5FD]/30 via-[#C084FC]/25 to-transparent'
           : theme === 'dark'
           ? 'bg-gradient-to-tr from-[#000000] via-[#090D16]/80 to-transparent'
           : 'bg-gradient-to-tr from-[#070A14] via-[#16203B]/30 to-transparent'
