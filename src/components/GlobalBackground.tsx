@@ -143,13 +143,13 @@ export const GlobalBackground: React.FC = () => {
           const dy = particles[i].y - particles[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
-          if (dist < 140) {
+          if (dist < 150) {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            const lineAlpha = (1 - dist / 140) * (theme === 'light' ? 0.65 : 0.25);
+            const lineAlpha = (1 - dist / 150) * (theme === 'light' ? 0.75 : 0.55);
             ctx.strokeStyle = theme === 'light' ? `rgba(29, 78, 216, ${lineAlpha})` : `rgba(212, 175, 55, ${lineAlpha})`;
-            ctx.lineWidth = theme === 'light' ? 1.4 : 0.8;
+            ctx.lineWidth = theme === 'light' ? 1.6 : 1.2;
             ctx.stroke();
           }
         }
@@ -158,13 +158,13 @@ export const GlobalBackground: React.FC = () => {
         const mdx = particles[i].x - mouseX;
         const mdy = particles[i].y - mouseY;
         const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
-        if (mdist < 175) {
+        if (mdist < 190) {
           ctx.beginPath();
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(mouseX, mouseY);
-          const mouseLineAlpha = (1 - mdist / 175) * (theme === 'light' ? 0.75 : 0.45);
+          const mouseLineAlpha = (1 - mdist / 190) * (theme === 'light' ? 0.85 : 0.65);
           ctx.strokeStyle = theme === 'light' ? `rgba(180, 138, 26, ${mouseLineAlpha})` : `rgba(243, 229, 171, ${mouseLineAlpha})`;
-          ctx.lineWidth = theme === 'light' ? 1.5 : 1.1;
+          ctx.lineWidth = theme === 'light' ? 1.8 : 1.4;
           ctx.stroke();
         }
       }

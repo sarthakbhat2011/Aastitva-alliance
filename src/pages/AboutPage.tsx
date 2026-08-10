@@ -1,6 +1,6 @@
 import React from 'react';
 import { Page } from '../types';
-import { Target, Compass, ShieldAlert, Award, CheckCircle2, HeartHandshake, Sparkles, ArrowRight } from 'lucide-react';
+import { Target, Compass, ShieldAlert, Award, CheckCircle2, HeartHandshake, Sparkles, ArrowRight, BookOpen, Sprout, Zap, Landmark } from 'lucide-react';
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
 import { ScrollIndicator } from '../components/ScrollIndicator';
 
@@ -13,22 +13,22 @@ export const AboutPage: React.FC<Props> = ({ onNavigate }) => {
     {
       title: 'Academic Rigor',
       desc: 'Strict adherence to UN Rules of Procedure, unbiased moderation, and high-quality study guides.',
-      icon: '📜',
+      icon: BookOpen,
     },
     {
       title: 'Youth Empowerment',
       desc: 'Creating inclusive stages where high school and university debaters build lifelong confidence.',
-      icon: '🌱',
+      icon: Sprout,
     },
     {
       title: 'Turnkey Excellence',
       desc: 'Handling every venue detail, sound desk, badge, and trophy so school administrators relax.',
-      icon: '⚡',
+      icon: Zap,
     },
     {
       title: 'Regional Prestige',
       desc: 'Lifting Jammu onto the national academic event circuit with uncompromising standards.',
-      icon: '🏛️',
+      icon: Landmark,
     },
   ];
 
@@ -151,13 +151,18 @@ export const AboutPage: React.FC<Props> = ({ onNavigate }) => {
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {values.map((val, idx) => (
-            <div key={idx} className="glass-card rounded-2xl p-6 space-y-2">
-              <span className="text-3xl block mb-2">{val.icon}</span>
-              <h3 className="text-lg font-serif font-bold text-[#FAF5EF]">{val.title}</h3>
-              <p className="text-xs text-[#C4BBA3] leading-relaxed">{val.desc}</p>
-            </div>
-          ))}
+          {values.map((val, idx) => {
+            const IconComp = val.icon;
+            return (
+              <div key={idx} className="glass-card rounded-3xl p-6 space-y-3 lusion-hover-tilt border border-[#D4AF37]/30">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#E8A53E]/20 to-[#0B1120] border border-[#E8A53E]/40 flex items-center justify-center text-[#E8A53E] shadow-lg">
+                  <IconComp className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-cormorant font-bold text-[#FAF5EF]">{val.title}</h3>
+                <p className="text-xs text-[#C4BBA3] leading-relaxed">{val.desc}</p>
+              </div>
+            );
+          })}
         </div>
       </div>
 
