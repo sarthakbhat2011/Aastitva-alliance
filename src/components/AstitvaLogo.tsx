@@ -33,18 +33,18 @@ export const AstitvaLogo: React.FC<Props> = ({
 
       {variant !== 'mark-only' && (
         <div className="flex flex-col">
-          <div className="flex items-baseline gap-1">
+          <div className="flex items-baseline gap-1.5">
             <span
-              className={`font-serif tracking-tight font-bold bg-gradient-to-r from-[#FFFFFF] via-[#F9E2C8] to-[#D4AF37] bg-clip-text text-transparent ${currentSize.text}`}
+              className="font-playfair text-[24px] sm:text-[26px] font-semibold bg-gradient-to-r from-[#EAE0C8] to-[#E8A53E] bg-clip-text text-transparent leading-none"
             >
               Astitva
             </span>
-            <span className="text-[#C4BBA3] font-sans text-xs tracking-wider uppercase font-semibold">
+            <span className="text-[#EAE0C8] font-inter text-xs tracking-wider uppercase font-medium">
               Alliance
             </span>
           </div>
           {showSubtitle && (
-            <span className={`text-[#A39B88] tracking-widest uppercase ${currentSize.sub}`}>
+            <span className="font-inter text-[11px] sm:text-[12px] text-[#B8A9C9] tracking-normal font-normal mt-0.5">
               Academic Event Infrastructure
             </span>
           )}

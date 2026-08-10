@@ -66,21 +66,21 @@
   --silver-gradient: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 40%, #94A3B8 100%);
 }
 
-/* Base global styles with Lusion typography hierarchy */
+/* Base global styles with Playfair Display & Inter PDF Specification */
 @layer base {
   html {
     scroll-behavior: smooth;
-    font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     letter-spacing: -0.01em;
   }
 
-  h1, h2, h3, h4, .font-serif {
-    font-family: 'Cinzel', serif;
-    letter-spacing: -0.02em;
+  h1, h2, h3, h4, .font-serif, .font-playfair {
+    font-family: 'Playfair Display', 'Cinzel', serif;
+    letter-spacing: -0.015em;
   }
 
-  .font-sans {
-    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  .font-inter, .font-sans {
+    font-family: 'Inter', sans-serif;
   }
 
   .font-mono {
@@ -89,7 +89,7 @@
 
   body {
     background-color: var(--bg-main);
-    color: var(--text-primary);
+    color: #cecece;
     overflow-x: hidden;
     margin: 0;
     padding: 0;
@@ -118,6 +118,56 @@
   ::-webkit-scrollbar-thumb:hover {
     background: var(--accent-gold);
   }
+}
+
+/* PDF Content Description Typography Utility Classes */
+.brand-name-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #EAE0C8 0%, #E8A53E 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.brand-tagline-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: #B8A9C9;
+  font-weight: 400;
+}
+
+.hero-headline-text {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.2rem, 4.5vw, 52px);
+  font-weight: 700;
+  color: #FFFFFF;
+  text-shadow: 0 0 25px rgba(255, 255, 255, 0.4), 0 3px 12px rgba(232, 165, 62, 0.35);
+  line-height: 1.15;
+}
+
+.hero-subheadline-text {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(1rem, 2vw, 20px);
+  color: #D3C5E5;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.body-paragraph-text {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(0.95rem, 1.5vw, 19px);
+  color: #cecece;
+  font-weight: 400;
+  line-height: 1.7;
+}
+
+.nav-link-text {
+  color: #D3C5E5;
+}
+
+.nav-link-text:hover {
+  color: #E8A53E;
 }
 
 /* Dynamic Lusion Glassmorphism & Micro-Interaction System */
