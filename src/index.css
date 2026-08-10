@@ -3,24 +3,25 @@
 /* Master Theme Variable System */
 :root,
 [data-theme="original"] {
-  --bg-main: #070A14;
-  --bg-secondary: #0D1427;
-  --bg-card: rgba(13, 20, 39, 0.75);
-  --bg-card-hover: rgba(22, 32, 59, 0.85);
-  --bg-nav: rgba(13, 20, 39, 0.95);
-  --bg-ticker: rgba(7, 10, 20, 0.95);
-  --border-color: rgba(212, 175, 55, 0.18);
-  --border-color-hover: rgba(212, 175, 55, 0.45);
-  --text-primary: #FAF5EF;
-  --text-secondary: #C4BBA3;
-  --text-muted: #8E8570;
+  --bg-main: #050811;
+  --bg-secondary: #0B1120;
+  --bg-card: rgba(11, 17, 32, 0.78);
+  --bg-card-hover: rgba(18, 27, 50, 0.88);
+  --bg-nav: rgba(11, 17, 32, 0.95);
+  --bg-ticker: rgba(5, 8, 17, 0.95);
+  --border-color: rgba(212, 175, 55, 0.22);
+  --border-color-hover: rgba(212, 175, 55, 0.55);
+  --text-primary: #FAF6F0;
+  --text-secondary: #D8D0BE;
+  --text-muted: #9C9482;
   --accent-gold: #D4AF37;
-  --card-shadow: 0 12px 35px -10px rgba(3, 6, 16, 0.75);
-  --scrollbar-bg: #070A14;
-  --scrollbar-thumb: #1C2A4F;
-  --canvas-opacity: 0.9;
-  --gold-gradient: linear-gradient(135deg, #FFFFFF 0%, #F9E2C8 30%, #D4AF37 70%, #AA820A 100%);
-  --silver-gradient: linear-gradient(135deg, #FFFFFF 0%, #E6E0D4 40%, #B8AC9A 100%);
+  --card-shadow: 0 16px 45px -10px rgba(2, 4, 12, 0.85);
+  --scrollbar-bg: #050811;
+  --scrollbar-thumb: #172445;
+  --canvas-opacity: 0.95;
+  --gold-gradient: linear-gradient(135deg, #FFFFFF 0%, #F9E2C8 28%, #D4AF37 72%, #A88009 100%);
+  --silver-gradient: linear-gradient(135deg, #FFFFFF 0%, #ECE6D8 40%, #B3A48F 100%);
+  --lusion-glow: radial-gradient(circle at center, rgba(212, 175, 55, 0.2) 0%, rgba(36, 53, 99, 0.1) 50%, transparent 100%);
 }
 
 [data-theme="light"] {
@@ -65,11 +66,25 @@
   --silver-gradient: linear-gradient(135deg, #FFFFFF 0%, #E2E8F0 40%, #94A3B8 100%);
 }
 
-/* Base global styles */
+/* Base global styles with Lusion typography hierarchy */
 @layer base {
   html {
     scroll-behavior: smooth;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    letter-spacing: -0.01em;
+  }
+
+  h1, h2, h3, h4, .font-serif {
+    font-family: 'Cinzel', serif;
+    letter-spacing: -0.02em;
+  }
+
+  .font-sans {
+    font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  }
+
+  .font-mono {
+    font-family: 'Space Grotesk', monospace;
   }
 
   body {
@@ -78,6 +93,9 @@
     overflow-x: hidden;
     margin: 0;
     padding: 0;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     transition: background-color 0.4s ease, color 0.4s ease;
   }
 
@@ -102,36 +120,46 @@
   }
 }
 
-/* Dynamic Glassmorphism Design System */
+/* Dynamic Lusion Glassmorphism & Micro-Interaction System */
 .glass-card {
   background: var(--bg-card);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border-color);
   box-shadow: var(--card-shadow), inset 0 1px 1px rgba(255, 255, 255, 0.08);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
   border-color: var(--border-color-hover);
-  box-shadow: 0 18px 40px -5px rgba(212, 175, 55, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.15);
-  transform: translateY(-2px);
+  box-shadow: 0 20px 45px -5px rgba(212, 175, 55, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.18);
+  transform: translateY(-3px) scale(1.005);
 }
 
 .glass-pill {
   background: var(--bg-card);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-color);
   transition: all 0.3s ease;
 }
 
 .glass-panel {
   background: var(--bg-nav);
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border: 1px solid var(--border-color);
   transition: all 0.3s ease;
+}
+
+/* Lusion Interactive Kinetic Lift */
+.lusion-hover-tilt {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+}
+
+.lusion-hover-tilt:hover {
+  transform: translateY(-4px) scale(1.015);
+  box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.9), 0 0 30px rgba(212, 175, 55, 0.18);
 }
 
 /* Luxury Metallic Text Gradients */
