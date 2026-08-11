@@ -93,7 +93,7 @@ export const Navbar: React.FC<Props> = ({
       {/* Top Subtle Live Countdown Ticker */}
       <div className="bg-[#070A14]/95 border-b border-[#243563]/30 text-[11px] py-1 px-4 text-[#C4BBA3] backdrop-blur-md">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2 overflow-x-auto whitespace-nowrap scrollbar-none py-0.5">
+          <div className="hidden sm:flex items-center gap-2 overflow-x-auto whitespace-nowrap scrollbar-none py-0.5">
             <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] font-semibold text-[10px] tracking-wider uppercase border border-[#D4AF37]/30">
               <Sparkles className="w-2.5 h-2.5 animate-pulse text-[#D4AF37]" /> Summit 2026 Countdown
             </span>
