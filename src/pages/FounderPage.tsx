@@ -168,14 +168,14 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
               </div>
 
               {/* Card Footer Text */}
-              <div className="p-5 space-y-1.5 relative z-10 bg-[#070A14]/90">
-                <span className="text-[10px] text-[#D4AF37] uppercase tracking-wider font-semibold block">
+              <div className="p-5 space-y-1.5 relative z-10 bg-[#070A14]/90 [data-theme='light']:bg-white">
+                <span className="text-[10px] text-[#D4AF37] [data-theme='light']:text-[#B48A1A] uppercase tracking-wider font-bold block">
                   {photo.subtitle}
                 </span>
-                <h3 className="text-base font-serif font-bold text-[#FAF5EF] group-hover:text-[#D4AF37] transition-colors">
+                <h3 className="text-base font-serif font-bold text-[#FAF5EF] [data-theme='light']:text-[#0F172A] group-hover:text-[#D4AF37] transition-colors">
                   {photo.title}
                 </h3>
-                <p className="text-xs text-[#C4BBA3] line-clamp-2 leading-relaxed">
+                <p className="text-xs text-[#C4BBA3] [data-theme='light']:text-[#1E293B] line-clamp-2 leading-relaxed">
                   {photo.caption}
                 </p>
               </div>
@@ -206,9 +206,9 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
                       <span className="px-3 py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-wider inline-block">
                         Founder Editorial Portfolio
                       </span>
-                      <h3 className="text-2xl font-serif font-bold text-[#FAF5EF]">{item.title}</h3>
-                      <p className="text-sm text-[#C4BBA3] leading-relaxed">{item.caption}</p>
-                      <div className="p-4 rounded-xl bg-[#16203B] border border-[#243563] text-xs text-[#FAF5EF]">
+                      <h3 className="text-2xl font-serif font-bold text-[#FAF5EF] [data-theme='light']:text-[#0F172A]">{item.title}</h3>
+                      <p className="text-sm text-[#C4BBA3] [data-theme='light']:text-[#1E293B] leading-relaxed">{item.caption}</p>
+                      <div className="p-4 rounded-xl bg-[#16203B] [data-theme='light']:bg-slate-100 border border-[#243563] text-xs text-[#FAF5EF] [data-theme='light']:text-[#0F172A]">
                         💡 <em>Note: Founder shoot slot ready for custom photos replacement.</em>
                       </div>
                     </div>

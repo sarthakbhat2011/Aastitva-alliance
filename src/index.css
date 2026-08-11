@@ -359,12 +359,29 @@
   color: #0F172A !important;
 }
 
-/* Keep text inside photo overlays (Founder & Summit photo cards) crisp gold/white */
-[data-theme="light"] .group [class*="bg-gradient-to-t"] ~ *,
-[data-theme="light"] [class*="bg-[#070A14]/90"] h3,
-[data-theme="light"] [class*="bg-[#070A14]/90"] p,
+/* LIGHT MODE PHOTO CARD FOOTER TEXT LEGIBILITY FIX (Guarantees 100% Dark Crisp Text below images) */
+[data-theme="light"] .group span,
+[data-theme="light"] [class*="bg-[#070A14]"] span,
 [data-theme="light"] [class*="bg-[#070A14]/90"] span {
-  color: #FAF5EF !important;
+  color: #B48A1A !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="light"] .group h3,
+[data-theme="light"] [class*="bg-[#070A14]"] h3,
+[data-theme="light"] [class*="bg-[#070A14]/90"] h3 {
+  color: #0F172A !important;
+  font-weight: 800 !important;
+  opacity: 1 !important;
+}
+
+[data-theme="light"] .group p,
+[data-theme="light"] [class*="bg-[#070A14]"] p,
+[data-theme="light"] [class*="bg-[#070A14]/90"] p {
+  color: #1E293B !important;
+  font-weight: 500 !important;
+  opacity: 1 !important;
 }
 
 /* ULTRA DARK MODE OVERRIDES for Pitch Black OLED Experience */
