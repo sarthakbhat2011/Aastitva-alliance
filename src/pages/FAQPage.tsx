@@ -16,20 +16,21 @@ export const FAQPage: React.FC = () => {
   return (
     <div className="relative font-sans text-[#FAF5EF] py-12 px-4 sm:px-6 max-w-7xl mx-auto space-y-12">
       {/* Hero Banner with 3D Canvas Emblem */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center glass-card p-8 sm:p-12 rounded-3xl relative overflow-hidden">
-        <div className="lg:col-span-8 space-y-4 text-left z-10">
-          <span className="px-3.5 py-1.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5" /> Answers & Guidance
-          </span>
-          <h1 className="text-3xl sm:text-5xl font-serif font-bold gold-gradient-text">
+      <div className="bg-gradient-to-br from-[#0D1427]/95 via-[#16203B]/90 to-[#070A14]/95 border border-[#D4AF37]/35 shadow-[0_16px_50px_rgba(0,0,0,0.85)] p-6 sm:p-12 rounded-3xl relative overflow-hidden flex flex-col lg:grid lg:grid-cols-12 gap-8 items-center">
+        <div className="w-full lg:col-span-8 space-y-4 text-left z-10">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-widest shadow-sm">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Answers & Guidance</span>
+          </div>
+          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-serif font-bold gold-gradient-text leading-tight">
             Frequently Asked Questions
           </h1>
-          <p className="text-sm sm:text-base text-[#C4BBA3] max-w-2xl leading-relaxed">
+          <p className="text-sm sm:text-base text-[#C4BBA3] w-full max-w-2xl leading-relaxed">
             Everything you need to know about partnering with Astitva Alliance for school and university academic events in Jammu.
           </p>
         </div>
 
-        <div className="lg:col-span-4 h-48 sm:h-56 relative flex items-center justify-center">
+        <div className="w-full lg:col-span-4 h-44 sm:h-56 relative flex items-center justify-center z-0">
           <Astitva3DCanvas variant="minimal" />
         </div>
       </div>
