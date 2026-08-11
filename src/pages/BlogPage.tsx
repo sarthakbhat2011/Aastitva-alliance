@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
+import { Page } from '../types';
 import { BLOG_POSTS } from '../data';
 import { Clock, User, ArrowRight, Search, Sparkles } from 'lucide-react';
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
 import { ScrollIndicator } from '../components/ScrollIndicator';
+import { StickmanGuide } from '../components/StickmanGuide';
 
-export const BlogPage: React.FC = () => {
+interface Props {
+  onNavigate?: (page: Page) => void;
+}
+
+export const BlogPage: React.FC<Props> = ({ onNavigate = () => {} }) => {
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -18,7 +24,9 @@ export const BlogPage: React.FC = () => {
   const activeArticle = BLOG_POSTS.find((p) => p.id === selectedPost);
 
   return (
-    <div className="relative font-sans text-[#FAF5EF] py-12 px-4 sm:px-6 max-w-7xl mx-auto space-y-12">
+    <div className="relative font-sans text-[#FAF5EF] py-8 px-4 sm:px-6 max-w-7xl mx-auto space-y-12">
+      {/* Top Interactive Stickman Page Guide */}
+      <StickmanGuide page="blog" onNavigate={onNavigate} />
       {/* Hero Banner with 3D Canvas Emblem */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center glass-card p-8 sm:p-12 rounded-3xl relative overflow-hidden">
         <div className="lg:col-span-8 space-y-4 text-left z-10">

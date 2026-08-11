@@ -14,6 +14,7 @@ import { ScrollControls } from './components/ScrollControls';
 // Pages
 import { HomePage } from './pages/HomePage';
 import { AboutPage } from './pages/AboutPage';
+import { FounderPage } from './pages/FounderPage';
 import { OfferingsPage } from './pages/OfferingsPage';
 import { HowItWorksPage } from './pages/HowItWorksPage';
 import { SummitPage } from './pages/SummitPage';
@@ -111,20 +112,22 @@ export default function App() {
         );
       case 'about':
         return <AboutPage onNavigate={handleNavigate} />;
+      case 'founder':
+        return <FounderPage onNavigate={handleNavigate} />;
       case 'offerings':
         return <OfferingsPage onNavigate={handleNavigate} />;
       case 'how-it-works':
         return <HowItWorksPage onNavigate={handleNavigate} />;
       case 'summit':
-        return <SummitPage summitConfig={summitConfig} countdown={countdown} />;
+        return <SummitPage summitConfig={summitConfig} countdown={countdown} onNavigate={handleNavigate} />;
       case 'sponsors':
         return <SponsorsPage onNavigate={handleNavigate} />;
       case 'blog':
-        return <BlogPage />;
+        return <BlogPage onNavigate={handleNavigate} />;
       case 'faq':
-        return <FAQPage />;
+        return <FAQPage onNavigate={handleNavigate} />;
       case 'contact':
-        return <ContactPage />;
+        return <ContactPage onNavigate={handleNavigate} />;
       default:
         return (
           <HomePage

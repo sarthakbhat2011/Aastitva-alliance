@@ -75,6 +75,7 @@ export const Navbar: React.FC<Props> = ({
   // Clean, decluttered primary navigation structure
   const navItems: { id: Page; label: string; badge?: string }[] = [
     { id: 'home', label: 'Home' },
+    { id: 'founder', label: 'Founder', badge: 'NEW' },
     { id: 'about', label: 'About' },
     { id: 'offerings', label: 'Offerings' },
     { id: 'summit', label: 'Live Summit', badge: 'LIVE' },

@@ -12,6 +12,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
+import { StickmanGuide } from '../components/StickmanGuide';
 
 interface Props {
   onNavigate: (page: Page) => void;
@@ -24,28 +25,28 @@ export const HowItWorksPage: React.FC<Props> = ({ onNavigate }) => {
       title: 'Inquiry & First Contact',
       desc: 'School leadership or student committee reaches out via our official online partnership form or direct email.',
       icon: MessageSquare,
-      deliverable: 'Initial consultation scheduled within 24 hours',
+      deliverable: 'Initial project brief recorded',
     },
     {
       num: '02',
-      title: 'Consultation & Tailored Proposal',
-      desc: 'We analyze target delegate count, committee choices, budget, and send a customized scope proposal.',
+      title: 'Customized Proposal & Budget',
+      desc: 'We draft an institutional blueprint outlining delegate capacity, committee themes, Executive Board budget, and timeline.',
       icon: FileText,
-      deliverable: 'Itemized quote & SLA agreement draft',
+      deliverable: 'Transparent cost & scope document',
     },
     {
       num: '03',
-      title: 'Formal Agreement & Onboarding',
-      desc: 'Simple institutional agreement signed, confirming dates, deliverables, and payment milestones.',
+      title: 'MoU & Institutional Alignment',
+      desc: 'School management reviews and signs the official partnership MoU, locking dates and venue requirements.',
       icon: CheckSquare,
-      deliverable: 'Official Partnership Badge issued',
+      deliverable: 'Formalized partnership agreement',
     },
     {
       num: '04',
-      title: 'Planning & Roster Activation',
-      desc: 'We line up the Executive Board, release committee background guides, secure venue technical AV, and initiate marketing.',
+      title: 'EB Recruitment & Study Guides',
+      desc: 'We vet and appoint experienced committee chairs, releasing comprehensive background guides to registered delegates.',
       icon: Calendar,
-      deliverable: 'Study Guides & Registration Portal live',
+      deliverable: 'Vetted Executive Board & Study Guides',
     },
     {
       num: '05',
@@ -59,7 +60,7 @@ export const HowItWorksPage: React.FC<Props> = ({ onNavigate }) => {
       title: 'End-to-End Event Execution',
       desc: 'Our on-site operations squad manages delegate check-in, committee timing, audio-visuals, catering, and award ceremonies.',
       icon: PlayCircle,
-      deliverable: 'Flawless event experience for school',
+      deliverable: 'Flawless 2-day summit operation',
     },
     {
       num: '07',
@@ -71,7 +72,9 @@ export const HowItWorksPage: React.FC<Props> = ({ onNavigate }) => {
   ];
 
   return (
-    <div className="relative font-sans text-[#FAF5EF] py-12 px-4 sm:px-6 max-w-7xl mx-auto space-y-16">
+    <div className="relative font-sans text-[#FAF5EF] py-8 px-4 sm:px-6 max-w-7xl mx-auto space-y-12">
+      {/* Top Interactive Stickman Page Guide */}
+      <StickmanGuide page="how-it-works" onNavigate={onNavigate} />
       {/* Hero Header with 3D Canvas Emblem */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center glass-card p-8 sm:p-12 rounded-3xl relative overflow-hidden">
         <div className="lg:col-span-8 space-y-4 text-left z-10">

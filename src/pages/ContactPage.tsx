@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
-import { ContactFormData } from '../types';
+import { Page, ContactFormData } from '../types';
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
 import { ScrollIndicator } from '../components/ScrollIndicator';
+import { StickmanGuide } from '../components/StickmanGuide';
 import {
   CheckCircle2,
   ShieldCheck,
@@ -13,7 +14,11 @@ import {
   Zap,
 } from 'lucide-react';
 
-export const ContactPage: React.FC = () => {
+interface Props {
+  onNavigate?: (page: Page) => void;
+}
+
+export const ContactPage: React.FC<Props> = ({ onNavigate = () => {} }) => {
   const [form, setForm] = useState<ContactFormData>({
     schoolName: '',
     contactPerson: '',
@@ -96,7 +101,9 @@ export const ContactPage: React.FC = () => {
   };
 
   return (
-    <div className="relative font-sans text-[#FAF5EF] py-12 px-4 sm:px-6 max-w-7xl mx-auto space-y-12">
+    <div className="relative font-sans text-[#FAF5EF] py-8 px-4 sm:px-6 max-w-7xl mx-auto space-y-12">
+      {/* Top Interactive Stickman Page Guide */}
+      <StickmanGuide page="contact" onNavigate={onNavigate} />
       {/* Header Banner with Ambient 3D Canvas */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center glass-card p-8 sm:p-12 rounded-3xl relative overflow-hidden">
         <div className="lg:col-span-8 space-y-4 text-left z-10">

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Page } from '../types';
-import { Target, Compass, ShieldAlert, Award, CheckCircle2, HeartHandshake, Sparkles, ArrowRight, BookOpen, Sprout, Zap, Landmark } from 'lucide-react';
+import { Target, Compass, ShieldAlert, Award, CheckCircle2, HeartHandshake, Sparkles, ArrowRight, BookOpen, Sprout, Zap, Landmark, UserCheck } from 'lucide-react';
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
 import { ScrollIndicator } from '../components/ScrollIndicator';
+import { StickmanGuide } from '../components/StickmanGuide';
 
 interface Props {
   onNavigate: (page: Page) => void;
@@ -33,7 +34,33 @@ export const AboutPage: React.FC<Props> = ({ onNavigate }) => {
   ];
 
   return (
-    <div className="relative font-sans text-[#FAF5EF] py-12 px-4 sm:px-6 max-w-7xl mx-auto space-y-16">
+    <div className="relative font-sans text-[#FAF5EF] py-8 px-4 sm:px-6 max-w-7xl mx-auto space-y-12">
+      {/* Top Interactive Stickman Page Guide */}
+      <StickmanGuide page="about" onNavigate={onNavigate} />
+
+      {/* Featured Founder Banner Cross-Link */}
+      <div className="p-4 rounded-2xl bg-gradient-to-r from-[#16203B] via-[#0D1427] to-[#16203B] border border-[#D4AF37]/40 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
+        <div className="flex items-center gap-3 text-left">
+          <div className="p-2.5 rounded-xl bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/30">
+            <UserCheck className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="text-sm font-serif font-bold text-[#FAF5EF]">
+              Looking for our Founder's Story & Journal?
+            </h4>
+            <p className="text-xs text-[#C4BBA3]">
+              Read the philosophy of Aastitva, Jammu government school pilgrimage, and regional reach map.
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={() => onNavigate('founder')}
+          className="px-4 py-2 rounded-xl bg-[#D4AF37] text-[#070A14] font-bold text-xs shadow-md hover:brightness-110 active:scale-95 transition-all inline-flex items-center gap-1.5 shrink-0"
+        >
+          <span>Meet The Founder</span>
+          <ArrowRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
       {/* Hero Header with 3D Canvas Emblem */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center glass-card p-8 sm:p-12 rounded-3xl relative overflow-hidden">
         <div className="lg:col-span-8 space-y-4 text-left z-10">

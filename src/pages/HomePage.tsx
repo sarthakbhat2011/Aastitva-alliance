@@ -3,6 +3,7 @@ import { Page, SummitConfig, CountdownTime, RegistrationFormData } from '../type
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
 import { ConsultationModal } from '../components/ConsultationModal';
 import { ScrollIndicator } from '../components/ScrollIndicator';
+import { StickmanGuide } from '../components/StickmanGuide';
 import { OFFERINGS, COMMITTEES, BLOG_POSTS } from '../data';
 import confetti from 'canvas-confetti';
 import {
@@ -224,8 +225,11 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown 
         </div>
       )}
 
+      {/* Top Interactive Stickman Page Guide */}
+      <StickmanGuide page="home" onNavigate={onNavigate} />
+
       {/* Main Hero Section */}
-      <section className="relative min-h-[92vh] flex flex-col justify-between pt-10 sm:pt-14 pb-10 px-4 sm:px-6 overflow-hidden">
+      <section className="relative min-h-[92vh] flex flex-col justify-between pt-6 sm:pt-8 pb-10 px-4 sm:px-6 overflow-hidden">
         {/* Toggle Mode Switcher */}
         <div className="max-w-7xl mx-auto w-full z-10 flex items-center justify-center lg:justify-start mb-6">
           <div className="inline-flex p-1 rounded-2xl bg-[#0B1120]/90 border border-[#D4AF37]/35 backdrop-blur-md shadow-xl">

@@ -52,6 +52,7 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox }) => {
           <ul className="space-y-2.5 text-xs sm:text-sm text-[#cecece]">
             {[
               { id: 'home', label: 'Home' },
+              { id: 'founder', label: 'Meet the Founder' },
               { id: 'about', label: 'About Us' },
               { id: 'offerings', label: 'Offerings' },
               { id: 'how-it-works', label: 'How It Works' },

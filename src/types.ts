@@ -1,6 +1,7 @@
 export type Page =
   | 'home'
   | 'about'
+  | 'founder'
   | 'offerings'
   | 'how-it-works'
   | 'summit'

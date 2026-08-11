@@ -2,6 +2,7 @@ import React from 'react';
 import { Page } from '../types';
 import { Eye, Heart, Megaphone, Sparkles, Building2, ArrowRight } from 'lucide-react';
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
+import { StickmanGuide } from '../components/StickmanGuide';
 
 interface Props {
   onNavigate: (page: Page) => void;
@@ -25,14 +26,16 @@ export const SponsorsPage: React.FC<Props> = ({ onNavigate }) => {
       icon: Heart,
     },
     {
-      title: 'Stall & Booth Activation Space',
-      desc: 'Set up product sampling, information kiosks, or career guidance stalls during conference lunch breaks.',
+      title: 'Institutional Network Access',
+      desc: 'Connect with school principals, trustees, and academic decision-makers in non-competitive settings.',
       icon: Building2,
     },
   ];
 
   return (
-    <div className="relative font-sans text-[#FAF5EF] py-12 px-4 sm:px-6 max-w-7xl mx-auto space-y-16">
+    <div className="relative font-sans text-[#FAF5EF] py-8 px-4 sm:px-6 max-w-7xl mx-auto space-y-12">
+      {/* Top Interactive Stickman Page Guide */}
+      <StickmanGuide page="sponsors" onNavigate={onNavigate} />
       {/* Hero Header with 3D Canvas Emblem */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center glass-card p-8 sm:p-12 rounded-3xl relative overflow-hidden">
         <div className="lg:col-span-8 space-y-4 text-left z-10">

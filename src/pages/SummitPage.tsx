@@ -3,6 +3,7 @@ import confetti from 'canvas-confetti';
 import { Page, SummitConfig, CountdownTime, RegistrationFormData } from '../types';
 import { COMMITTEES } from '../data';
 import { ScrollIndicator } from '../components/ScrollIndicator';
+import { StickmanGuide } from '../components/StickmanGuide';
 import {
   Sparkles,
   Calendar,
@@ -21,9 +22,10 @@ import {
 interface Props {
   summitConfig: SummitConfig;
   countdown: CountdownTime;
+  onNavigate?: (page: Page) => void;
 }
 
-export const SummitPage: React.FC<Props> = ({ summitConfig, countdown }) => {
+export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigate = () => {} }) => {
   const [activeTab, setActiveTab] = useState<'details' | 'register'>('details');
 
   const [form, setForm] = useState<RegistrationFormData>({
@@ -79,7 +81,10 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#070A14] text-[#FAF5EF] font-sans pb-20">
+    <div className="min-h-screen bg-[#070A14] text-[#FAF5EF] font-sans pb-20 pt-4">
+      {/* Top Interactive Stickman Page Guide */}
+      <StickmanGuide page="summit" onNavigate={onNavigate} />
+
       {/* 1. HERO - NETFLIX "NOW PLAYING" BRANDING */}
       <section className="relative min-h-[65vh] flex items-end pb-12 px-4 sm:px-8 overflow-hidden">
         {/* Background Image */}
