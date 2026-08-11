@@ -80,7 +80,7 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
   };
 
   return (
-    <div className="min-h-screen bg-[#070A14] text-[#FAF5EF] font-sans pb-20">
+    <div className="min-h-screen font-sans pb-20">
 
       {/* 1. HERO - NETFLIX "NOW PLAYING" BRANDING */}
       <section className="relative min-h-[65vh] flex items-end pb-12 px-4 sm:px-8 overflow-hidden">

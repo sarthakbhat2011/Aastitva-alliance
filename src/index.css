@@ -293,7 +293,6 @@
   color: #475569 !important;
 }
 
-/* Background overrides for inputs, cards, containers in Light Mode */
 [data-theme="light"] [class*="bg-[#050811]"],
 [data-theme="light"] [class*="bg-[#070A14]"],
 [data-theme="light"] [class*="bg-[#0B1120]"] {
@@ -315,19 +314,50 @@
   color: #0F172A !important;
 }
 
+/* Gradient Container Overrides for Light Mode */
+[data-theme="light"] [class*="from-[#0D1427]"],
+[data-theme="light"] [class*="from-[#070A14]"],
+[data-theme="light"] [class*="from-[#0B1120]"],
+[data-theme="light"] [class*="from-[#16203B]"] {
+  background-image: linear-gradient(135deg, #FFFFFF 0%, #F1F4F9 50%, #E2E8F0 100%) !important;
+  color: #0F172A !important;
+}
+
+[data-theme="light"] [class*="from-[#0D1427]"] *,
+[data-theme="light"] [class*="from-[#070A14]"] *,
+[data-theme="light"] [class*="from-[#0B1120]"] *,
+[data-theme="light"] [class*="from-[#16203B]"] * {
+  color: #0F172A;
+}
+
+/* Preserve Gold Buttons & Gold Accents in Light Mode */
+[data-theme="light"] .shimmer-btn,
+[data-theme="light"] [class*="from-[#EAE0C8]"],
+[data-theme="light"] [class*="from-[#D4AF37]"] {
+  background-image: linear-gradient(135deg, #EAB308 0%, #D4AF37 50%, #B48A1A 100%) !important;
+  color: #050811 !important;
+}
+
+[data-theme="light"] .shimmer-btn *,
+[data-theme="light"] [class*="from-[#EAE0C8]"] *,
+[data-theme="light"] [class*="from-[#D4AF37]"] * {
+  color: #050811 !important;
+}
+
 [data-theme="light"] .glass-card,
 [data-theme="light"] .glass-panel,
 [data-theme="light"] .glass-pill {
   background: rgba(255, 255, 255, 0.96) !important;
   border-color: rgba(180, 138, 26, 0.35) !important;
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08) !important;
+  color: #0F172A !important;
 }
 
 [data-theme="light"] [class*="border-[#243563]"],
 [data-theme="light"] [class*="border-[#52459E]"],
 [data-theme="light"] [class*="border-[#D4AF37]"],
 [data-theme="light"] [class*="border-[#E8A53E]"] {
-  border-color: rgba(180, 138, 26, 0.45) !important;
+  border-color: rgba(180, 138, 26, 0.35) !important;
 }
 
 /* ULTRA DARK MODE OVERRIDES for Pitch Black OLED Experience */
