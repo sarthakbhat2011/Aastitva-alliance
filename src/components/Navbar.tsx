@@ -146,15 +146,15 @@ export const Navbar: React.FC<Props> = ({
       </div>
 
       {/* Main Floating Glass Navbar Container */}
-      <div className={`w-full px-3 sm:px-6 pt-1.5 pb-1.5 transition-all duration-300`}>
+      <div className="w-full px-3 sm:px-6 pt-2 pb-2 transition-all duration-300">
         <nav
-          className={`max-w-5xl mx-auto rounded-2xl transition-all duration-300 ${
+          className={`max-w-6xl mx-auto rounded-2xl transition-all duration-300 ${
             scrolled
-              ? 'bg-[#0D1427]/95 backdrop-blur-xl border border-[#D4AF37]/40 shadow-[0_12px_35px_rgba(0,0,0,0.85)] py-2 px-3 sm:px-5'
-              : 'bg-[#0D1427]/85 backdrop-blur-md border border-[#243563]/40 py-2.5 px-3 sm:px-5'
+              ? 'bg-[#0D1427]/95 backdrop-blur-xl border border-[#D4AF37]/40 shadow-[0_12px_35px_rgba(0,0,0,0.85)] py-2 px-3 sm:px-6'
+              : 'bg-[#0D1427]/85 backdrop-blur-md border border-[#243563]/40 py-2.5 px-3 sm:px-6'
           }`}
         >
-          <div className="flex items-center justify-between gap-2 sm:gap-4">
+          <div className="flex items-center justify-between gap-3 sm:gap-6">
             {/* Brand Logo */}
             <button
               onClick={() => handleNavClick('home')}
@@ -165,14 +165,14 @@ export const Navbar: React.FC<Props> = ({
             </button>
 
             {/* Desktop Navigation Links */}
-            <div className="hidden lg:flex items-center gap-1 bg-[#070A14]/80 p-1 rounded-xl border border-[#243563]/30 backdrop-blur-sm">
+            <div className="hidden lg:flex items-center gap-1 xl:gap-1.5 bg-[#070A14]/80 p-1 rounded-xl border border-[#243563]/30 backdrop-blur-sm shrink-0">
               {navItems.map((item) => {
                 const active = currentPage === item.id;
                 return (
                   <button
                     key={item.id}
                     onClick={() => handleNavClick(item.id)}
-                    className={`relative px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-300 flex items-center gap-1 ${
+                    className={`relative px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-300 flex items-center gap-1 whitespace-nowrap ${
                       active
                         ? 'text-[#FAF5EF] font-bold bg-gradient-to-r from-[#16203B] to-[#243563] border border-[#D4AF37]/45 shadow-[0_2px_12px_rgba(212,175,55,0.2)]'
                         : 'text-[#C4BBA3] hover:text-[#FAF5EF] hover:bg-[#16203B]/50'
@@ -190,7 +190,7 @@ export const Navbar: React.FC<Props> = ({
             </div>
 
             {/* CTA Button & Mobile Toggle */}
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               {/* Header Corner Theme Switcher (Mobile fallback) */}
               <div className="block xs:hidden">
                 <ThemeToggle variant="compact" />
@@ -198,19 +198,19 @@ export const Navbar: React.FC<Props> = ({
 
               <button
                 onClick={() => handleNavClick('contact')}
-                className="hidden sm:flex items-center gap-2 px-5 py-2.5 rounded-xl shimmer-btn text-[#070A14] text-xs sm:text-sm font-bold shadow-[0_4px_20px_rgba(212,175,55,0.35)] hover:brightness-110 active:scale-95 transition-all"
+                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl shimmer-btn text-[#070A14] text-xs font-bold shadow-[0_4px_18px_rgba(212,175,55,0.3)] hover:brightness-110 active:scale-95 transition-all whitespace-nowrap shrink-0"
               >
                 <span>Partner With Us</span>
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
 
               {/* Mobile Menu Hamburger Toggle */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2.5 rounded-xl bg-[#070A14] text-[#FAF5EF] border border-[#243563]/40 hover:bg-[#16203B] transition-colors focus:outline-none min-w-[44px] min-h-[44px] flex items-center justify-center shadow-md"
+                className="lg:hidden p-2 rounded-xl bg-[#070A14] text-[#FAF5EF] border border-[#243563]/40 hover:bg-[#16203B] transition-colors focus:outline-none min-w-[40px] min-h-[40px] flex items-center justify-center shadow-md shrink-0"
                 aria-label="Toggle Navigation Menu"
               >
-                {mobileMenuOpen ? <X className="w-6 h-6 text-[#D4AF37]" /> : <Menu className="w-6 h-6 text-[#FAF5EF]" />}
+                {mobileMenuOpen ? <X className="w-5 h-5 text-[#D4AF37]" /> : <Menu className="w-5 h-5 text-[#FAF5EF]" />}
               </button>
             </div>
           </div>

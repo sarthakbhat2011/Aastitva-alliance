@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Page } from '../types';
-import { StickmanGuide } from '../components/StickmanGuide';
 import {
   Sparkles,
   MapPin,
@@ -87,9 +86,6 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
 
   return (
     <div className="relative font-sans text-[#FAF5EF] py-6 sm:py-10 px-4 sm:px-6 max-w-7xl mx-auto space-y-16">
-      {/* Top Interactive Stickman Page Guide */}
-      <StickmanGuide page="founder" onNavigate={onNavigate} />
-
       {/* Hero Header: Philosophy of Aastitva */}
       <section className="relative rounded-3xl bg-gradient-to-br from-[#0D1427] via-[#16203B] to-[#070A14] border border-[#D4AF37]/35 p-8 sm:p-14 overflow-hidden shadow-[0_16px_50px_rgba(0,0,0,0.75)]">
         {/* Background Ambient Lighting */}

@@ -12,7 +12,6 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
-import { StickmanGuide } from '../components/StickmanGuide';
 
 interface Props {
   onNavigate: (page: Page) => void;
@@ -72,9 +71,7 @@ export const HowItWorksPage: React.FC<Props> = ({ onNavigate }) => {
   ];
 
   return (
-    <div className="relative font-sans text-[#FAF5EF] py-8 px-4 sm:px-6 max-w-7xl mx-auto space-y-12">
-      {/* Top Interactive Stickman Page Guide */}
-      <StickmanGuide page="how-it-works" onNavigate={onNavigate} />
+    <div className="relative font-sans text-[#FAF5EF] py-12 px-4 sm:px-6 max-w-7xl mx-auto space-y-16">
       {/* Hero Header with 3D Canvas Emblem */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center glass-card p-8 sm:p-12 rounded-3xl relative overflow-hidden">
         <div className="lg:col-span-8 space-y-4 text-left z-10">

@@ -3,7 +3,6 @@ import confetti from 'canvas-confetti';
 import { Page, SummitConfig, CountdownTime, RegistrationFormData } from '../types';
 import { COMMITTEES } from '../data';
 import { ScrollIndicator } from '../components/ScrollIndicator';
-import { StickmanGuide } from '../components/StickmanGuide';
 import {
   Sparkles,
   Calendar,
@@ -81,9 +80,7 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
   };
 
   return (
-    <div className="min-h-screen bg-[#070A14] text-[#FAF5EF] font-sans pb-20 pt-4">
-      {/* Top Interactive Stickman Page Guide */}
-      <StickmanGuide page="summit" onNavigate={onNavigate} />
+    <div className="min-h-screen bg-[#070A14] text-[#FAF5EF] font-sans pb-20">
 
       {/* 1. HERO - NETFLIX "NOW PLAYING" BRANDING */}
       <section className="relative min-h-[65vh] flex items-end pb-12 px-4 sm:px-8 overflow-hidden">

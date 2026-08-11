@@ -3,7 +3,6 @@ import { Page } from '../types';
 import { Target, Compass, ShieldAlert, Award, CheckCircle2, HeartHandshake, Sparkles, ArrowRight, BookOpen, Sprout, Zap, Landmark, UserCheck } from 'lucide-react';
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
 import { ScrollIndicator } from '../components/ScrollIndicator';
-import { StickmanGuide } from '../components/StickmanGuide';
 
 interface Props {
   onNavigate: (page: Page) => void;
@@ -34,9 +33,7 @@ export const AboutPage: React.FC<Props> = ({ onNavigate }) => {
   ];
 
   return (
-    <div className="relative font-sans text-[#FAF5EF] py-8 px-4 sm:px-6 max-w-7xl mx-auto space-y-12">
-      {/* Top Interactive Stickman Page Guide */}
-      <StickmanGuide page="about" onNavigate={onNavigate} />
+    <div className="relative font-sans text-[#FAF5EF] py-12 px-4 sm:px-6 max-w-7xl mx-auto space-y-12">
 
       {/* Featured Founder Banner Cross-Link */}
       <div className="p-4 rounded-2xl bg-gradient-to-r from-[#16203B] via-[#0D1427] to-[#16203B] border border-[#D4AF37]/40 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">

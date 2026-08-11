@@ -119,15 +119,15 @@ export default function App() {
       case 'how-it-works':
         return <HowItWorksPage onNavigate={handleNavigate} />;
       case 'summit':
-        return <SummitPage summitConfig={summitConfig} countdown={countdown} onNavigate={handleNavigate} />;
+        return <SummitPage summitConfig={summitConfig} countdown={countdown} />;
       case 'sponsors':
         return <SponsorsPage onNavigate={handleNavigate} />;
       case 'blog':
-        return <BlogPage onNavigate={handleNavigate} />;
+        return <BlogPage />;
       case 'faq':
-        return <FAQPage onNavigate={handleNavigate} />;
+        return <FAQPage />;
       case 'contact':
-        return <ContactPage onNavigate={handleNavigate} />;
+        return <ContactPage />;
       default:
         return (
           <HomePage
