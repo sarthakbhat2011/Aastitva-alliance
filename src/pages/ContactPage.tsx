@@ -203,7 +203,7 @@ export const ContactPage: React.FC = () => {
                     type="tel"
                     value={form.phone}
                     onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                    placeholder="+91 94191 xxxxx"
+                    placeholder="+91 XXXXX XXXXX"
                     className="w-full px-4 py-3 rounded-xl bg-[#171026] border border-[#52459E]/50 text-[#FAF5EF] focus:outline-none focus:border-[#D4AF37]"
                   />
                 </div>

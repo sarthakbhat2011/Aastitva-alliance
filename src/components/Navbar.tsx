@@ -150,8 +150,8 @@ export const Navbar: React.FC<Props> = ({
         <nav
           className={`max-w-6xl mx-auto rounded-2xl transition-all duration-300 ${
             scrolled
-              ? 'bg-[#0D1427]/95 backdrop-blur-xl border border-[#D4AF37]/40 shadow-[0_12px_35px_rgba(0,0,0,0.85)] py-2 px-3 sm:px-6'
-              : 'bg-[#0D1427]/85 backdrop-blur-md border border-[#243563]/40 py-2.5 px-3 sm:px-6'
+              ? 'bg-[#0D1427]/95 backdrop-blur-xl border border-[#D4AF37]/45 shadow-[0_14px_45px_rgba(0,0,0,0.9)] py-2 px-3 sm:px-6'
+              : 'bg-[#0D1427]/85 backdrop-blur-md border border-[#D4AF37]/25 hover:border-[#D4AF37]/45 py-2.5 px-3 sm:px-6'
           }`}
         >
           <div className="flex items-center justify-between gap-3 sm:gap-6">
@@ -165,17 +165,17 @@ export const Navbar: React.FC<Props> = ({
             </button>
 
             {/* Desktop Navigation Links */}
-            <div className="hidden lg:flex items-center gap-1 xl:gap-1.5 bg-[#070A14]/80 p-1 rounded-xl border border-[#243563]/30 backdrop-blur-sm shrink-0">
+            <div className="hidden lg:flex items-center gap-1 xl:gap-1.5 bg-[#070A14]/85 p-1.5 rounded-xl border border-[#D4AF37]/30 backdrop-blur-md shrink-0 shadow-inner">
               {navItems.map((item) => {
                 const active = currentPage === item.id;
                 return (
                   <button
                     key={item.id}
                     onClick={() => handleNavClick(item.id)}
-                    className={`relative px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-300 flex items-center gap-1 whitespace-nowrap ${
+                    className={`relative px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all duration-300 flex items-center gap-1.5 whitespace-nowrap ${
                       active
-                        ? 'text-[#FAF5EF] font-bold bg-gradient-to-r from-[#16203B] to-[#243563] border border-[#D4AF37]/45 shadow-[0_2px_12px_rgba(212,175,55,0.2)]'
-                        : 'text-[#C4BBA3] hover:text-[#FAF5EF] hover:bg-[#16203B]/50'
+                        ? 'text-[#FAF5EF] font-bold bg-gradient-to-r from-[#16203B] via-[#243563] to-[#16203B] border border-[#D4AF37]/60 shadow-[0_2px_14px_rgba(212,175,55,0.25)]'
+                        : 'text-[#C4BBA3] hover:text-[#FAF5EF] hover:bg-[#16203B]/60'
                     }`}
                   >
                     {item.label}
@@ -198,7 +198,7 @@ export const Navbar: React.FC<Props> = ({
 
               <button
                 onClick={() => handleNavClick('contact')}
-                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl shimmer-btn text-[#070A14] text-xs font-bold shadow-[0_4px_18px_rgba(212,175,55,0.3)] hover:brightness-110 active:scale-95 transition-all whitespace-nowrap shrink-0"
+                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl shimmer-btn text-[#070A14] text-xs font-extrabold shadow-[0_4px_20px_rgba(212,175,55,0.35)] hover:brightness-110 active:scale-95 transition-all whitespace-nowrap shrink-0 border border-[#FAF5EF]/30"
               >
                 <span>Partner With Us</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -207,7 +207,7 @@ export const Navbar: React.FC<Props> = ({
               {/* Mobile Menu Hamburger Toggle */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 rounded-xl bg-[#070A14] text-[#FAF5EF] border border-[#243563]/40 hover:bg-[#16203B] transition-colors focus:outline-none min-w-[40px] min-h-[40px] flex items-center justify-center shadow-md shrink-0"
+                className="lg:hidden p-2 rounded-xl bg-[#070A14] text-[#FAF5EF] border border-[#D4AF37]/40 hover:bg-[#16203B] transition-colors focus:outline-none min-w-[40px] min-h-[40px] flex items-center justify-center shadow-md shrink-0"
                 aria-label="Toggle Navigation Menu"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5 text-[#D4AF37]" /> : <Menu className="w-5 h-5 text-[#FAF5EF]" />}

@@ -171,7 +171,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown 
                       <input
                         type="tel"
                         required
-                        placeholder="+91 94191 00000"
+                        placeholder="+91 XXXXX XXXXX"
                         value={form.phone}
                         onChange={(e) => setForm({ ...form, phone: e.target.value })}
                         className="w-full px-4 py-2.5 rounded-xl bg-[#050811] border border-[#D4AF37]/30 text-white focus:border-[#E8A53E] focus:outline-none"

@@ -100,36 +100,14 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox }) => {
           </ul>
         </div>
 
-        {/* Column 4 — Contact */}
+        {/* Column 4 — Institutional Desk */}
         <div className="space-y-3">
           <h4 className="text-xs uppercase tracking-widest text-[#E8A53E] font-bold font-inter">
-            Contact
+            Institutional Desk
           </h4>
-          <ul className="space-y-2.5 text-xs text-[#cecece] font-inter">
-            <li className="flex items-center gap-2">
-              <Mail className="w-3.5 h-3.5 text-[#E8A53E] shrink-0" />
-              <a href="mailto:contact@aastitvaalliance.in" className="hover:underline">
-                contact@aastitvaalliance.in
-              </a>
-            </li>
-            <li className="flex items-center gap-2">
-              <Phone className="w-3.5 h-3.5 text-[#E8A53E] shrink-0" />
-              <a href="tel:+919419100000" className="hover:underline">
-                +91 94191 00000
-              </a>
-            </li>
-            <li className="flex items-center gap-2">
-              <MessageSquare className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-              <a
-                href="https://wa.me/919419100000"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:underline text-emerald-400 font-semibold"
-              >
-                WhatsApp Us
-              </a>
-            </li>
-          </ul>
+          <p className="text-xs text-[#cecece] font-inter leading-relaxed">
+            Ready to simplify your school's event infrastructure? Request a personalized covenant briefing with our founder.
+          </p>
 
           <div className="pt-2">
             <button
@@ -137,9 +115,9 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox }) => {
                 onNavigate('contact');
                 scrollToTop();
               }}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#EAE0C8] to-[#E8A53E] text-[#050811] font-bold text-xs shadow-md hover:brightness-110 active:scale-95 transition-all"
+              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#EAE0C8] to-[#E8A53E] text-[#050811] font-bold text-xs shadow-md hover:brightness-110 active:scale-95 transition-all inline-flex items-center gap-1.5"
             >
-              Partner With Us
+              <span>Partner With Us</span>
             </button>
           </div>
         </div>
@@ -149,8 +127,8 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox }) => {
       <div className="max-w-7xl mx-auto pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-[#9C9482] font-inter">
         <p>© 2026 Aastitva Alliance. All rights reserved.</p>
 
-        <p className="font-playfair italic text-[#D3C5E5]">
-          Tagline: The Infrastructure behind Great Events
+        <p className="font-serif italic text-[#D3C5E5]">
+          "The Infrastructure behind Great Events"
         </p>
 
         <div className="flex items-center gap-4">
