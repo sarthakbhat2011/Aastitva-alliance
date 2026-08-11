@@ -52,7 +52,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = '', varian
           >
             {opt.icon}
             {variant === 'full' && (
-              <span className="hidden xs:inline-block md:inline-block font-medium tracking-wide">
+              <span className="font-medium tracking-wide text-[10px] sm:text-xs">
                 {opt.label}
               </span>
             )}

@@ -136,7 +136,8 @@ export const Navbar: React.FC<Props> = ({
               <Settings className="w-3.5 h-3.5" />
             </button>
 
-
+            {/* Theme Selector (Original / Light / Dark) */}
+            <ThemeToggle variant="full" className="ml-1" />
           </div>
         </div>
       </div>
@@ -235,7 +236,12 @@ export const Navbar: React.FC<Props> = ({
                 })}
               </div>
 
-              <div className="pt-3 flex flex-col gap-2">
+              <div className="pt-3 flex flex-col gap-3">
+                <div className="flex items-center justify-between px-2 py-1.5 rounded-xl bg-[#070A14] border border-[#D4AF37]/30">
+                  <span className="text-xs font-semibold text-[#D4AF37]">Color Theme:</span>
+                  <ThemeToggle variant="full" />
+                </div>
+
                 <button
                   onClick={() => handleNavClick('contact')}
                   className="w-full py-3 rounded-xl shimmer-btn text-[#070A14] font-bold text-center text-sm shadow-lg min-h-[48px] flex items-center justify-center gap-2"
