@@ -365,20 +365,31 @@
   border-color: rgba(180, 138, 26, 0.35) !important;
 }
 
-/* DO NOT APPLY LIGHT THEME OVERRIDES TO IMAGES, PHOTOS, LOGOS OR CANVAS */
+/* Enhanced Light Mode Image Transparency & Luminous Visibility System */
 [data-theme="light"] img,
-[data-theme="light"] picture,
-[data-theme="light"] canvas,
-[data-theme="light"] svg {
-  filter: none !important;
-  mix-blend-mode: normal !important;
+[data-theme="light"] picture img {
+  opacity: 0.88 !important;
+  filter: brightness(1.05) contrast(1.02) !important;
+  transition: opacity 0.3s ease, filter 0.3s ease;
 }
 
-/* Ensure Photo Frame & Overlay Cards Maintain Rich Dark Backdrop & High Contrast */
+[data-theme="light"] img:hover,
+[data-theme="light"] picture img:hover,
+[data-theme="light"] .group:hover img {
+  opacity: 1.0 !important;
+  filter: brightness(1.08) contrast(1.04) !important;
+}
+
+/* Founder's Editorial Gallery & Photo Cards Transparency Tuning */
 [data-theme="light"] .group.relative.overflow-hidden img,
 [data-theme="light"] [class*="photo-frame"] img,
 [data-theme="light"] [class*="editorial-photo"] img {
-  filter: brightness(0.95) !important;
+  opacity: 0.85 !important;
+  filter: brightness(1.08) contrast(1.02) !important;
+}
+
+[data-theme="light"] .group.relative.overflow-hidden:hover img {
+  opacity: 1.0 !important;
 }
 
 /* Keep text inside photo overlays (Founder & Summit photo cards) crisp gold/white */
