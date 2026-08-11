@@ -78,7 +78,7 @@ export const AstitvaLogo: React.FC<Props> = ({
           <div className="flex items-baseline gap-2">
             
             {/* "Astitva" Calligraphic Luxury Serif Typography */}
-            <span className={`font-cormorant font-bold italic ${currentSize.text} bg-gradient-to-r from-[#FFFFFF] via-[#FAF5EF] to-[#E8A53E] group-hover:to-[#FFD700] bg-clip-text text-transparent leading-none drop-shadow-[0_2px_12px_rgba(255,255,255,0.2)] transition-all duration-300`}>
+            <span className={`font-cormorant brand-logo-text font-bold italic ${currentSize.text} bg-gradient-to-r from-[#FFFFFF] via-[#FAF5EF] to-[#E8A53E] group-hover:to-[#FFD700] bg-clip-text text-transparent leading-none drop-shadow-[0_2px_12px_rgba(255,255,255,0.2)] transition-all duration-300`}>
               Astitva
             </span>
 
