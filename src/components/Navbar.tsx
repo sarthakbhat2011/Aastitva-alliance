@@ -80,7 +80,6 @@ export const Navbar: React.FC<Props> = ({
     { id: 'offerings', label: 'Offerings' },
     { id: 'summit', label: 'Live Summit', badge: 'LIVE' },
     { id: 'blog', label: 'Resources' },
-    { id: 'contact', label: 'Contact' },
   ];
 
   const handleNavClick = (page: Page) => {
@@ -145,10 +144,10 @@ export const Navbar: React.FC<Props> = ({
       {/* Main Floating Glass Navbar Container */}
       <div className="w-full px-3 sm:px-6 pt-2 pb-2 transition-all duration-300">
         <nav
-          className={`max-w-6xl mx-auto rounded-2xl transition-all duration-300 ${
+          className={`max-w-7xl mx-auto rounded-2xl transition-all duration-300 ${
             scrolled
-              ? 'bg-[#0D1427]/95 backdrop-blur-xl border border-[#D4AF37]/45 shadow-[0_14px_45px_rgba(0,0,0,0.9)] py-2 px-3 sm:px-6'
-              : 'bg-[#0D1427]/85 backdrop-blur-md border border-[#D4AF37]/25 hover:border-[#D4AF37]/45 py-2.5 px-3 sm:px-6'
+              ? 'bg-[#0D1427]/95 backdrop-blur-xl border border-[#D4AF37]/45 shadow-[0_14px_45px_rgba(0,0,0,0.9)] py-2.5 px-4 sm:px-6'
+              : 'bg-[#0D1427]/85 backdrop-blur-md border border-[#D4AF37]/25 hover:border-[#D4AF37]/45 py-3 px-4 sm:px-6'
           }`}
         >
           <div className="flex items-center justify-between gap-3 sm:gap-6">
@@ -162,14 +161,14 @@ export const Navbar: React.FC<Props> = ({
             </button>
 
             {/* Desktop Navigation Links */}
-            <div className="hidden lg:flex items-center gap-1 xl:gap-1.5 bg-[#070A14]/85 p-1.5 rounded-xl border border-[#D4AF37]/30 backdrop-blur-md shrink-0 shadow-inner">
+            <div className="hidden lg:flex items-center gap-1 xl:gap-2 bg-[#070A14]/85 p-1.5 rounded-xl border border-[#D4AF37]/30 backdrop-blur-md shrink-0 shadow-inner">
               {navItems.map((item) => {
                 const active = currentPage === item.id;
                 return (
                   <button
                     key={item.id}
                     onClick={() => handleNavClick(item.id)}
-                    className={`relative px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all duration-300 flex items-center gap-1.5 whitespace-nowrap ${
+                    className={`relative px-3 xl:px-4 py-2 text-xs xl:text-sm font-semibold rounded-lg transition-all duration-300 flex items-center gap-1.5 whitespace-nowrap ${
                       active
                         ? 'text-[#FAF5EF] font-bold bg-gradient-to-r from-[#16203B] via-[#243563] to-[#16203B] border border-[#D4AF37]/60 shadow-[0_2px_14px_rgba(212,175,55,0.25)]'
                         : 'text-[#C4BBA3] hover:text-[#FAF5EF] hover:bg-[#16203B]/60'
@@ -195,10 +194,10 @@ export const Navbar: React.FC<Props> = ({
 
               <button
                 onClick={() => handleNavClick('contact')}
-                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl shimmer-btn text-[#070A14] text-xs font-extrabold shadow-[0_4px_20px_rgba(212,175,55,0.35)] hover:brightness-110 active:scale-95 transition-all whitespace-nowrap shrink-0 border border-[#FAF5EF]/30"
+                className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl shimmer-btn text-[#070A14] text-xs sm:text-sm font-extrabold shadow-[0_4px_20px_rgba(212,175,55,0.35)] hover:brightness-110 active:scale-95 transition-all whitespace-nowrap shrink-0 border border-[#FAF5EF]/30"
               >
                 <span>Partner With Us</span>
-                <ChevronRight className="w-3.5 h-3.5" />
+                <ChevronRight className="w-4 h-4" />
               </button>
 
               {/* Mobile Menu Hamburger Toggle */}
