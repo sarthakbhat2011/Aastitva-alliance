@@ -3,6 +3,7 @@ import confetti from 'canvas-confetti';
 import { Page, SummitConfig, CountdownTime, RegistrationFormData } from '../types';
 import { COMMITTEES } from '../data';
 import { ScrollIndicator } from '../components/ScrollIndicator';
+import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
 import {
   Sparkles,
   Calendar,
@@ -94,57 +95,64 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
           <div className="absolute inset-0 bg-gradient-to-t from-[#070A14] via-[#070A14]/80 to-transparent" />
         </div>
 
-        <div className="relative z-10 max-w-6xl mx-auto w-full space-y-4">
-          {/* Top Banner Tag */}
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="px-3 py-1 rounded bg-rose-600 text-white font-bold text-xs uppercase tracking-widest flex items-center gap-1.5 animate-pulse shadow-md">
-              <Play className="w-3.5 h-3.5 fill-current" /> NOW PLAYING
-            </span>
-            <span className="px-3 py-1 rounded bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] font-semibold text-xs uppercase tracking-wider backdrop-blur-md">
-              Official Partnered Summit
-            </span>
+        <div className="relative z-10 max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="lg:col-span-7 space-y-4 text-left">
+            {/* Top Banner Tag */}
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="px-3 py-1 rounded bg-rose-600 text-white font-bold text-xs uppercase tracking-widest flex items-center gap-1.5 animate-pulse shadow-md">
+                <Play className="w-3.5 h-3.5 fill-current" /> NOW PLAYING
+              </span>
+              <span className="px-3 py-1 rounded bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] font-semibold text-xs uppercase tracking-wider backdrop-blur-md">
+                Official Partnered Summit
+              </span>
+            </div>
+
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-extrabold gold-gradient-text">
+              {summitConfig.name}
+            </h1>
+
+            <p className="text-base sm:text-lg text-[#C4BBA3] max-w-2xl font-light leading-relaxed">
+              {summitConfig.tagline}
+            </p>
+
+            <div className="flex flex-wrap items-center gap-6 text-xs sm:text-sm text-[#C4BBA3] pt-2">
+              <span className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-[#D4AF37]" /> {summitConfig.date}
+              </span>
+              <span className="flex items-center gap-2 text-emerald-400 font-semibold">
+                <Users className="w-4 h-4" /> {summitConfig.registeredCount} / {summitConfig.totalSeats} Seats Filled
+              </span>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-4 pt-4">
+              <button
+                onClick={() => {
+                  setActiveTab('register');
+                  document.getElementById('summit-tabs')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="px-8 py-3.5 rounded-xl shimmer-btn text-[#070A14] font-extrabold text-sm shadow-2xl hover:brightness-110 active:scale-95 transition-all"
+              >
+                Register Delegate Seat
+              </button>
+
+              <a
+                href="https://aquitas-aastitva11.onrender.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3.5 rounded-xl bg-rose-600/30 hover:bg-rose-600/50 border border-rose-500/50 text-rose-100 font-bold text-sm flex items-center gap-2 shadow-lg transition-all"
+              >
+                <ExternalLink className="w-4 h-4 text-rose-300" />
+                <span>Visit Live Aequitas Website ↗</span>
+              </a>
+            </div>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-extrabold gold-gradient-text">
-            {summitConfig.name}
-          </h1>
-
-          <p className="text-base sm:text-lg text-[#C4BBA3] max-w-2xl font-light leading-relaxed">
-            {summitConfig.tagline}
-          </p>
-
-          <div className="flex flex-wrap items-center gap-6 text-xs sm:text-sm text-[#C4BBA3] pt-2">
-            <span className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-[#D4AF37]" /> {summitConfig.date}
-            </span>
-            <span className="flex items-center gap-2 text-emerald-400 font-semibold">
-              <Users className="w-4 h-4" /> {summitConfig.registeredCount} / {summitConfig.totalSeats} Seats Filled
-            </span>
+          {/* 3D Planet Globe Orbiting Emblem */}
+          <div className="lg:col-span-5 h-64 sm:h-80 relative flex items-center justify-center">
+            <Astitva3DCanvas variant="summit" />
           </div>
 
-          <div className="flex flex-wrap items-center gap-4 pt-4">
-            <button
-              onClick={() => {
-                setActiveTab('register');
-                document.getElementById('summit-tabs')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="px-8 py-3.5 rounded-xl shimmer-btn text-[#070A14] font-extrabold text-sm shadow-2xl hover:brightness-110 active:scale-95 transition-all"
-            >
-              Register Delegate Seat
-            </button>
-
-            <a
-              href="https://aquitas-aastitva11.onrender.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3.5 rounded-xl bg-rose-600/30 hover:bg-rose-600/50 border border-rose-500/50 text-rose-100 font-bold text-sm flex items-center gap-2 shadow-lg transition-all"
-            >
-              <ExternalLink className="w-4 h-4 text-rose-300" />
-              <span>Visit Live Aequitas Website ↗</span>
-            </a>
-          </div>
-
-          <div className="flex justify-center pt-6">
+          <div className="lg:col-span-12 flex justify-center pt-4">
             <ScrollIndicator targetId="summit-clock-banner" label="Scroll for Conference Clock" />
           </div>
         </div>
