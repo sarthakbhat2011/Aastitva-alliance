@@ -30,20 +30,23 @@ export const Astitva3DCanvas: React.FC<Props> = ({ className = '', variant = 'he
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
+    // Determine current theme
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+
     // -------------------------------------------------------------
-    // 1. DIPLOMATIC GLOBE CORE (International Diplomacy & Academic Platform)
+    // 1. DIPLOMATIC GLOBE CORE
     // -------------------------------------------------------------
     const globeRadius = variant === 'minimal' ? 1.6 : 2.0;
 
-    // Inner Translucent Core Sphere
+    // Inner Core Sphere
     const innerSphereGeo = new THREE.SphereGeometry(globeRadius * 0.96, 32, 32);
     const innerSphereMat = new THREE.MeshPhysicalMaterial({
-      color: 0x16203b,
-      emissive: 0xd4af37,
-      emissiveIntensity: 0.35,
+      color: isLight ? 0xb48a1a : 0x0d1427,
+      emissive: isLight ? 0xeab308 : 0x070a14,
+      emissiveIntensity: isLight ? 0.45 : 0.15,
       metalness: 0.9,
       roughness: 0.1,
-      transmission: 0.4,
+      transmission: isLight ? 0.2 : 0.7,
       thickness: 1.2,
       clearcoat: 1.0,
       clearcoatRoughness: 0.1,
@@ -54,28 +57,28 @@ export const Astitva3DCanvas: React.FC<Props> = ({ className = '', variant = 'he
     // Outer Wireframe Latitude/Longitude Grid Globe
     const globeWireframeGeo = new THREE.SphereGeometry(globeRadius, 24, 24);
     const globeWireframeMat = new THREE.MeshStandardMaterial({
-      color: 0xffd700, // Bright Champagne Gold
-      emissive: 0xd4af37,
-      emissiveIntensity: 0.5,
+      color: isLight ? 0xffd700 : 0xd4af37,
+      emissive: isLight ? 0xd4af37 : 0x544110,
+      emissiveIntensity: isLight ? 0.55 : 0.2,
       wireframe: true,
       transparent: true,
-      opacity: 0.85,
+      opacity: isLight ? 0.85 : 0.4,
       metalness: 0.95,
-      roughness: 0.1,
+      roughness: 0.15,
     });
     const globeWireframeMesh = new THREE.Mesh(globeWireframeGeo, globeWireframeMat);
     scene.add(globeWireframeMesh);
 
     // -------------------------------------------------------------
-    // 2. ORBITING MULTILATERAL DIPLOMACY RINGS
+    // 2. ORBITING RINGS
     // -------------------------------------------------------------
     const ring1Geo = new THREE.TorusGeometry(globeRadius * 1.35, 0.05, 16, 100);
     const ring1Mat = new THREE.MeshStandardMaterial({
-      color: 0xffd700,
+      color: isLight ? 0xffd700 : 0xd4af37,
       metalness: 0.95,
       roughness: 0.1,
-      emissive: 0xd4af37,
-      emissiveIntensity: 0.6,
+      emissive: isLight ? 0xd4af37 : 0x544110,
+      emissiveIntensity: isLight ? 0.7 : 0.3,
     });
     const ring1Mesh = new THREE.Mesh(ring1Geo, ring1Mat);
     ring1Mesh.rotation.x = Math.PI / 3;
@@ -83,11 +86,11 @@ export const Astitva3DCanvas: React.FC<Props> = ({ className = '', variant = 'he
 
     const ring2Geo = new THREE.TorusGeometry(globeRadius * 1.5, 0.03, 16, 100);
     const ring2Mat = new THREE.MeshStandardMaterial({
-      color: 0x5b7fff, // Vibrant Sapphire Blue
+      color: isLight ? 0xeab308 : 0x3a5499,
       metalness: 0.9,
       roughness: 0.2,
-      emissive: 0x243563,
-      emissiveIntensity: 0.7,
+      emissive: isLight ? 0xb48a1a : 0x16203b,
+      emissiveIntensity: isLight ? 0.6 : 0.4,
     });
     const ring2Mesh = new THREE.Mesh(ring2Geo, ring2Mat);
     ring2Mesh.rotation.y = Math.PI / 4;
@@ -103,13 +106,13 @@ export const Astitva3DCanvas: React.FC<Props> = ({ className = '', variant = 'he
       metalness: 0.9,
       roughness: 0.15,
       emissive: 0xd4af37,
-      emissiveIntensity: 0.4,
+      emissiveIntensity: isLight ? 0.7 : 0.4,
     });
     const nucleusMesh = new THREE.Mesh(nucleusGeo, nucleusMat);
     scene.add(nucleusMesh);
 
     // -------------------------------------------------------------
-    // 4. COMMITTEE BEACON NODES (6 Pulsing Satellite Beacons)
+    // 4. COMMITTEE BEACON NODES (6 Satellite Beacons)
     // -------------------------------------------------------------
     const nodeCount = 6;
     const nodeGroup = new THREE.Group();
@@ -151,7 +154,6 @@ export const Astitva3DCanvas: React.FC<Props> = ({ className = '', variant = 'he
       positions[i * 3 + 1] = (Math.random() - 0.5) * 12;
       positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
 
-      // Color variation between champagne gold, sapphire blue, and silver
       colors[i * 3] = 0.85 + Math.random() * 0.15;
       colors[i * 3 + 1] = 0.75 + Math.random() * 0.2;
       colors[i * 3 + 2] = 0.45 + Math.random() * 0.4;
@@ -172,16 +174,44 @@ export const Astitva3DCanvas: React.FC<Props> = ({ className = '', variant = 'he
     // -------------------------------------------------------------
     // LIGHTING & ATMOSPHERE
     // -------------------------------------------------------------
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.8);
+    const ambientLight = new THREE.AmbientLight(0xffffff, isLight ? 1.6 : 0.9);
     scene.add(ambientLight);
 
-    const goldPointLight = new THREE.PointLight(0xffd700, 5, 30);
+    const goldPointLight = new THREE.PointLight(0xffd700, isLight ? 5 : 3, 30);
     goldPointLight.position.set(5, 5, 6);
     scene.add(goldPointLight);
 
-    const bluePointLight = new THREE.PointLight(0x5b7fff, 6, 30);
+    const bluePointLight = new THREE.PointLight(isLight ? 0xeab308 : 0x243563, isLight ? 4 : 4, 30);
     bluePointLight.position.set(-6, -4, 4);
     scene.add(bluePointLight);
+
+    // MutationObserver to update theme live
+    const themeObserver = new MutationObserver(() => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const lightActive = currentTheme === 'light';
+      innerSphereMat.color.setHex(lightActive ? 0xb48a1a : 0x0d1427);
+      innerSphereMat.emissive.setHex(lightActive ? 0xeab308 : 0x070a14);
+      innerSphereMat.emissiveIntensity = lightActive ? 0.45 : 0.15;
+      innerSphereMat.transmission = lightActive ? 0.2 : 0.7;
+
+      globeWireframeMat.color.setHex(lightActive ? 0xffd700 : 0xd4af37);
+      globeWireframeMat.emissive.setHex(lightActive ? 0xd4af37 : 0x544110);
+      globeWireframeMat.emissiveIntensity = lightActive ? 0.55 : 0.2;
+      globeWireframeMat.opacity = lightActive ? 0.85 : 0.4;
+
+      ring1Mat.color.setHex(lightActive ? 0xffd700 : 0xd4af37);
+      ring1Mat.emissive.setHex(lightActive ? 0xd4af37 : 0x544110);
+      ring1Mat.emissiveIntensity = lightActive ? 0.7 : 0.3;
+
+      ring2Mat.color.setHex(lightActive ? 0xeab308 : 0x3a5499);
+      ring2Mat.emissive.setHex(lightActive ? 0xb48a1a : 0x16203b);
+      ring2Mat.emissiveIntensity = lightActive ? 0.6 : 0.4;
+
+      ambientLight.intensity = lightActive ? 1.6 : 0.9;
+      goldPointLight.intensity = lightActive ? 5 : 3;
+      bluePointLight.color.setHex(lightActive ? 0xeab308 : 0x243563);
+    });
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
     // -------------------------------------------------------------
     // MOUSE INTERACTIVITY
@@ -259,6 +289,7 @@ export const Astitva3DCanvas: React.FC<Props> = ({ className = '', variant = 'he
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       resizeObserver.disconnect();
+      themeObserver.disconnect();
       cancelAnimationFrame(animationFrameId);
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
