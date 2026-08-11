@@ -187,11 +187,6 @@ export const Navbar: React.FC<Props> = ({
 
             {/* CTA Button & Mobile Toggle */}
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-              {/* Header Corner Theme Switcher (Mobile fallback) */}
-              <div className="block xs:hidden">
-                <ThemeToggle variant="compact" />
-              </div>
-
               <button
                 onClick={() => handleNavClick('contact')}
                 className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl shimmer-btn text-[#070A14] text-xs sm:text-sm font-extrabold shadow-[0_4px_20px_rgba(212,175,55,0.35)] hover:brightness-110 active:scale-95 transition-all whitespace-nowrap shrink-0 border border-[#FAF5EF]/30"
@@ -203,7 +198,7 @@ export const Navbar: React.FC<Props> = ({
               {/* Mobile Menu Hamburger Toggle */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 rounded-xl bg-[#070A14] text-[#FAF5EF] border border-[#D4AF37]/40 hover:bg-[#16203B] transition-colors focus:outline-none min-w-[40px] min-h-[40px] flex items-center justify-center shadow-md shrink-0"
+                className="lg:hidden p-2.5 rounded-xl bg-[#070A14] text-[#FAF5EF] border border-[#D4AF37]/40 hover:bg-[#16203B] transition-colors focus:outline-none min-w-[40px] min-h-[40px] flex items-center justify-center shadow-md shrink-0"
                 aria-label="Toggle Navigation Menu"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5 text-[#D4AF37]" /> : <Menu className="w-5 h-5 text-[#FAF5EF]" />}

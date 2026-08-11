@@ -226,36 +226,6 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown 
 
       {/* Main Hero Section */}
       <section className="relative min-h-[92vh] flex flex-col justify-between pt-6 sm:pt-8 pb-10 px-4 sm:px-6 overflow-hidden">
-        {/* Toggle Mode Switcher */}
-        <div className="max-w-7xl mx-auto w-full z-10 flex items-center justify-center lg:justify-start mb-6">
-          <div className="inline-flex p-1 rounded-2xl bg-[#0B1120]/90 border border-[#D4AF37]/35 backdrop-blur-md shadow-xl">
-            <button
-              onClick={() => setHeroMode('alliance')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
-                heroMode === 'alliance'
-                  ? 'bg-gradient-to-r from-[#EAE0C8] to-[#E8A53E] text-[#050811] shadow-md'
-                  : 'text-[#D3C5E5] hover:text-white'
-              }`}
-            >
-              <Building className="w-3.5 h-3.5" />
-              <span>Astitva Infrastructure</span>
-            </button>
-            <button
-              onClick={() => setHeroMode('summit')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
-                heroMode === 'summit'
-                  ? 'bg-gradient-to-r from-[#EAE0C8] to-[#E8A53E] text-[#050811] shadow-md'
-                  : 'text-[#D3C5E5] hover:text-white'
-              }`}
-            >
-              <Sparkles className="w-3.5 h-3.5 text-[#E8A53E]" />
-              <span>Aequitas Summit 2026</span>
-              <span className="px-1.5 py-0.5 text-[9px] rounded bg-rose-600 text-white font-extrabold animate-pulse">
-                OCT 24-25
-              </span>
-            </button>
-          </div>
-        </div>
 
         {/* Hero Body Grid */}
         <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-10 items-center z-10 flex-1">
