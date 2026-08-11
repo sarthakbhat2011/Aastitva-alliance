@@ -38,10 +38,12 @@ export const Astitva3DCanvas: React.FC<Props> = ({ className = '', variant = 'he
     // Inner Translucent Core Sphere
     const innerSphereGeo = new THREE.SphereGeometry(globeRadius * 0.96, 32, 32);
     const innerSphereMat = new THREE.MeshPhysicalMaterial({
-      color: 0x0d1427,
+      color: 0x16203b,
+      emissive: 0xd4af37,
+      emissiveIntensity: 0.35,
       metalness: 0.9,
       roughness: 0.1,
-      transmission: 0.7,
+      transmission: 0.4,
       thickness: 1.2,
       clearcoat: 1.0,
       clearcoatRoughness: 0.1,
@@ -52,12 +54,14 @@ export const Astitva3DCanvas: React.FC<Props> = ({ className = '', variant = 'he
     // Outer Wireframe Latitude/Longitude Grid Globe
     const globeWireframeGeo = new THREE.SphereGeometry(globeRadius, 24, 24);
     const globeWireframeMat = new THREE.MeshStandardMaterial({
-      color: 0xd4af37, // Champagne Gold
+      color: 0xffd700, // Bright Champagne Gold
+      emissive: 0xd4af37,
+      emissiveIntensity: 0.5,
       wireframe: true,
       transparent: true,
-      opacity: 0.35,
-      metalness: 0.9,
-      roughness: 0.2,
+      opacity: 0.85,
+      metalness: 0.95,
+      roughness: 0.1,
     });
     const globeWireframeMesh = new THREE.Mesh(globeWireframeGeo, globeWireframeMat);
     scene.add(globeWireframeMesh);
@@ -67,11 +71,11 @@ export const Astitva3DCanvas: React.FC<Props> = ({ className = '', variant = 'he
     // -------------------------------------------------------------
     const ring1Geo = new THREE.TorusGeometry(globeRadius * 1.35, 0.05, 16, 100);
     const ring1Mat = new THREE.MeshStandardMaterial({
-      color: 0xd4af37,
+      color: 0xffd700,
       metalness: 0.95,
       roughness: 0.1,
-      emissive: 0x544110,
-      emissiveIntensity: 0.3,
+      emissive: 0xd4af37,
+      emissiveIntensity: 0.6,
     });
     const ring1Mesh = new THREE.Mesh(ring1Geo, ring1Mat);
     ring1Mesh.rotation.x = Math.PI / 3;
@@ -79,11 +83,11 @@ export const Astitva3DCanvas: React.FC<Props> = ({ className = '', variant = 'he
 
     const ring2Geo = new THREE.TorusGeometry(globeRadius * 1.5, 0.03, 16, 100);
     const ring2Mat = new THREE.MeshStandardMaterial({
-      color: 0x3a5499, // Sapphire Blue
+      color: 0x5b7fff, // Vibrant Sapphire Blue
       metalness: 0.9,
       roughness: 0.2,
-      emissive: 0x16203b,
-      emissiveIntensity: 0.4,
+      emissive: 0x243563,
+      emissiveIntensity: 0.7,
     });
     const ring2Mesh = new THREE.Mesh(ring2Geo, ring2Mat);
     ring2Mesh.rotation.y = Math.PI / 4;
@@ -168,14 +172,14 @@ export const Astitva3DCanvas: React.FC<Props> = ({ className = '', variant = 'he
     // -------------------------------------------------------------
     // LIGHTING & ATMOSPHERE
     // -------------------------------------------------------------
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.8);
     scene.add(ambientLight);
 
-    const goldPointLight = new THREE.PointLight(0xffd700, 3, 25);
+    const goldPointLight = new THREE.PointLight(0xffd700, 5, 30);
     goldPointLight.position.set(5, 5, 6);
     scene.add(goldPointLight);
 
-    const bluePointLight = new THREE.PointLight(0x243563, 4, 25);
+    const bluePointLight = new THREE.PointLight(0x5b7fff, 6, 30);
     bluePointLight.position.set(-6, -4, 4);
     scene.add(bluePointLight);
 

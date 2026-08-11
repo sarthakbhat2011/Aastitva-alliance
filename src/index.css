@@ -365,6 +365,30 @@
   border-color: rgba(180, 138, 26, 0.35) !important;
 }
 
+/* DO NOT APPLY LIGHT THEME OVERRIDES TO IMAGES, PHOTOS, LOGOS OR CANVAS */
+[data-theme="light"] img,
+[data-theme="light"] picture,
+[data-theme="light"] canvas,
+[data-theme="light"] svg {
+  filter: none !important;
+  mix-blend-mode: normal !important;
+}
+
+/* Ensure Photo Frame & Overlay Cards Maintain Rich Dark Backdrop & High Contrast */
+[data-theme="light"] .group.relative.overflow-hidden img,
+[data-theme="light"] [class*="photo-frame"] img,
+[data-theme="light"] [class*="editorial-photo"] img {
+  filter: brightness(0.95) !important;
+}
+
+/* Keep text inside photo overlays (Founder & Summit photo cards) crisp gold/white */
+[data-theme="light"] .group [class*="bg-gradient-to-t"] ~ *,
+[data-theme="light"] [class*="bg-[#070A14]/90"] h3,
+[data-theme="light"] [class*="bg-[#070A14]/90"] p,
+[data-theme="light"] [class*="bg-[#070A14]/90"] span {
+  color: inherit;
+}
+
 /* ULTRA DARK MODE OVERRIDES for Pitch Black OLED Experience */
 [data-theme="dark"] [class*="bg-[#070A14]"] {
   background-color: #000000 !important;

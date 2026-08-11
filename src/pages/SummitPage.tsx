@@ -148,7 +148,7 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
           </div>
 
           {/* 3D Planet Globe Orbiting Emblem */}
-          <div className="lg:col-span-5 h-64 sm:h-80 relative flex items-center justify-center">
+          <div className="lg:col-span-5 w-full h-72 sm:h-96 min-h-[260px] relative z-20 flex items-center justify-center pointer-events-none">
             <Astitva3DCanvas variant="summit" />
           </div>
 
