@@ -137,10 +137,7 @@ export const Navbar: React.FC<Props> = ({
               <Settings className="w-3.5 h-3.5" />
             </button>
 
-            {/* Header Corner Theme Toggle */}
-            <div className="hidden xs:block sm:block ml-1">
-              <ThemeToggle variant="full" />
-            </div>
+
           </div>
         </div>
       </div>
