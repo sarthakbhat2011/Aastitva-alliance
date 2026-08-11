@@ -146,41 +146,41 @@ export const Navbar: React.FC<Props> = ({
       </div>
 
       {/* Main Floating Glass Navbar Container */}
-      <div className={`w-full px-3 sm:px-6 pt-2 pb-2 transition-all duration-300`}>
+      <div className={`w-full px-3 sm:px-6 pt-1.5 pb-1.5 transition-all duration-300`}>
         <nav
-          className={`max-w-7xl mx-auto rounded-2xl transition-all duration-300 ${
+          className={`max-w-5xl mx-auto rounded-2xl transition-all duration-300 ${
             scrolled
-              ? 'bg-[#0D1427]/95 backdrop-blur-xl border border-[#D4AF37]/35 shadow-[0_12px_45px_rgba(0,0,0,0.85)] py-2.5 px-4 sm:px-6'
-              : 'bg-[#0D1427]/80 backdrop-blur-md border border-[#243563]/40 py-3.5 px-4 sm:px-6'
+              ? 'bg-[#0D1427]/95 backdrop-blur-xl border border-[#D4AF37]/40 shadow-[0_12px_35px_rgba(0,0,0,0.85)] py-2 px-3 sm:px-5'
+              : 'bg-[#0D1427]/85 backdrop-blur-md border border-[#243563]/40 py-2.5 px-3 sm:px-5'
           }`}
         >
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2 sm:gap-4">
             {/* Brand Logo */}
             <button
               onClick={() => handleNavClick('home')}
-              className="text-left focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 rounded-xl p-1 transition-transform hover:scale-[1.02]"
+              className="text-left focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 rounded-xl p-0.5 transition-transform hover:scale-[1.02] shrink-0"
               aria-label="Astitva Alliance Home"
             >
-              <AstitvaLogo size="md" />
+              <AstitvaLogo size="sm" />
             </button>
 
             {/* Desktop Navigation Links */}
-            <div className="hidden lg:flex items-center gap-1 xl:gap-2 bg-[#070A14]/75 p-1.5 rounded-xl border border-[#243563]/30 backdrop-blur-sm">
+            <div className="hidden lg:flex items-center gap-1 bg-[#070A14]/80 p-1 rounded-xl border border-[#243563]/30 backdrop-blur-sm">
               {navItems.map((item) => {
                 const active = currentPage === item.id;
                 return (
                   <button
                     key={item.id}
                     onClick={() => handleNavClick(item.id)}
-                    className={`relative px-4 py-2 text-xs xl:text-sm font-medium rounded-lg transition-all duration-300 flex items-center gap-1.5 ${
+                    className={`relative px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-300 flex items-center gap-1 ${
                       active
-                        ? 'text-[#FAF5EF] font-bold bg-gradient-to-r from-[#16203B] to-[#243563] border border-[#D4AF37]/45 shadow-[0_4px_18px_rgba(212,175,55,0.18)]'
+                        ? 'text-[#FAF5EF] font-bold bg-gradient-to-r from-[#16203B] to-[#243563] border border-[#D4AF37]/45 shadow-[0_2px_12px_rgba(212,175,55,0.2)]'
                         : 'text-[#C4BBA3] hover:text-[#FAF5EF] hover:bg-[#16203B]/50'
                     }`}
                   >
                     {item.label}
                     {item.badge && (
-                      <span className="px-1.5 py-0.2 text-[9px] font-extrabold uppercase rounded-full bg-gradient-to-r from-[#D4AF37] to-[#B38F24] text-[#070A14] shadow-sm animate-pulse">
+                      <span className="px-1.5 py-0.2 text-[8px] font-extrabold uppercase rounded-full bg-gradient-to-r from-[#D4AF37] to-[#B38F24] text-[#070A14] shadow-sm animate-pulse">
                         {item.badge}
                       </span>
                     )}

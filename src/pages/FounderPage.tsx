@@ -29,7 +29,7 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
   const [activePhoto, setActivePhoto] = useState<number | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<string | null>('Jammu');
 
-  // 4-Shoot Editorial Founder Placeholder Photos
+  // 4 Editorial Founder Placeholder Photos (Clean badges removed as requested)
   const founderPhotos = [
     {
       id: 1,
@@ -37,7 +37,6 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
       subtitle: 'Origins of Aastitva',
       caption: 'Witnessing the operational chaos and creative spark of academic delegates.',
       img: 'https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&q=80&w=1200',
-      badge: 'Shoot 01',
     },
     {
       id: 2,
@@ -45,7 +44,6 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
       subtitle: 'Grassroots Discovery',
       caption: 'Visiting government & non-privileged schools across Jammu to understand true access gaps.',
       img: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&q=80&w=1200',
-      badge: 'Shoot 02',
     },
     {
       id: 3,
@@ -53,7 +51,6 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
       subtitle: 'Inaugural Partnership',
       caption: 'Building turnkey secretariats, delegate handbooks, and vetted Executive Boards.',
       img: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&q=80&w=1200',
-      badge: 'Shoot 03',
     },
     {
       id: 4,
@@ -61,25 +58,22 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
       subtitle: 'Founder Leadership',
       caption: 'Personal responsibility and transparent covenant for every institution we serve.',
       img: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=1200',
-      badge: 'Shoot 04',
     },
   ];
 
-  // Locations Network Data (Area 17 Style Integration)
+  // Exclusive Jammu Region Map & School Pilgrimage Locations Data
   const locations = [
-    { name: 'Jammu', state: 'J&K', role: 'Headquarters & Genesis Hub', coordinates: { x: 38, y: 22 } },
-    { name: 'Delhi', state: 'NCR', role: 'Executive Board Recruitment Network', coordinates: { x: 42, y: 38 } },
-    { name: 'Pune', state: 'Maharashtra', role: 'Academic Debate Circuit Ties', coordinates: { x: 34, y: 72 } },
-    { name: 'Jaipur', state: 'Rajasthan', role: 'Institutional Summit Alliance', coordinates: { x: 36, y: 44 } },
-    { name: 'Abohar', state: 'Rajasthan', role: 'Northern Circuit Connection', coordinates: { x: 33, y: 34 } },
-    { name: 'Haryana', state: 'North Region', role: 'Inter-School Delegate Outreach', coordinates: { x: 40, y: 36 } },
-    { name: 'Dehradun', state: 'Uttarakhand', role: 'Boarding School Network', coordinates: { x: 46, y: 34 } },
-    { name: 'Amritsar', state: 'Punjab', role: 'Regional MUN Partnerships', coordinates: { x: 34, y: 28 } },
-    { name: 'Ludhiana', state: 'Punjab', role: 'Academic Delegation Ties', coordinates: { x: 36, y: 30 } },
-    { name: 'Kashmir', state: 'J&K', role: 'Valley Youth Outreach', coordinates: { x: 36, y: 16 } },
-    { name: 'Chandigarh', state: 'UT', role: 'Diplomatic Training Network', coordinates: { x: 38, y: 31 } },
-    { name: 'Meerut', state: 'Uttar Pradesh', role: 'Secretariat Advisory Link', coordinates: { x: 44, y: 39 } },
-    { name: 'Himachal Pradesh', state: 'HP', role: 'Himalayan Academic Circuit', coordinates: { x: 42, y: 26 } },
+    { name: 'Jammu City', district: 'Jammu', role: 'Genesis Hub & Aastitva Alliance Headquarters', coordinates: { x: 48, y: 56 } },
+    { name: 'Nagrota', district: 'Jammu', role: 'Government High School Pilgrimage Site • Suburban Jammu', coordinates: { x: 54, y: 48 } },
+    { name: 'R.S. Pura', district: 'Jammu', role: 'Border District School Outreach • Rural Access Hub', coordinates: { x: 44, y: 72 } },
+    { name: 'Akhnoor', district: 'Jammu', role: 'Chenab Belt School Pilgrimage & Debate Access Site', coordinates: { x: 32, y: 48 } },
+    { name: 'Samba', district: 'Samba', role: 'Educational Circuit & Inter-School Delegate Link', coordinates: { x: 62, y: 64 } },
+    { name: 'Kathua', district: 'Kathua', role: 'Southern Border District School Access Hub', coordinates: { x: 76, y: 76 } },
+    { name: 'Udhampur', district: 'Udhampur', role: 'Highland Academic Summit Partner Link', coordinates: { x: 58, y: 38 } },
+    { name: 'Reasi', district: 'Reasi', role: 'Hill District School Pilgrimage & Mentorship Site', coordinates: { x: 42, y: 34 } },
+    { name: 'Rajouri', district: 'Rajouri', role: 'Western Jammu Range School Access Hub', coordinates: { x: 24, y: 38 } },
+    { name: 'Poonch', district: 'Poonch', role: 'Frontier Academic Outreach & Student Mentorship', coordinates: { x: 18, y: 22 } },
+    { name: 'Doda', district: 'Doda', role: 'Eastern Jammu Mountain Education Access Hub', coordinates: { x: 74, y: 28 } },
   ];
 
   // Core Values
@@ -171,11 +165,6 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#070A14] via-[#070A14]/30 to-transparent opacity-90 group-hover:opacity-75 transition-opacity" />
 
-                {/* Top Badge */}
-                <span className="absolute top-4 left-4 text-[10px] font-bold text-[#D4AF37] uppercase tracking-widest bg-[#070A14]/90 px-3 py-1 rounded-full border border-[#D4AF37]/30 backdrop-blur-md">
-                  {photo.badge}
-                </span>
-
                 {/* Expand Overlay Icon */}
                 <div className="absolute top-4 right-4 p-2 rounded-full bg-[#070A14]/80 text-[#D4AF37] opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-md">
                   <Maximize2 className="w-4 h-4" />
@@ -219,7 +208,7 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
                     </div>
                     <div className="md:col-span-5 space-y-4 text-left">
                       <span className="px-3 py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-wider inline-block">
-                        {item.badge} • Founder Editorial
+                        Founder Editorial Portfolio
                       </span>
                       <h3 className="text-2xl font-serif font-bold text-[#FAF5EF]">{item.title}</h3>
                       <p className="text-sm text-[#C4BBA3] leading-relaxed">{item.caption}</p>
@@ -341,41 +330,48 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
         </div>
       </section>
 
-      {/* Section 5: Area 17 Style Interactive Reach & Location Map */}
+      {/* Section 5: Area 17 Style Jammu Interactive Pilgrimage Map */}
       <section className="rounded-3xl bg-gradient-to-b from-[#070A14] via-[#0D1427] to-[#070A14] border border-[#D4AF37]/35 p-8 sm:p-12 space-y-10 shadow-2xl">
         <div className="text-center max-w-3xl mx-auto space-y-3">
           <span className="px-3.5 py-1 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-widest inline-flex items-center gap-1.5">
-            <MapPin className="w-3.5 h-3.5" /> Personal Network & Regional Reach
+            <MapPin className="w-3.5 h-3.5" /> Jammu School Pilgrimage & Regional Reach
           </span>
           <h2 className="text-3xl sm:text-4xl font-serif font-bold text-[#FAF5EF]">
-            Relationships Built Across States
+            Map of Jammu & Grassroots Circuit
           </h2>
           <p className="text-sm text-[#C4BBA3] leading-relaxed">
-            Aastitva Alliance is backed by a personal network spanning across states, relationships built long before the company existed through years of involvement in the MUN and academic events circuit.
+            The conscience of Aastitva was shaped on the ground across Jammu's districts—connecting urban institutions with border, suburban, and rural government schools to ensure every student gets a chance at existence.
           </p>
         </div>
 
-        {/* Interactive India Regional SVG Map Component */}
+        {/* Interactive Jammu Region SVG Map Component */}
         <div className="relative rounded-3xl bg-[#070A14] border border-[#243563]/60 p-6 sm:p-8 overflow-hidden min-h-[420px] flex flex-col justify-between shadow-inner">
           {/* Subtle Grid Pattern Overlay */}
           <div className="absolute inset-0 bg-[radial-gradient(#D4AF37_1px,transparent_1px)] [background-size:24px_24px] opacity-10 pointer-events-none" />
 
-          {/* Interactive Nodes Graphic Map Frame */}
+          {/* Interactive Jammu Map Graphic Frame */}
           <div className="relative w-full h-80 sm:h-96 flex items-center justify-center">
-            {/* SVG India Regional Representation */}
-            <svg className="w-full h-full max-w-2xl opacity-30 text-[#243563]" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="0.5">
-              <path d="M 35,10 Q 50,5 65,10 Q 75,25 65,40 Q 55,60 45,90 Q 30,70 25,50 Z" fill="#16203B" />
-              {/* Connecting Flight/Reach Lines */}
-              <line x1="38" y1="22" x2="42" y2="38" stroke="#D4AF37" strokeWidth="0.4" strokeDasharray="1,1" />
-              <line x1="38" y1="22" x2="34" y2="72" stroke="#D4AF37" strokeWidth="0.4" strokeDasharray="1,1" />
-              <line x1="38" y1="22" x2="36" y2="44" stroke="#D4AF37" strokeWidth="0.4" strokeDasharray="1,1" />
-              <line x1="38" y1="22" x2="46" y2="34" stroke="#D4AF37" strokeWidth="0.4" strokeDasharray="1,1" />
-              <line x1="38" y1="22" x2="34" y2="28" stroke="#D4AF37" strokeWidth="0.4" strokeDasharray="1,1" />
+            {/* Custom Jammu District Region SVG Outline */}
+            <svg className="w-full h-full max-w-2xl opacity-35 text-[#D4AF37]" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="0.75">
+              {/* Jammu Region Territory Path */}
+              <path d="M 15,20 C 25,12 45,15 60,25 C 75,30 85,25 92,35 C 90,55 82,75 75,85 C 60,88 40,82 25,75 C 15,60 10,40 15,20 Z" fill="#16203B" fillOpacity="0.4" />
+              <path d="M 25,25 L 45,35 L 55,50 L 40,70 L 25,60 Z" stroke="#243563" strokeWidth="0.4" strokeDasharray="1,1" />
+              <path d="M 55,50 L 75,40 L 85,60 L 62,65 Z" stroke="#243563" strokeWidth="0.4" strokeDasharray="1,1" />
+              
+              {/* Connecting Lines between Jammu Hub and Districts */}
+              <line x1="48" y1="56" x2="54" y2="48" stroke="#D4AF37" strokeWidth="0.4" strokeDasharray="1,1" />
+              <line x1="48" y1="56" x2="44" y2="72" stroke="#D4AF37" strokeWidth="0.4" strokeDasharray="1,1" />
+              <line x1="48" y1="56" x2="32" y2="48" stroke="#D4AF37" strokeWidth="0.4" strokeDasharray="1,1" />
+              <line x1="48" y1="56" x2="62" y2="64" stroke="#D4AF37" strokeWidth="0.4" strokeDasharray="1,1" />
+              <line x1="48" y1="56" x2="76" y2="76" stroke="#D4AF37" strokeWidth="0.4" strokeDasharray="1,1" />
+              <line x1="48" y1="56" x2="58" y2="38" stroke="#D4AF37" strokeWidth="0.4" strokeDasharray="1,1" />
+              <line x1="48" y1="56" x2="24" y2="38" stroke="#D4AF37" strokeWidth="0.4" strokeDasharray="1,1" />
             </svg>
 
-            {/* Pulsing Interactive Location Nodes */}
+            {/* Pulsing Interactive Location Nodes for Jammu Map */}
             {locations.map((loc) => {
               const isSelected = selectedLocation === loc.name;
+              const isJammuCity = loc.name === 'Jammu City';
               return (
                 <button
                   key={loc.name}
@@ -384,19 +380,19 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
                   className={`absolute -translate-x-1/2 -translate-y-1/2 group p-2 transition-all duration-300 ${
                     isSelected ? 'z-30 scale-125' : 'z-20 hover:scale-110'
                   }`}
-                  title={`${loc.name} (${loc.state})`}
+                  title={`${loc.name} (District: ${loc.district})`}
                 >
                   <span className={`relative flex h-4 w-4 items-center justify-center`}>
                     <span
                       className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
-                        loc.name === 'Jammu' ? 'bg-[#D4AF37]' : 'bg-[#52459E]'
+                        isJammuCity ? 'bg-[#D4AF37]' : 'bg-[#52459E]'
                       }`}
                     />
                     <span
                       className={`relative inline-flex rounded-full h-3 w-3 border ${
                         isSelected
                           ? 'bg-[#D4AF37] border-[#FAF5EF]'
-                          : loc.name === 'Jammu'
+                          : isJammuCity
                           ? 'bg-[#D4AF37] border-[#070A14]'
                           : 'bg-[#16203B] border-[#D4AF37]'
                       }`}
@@ -416,7 +412,7 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
             })}
           </div>
 
-          {/* Selected Location Info Drawer */}
+          {/* Selected Jammu Location Info Drawer */}
           {selectedLocation && (
             <div className="p-4 rounded-2xl bg-[#16203B]/90 border border-[#D4AF37]/40 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs z-30">
               <div className="flex items-center gap-3">
@@ -425,7 +421,7 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
                 </div>
                 <div>
                   <h4 className="font-serif font-bold text-sm text-[#FAF5EF]">
-                    {selectedLocation} — {locations.find((l) => l.name === selectedLocation)?.state}
+                    {selectedLocation} — {locations.find((l) => l.name === selectedLocation)?.district} District, Jammu
                   </h4>
                   <p className="text-[#C4BBA3]">
                     {locations.find((l) => l.name === selectedLocation)?.role}
@@ -433,17 +429,17 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
                 </div>
               </div>
               <span className="text-[10px] font-mono text-[#D4AF37] bg-[#070A14] px-3 py-1 rounded-full border border-[#D4AF37]/30">
-                Active Alliance Reach
+                Jammu Pilgrimage Site
               </span>
             </div>
           )}
         </div>
 
-        {/* Area 17 Style Kinetic Location Scroll Marquee */}
+        {/* Area 17 Style Kinetic Jammu Location Scroll Marquee */}
         <div className="overflow-hidden py-4 border-y border-[#D4AF37]/25 relative">
           <div className="flex whitespace-nowrap gap-8 animate-marquee text-lg sm:text-2xl font-serif font-bold tracking-widest text-[#D4AF37]/70 uppercase">
-            <span>JAMMU • DELHI • PUNE • JAIPUR • ABOHAR • HARYANA • DEHRADUN • AMRITSAR • LUDHIANA • KASHMIR • CHANDIGARH • MEERUT • HIMACHAL PRADESH</span>
-            <span>JAMMU • DELHI • PUNE • JAIPUR • ABOHAR • HARYANA • DEHRADUN • AMRITSAR • LUDHIANA • KASHMIR • CHANDIGARH • MEERUT • HIMACHAL PRADESH</span>
+            <span>JAMMU CITY • NAGROTA • RS PURA • AKHNOOR • SAMBA • KATHUA • UDHAMPUR • REASI • RAJOURI • POONCH • DODA</span>
+            <span>JAMMU CITY • NAGROTA • RS PURA • AKHNOOR • SAMBA • KATHUA • UDHAMPUR • REASI • RAJOURI • POONCH • DODA</span>
           </div>
         </div>
       </section>
