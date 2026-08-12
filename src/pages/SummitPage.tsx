@@ -220,21 +220,21 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
         {/* TAB 1: OVERVIEW & COMMITTEES */}
         {activeTab === 'details' && (
           <div className="space-y-12 animate-page-enter">
-            {/* PARTNERSHIP BADGE */}
-            <div className="glass-card rounded-3xl p-8 text-center space-y-4">
-              <span className="text-xs uppercase tracking-widest text-[#D4AF37] font-bold">
+            {/* PARTNERSHIP HEADER (Un-boxed Open Flow) */}
+            <div className="py-6 text-center space-y-4">
+              <span className="text-xs uppercase tracking-widest text-[#D4AF37] font-bold block animate-text-reveal">
                 Institutional Co-Host Alliance
               </span>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-12">
-                <div className="text-lg font-serif font-bold text-[#FAF5EF] flex items-center gap-2">
-                  <span className="text-2xl">🏛️</span> {summitConfig.partnerSchool}
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-12 animate-text-reveal animate-delay-1">
+                <div className="text-xl sm:text-2xl font-serif font-bold text-var-text-primary flex items-center gap-2">
+                  <span className="text-2xl sm:text-3xl">🏛️</span> {summitConfig.partnerSchool}
                 </div>
-                <span className="text-xl text-[#D4AF37] font-bold">✦</span>
-                <div className="text-lg font-serif font-bold text-[#FAF5EF] flex items-center gap-2">
-                  <span className="text-2xl">⚡</span> Aastitva Alliance Infrastructure
+                <span className="text-xl text-[#D4AF37] font-bold hidden sm:inline">✦</span>
+                <div className="text-xl sm:text-2xl font-serif font-bold text-var-text-primary flex items-center gap-2">
+                  <span className="text-2xl sm:text-3xl">⚡</span> Aastitva Alliance Infrastructure
                 </div>
               </div>
-              <p className="text-xs text-[#C4BBA3] max-w-xl mx-auto">
+              <p className="text-sm text-var-text-secondary max-w-xl mx-auto leading-relaxed animate-text-reveal animate-delay-2">
                 Proudly partnered to deliver Jammu’s premier academic diplomacy conference with certified board chairs and full operational support.
               </p>
             </div>

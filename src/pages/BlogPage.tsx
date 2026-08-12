@@ -55,37 +55,39 @@ export const BlogPage: React.FC = () => {
         />
       </div>
 
-      {/* Active Article Reading View */}
+      {/* Active Article Reading View (Un-boxed Editorial Essay Flow) */}
       {activeArticle ? (
-        <div className="glass-card rounded-3xl p-8 sm:p-12 space-y-6 animate-page-enter">
+        <div className="space-y-8 py-6 text-left max-w-4xl mx-auto animate-page-enter">
           <button
             onClick={() => setSelectedPost(null)}
-            className="text-xs text-[#D4AF37] hover:underline font-bold"
+            className="text-xs text-[#D4AF37] hover:underline font-bold inline-flex items-center gap-1"
           >
             ← Back to All Resources
           </button>
 
-          <span className="px-3 py-1 rounded bg-[#52459E]/50 text-[#D4AF37] text-xs font-bold uppercase border border-[#D4AF37]/30 inline-block">
-            {activeArticle.category}
-          </span>
-
-          <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#FAF5EF]">
-            {activeArticle.title}
-          </h2>
-
-          <div className="flex items-center gap-4 text-xs text-[#C4BBA3]">
-            <span className="flex items-center gap-1">
-              <User className="w-3.5 h-3.5 text-[#D4AF37]" /> {activeArticle.author}
+          <div className="space-y-4">
+            <span className="px-3.5 py-1 rounded bg-[#D4AF37]/20 text-[#D4AF37] text-xs font-bold uppercase border border-[#D4AF37]/30 inline-block">
+              {activeArticle.category}
             </span>
-            <span>•</span>
-            <span className="flex items-center gap-1">
-              <Clock className="w-3.5 h-3.5 text-[#D4AF37]" /> {activeArticle.readTime}
-            </span>
-            <span>•</span>
-            <span>{activeArticle.date}</span>
+
+            <h2 className="text-3xl sm:text-5xl font-serif font-bold text-var-text-primary leading-tight">
+              {activeArticle.title}
+            </h2>
+
+            <div className="flex flex-wrap items-center gap-4 text-xs text-var-text-secondary pt-2">
+              <span className="flex items-center gap-1 font-semibold">
+                <User className="w-3.5 h-3.5 text-[#D4AF37]" /> {activeArticle.author}
+              </span>
+              <span>•</span>
+              <span className="flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5 text-[#D4AF37]" /> {activeArticle.readTime}
+              </span>
+              <span>•</span>
+              <span>{activeArticle.date}</span>
+            </div>
           </div>
 
-          <div className="h-80 rounded-2xl overflow-hidden my-6 border border-[#D4AF37]/30 shadow-2xl">
+          <div className="h-80 sm:h-[420px] rounded-3xl overflow-hidden my-6 border border-[#D4AF37]/30 shadow-2xl">
             <img
               src={activeArticle.image}
               alt={activeArticle.title}
@@ -93,7 +95,7 @@ export const BlogPage: React.FC = () => {
             />
           </div>
 
-          <div className="space-y-4 text-sm text-[#C4BBA3] leading-relaxed max-w-3xl">
+          <div className="space-y-6 text-base text-var-text-secondary leading-relaxed border-l-2 border-[#D4AF37]/50 pl-6 sm:pl-8">
             {activeArticle.content.map((paragraph, idx) => (
               <p key={idx}>{paragraph}</p>
             ))}

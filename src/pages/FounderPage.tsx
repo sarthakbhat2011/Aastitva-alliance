@@ -422,9 +422,6 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
                   </p>
                 </div>
               </div>
-              <span className="text-[10px] font-mono text-[#D4AF37] bg-[#070A14] px-3 py-1 rounded-full border border-[#D4AF37]/30">
-                Jammu Pilgrimage Site
-              </span>
             </div>
           )}
         </div>
@@ -438,46 +435,46 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
         </div>
       </section>
 
-      {/* Section 6: Mission & Vision */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="rounded-3xl bg-[#0D1427]/90 border border-[#D4AF37]/40 p-8 space-y-4 shadow-xl">
-          <div className="p-3 w-fit rounded-2xl bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/40">
+      {/* Section 6: Mission & Vision (Un-boxed Open Text Flow) */}
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-10 py-6">
+        <div className="border-l-2 border-[#D4AF37] pl-6 sm:pl-8 space-y-4 text-left">
+          <div className="p-3 w-fit rounded-2xl bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/40 animate-text-reveal">
             <Target className="w-6 h-6" />
           </div>
-          <h3 className="text-2xl font-serif font-bold text-[#FAF5EF]">Mission</h3>
-          <p className="text-sm text-[#C4BBA3] leading-relaxed">
+          <h3 className="text-2xl sm:text-3xl font-serif font-bold text-var-text-primary animate-text-reveal animate-delay-1">Mission</h3>
+          <p className="text-base text-var-text-secondary leading-relaxed animate-text-reveal animate-delay-2">
             To simplify the complexity of running academic events, so every idea gets the chance to fully exist.
           </p>
         </div>
 
-        <div className="rounded-3xl bg-[#0D1427]/90 border border-[#52459E]/50 p-8 space-y-4 shadow-xl">
-          <div className="p-3 w-fit rounded-2xl bg-[#52459E]/30 text-[#D4AF37] border border-[#D4AF37]/40">
+        <div className="border-l-2 border-[#52459E] pl-6 sm:pl-8 space-y-4 text-left">
+          <div className="p-3 w-fit rounded-2xl bg-[#52459E]/30 text-[#D4AF37] border border-[#D4AF37]/40 animate-text-reveal">
             <Compass className="w-6 h-6" />
           </div>
-          <h3 className="text-2xl font-serif font-bold text-[#FAF5EF]">Vision</h3>
-          <p className="text-sm text-[#C4BBA3] leading-relaxed">
+          <h3 className="text-2xl sm:text-3xl font-serif font-bold text-var-text-primary animate-text-reveal animate-delay-1">Vision</h3>
+          <p className="text-base text-var-text-secondary leading-relaxed animate-text-reveal animate-delay-2">
             To become an institutional-level partner for events of every scale and to extend that existence to underprivileged schools and communities, starting with what we learn from our early, experienced partnerships.
           </p>
         </div>
       </section>
 
-      {/* Section 7 & 8: Why Trust a New Company & OUR VALUES / Personal Covenant */}
-      <section className="rounded-3xl bg-gradient-to-br from-[#0D1427] via-[#16203B] to-[#070A14] border border-[#D4AF37]/40 p-8 sm:p-12 space-y-10 shadow-2xl">
-        <div className="space-y-4 text-left max-w-4xl">
-          <span className="px-3.5 py-1 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] text-xs font-bold uppercase tracking-wider inline-block">
+      {/* Section 7 & 8: Why Trust a New Company & OUR VALUES */}
+      <section className="space-y-10 py-6">
+        <div className="space-y-4 text-left max-w-4xl border-l-2 border-[#D4AF37] pl-6 sm:pl-8">
+          <span className="px-3.5 py-1 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] text-xs font-bold uppercase tracking-wider inline-block animate-text-reveal">
             Institutional Trust
           </span>
-          <h2 className="text-3xl sm:text-4xl font-serif font-bold text-[#FAF5EF]">
+          <h2 className="text-3xl sm:text-5xl font-serif font-bold text-var-text-primary animate-text-reveal animate-delay-1">
             Why Trust a New Company
           </h2>
-          <p className="text-sm sm:text-base text-[#C4BBA3] leading-relaxed">
+          <p className="text-base sm:text-lg text-var-text-secondary leading-relaxed animate-text-reveal animate-delay-2">
             Our new & visionary approach is our hallmark. We operate without the bureaucracy of scale, the opacity of middlemen, or the apathy of corporate indifference. Just transparency, word-of-mouth reputation, and a founder who takes personal responsibility, offering self as a personal covenant for every event we help bring into existence.
           </p>
         </div>
 
         {/* Our Values Grid */}
         <div className="space-y-6">
-          <h3 className="text-xl font-serif font-bold text-[#D4AF37] uppercase tracking-wider">
+          <h3 className="text-xl font-serif font-bold text-[#D4AF37] uppercase tracking-wider text-left pl-2">
             OUR VALUES
           </h3>
 
@@ -485,25 +482,25 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
             {coreValues.map((val, idx) => {
               const IconComp = val.icon;
               return (
-                <div key={idx} className="rounded-2xl bg-[#070A14]/90 border border-[#D4AF37]/30 p-5 space-y-3 hover:border-[#D4AF37] transition-colors">
+                <div key={idx} className="rounded-2xl bg-[#070A14]/90 [data-theme='light']:bg-white border border-[#D4AF37]/30 p-5 space-y-3 hover:border-[#D4AF37] transition-colors text-left">
                   <div className="p-2.5 w-fit rounded-xl bg-[#D4AF37]/15 text-[#D4AF37]">
                     <IconComp className="w-5 h-5" />
                   </div>
-                  <h4 className="font-serif font-bold text-base text-[#FAF5EF]">{val.name}</h4>
-                  <p className="text-xs text-[#C4BBA3] leading-relaxed">{val.desc}</p>
+                  <h4 className="font-serif font-bold text-base text-var-text-primary">{val.name}</h4>
+                  <p className="text-xs text-var-text-secondary leading-relaxed">{val.desc}</p>
                 </div>
               );
             })}
           </div>
         </div>
 
-        {/* Personal Covenant Promise Banner */}
-        <div className="p-8 rounded-3xl bg-[#070A14] border-2 border-[#D4AF37]/50 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
+        {/* Personal Covenant Promise Banner (Feature Card - ~30% Container) */}
+        <div className="p-8 rounded-3xl bg-[#070A14] [data-theme='light']:bg-white border-2 border-[#D4AF37]/50 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
           <div className="space-y-2 text-left relative z-10">
             <span className="text-xs text-[#D4AF37] uppercase tracking-widest font-bold flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4" /> Founder's Personal Covenant
             </span>
-            <h4 className="text-xl font-serif font-bold text-[#FAF5EF]">
+            <h4 className="text-xl font-serif font-bold text-var-text-primary">
               "This is a promise: no hidden costs, no vague promises, just honest conversations from day one."
             </h4>
           </div>
