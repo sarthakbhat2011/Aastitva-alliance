@@ -53,35 +53,35 @@ export const SponsorsPage: React.FC<Props> = ({ onNavigate }) => {
         </div>
       </div>
 
-      {/* Benefits Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {/* Benefits Grid (80/20 Un-boxed Open Flow) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 text-left">
         {sponsorBenefits.map((b, i) => {
           const Icon = b.icon;
           return (
             <div
               key={i}
-              className="glass-card rounded-3xl p-8 space-y-3 hover:border-[#D4AF37]/60 transition-colors"
+              className="space-y-3 border-l-2 border-[#D4AF37] pl-6 animate-text-reveal"
             >
-              <div className="p-3 w-fit rounded-2xl bg-[#52459E]/30 text-[#D4AF37] border border-[#D4AF37]/30">
+              <div className="p-3 w-fit rounded-2xl bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/30">
                 <Icon className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-serif font-bold text-[#FAF5EF]">{b.title}</h3>
-              <p className="text-xs sm:text-sm text-[#C4BBA3] leading-relaxed">{b.desc}</p>
+              <h3 className="text-2xl font-serif font-bold text-var-text-primary">{b.title}</h3>
+              <p className="text-base text-var-text-secondary leading-relaxed">{b.desc}</p>
             </div>
           );
         })}
       </div>
 
-      {/* What Sponsors Receive Grid */}
-      <div className="glass-card rounded-3xl p-8 sm:p-12 space-y-6">
-        <h3 className="text-2xl font-serif font-bold gold-gradient-text text-center">
+      {/* What Sponsors Receive (Un-boxed Open Grid) */}
+      <div className="space-y-8 py-6 text-left">
+        <h3 className="text-3xl font-serif font-bold gold-gradient-text text-left border-l-2 border-[#D4AF37] pl-6">
           Sponsorship Tiers & Deliverables
         </h3>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-xs">
-          <div className="p-6 rounded-2xl bg-[#171026]/80 border border-[#D4AF37]/40 space-y-3">
-            <span className="text-[#D4AF37] font-bold text-base block">Title Sponsor</span>
-            <ul className="space-y-2 text-[#C4BBA3]">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-xs sm:text-sm">
+          <div className="border-l-2 border-[#D4AF37] pl-5 space-y-3 animate-text-reveal animate-delay-1">
+            <span className="text-[#D4AF37] font-bold text-lg block font-serif">Title Sponsor</span>
+            <ul className="space-y-2 text-var-text-secondary leading-relaxed">
               <li>• Exclusive "Presented By" naming rights</li>
               <li>• Keynote address at Opening Ceremony</li>
               <li>• Prime backdrop logo & stall placement</li>
@@ -89,9 +89,9 @@ export const SponsorsPage: React.FC<Props> = ({ onNavigate }) => {
             </ul>
           </div>
 
-          <div className="p-6 rounded-2xl bg-[#171026]/80 border border-[#52459E]/40 space-y-3">
-            <span className="text-[#FAF5EF] font-bold text-base block">Co-Sponsor</span>
-            <ul className="space-y-2 text-[#C4BBA3]">
+          <div className="border-l-2 border-[#52459E] pl-5 space-y-3 animate-text-reveal animate-delay-2">
+            <span className="text-var-text-primary font-bold text-lg block font-serif">Co-Sponsor</span>
+            <ul className="space-y-2 text-var-text-secondary leading-relaxed">
               <li>• Secondary backdrop branding</li>
               <li>• Logo on delegate welcome kits & pads</li>
               <li>• Opening ceremony verbal mention</li>
@@ -99,9 +99,9 @@ export const SponsorsPage: React.FC<Props> = ({ onNavigate }) => {
             </ul>
           </div>
 
-          <div className="p-6 rounded-2xl bg-[#171026]/80 border border-[#52459E]/40 space-y-3">
-            <span className="text-[#FAF5EF] font-bold text-base block">Beverage / Kit Partner</span>
-            <ul className="space-y-2 text-[#C4BBA3]">
+          <div className="border-l-2 border-emerald-500 pl-5 space-y-3 animate-text-reveal animate-delay-3">
+            <span className="text-var-text-primary font-bold text-lg block font-serif">Beverage / Kit Partner</span>
+            <ul className="space-y-2 text-var-text-secondary leading-relaxed">
               <li>• Product distribution during high tea & lunch</li>
               <li>• Branding inside delegate bags</li>
               <li>• Dedicated booth stall in foyer</li>
@@ -111,17 +111,17 @@ export const SponsorsPage: React.FC<Props> = ({ onNavigate }) => {
         </div>
       </div>
 
-      {/* CTA Banner */}
-      <div className="text-center glass-card rounded-3xl p-10 space-y-4 max-w-3xl mx-auto">
-        <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#FAF5EF]">
+      {/* CTA Section (Un-boxed Open Finish) */}
+      <div className="text-center space-y-6 max-w-3xl mx-auto py-8">
+        <h2 className="text-3xl sm:text-5xl font-serif font-bold gold-gradient-text animate-text-reveal">
           Become an Official Academic Sponsor
         </h2>
-        <p className="text-xs sm:text-sm text-[#C4BBA3] max-w-xl mx-auto">
+        <p className="text-base text-var-text-secondary max-w-xl mx-auto leading-relaxed animate-text-reveal animate-delay-1">
           Contact our brand partnership division to receive our sponsorship deck and custom package options.
         </p>
         <button
           onClick={() => onNavigate('contact')}
-          className="px-8 py-4 rounded-xl shimmer-btn text-[#171026] font-bold text-sm shadow-xl hover:brightness-110 flex items-center gap-2 mx-auto"
+          className="px-8 py-4 rounded-xl shimmer-btn text-[#171026] font-bold text-sm shadow-xl hover:brightness-110 flex items-center gap-2 mx-auto animate-text-reveal animate-delay-2"
         >
           <span>Talk to Us About Sponsorship</span>
           <ArrowRight className="w-4 h-4" />
