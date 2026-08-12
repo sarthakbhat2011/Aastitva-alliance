@@ -410,22 +410,22 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown 
         </div>
       </section>
 
-      {/* OFFERINGS PREVIEW SECTION (PDF Page 2 & 3 Specification) */}
+      {/* OFFERINGS PREVIEW SECTION (80/20 Open Layout Flow) */}
       <section className="py-20 px-4 sm:px-6 max-w-7xl mx-auto space-y-12">
-        <div className="text-center max-w-2xl mx-auto space-y-3">
-          <span className="px-3.5 py-1 rounded-full bg-[#E8A53E]/20 text-[#E8A53E] text-xs font-bold uppercase tracking-wider">
+        <div className="text-left max-w-3xl space-y-3 border-l-2 border-[#E8A53E] pl-6">
+          <span className="px-3.5 py-1 rounded-full bg-[#E8A53E]/20 text-[#E8A53E] text-xs font-bold uppercase tracking-wider inline-block animate-text-reveal">
             OFFERINGS PREVIEW
           </span>
-          <h2 className="text-3xl sm:text-4xl font-playfair font-bold text-white">
+          <h2 className="text-3xl sm:text-5xl font-playfair font-bold text-var-text-primary animate-text-reveal animate-delay-1">
             End-to-End Infrastructure Coverage
           </h2>
-          <p className="text-sm text-[#D3C5E5]">
-            Everything physical, academic, and operational needed for a flawless event.
+          <p className="text-base text-var-text-secondary leading-relaxed animate-text-reveal animate-delay-2">
+            Everything physical, academic, and operational needed for a flawless academic event in Jammu & Kashmir.
           </p>
         </div>
 
-        {/* 6 OFFERINGS FROM PDF PAGE 2 & 3 */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* 6 OFFERINGS (Un-boxed Open Grid Flow) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 text-left">
           {[
             {
               title: 'EXECUTIVE BOARD',
@@ -434,27 +434,27 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown 
             },
             {
               title: 'VENUE SOURCING & LOGISTICS',
-              desc: 'Finding and booking the space, seating arrangements, AV/sound setup, signage & aesthetics, basically everything physical that needs to be in place on the day.',
+              desc: 'Finding and booking the space, seating arrangements, AV/sound setup, signage & aesthetics—everything physical in place on event day.',
               icon: Building,
             },
             {
               title: 'TRAINING SESSIONS',
-              desc: 'Pre-event prep sessions, public speaking, research methodology, debate strategy, or whatever skill the specific event demands.',
+              desc: 'Pre-event prep sessions, public speaking, research methodology, debate strategy, and first-timer orientation.',
               icon: BookOpen,
             },
             {
               title: 'MARKETING & PARTICIPANT ACQUISITION',
-              desc: 'Filling seats through social media promotion, campus outreach, registration management.',
+              desc: 'Filling seats through social media promotion, campus outreach across 30+ schools, and registration management.',
               icon: Globe,
             },
             {
               title: 'EVENT DAY EXECUTION & COORDINATION',
-              desc: 'Running the actual day-of operations, timing, coordination between teams, handling last-minute issues.',
+              desc: 'Running the actual day-of operations, timing, coordination between teams, and handling real-time logistics.',
               icon: Shield,
             },
             {
               title: 'NETWORK AND EXPOSURE ACCESS',
-              desc: 'Connecting the organisation/school into the growing circuit, other schools, organisations, students, and future collaboration opportunities.',
+              desc: 'Connecting your institution into the growing regional circuit, guest speakers, and future collaboration opportunities.',
               icon: Trophy,
             },
           ].map((item, idx) => {
@@ -462,75 +462,70 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown 
             return (
               <div
                 key={idx}
-                className="glass-card p-6 rounded-3xl space-y-4 flex flex-col justify-between lusion-hover-tilt border border-[#D4AF37]/30"
+                className="space-y-4 border-l-2 border-[#D4AF37]/50 pl-5 text-left animate-text-reveal"
               >
-                <div className="space-y-3">
-                  <div className="w-12 h-12 rounded-2xl bg-[#050811] border border-[#D4AF37]/40 flex items-center justify-center text-[#E8A53E]">
-                    <IconComponent className="w-6 h-6" />
-                  </div>
-                  <h3 className="text-lg font-playfair font-bold text-white">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs text-[#cecece] leading-relaxed font-inter">
-                    {item.desc}
-                  </p>
+                <div className="w-11 h-11 rounded-2xl bg-[#E8A53E]/15 border border-[#E8A53E]/30 flex items-center justify-center text-[#E8A53E]">
+                  <IconComponent className="w-5 h-5" />
                 </div>
-
-                <div className="pt-3 border-t border-[#D4AF37]/20">
-                  <button
-                    onClick={() => onNavigate('offerings')}
-                    className="text-xs font-bold text-[#E8A53E] hover:underline flex items-center gap-1"
-                  >
-                    <span>View Offering Details</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
+                <h3 className="text-lg font-playfair font-bold text-var-text-primary">
+                  {item.title}
+                </h3>
+                <p className="text-sm text-var-text-secondary leading-relaxed font-inter">
+                  {item.desc}
+                </p>
+                <button
+                  onClick={() => onNavigate('offerings')}
+                  className="text-xs font-bold text-[#E8A53E] hover:underline flex items-center gap-1 pt-1"
+                >
+                  <span>View Offering Details</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
               </div>
             );
           })}
         </div>
       </section>
 
-      {/* FOUNDER / TEAM CREDIBILITY STRIP (PDF Page 3 Specification) */}
-      <section className="py-14 bg-[#0B1120] border-y border-[#D4AF37]/30 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="space-y-2 text-center md:text-left">
-            <span className="text-xs font-bold uppercase tracking-widest text-[#E8A53E]">
-              Founder & Secretariat Credibility Strip
+      {/* FOUNDER / TEAM CREDIBILITY STRIP (Un-boxed Open Stat Flow) */}
+      <section className="py-14 bg-transparent border-y border-[#D4AF37]/30 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 text-left">
+          <div className="space-y-2 border-l-2 border-[#E8A53E] pl-6">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#E8A53E] animate-text-reveal">
+              Founder & Secretariat Credibility
             </span>
-            <h3 className="text-2xl sm:text-3xl font-playfair font-bold text-white">
+            <h3 className="text-2xl sm:text-3xl font-playfair font-bold text-var-text-primary animate-text-reveal animate-delay-1">
               Led by Jammu’s Most Experienced Debate Directors
             </h3>
-            <p className="text-xs sm:text-sm text-[#D3C5E5] max-w-xl">
-              25+ certified chairs, 100% parliamentary compliance, and 12+ institutional summits executed seamlessly.
+            <p className="text-sm text-var-text-secondary max-w-xl animate-text-reveal animate-delay-2">
+              25+ certified chairs, 100% parliamentary compliance, and verified institutional summit execution.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <div className="glass-card px-5 py-3 rounded-2xl border border-[#D4AF37]/30 text-center">
-              <div className="text-2xl font-bold text-[#E8A53E]">25+</div>
-              <div className="text-[10px] text-[#B8A9C9] uppercase">Certified EB Members</div>
+          <div className="flex flex-wrap items-center justify-center gap-8">
+            <div className="text-center space-y-1">
+              <div className="text-3xl font-bold text-[#E8A53E]">25+</div>
+              <div className="text-[11px] font-semibold text-var-text-secondary uppercase tracking-wider">Certified EB Members</div>
             </div>
-            <div className="glass-card px-5 py-3 rounded-2xl border border-[#D4AF37]/30 text-center">
-              <div className="text-2xl font-bold text-[#E8A53E]">100%</div>
-              <div className="text-[10px] text-[#B8A9C9] uppercase">ROP Compliance</div>
+            <div className="text-center space-y-1">
+              <div className="text-3xl font-bold text-[#E8A53E]">100%</div>
+              <div className="text-[11px] font-semibold text-var-text-secondary uppercase tracking-wider">ROP Compliance</div>
             </div>
-            <div className="glass-card px-5 py-3 rounded-2xl border border-[#D4AF37]/30 text-center">
-              <div className="text-2xl font-bold text-[#E8A53E]">₹0</div>
-              <div className="text-[10px] text-[#B8A9C9] uppercase">Risk Guarantee</div>
+            <div className="text-center space-y-1">
+              <div className="text-3xl font-bold text-[#E8A53E]">₹0</div>
+              <div className="text-[11px] font-semibold text-var-text-secondary uppercase tracking-wider">Risk Guarantee</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* BLOG / INSIGHT TEASER ("From our blog" as specified in PDF Page 3) */}
+      {/* BLOG / INSIGHT TEASER ("From our blog") */}
       <section className="py-20 px-4 sm:px-6 max-w-7xl mx-auto space-y-12">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-l-2 border-[#E8A53E] pl-6 text-left">
           <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-[#E8A53E]">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#E8A53E] animate-text-reveal">
               From our blog
             </span>
-            <h2 className="text-3xl sm:text-4xl font-playfair font-bold text-white mt-1">
+            <h2 className="text-3xl sm:text-4xl font-playfair font-bold text-var-text-primary mt-1 animate-text-reveal animate-delay-1">
               Latest Insights & Event Guides
             </h2>
           </div>
@@ -543,76 +538,72 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown 
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {BLOG_POSTS.slice(0, 3).map((post) => (
             <div
               key={post.id}
               onClick={() => onNavigate('blog')}
-              className="glass-card rounded-3xl overflow-hidden cursor-pointer lusion-hover-tilt border border-[#D4AF37]/30 flex flex-col justify-between"
+              className="group cursor-pointer space-y-4 text-left border-l-2 border-transparent hover:border-[#E8A53E] pl-4 transition-all"
             >
-              <img
-                src={post.image}
-                alt={post.title}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6 space-y-3 flex-1 flex flex-col justify-between">
-                <div className="space-y-2">
-                  <span className="text-[10px] font-bold text-[#E8A53E] uppercase tracking-wider">
-                    {post.category} • {post.readTime}
-                  </span>
-                  <h3 className="text-lg font-playfair font-bold text-white hover:text-[#E8A53E] transition-colors">
-                    {post.title}
-                  </h3>
-                  <p className="text-xs text-[#cecece] line-clamp-2">
-                    {post.excerpt}
-                  </p>
-                </div>
-                <div className="pt-3 border-t border-[#D4AF37]/20 flex items-center justify-between text-xs text-[#B8A9C9]">
-                  <span>{post.date}</span>
-                  <span className="text-[#E8A53E] font-bold">Read →</span>
-                </div>
+              <div className="h-48 rounded-2xl overflow-hidden border border-[#D4AF37]/30 shadow-lg">
+                <img
+                  src={post.image}
+                  alt={post.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <div className="space-y-2">
+                <span className="text-[10px] font-bold text-[#E8A53E] uppercase tracking-wider block">
+                  {post.category} • {post.readTime}
+                </span>
+                <h3 className="text-lg font-playfair font-bold text-var-text-primary group-hover:text-[#E8A53E] transition-colors">
+                  {post.title}
+                </h3>
+                <p className="text-xs text-var-text-secondary line-clamp-2 leading-relaxed">
+                  {post.excerpt}
+                </p>
+              </div>
+              <div className="pt-2 flex items-center justify-between text-xs text-[#E8A53E] font-bold">
+                <span>{post.date}</span>
+                <span>Read Article →</span>
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Call To Action Banner */}
-      <section className="py-20 px-4 sm:px-6 max-w-7xl mx-auto">
-        <div className="glass-card p-8 sm:p-12 rounded-3xl border-2 border-[#D4AF37]/40 relative overflow-hidden text-center space-y-6 shadow-2xl">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Call To Action Section (Un-boxed Open Hero Finish) */}
+      <section className="py-20 px-4 sm:px-6 max-w-5xl mx-auto text-center space-y-8">
+        <span className="px-4 py-1.5 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] text-xs font-bold uppercase tracking-wider inline-block animate-text-reveal">
+          Elevate Your School's MUN Experience
+        </span>
 
-          <span className="px-4 py-1.5 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] text-xs font-bold uppercase tracking-wider inline-block">
-            Elevate Your School's MUN Experience
-          </span>
+        <h2 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold gold-gradient-text max-w-3xl mx-auto leading-tight animate-text-reveal animate-delay-1">
+          Ready to Host a World-Class Academic Event in Jammu?
+        </h2>
 
-          <h2 className="text-3xl sm:text-5xl font-serif font-bold gold-gradient-text max-w-2xl mx-auto">
-            Ready to Host a World-Class Academic Event in Jammu?
-          </h2>
+        <p className="text-base sm:text-lg text-var-text-secondary max-w-2xl mx-auto leading-relaxed animate-text-reveal animate-delay-2">
+          Partner with Astitva Alliance for zero-risk infrastructure, elite Executive Board recruitment, and complete delegate preparation.
+        </p>
 
-          <p className="text-sm sm:text-base text-[#C4BBA3] max-w-xl mx-auto leading-relaxed">
-            Partner with Astitva Alliance for zero-risk infrastructure, elite Executive Board recruitment, and complete delegate preparation.
-          </p>
+        <div className="flex flex-wrap items-center justify-center gap-4 pt-4 animate-text-reveal animate-delay-3">
+          <button
+            onClick={() => onNavigate('contact')}
+            className="px-8 py-4 rounded-xl shimmer-btn text-[#171026] font-bold text-sm shadow-[0_8px_30px_rgba(212,175,55,0.4)] hover:brightness-110 active:scale-95 transition-all flex items-center gap-2"
+          >
+            <span>Schedule Partnership Call</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
 
-          <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-            <button
-              onClick={() => onNavigate('contact')}
-              className="px-8 py-4 rounded-xl shimmer-btn text-[#171026] font-bold text-sm shadow-[0_8px_30px_rgba(212,175,55,0.4)] hover:brightness-110 active:scale-95 transition-all flex items-center gap-2"
-            >
-              <span>Schedule Partnership Call</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-
-            <a
-              href="https://aquitas-aastitva11.onrender.com/"
-              target="_blank"
-              rel="noreferrer"
-              className="px-6 py-4 rounded-xl bg-[#171026] border border-[#D4AF37]/50 text-[#D4AF37] font-bold text-sm hover:bg-[#231B42] transition-all flex items-center gap-2"
-            >
-              <span>Visit Live Aequitas Portal</span>
-              <ExternalLink className="w-4 h-4" />
-            </a>
-          </div>
+          <a
+            href="https://aquitas-aastitva11.onrender.com/"
+            target="_blank"
+            rel="noreferrer"
+            className="px-6 py-4 rounded-xl bg-transparent border border-[#D4AF37]/60 text-[#D4AF37] font-bold text-sm hover:bg-[#D4AF37]/10 transition-all flex items-center gap-2"
+          >
+            <span>Visit Live Aequitas Portal</span>
+            <ExternalLink className="w-4 h-4" />
+          </a>
         </div>
       </section>
     </div>
