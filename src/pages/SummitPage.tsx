@@ -17,6 +17,7 @@ import {
   ExternalLink,
   ShieldCheck,
   ChevronRight,
+  Landmark,
 } from 'lucide-react';
 
 interface Props {
@@ -220,22 +221,40 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
         {/* TAB 1: OVERVIEW & COMMITTEES */}
         {activeTab === 'details' && (
           <div className="space-y-12 animate-page-enter">
-            {/* PARTNERSHIP HEADER (Un-boxed Open Flow) */}
-            <div className="py-6 text-center space-y-4">
-              <span className="text-xs uppercase tracking-widest text-[#D4AF37] font-bold block animate-text-reveal">
-                Institutional Co-Host Alliance
-              </span>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-12 animate-text-reveal animate-delay-1">
-                <div className="text-xl sm:text-2xl font-serif font-bold text-var-text-primary flex items-center gap-2">
-                  <span className="text-2xl sm:text-3xl">🏛️</span> {summitConfig.partnerSchool}
+            {/* PARTNERSHIP HEADER (Prestigious Formal Institutional Heraldry) */}
+            <div className="py-10 text-center space-y-6 max-w-5xl mx-auto">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-widest animate-text-reveal">
+                <Landmark className="w-3.5 h-3.5" />
+                <span>INSTITUTIONAL CO-HOST ALLIANCE</span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-11 gap-6 items-center pt-2 animate-text-reveal animate-delay-1">
+                {/* Left Pillar: Host Schools */}
+                <div className="md:col-span-5 space-y-2 text-center md:text-right">
+                  <span className="text-[11px] font-bold text-[#D4AF37] uppercase tracking-wider block">Co-Host Institutions</span>
+                  <h3 className="text-xl sm:text-2xl font-serif font-bold text-var-text-primary leading-tight">
+                    {summitConfig.partnerSchool}
+                  </h3>
                 </div>
-                <span className="text-xl text-[#D4AF37] font-bold hidden sm:inline">✦</span>
-                <div className="text-xl sm:text-2xl font-serif font-bold text-var-text-primary flex items-center gap-2">
-                  <span className="text-2xl sm:text-3xl">⚡</span> Aastitva Alliance Infrastructure
+
+                {/* Center Heraldic Divider Badge */}
+                <div className="md:col-span-1 flex flex-col items-center justify-center my-2 md:my-0">
+                  <div className="w-10 h-10 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/50 text-[#D4AF37] flex items-center justify-center font-serif font-bold text-sm shadow-md">
+                    ✦
+                  </div>
+                </div>
+
+                {/* Right Pillar: Aastitva Infrastructure */}
+                <div className="md:col-span-5 space-y-2 text-center md:text-left">
+                  <span className="text-[11px] font-bold text-[#D4AF37] uppercase tracking-wider block">Academic Infrastructure Partner</span>
+                  <h3 className="text-xl sm:text-2xl font-serif font-bold text-var-text-primary leading-tight">
+                    Aastitva Alliance Infrastructure
+                  </h3>
                 </div>
               </div>
-              <p className="text-sm text-var-text-secondary max-w-xl mx-auto leading-relaxed animate-text-reveal animate-delay-2">
-                Proudly partnered to deliver Jammu’s premier academic diplomacy conference with certified board chairs and full operational support.
+
+              <p className="text-sm sm:text-base text-var-text-secondary max-w-2xl mx-auto leading-relaxed pt-2 animate-text-reveal animate-delay-2">
+                Proudly partnered to deliver Jammu’s premier academic diplomacy conference with certified board chairs, technical logistics, and full operational support.
               </p>
             </div>
 
