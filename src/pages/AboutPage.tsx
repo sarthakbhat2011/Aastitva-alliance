@@ -82,64 +82,64 @@ export const AboutPage: React.FC<Props> = ({ onNavigate }) => {
         </div>
       </div>
 
-      {/* Our Story Grid */}
-      <div id="genesis-section" className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center glass-card p-8 sm:p-12 rounded-3xl">
-        <div className="space-y-4">
-          <span className="text-xs text-[#D4AF37] uppercase tracking-widest font-bold">
+      {/* Our Story Grid - Un-boxed Editorial Flow */}
+      <div id="genesis-section" className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-6">
+        <div className="space-y-6 text-left border-l-2 border-[#D4AF37] pl-6 sm:pl-8">
+          <span className="text-xs text-[#D4AF37] uppercase tracking-widest font-bold block animate-text-reveal">
             Genesis & Mission
           </span>
-          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-[#FAF5EF]">
+          <h2 className="text-3xl sm:text-4xl font-serif font-bold text-var-text-primary animate-text-reveal animate-delay-1">
             Why We Founded Astitva Alliance
           </h2>
-          <p className="text-sm text-[#C4BBA3] leading-relaxed">
+          <p className="text-base text-var-text-secondary leading-relaxed animate-text-reveal animate-delay-2">
             Aastitva Alliance was born out of a shared observation of academic events in Jammu. For years, school festivals and MUNs suffered from fragmented organization—teachers overwhelmed with logistics, inexperienced chairs causing committee delays, and students missing out on genuine debate.
           </p>
-          <p className="text-sm text-[#C4BBA3] leading-relaxed">
+          <p className="text-base text-var-text-secondary leading-relaxed animate-text-reveal animate-delay-3">
             We decided to build a standardized infrastructure backbone. Aastitva provides schools with complete turn-key support: vetted Executive Boards, professional venue sourcing, custom delegate handbooks, and outreach networks.
           </p>
         </div>
 
-        <div className="relative h-80 rounded-2xl overflow-hidden border border-[#D4AF37]/40 shadow-2xl">
+        <div className="relative h-80 sm:h-96 rounded-3xl overflow-hidden border border-[#D4AF37]/40 shadow-2xl">
           <img
             src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1200"
             alt="Aastitva Team and Event Venue"
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#171026] via-transparent to-transparent" />
-          <span className="absolute bottom-4 left-4 text-xs text-[#FAF5EF] font-serif font-bold bg-[#171026]/90 px-3 py-1.5 rounded-lg border border-[#D4AF37]/30 backdrop-blur-md">
-            Academic Summit Hall • Jammu
+          <div className="absolute inset-0 bg-gradient-to-t from-[#070A14] via-transparent to-transparent" />
+          <span className="absolute bottom-4 left-4 text-xs text-white font-serif font-bold bg-black/80 px-4 py-2 rounded-xl border border-[#D4AF37]/30 backdrop-blur-md">
+            Academic Summit Hall • Jammu Region
           </span>
         </div>
       </div>
 
-      {/* The Gap We Saw */}
-      <div className="glass-card rounded-3xl p-8 sm:p-12 space-y-6">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/30">
+      {/* The Gap We Resolve - Un-boxed Grid */}
+      <div className="space-y-8 py-6">
+        <div className="flex items-center gap-3 animate-text-reveal">
+          <div className="p-3 rounded-2xl bg-rose-500/20 text-rose-400 border border-rose-500/30">
             <ShieldAlert className="w-6 h-6" />
           </div>
-          <div>
-            <h2 className="text-2xl font-serif font-bold text-[#FAF5EF]">The Gap We Resolve</h2>
-            <p className="text-xs text-[#C4BBA3]">Eliminating Traditional School Event Bottlenecks</p>
+          <div className="text-left">
+            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-var-text-primary">The Gap We Resolve</h2>
+            <p className="text-xs text-[#D4AF37] font-semibold uppercase tracking-wider">Eliminating Traditional School Event Bottlenecks</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-[#C4BBA3]">
-          <div className="p-6 rounded-2xl bg-[#171026]/80 border border-[#52459E]/40 space-y-2">
-            <span className="text-rose-300 font-bold block text-sm">1. Logistics Overload</span>
-            <p className="text-xs leading-relaxed">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+          <div className="border-l-2 border-rose-500/60 pl-5 space-y-2 animate-text-reveal animate-delay-1">
+            <span className="text-rose-400 font-bold block text-sm sm:text-base">1. Logistics Overload</span>
+            <p className="text-sm text-var-text-secondary leading-relaxed">
               School staff forced to handle catering, sound tech, certificates, and trophies alongside daily teaching responsibilities.
             </p>
           </div>
-          <div className="p-6 rounded-2xl bg-[#171026]/80 border border-[#52459E]/40 space-y-2">
-            <span className="text-rose-300 font-bold block text-sm">2. Inconsistent Moderation</span>
-            <p className="text-xs leading-relaxed">
+          <div className="border-l-2 border-rose-500/60 pl-5 space-y-2 animate-text-reveal animate-delay-2">
+            <span className="text-rose-400 font-bold block text-sm sm:text-base">2. Inconsistent Moderation</span>
+            <p className="text-sm text-var-text-secondary leading-relaxed">
               Unvetted chairs lacking depth in Rules of Procedure, leading to biased awards and frustrated delegates.
             </p>
           </div>
-          <div className="p-6 rounded-2xl bg-[#171026]/80 border border-[#52459E]/40 space-y-2">
-            <span className="text-rose-300 font-bold block text-sm">3. Low Attendance</span>
-            <p className="text-xs leading-relaxed">
+          <div className="border-l-2 border-rose-500/60 pl-5 space-y-2 animate-text-reveal animate-delay-3">
+            <span className="text-rose-400 font-bold block text-sm sm:text-base">3. Low Attendance</span>
+            <p className="text-sm text-var-text-secondary leading-relaxed">
               Limited outreach beyond immediate school walls, missing out on inter-school networking and full committee halls.
             </p>
           </div>
@@ -147,23 +147,23 @@ export const AboutPage: React.FC<Props> = ({ onNavigate }) => {
       </div>
 
       {/* Mission & Vision Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="glass-card rounded-3xl p-8 space-y-4">
-          <div className="p-3 w-fit rounded-xl bg-[#52459E]/30 text-[#D4AF37] border border-[#D4AF37]/30">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-6">
+        <div className="border-l-2 border-[#D4AF37] pl-6 space-y-4 text-left">
+          <div className="p-3 w-fit rounded-xl bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/30 animate-text-reveal">
             <Target className="w-6 h-6" />
           </div>
-          <h3 className="text-2xl font-serif font-bold text-[#FAF5EF]">Our Mission</h3>
-          <p className="text-sm text-[#C4BBA3] leading-relaxed">
+          <h3 className="text-2xl font-serif font-bold text-var-text-primary animate-text-reveal animate-delay-1">Our Mission</h3>
+          <p className="text-base text-var-text-secondary leading-relaxed animate-text-reveal animate-delay-2">
             To provide Jammu’s schools and colleges with world-class, hassle-free event infrastructure, enabling students to master public speaking, critical thinking, and international diplomacy.
           </p>
         </div>
 
-        <div className="glass-card rounded-3xl p-8 space-y-4">
-          <div className="p-3 w-fit rounded-xl bg-[#52459E]/30 text-[#D4AF37] border border-[#D4AF37]/30">
+        <div className="border-l-2 border-[#52459E] pl-6 space-y-4 text-left">
+          <div className="p-3 w-fit rounded-xl bg-[#52459E]/30 text-[#D4AF37] border border-[#D4AF37]/30 animate-text-reveal">
             <Compass className="w-6 h-6" />
           </div>
-          <h3 className="text-2xl font-serif font-bold text-[#FAF5EF]">Our Vision</h3>
-          <p className="text-sm text-[#C4BBA3] leading-relaxed">
+          <h3 className="text-2xl font-serif font-bold text-var-text-primary animate-text-reveal animate-delay-1">Our Vision</h3>
+          <p className="text-base text-var-text-secondary leading-relaxed animate-text-reveal animate-delay-2">
             To establish Jammu as a premier academic event hub in Northern India, producing articulate global citizens who represent J&K on national and international forums.
           </p>
         </div>

@@ -111,21 +111,21 @@ export const HowItWorksPage: React.FC<Props> = ({ onNavigate }) => {
               </div>
 
               {/* Content Card */}
-              <div className="w-full sm:w-[calc(50%-2.5rem)] ml-16 sm:ml-0 glass-card rounded-2xl p-6 shadow-xl space-y-3 hover:border-[#D4AF37]/60 transition-all">
+              <div className="w-full sm:w-[calc(50%-2.5rem)] ml-16 sm:ml-0 glass-card rounded-2xl p-6 shadow-xl space-y-3 hover:border-[#D4AF37]/60 transition-all text-left animate-text-reveal">
                 <div className="flex items-center gap-3">
-                  <div className="p-2.5 rounded-xl bg-[#52459E]/30 text-[#D4AF37] border border-[#D4AF37]/30">
+                  <div className="p-2.5 rounded-xl bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/30">
                     <Icon className="w-5 h-5" />
                   </div>
-                  <h3 className="text-lg font-serif font-bold text-[#FAF5EF]">
+                  <h3 className="text-lg font-serif font-bold text-var-text-primary">
                     {s.title}
                   </h3>
                 </div>
 
-                <p className="text-xs text-[#C4BBA3] leading-relaxed">{s.desc}</p>
+                <p className="text-xs sm:text-sm text-var-text-secondary leading-relaxed">{s.desc}</p>
 
-                <div className="pt-2 text-[11px] font-semibold text-[#D4AF37] flex items-center gap-1.5 border-t border-[#52459E]/30">
+                <div className="pt-2 text-[11px] font-semibold text-[#D4AF37] flex items-center gap-1.5 border-t border-[#D4AF37]/20">
                   <span>Key Outcome:</span>
-                  <span className="text-[#FAF5EF]">{s.deliverable}</span>
+                  <span className="text-var-text-primary font-bold">{s.deliverable}</span>
                 </div>
               </div>
             </div>

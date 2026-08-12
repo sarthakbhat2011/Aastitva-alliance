@@ -531,3 +531,47 @@
 .animate-marquee:hover {
   animation-play-state: paused;
 }
+
+/* Dynamic Text Entrance & Kinetic Reveal Animations */
+@keyframes textFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes textShimmerGold {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-text-reveal {
+  animation: textFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-delay-1 { animation-delay: 0.12s; }
+.animate-delay-2 { animation-delay: 0.24s; }
+.animate-delay-3 { animation-delay: 0.36s; }
+.animate-delay-4 { animation-delay: 0.48s; }
+
+.gold-gradient-text {
+  background: var(--gold-gradient);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textShimmerGold 8s ease-in-out infinite alternate;
+}
+
+/* Un-boxed Clean Editorial Text Container Utility */
+.unboxed-text-flow {
+  position: relative;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}

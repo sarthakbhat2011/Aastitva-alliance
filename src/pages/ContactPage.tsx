@@ -100,14 +100,14 @@ export const ContactPage: React.FC = () => {
       {/* Header Banner with Ambient 3D Canvas */}
       <div className="bg-gradient-to-br from-[#0D1427]/95 via-[#16203B]/90 to-[#070A14]/95 border border-[#D4AF37]/35 shadow-[0_16px_50px_rgba(0,0,0,0.85)] p-6 sm:p-12 rounded-3xl relative overflow-hidden flex flex-col lg:grid lg:grid-cols-12 gap-8 items-center">
         <div className="w-full lg:col-span-8 space-y-4 text-left z-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-widest shadow-sm">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-widest shadow-sm animate-text-reveal">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Institutional Partnerships</span>
           </div>
-          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-serif font-bold gold-gradient-text leading-tight">
+          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-serif font-bold gold-gradient-text leading-tight animate-text-reveal animate-delay-1">
             Partner With Astitva Alliance
           </h1>
-          <p className="text-sm sm:text-base text-[#C4BBA3] w-full max-w-2xl leading-relaxed">
+          <p className="text-sm sm:text-base text-var-text-secondary w-full max-w-2xl leading-relaxed animate-text-reveal animate-delay-2">
             Empower your institution with Jammu's premier academic event infrastructure. Submit your event scope to receive a customized Executive Board roster, venue layout, and budget plan within 24 hours.
           </p>
         </div>

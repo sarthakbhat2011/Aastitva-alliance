@@ -236,18 +236,18 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown 
               <span>Academic Event Infrastructure Partner</span>
             </div>
 
-            {/* HEADLINE: Playfair Display 52px, #FFFFFF (Add glow that sort of embosses) */}
-            <h1 className="hero-headline-text">
+            {/* HEADLINE: Playfair Display 52px */}
+            <h1 className="hero-headline-text animate-text-reveal">
               The First & Only Academic Event Infrastructure Partner in Jammu
             </h1>
 
-            {/* SUBHEADLINE: Inter 20px, #D3C5E5 */}
-            <p className="hero-subheadline-text font-inter">
+            {/* SUBHEADLINE: Inter 20px */}
+            <p className="hero-subheadline-text font-inter animate-text-reveal animate-delay-1">
               One partnership. Everything covered.
             </p>
 
-            {/* BODY PARAGRAPH: Inter 19px, #cecece */}
-            <p className="body-paragraph-text font-inter max-w-2xl mx-auto lg:mx-0">
+            {/* BODY PARAGRAPH: Inter 19px */}
+            <p className="body-paragraph-text font-inter max-w-2xl mx-auto lg:mx-0 animate-text-reveal animate-delay-2">
               We partner with leading educational institutions in Jammu to power MUNs, debate summits, quizzes, and literary festivals. From certified Executive Board deployment to technical logistics, we manage end-to-end event execution.
             </p>
 

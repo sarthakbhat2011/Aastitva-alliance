@@ -219,46 +219,44 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
           </div>
         )}
 
-        {/* Editorial Story Text Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch pt-4">
-          <div className="lg:col-span-7 rounded-3xl bg-[#0D1427]/90 border border-[#243563]/60 p-8 sm:p-10 space-y-5 shadow-xl">
-            <div className="flex items-center gap-3">
-              <div className="p-3 rounded-2xl bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/30">
-                <Quote className="w-6 h-6" />
+        {/* Editorial Story Text - Open Un-boxed Editorial Flow */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start pt-6">
+          <div className="lg:col-span-7 space-y-6 text-left border-l-2 border-[#D4AF37]/50 pl-6 sm:pl-8">
+            <div className="flex items-center gap-3 animate-text-reveal">
+              <div className="p-2.5 rounded-xl bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/30">
+                <Quote className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-xl font-serif font-bold text-[#FAF5EF]">The Corridors of Debate</h3>
-                <p className="text-xs text-[#C4BBA3]">Origin & Observation</p>
+                <h3 className="text-2xl font-serif font-bold text-var-text-primary">The Corridors of Debate</h3>
+                <p className="text-xs text-[#D4AF37] font-semibold uppercase tracking-wider">Origin & Observation</p>
               </div>
             </div>
 
-            <p className="text-sm text-[#C4BBA3] leading-relaxed">
-              My journey began in the corridors of India’s MUN circuits, where I witnessed a recurring irony: organisers, brimming with ambition, were often reduced to juggling logistics, often sacrificing the creative soul of their event to the tyranny of management.
+            <p className="text-base text-var-text-secondary leading-relaxed animate-text-reveal animate-delay-1">
+              My journey began in the corridors of India’s MUN circuits, where I witnessed a recurring irony: organisers, brimming with ambition, were often reduced to juggling logistics, sacrificing the creative soul of their event to the tyranny of management.
             </p>
-            <p className="text-sm text-[#C4BBA3] leading-relaxed">
+            <p className="text-base text-var-text-secondary leading-relaxed animate-text-reveal animate-delay-2">
               I observed that while every institution possesses distinct values and a desire to leave a mark, that spark is too often extinguished by the sheer burden of operational chaos.
             </p>
 
-            <div className="p-4 rounded-2xl bg-[#16203B]/90 border border-[#D4AF37]/30 font-serif font-bold text-[#D4AF37] text-sm">
+            <div className="py-3 px-5 rounded-2xl bg-[#D4AF37]/10 border border-[#D4AF37]/40 font-serif font-bold text-[#D4AF37] text-base animate-text-reveal animate-delay-3 inline-block">
               Aastitva Alliance was born to fill that void.
             </div>
           </div>
 
-          <div className="lg:col-span-5 rounded-3xl bg-[#16203B]/60 border border-[#D4AF37]/30 p-8 sm:p-10 space-y-5 flex flex-col justify-between shadow-xl">
-            <div className="space-y-4">
-              <span className="text-xs font-bold text-[#D4AF37] uppercase tracking-widest">
-                The Core Insight
-              </span>
-              <h3 className="text-2xl font-serif font-bold text-[#FAF5EF]">
-                "Ideas were abundant. Existence was rare."
-              </h3>
-              <p className="text-sm text-[#C4BBA3] leading-relaxed">
-                The problem is barely a lack of effort; rather, I feel it’s the absence of a dedicated ecosystem connecting all the pieces an event actually needs, each one solved in isolation, event after event, by people already stretched thin.
-              </p>
-            </div>
+          <div className="lg:col-span-5 space-y-6 text-left border-l-2 border-[#52459E]/50 pl-6 sm:pl-8">
+            <span className="text-xs font-bold text-[#D4AF37] uppercase tracking-widest block animate-text-reveal">
+              The Core Insight
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-serif font-bold text-var-text-primary leading-tight animate-text-reveal animate-delay-1">
+              "Ideas were abundant. Existence was rare."
+            </h3>
+            <p className="text-base text-var-text-secondary leading-relaxed animate-text-reveal animate-delay-2">
+              The problem is rarely a lack of effort; rather, it’s the absence of a dedicated infrastructure ecosystem connecting all the pieces an event actually needs—each one solved in isolation, event after event, by teams already stretched thin.
+            </p>
 
-            <div className="pt-4 border-t border-[#243563]/50 flex items-center justify-between text-xs text-[#D4AF37]">
-              <span>Collapse the Distance</span>
+            <div className="pt-4 flex items-center justify-between text-xs font-semibold text-[#D4AF37] border-t border-[#D4AF37]/30 animate-text-reveal animate-delay-3">
+              <span>Collapsing the Distance to Execution</span>
               <ArrowRight className="w-4 h-4" />
             </div>
           </div>
@@ -266,62 +264,62 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
       </section>
 
       {/* Section 3: Beyond the Blueprint & Jammu Pilgrimage */}
-      <section className="rounded-3xl bg-gradient-to-r from-[#0D1427] via-[#16203B] to-[#0D1427] border border-[#D4AF37]/35 p-8 sm:p-12 space-y-8 shadow-2xl">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          <div className="lg:col-span-7 space-y-5">
-            <span className="px-3.5 py-1 rounded-full bg-[#52459E]/30 text-[#D4AF37] text-xs font-bold uppercase tracking-widest border border-[#D4AF37]/30 inline-block">
+      <section className="space-y-8 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          <div className="lg:col-span-7 space-y-6 text-left border-l-2 border-[#D4AF37] pl-6 sm:pl-8">
+            <span className="px-3.5 py-1 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] text-xs font-bold uppercase tracking-widest border border-[#D4AF37]/30 inline-block animate-text-reveal">
               Beyond the Blueprint
             </span>
-            <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#FAF5EF]">
+            <h2 className="text-3xl sm:text-5xl font-serif font-bold text-var-text-primary animate-text-reveal animate-delay-1">
               The Pilgrimage Across Jammu
             </h2>
-            <p className="text-sm text-[#C4BBA3] leading-relaxed">
-              Having experienced these challenges firsthand, I set out to build something different: an organisation that makes event execution simpler, stronger, and more connected, so schools and organisers could focus on their students and creative prospects, not on holding logistics together.
+            <p className="text-base text-var-text-secondary leading-relaxed animate-text-reveal animate-delay-2">
+              Having experienced these challenges firsthand, I set out to build something different: an infrastructure ecosystem that makes event execution simpler, stronger, and more connected, so schools and organisers can focus on their students and creative prospects.
             </p>
-            <p className="text-sm text-[#C4BBA3] leading-relaxed">
-              That commitment took me beyond planning. Before Aastitva Alliance took shape, I personally visited government schools across Jammu, to understand where the real gaps were. Not just for well-resourced institutions, the ones least likely to ever see the inside of a conference hall.
+            <p className="text-base text-var-text-secondary leading-relaxed animate-text-reveal animate-delay-3">
+              That commitment took me beyond planning. Before Aastitva Alliance took shape, I personally visited government schools across Jammu to understand where the real gaps were—especially for institutions least likely to see the inside of an academic conference hall.
             </p>
-            <div className="p-5 rounded-2xl bg-[#070A14]/90 border-l-4 border-[#D4AF37] space-y-2">
-              <span className="text-xs text-[#D4AF37] font-bold uppercase">The Conscience of Aastitva</span>
-              <p className="text-sm sm:text-base font-serif italic text-[#FAF5EF]">
-                "Existence isn't a privilege reserved for the schools that can already afford it. It should be something every student gets a chance at."
+            <div className="p-6 rounded-2xl bg-[#D4AF37]/10 border-l-4 border-[#D4AF37] space-y-2 animate-text-reveal animate-delay-4">
+              <span className="text-xs text-[#D4AF37] font-bold uppercase tracking-wider block">The Conscience of Aastitva</span>
+              <p className="text-base sm:text-lg font-serif italic text-var-text-primary">
+                "Existence isn't a privilege reserved for institutions that can already afford it. It should be something every student gets a chance at."
               </p>
             </div>
           </div>
 
-          <div className="lg:col-span-5 h-80 rounded-2xl overflow-hidden border border-[#D4AF37]/40 relative group shadow-2xl">
+          <div className="lg:col-span-5 h-80 sm:h-96 rounded-3xl overflow-hidden border border-[#D4AF37]/40 relative group shadow-2xl">
             <img
               src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&q=80&w=1200"
               alt="Jammu Government School Pilgrimage"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#070A14] via-transparent to-transparent" />
-            <span className="absolute bottom-4 left-4 right-4 text-xs font-serif font-bold text-[#FAF5EF] bg-[#070A14]/90 px-3.5 py-2 rounded-xl border border-[#D4AF37]/30 backdrop-blur-md">
+            <span className="absolute bottom-4 left-4 right-4 text-xs font-serif font-bold text-white bg-black/75 px-4 py-2.5 rounded-xl border border-[#D4AF37]/40 backdrop-blur-md text-center block">
               Grassroots Education Pilgrimage • Jammu Region
             </span>
           </div>
         </div>
       </section>
 
-      {/* Section 4: Where We Are Today */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="rounded-3xl bg-[#0D1427]/90 border border-[#243563]/60 p-8 space-y-4 shadow-xl">
-          <div className="p-3 w-fit rounded-2xl bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/40">
+      {/* Section 4: Where We Are Today & Radical Transparency */}
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-10 py-6">
+        <div className="space-y-4 text-left border-l-2 border-[#D4AF37]/50 pl-6 sm:pl-8">
+          <div className="p-3 w-fit rounded-2xl bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/40 animate-text-reveal">
             <Globe className="w-6 h-6" />
           </div>
-          <h3 className="text-2xl font-serif font-bold text-[#FAF5EF]">Where We Are Today</h3>
-          <p className="text-sm text-[#C4BBA3] leading-relaxed">
-            We're building Aastitva Alliance from the ground up, starting with our first live partnership, the inaugural Aequitas Summit, with a clear intent to expand across event types and across the region in the years ahead.
+          <h3 className="text-2xl font-serif font-bold text-var-text-primary animate-text-reveal animate-delay-1">Where We Are Today</h3>
+          <p className="text-base text-var-text-secondary leading-relaxed animate-text-reveal animate-delay-2">
+            We're building Aastitva Alliance from the ground up, starting with our flagship partnership—the inaugural Aequitas Summit—with a clear intent to expand across event types and throughout the region in the years ahead.
           </p>
         </div>
 
-        <div className="rounded-3xl bg-[#0D1427]/90 border border-[#D4AF37]/30 p-8 space-y-4 shadow-xl">
-          <div className="p-3 w-fit rounded-2xl bg-[#52459E]/30 text-[#D4AF37] border border-[#D4AF37]/40">
+        <div className="space-y-4 text-left border-l-2 border-[#52459E]/50 pl-6 sm:pl-8">
+          <div className="p-3 w-fit rounded-2xl bg-[#52459E]/30 text-[#D4AF37] border border-[#D4AF37]/40 animate-text-reveal">
             <ShieldCheck className="w-6 h-6" />
           </div>
-          <h3 className="text-2xl font-serif font-bold text-[#FAF5EF]">Radical Transparency</h3>
-          <p className="text-sm text-[#C4BBA3] leading-relaxed">
-            We're nascent, and we are transparent about that. But Aastitva was never about how long we've existed; it's about making sure the events we touch get to exist fully, properly, the way they were meant to.
+          <h3 className="text-2xl font-serif font-bold text-var-text-primary animate-text-reveal animate-delay-1">Radical Transparency</h3>
+          <p className="text-base text-var-text-secondary leading-relaxed animate-text-reveal animate-delay-2">
+            We are nascent, and we are transparent about that. But Aastitva was never about how long we've existed; it's about making sure the academic events we power get to exist fully, properly, the way they were meant to.
           </p>
         </div>
       </section>

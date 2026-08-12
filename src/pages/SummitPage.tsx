@@ -107,11 +107,11 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
               </span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-extrabold gold-gradient-text">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-extrabold gold-gradient-text animate-text-reveal">
               {summitConfig.name}
             </h1>
 
-            <p className="text-base sm:text-lg text-[#C4BBA3] max-w-2xl font-light leading-relaxed">
+            <p className="text-base sm:text-lg text-var-text-secondary max-w-2xl font-light leading-relaxed animate-text-reveal animate-delay-1">
               {summitConfig.tagline}
             </p>
 
