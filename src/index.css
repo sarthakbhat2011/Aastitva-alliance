@@ -286,51 +286,79 @@
               color 0.3s ease !important;
 }
 
-/* LIGHT MODE STYLING ENGINE */
+/* ==========================================================================
+   LIGHT MODE REDESIGN ENGINE (Pure White/Cream Containers + Dark Crisp Text)
+   ========================================================================== */
 [data-theme="light"] {
+  --bg-main: #FAF8F5;
+  --bg-secondary: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F8FAFC;
+  --bg-nav: rgba(255, 255, 255, 0.95);
+  --bg-ticker: rgba(250, 248, 245, 0.98);
+  --border-color: rgba(180, 138, 26, 0.35);
+  --border-color-hover: rgba(180, 138, 26, 0.75);
+  --text-primary: #0F172A;
+  --text-secondary: #1E293B;
+  --text-muted: #475569;
+  --accent-gold: #B48A1A;
+  --card-shadow: 0 12px 35px -5px rgba(180, 138, 26, 0.12), 0 4px 15px -2px rgba(15, 23, 42, 0.05);
+  --gold-gradient: linear-gradient(135deg, #0F172A 0%, #1E3A8A 35%, #B48A1A 75%, #78350F 100%);
+  --silver-gradient: linear-gradient(135deg, #0F172A 0%, #1E293B 40%, #475569 100%);
+  --lusion-glow: radial-gradient(circle at center, rgba(212, 175, 55, 0.18) 0%, rgba(248, 250, 252, 0.8) 50%, transparent 100%);
   color-scheme: light;
 }
 
+/* Light Mode Body & Ambient Light Atmosphere */
 [data-theme="light"] body {
-  background-color: #F8FAFC !important;
+  background-color: #FAF8F5 !important;
+  background-image: radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.12) 0%, rgba(250, 248, 245, 0.95) 75%) !important;
   color: #0F172A !important;
 }
 
-/* Light mode card & container backgrounds */
+/* ALL Containers, Cards & Banners move to Pure White / Light Ivory Surfaces */
 [data-theme="light"] .glass-card,
 [data-theme="light"] .glass-panel,
 [data-theme="light"] div[class*="from-[#0D1427]"],
 [data-theme="light"] section[class*="from-[#0D1427]"],
 [data-theme="light"] div[class*="bg-[#0D1427]"],
 [data-theme="light"] div[class*="bg-[#0B1120]"],
+[data-theme="light"] div[class*="bg-[#070A14]"],
 [data-theme="light"] div[class*="bg-[#171026]"],
-[data-theme="light"] div[class*="bg-[#16203B]"] {
-  background-image: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 60%, #F1F5F9 100%) !important;
+[data-theme="light"] div[class*="bg-[#16203B]"],
+[data-theme="light"] div[class*="bg-[#120D1F]"],
+[data-theme="light"] div[class*="bg-[#231B42]"] {
+  background-image: linear-gradient(135deg, #FFFFFF 0%, #FAF8F5 50%, #F3EFEA 100%) !important;
   background-color: #FFFFFF !important;
   border-color: rgba(180, 138, 26, 0.35) !important;
-  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 12px 35px -5px rgba(180, 138, 26, 0.12), 0 4px 15px -2px rgba(15, 23, 42, 0.05) !important;
   color: #0F172A !important;
 }
 
-/* Light mode text colors */
-[data-theme="light"] h1:not(.dark-photo-overlay *):not(.shimmer-btn *),
-[data-theme="light"] h2:not(.dark-photo-overlay *):not(.shimmer-btn *),
-[data-theme="light"] h3:not(.dark-photo-overlay *):not(.shimmer-btn *),
-[data-theme="light"] h4:not(.dark-photo-overlay *):not(.shimmer-btn *),
-[data-theme="light"] [class*="text-[#FAF5EF]"]:not(.dark-photo-overlay *):not(.shimmer-btn *),
-[data-theme="light"] [class*="text-white"]:not(.dark-photo-overlay *):not(.shimmer-btn *) {
+/* Textual Data MUST REMAIN DARK & STAND OUT */
+[data-theme="light"] h1,
+[data-theme="light"] h2,
+[data-theme="light"] h3,
+[data-theme="light"] h4,
+[data-theme="light"] h5,
+[data-theme="light"] h6,
+[data-theme="light"] [class*="text-[#FAF5EF]"]:not(.shimmer-btn *),
+[data-theme="light"] [class*="text-white"]:not(.shimmer-btn *),
+[data-theme="light"] .text-var-text-primary {
   color: #0F172A !important;
   -webkit-text-fill-color: initial;
 }
 
 [data-theme="light"] p,
+[data-theme="light"] li,
 [data-theme="light"] [class*="text-[#cecece]"],
 [data-theme="light"] [class*="text-[#D3C5E5]"],
 [data-theme="light"] [class*="text-[#B8A9C9]"],
 [data-theme="light"] [class*="text-[#C4BBA3]"],
 [data-theme="light"] [class*="text-[#EAE0C8]"],
 [data-theme="light"] .text-var-text-secondary {
-  color: #334155 !important;
+  color: #1E293B !important;
+  -webkit-text-fill-color: initial;
 }
 
 [data-theme="light"] [class*="text-[#8E8570]"],
@@ -339,6 +367,7 @@
   color: #475569 !important;
 }
 
+/* Light Mode Headline Gradients */
 [data-theme="light"] .gold-gradient-text {
   background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 35%, #B48A1A 75%, #78350F 100%) !important;
   -webkit-background-clip: text !important;
@@ -351,18 +380,38 @@
   -webkit-text-fill-color: transparent !important;
 }
 
-/* Light Mode Inputs, Selects & Textareas */
+/* Form Controls in Light Mode */
 [data-theme="light"] input,
 [data-theme="light"] select,
 [data-theme="light"] textarea {
   background-color: #FFFFFF !important;
   color: #0F172A !important;
-  border-color: rgba(203, 213, 225, 0.8) !important;
+  border-color: rgba(180, 138, 26, 0.4) !important;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05) !important;
 }
 
 [data-theme="light"] input::placeholder,
 [data-theme="light"] textarea::placeholder {
-  color: #94A3B8 !important;
+  color: #64748B !important;
+}
+
+/* Dark Photo Card Overlays Adapt cleanly to Light Mode */
+[data-theme="light"] .dark-photo-overlay {
+  border-color: rgba(180, 138, 26, 0.35) !important;
+}
+
+[data-theme="light"] .dark-photo-overlay [class*="bg-gradient-to-t"] {
+  background-image: linear-gradient(to top, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.75) 50%, rgba(255, 255, 255, 0.1) 100%) !important;
+}
+
+[data-theme="light"] .dark-photo-overlay h1,
+[data-theme="light"] .dark-photo-overlay h2,
+[data-theme="light"] .dark-photo-overlay h3,
+[data-theme="light"] .dark-photo-overlay h4,
+[data-theme="light"] .dark-photo-overlay p,
+[data-theme="light"] .dark-photo-overlay span:not([class*="bg-"]) {
+  color: #0F172A !important;
+  -webkit-text-fill-color: initial !important;
 }
 
 /* DARK MODE (OLED PITCH BLACK) STYLING ENGINE */
@@ -411,51 +460,6 @@
   color: #171026 !important;
   -webkit-text-fill-color: #171026 !important;
   font-weight: 700 !important;
-}
-
-/* DARK PHOTO OVERLAYS SYSTEM (Preserves White/Gold Contrast on Image Overlays in ALL Themes) */
-.dark-photo-overlay,
-[data-theme="light"] .dark-photo-overlay,
-[data-theme="dark"] .dark-photo-overlay {
-  background-color: transparent !important;
-  background-image: none !important;
-  color: #FAF5EF !important;
-}
-
-.dark-photo-overlay h1,
-.dark-photo-overlay h2,
-.dark-photo-overlay h3,
-.dark-photo-overlay h4,
-.dark-photo-overlay [class*="text-[#FAF5EF]"],
-.dark-photo-overlay [class*="text-white"],
-[data-theme="light"] .dark-photo-overlay h1,
-[data-theme="light"] .dark-photo-overlay h2,
-[data-theme="light"] .dark-photo-overlay h3,
-[data-theme="light"] .dark-photo-overlay h4,
-[data-theme="light"] .dark-photo-overlay [class*="text-[#FAF5EF]"],
-[data-theme="light"] .dark-photo-overlay [class*="text-white"] {
-  color: #FFFFFF !important;
-  -webkit-text-fill-color: #FFFFFF !important;
-}
-
-.dark-photo-overlay .gold-gradient-text,
-.dark-photo-overlay .font-cormorant,
-[data-theme="light"] .dark-photo-overlay .gold-gradient-text,
-[data-theme="light"] .dark-photo-overlay .font-cormorant {
-  background: linear-gradient(135deg, #FFFFFF 0%, #F9E2C8 30%, #D4AF37 75%, #FFF 100%) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  color: #D4AF37 !important;
-}
-
-.dark-photo-overlay p,
-.dark-photo-overlay span:not([class*="bg-"]),
-[data-theme="light"] .dark-photo-overlay p,
-[data-theme="light"] .dark-photo-overlay span:not([class*="bg-"]),
-[data-theme="light"] .dark-photo-overlay [class*="text-[#C4BBA3]"],
-[data-theme="light"] .dark-photo-overlay .text-var-text-secondary {
-  color: #E2E8F0 !important;
-  -webkit-text-fill-color: initial;
 }
 
 /* Ensure Images in Light Mode are 100% Opaque & Vibrant */
