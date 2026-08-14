@@ -159,14 +159,14 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
                   </div>
                 </div>
 
-                <div className="p-5 space-y-1.5 relative z-10 bg-[#070A14]/90 [data-theme='light']:bg-white">
-                  <span className="text-[10px] text-[#D4AF37] [data-theme='light']:text-[#B48A1A] uppercase tracking-wider font-bold block font-jakarta">
+                <div className="p-5 space-y-1.5 relative z-10 bg-[#070A14]/90">
+                  <span className="text-[10px] text-[#D4AF37] uppercase tracking-wider font-bold block font-jakarta">
                     {photo.subtitle}
                   </span>
-                  <h3 className="text-base font-jakarta font-bold text-[#FAF5EF] [data-theme='light']:text-[#0F172A] group-hover:text-[#D4AF37] transition-colors">
+                  <h3 className="text-base font-jakarta font-bold text-[#FAF5EF] group-hover:text-[#D4AF37] transition-colors">
                     {photo.title}
                   </h3>
-                  <p className="text-xs text-[#C4BBA3] [data-theme='light']:text-[#1E293B] line-clamp-2 leading-relaxed font-jakarta">
+                  <p className="text-xs text-[#C4BBA3] line-clamp-2 leading-relaxed font-jakarta">
                     {photo.caption}
                   </p>
                 </div>
@@ -197,9 +197,9 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
                         <span className="px-3 py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-wider inline-block">
                           Founder Editorial Portfolio
                         </span>
-                        <h3 className="text-2xl font-cormorant font-bold text-[#FAF5EF] [data-theme='light']:text-[#0F172A]">{item.title}</h3>
-                        <p className="text-sm text-[#C4BBA3] [data-theme='light']:text-[#1E293B] leading-relaxed">{item.caption}</p>
-                        <div className="p-4 rounded-xl bg-[#16203B] [data-theme='light']:bg-slate-100 border border-[#243563] text-xs text-[#FAF5EF] [data-theme='light']:text-[#0F172A]">
+                        <h3 className="text-2xl font-cormorant font-bold text-[#FAF5EF]">{item.title}</h3>
+                        <p className="text-sm text-[#C4BBA3] leading-relaxed">{item.caption}</p>
+                        <div className="p-4 rounded-xl bg-[#16203B] border border-[#243563] text-xs text-[#FAF5EF]">
                           <em>Note: Founder shoot slot ready for custom photos replacement.</em>
                         </div>
                       </div>
@@ -472,7 +472,7 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
               {coreValues.map((val, idx) => {
                 const IconComp = val.icon;
                 return (
-                  <div key={idx} className="rounded-2xl bg-[#070A14]/90 [data-theme='light']:bg-white border border-[#D4AF37]/30 p-5 space-y-3 hover:border-[#D4AF37] transition-colors text-left">
+                  <div key={idx} className="rounded-2xl bg-[#070A14]/90 border border-[#D4AF37]/30 p-5 space-y-3 hover:border-[#D4AF37] transition-colors text-left">
                     <div className="p-2.5 w-fit rounded-xl bg-[#D4AF37]/15 text-[#D4AF37]">
                       <IconComp className="w-5 h-5" />
                     </div>
@@ -484,7 +484,7 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
             </div>
           </div>
 
-          <div className="p-8 rounded-3xl bg-[#070A14] [data-theme='light']:bg-white border-2 border-[#D4AF37]/50 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
+          <div className="p-8 rounded-3xl bg-[#070A14] border-2 border-[#D4AF37]/50 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl relative overflow-hidden">
             <div className="space-y-2 text-left relative z-10 font-jakarta">
               <span className="text-xs text-[#D4AF37] uppercase tracking-widest font-bold flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4" /> Founder's Personal Covenant
