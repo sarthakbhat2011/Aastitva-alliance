@@ -14,11 +14,11 @@ export const LoadingScreen: React.FC<Props> = ({ onComplete }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const statusLogs = [
-    '⚡ Initializing Jammu Academic Infrastructure Engine...',
-    '🔒 Verifying 256-Bit SSL Security Gateways...',
-    '📜 Verifying UN Rules of Procedure Standards...',
-    '🏛️ Allocating Executive Board Rosters & Venue Maps...',
-    '🏆 Readying Aequitas MUN Summit Portal...',
+    'Initializing Jammu Academic Infrastructure Engine...',
+    'Verifying 256-Bit SSL Security Gateways...',
+    'Verifying UN Rules of Procedure Standards...',
+    'Allocating Executive Board Rosters & Venue Maps...',
+    'Readying Aequitas MUN Summit Portal...',
   ];
 
   // Mouse Spotlight state
@@ -198,7 +198,8 @@ export const LoadingScreen: React.FC<Props> = ({ onComplete }) => {
         </div>
 
         {/* Live Status Ticker */}
-        <div className="w-72 p-2.5 rounded-xl bg-[#070A14]/80 border border-[#243563]/40 text-[11px] text-[#C4BBA3] flex items-center justify-center gap-1.5 font-mono animate-page-enter">
+        <div className="w-72 p-2.5 rounded-xl bg-[#070A14]/80 border border-[#243563]/40 text-[11px] text-[#C4BBA3] flex items-center justify-center gap-2 font-mono animate-page-enter">
+          <ShieldCheck className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
           <span className="truncate">{statusLogs[statusIndex]}</span>
         </div>
 

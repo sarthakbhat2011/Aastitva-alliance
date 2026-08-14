@@ -4,6 +4,7 @@ import { Page, SummitConfig, CountdownTime, RegistrationFormData } from '../type
 import { COMMITTEES } from '../data';
 import { ScrollIndicator } from '../components/ScrollIndicator';
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
+import { ScrollReveal } from '../components/ScrollReveal';
 import {
   Sparkles,
   Calendar,
@@ -85,115 +86,119 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
     <div className="min-h-screen font-sans pb-20">
 
       {/* 1. HERO - NETFLIX "NOW PLAYING" BRANDING */}
-      <section className="relative min-h-[65vh] flex items-end pb-12 px-4 sm:px-8 overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0 z-0">
-          <img
-            src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1600"
-            alt="Aequitas Summit Backdrop"
-            className="w-full h-full object-cover filter brightness-[0.25]"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#070A14] via-[#070A14]/80 to-transparent" />
-        </div>
-
-        <div className="relative z-10 max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          <div className="lg:col-span-7 space-y-4 text-left">
-            {/* Top Banner Tag */}
-            <div className="flex flex-wrap items-center gap-3">
-              <span className="px-3 py-1 rounded bg-rose-600 text-white font-bold text-xs uppercase tracking-widest flex items-center gap-1.5 animate-pulse shadow-md">
-                <Play className="w-3.5 h-3.5 fill-current" /> NOW PLAYING
-              </span>
-              <span className="px-3 py-1 rounded bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] font-semibold text-xs uppercase tracking-wider backdrop-blur-md">
-                Official Partnered Summit
-              </span>
-            </div>
-
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-extrabold gold-gradient-text animate-text-reveal">
-              {summitConfig.name}
-            </h1>
-
-            <p className="text-base sm:text-lg text-var-text-secondary max-w-2xl font-light leading-relaxed animate-text-reveal animate-delay-1">
-              {summitConfig.tagline}
-            </p>
-
-            <div className="flex flex-wrap items-center gap-6 text-xs sm:text-sm text-[#C4BBA3] pt-2">
-              <span className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-[#D4AF37]" /> {summitConfig.date}
-              </span>
-              <span className="flex items-center gap-2 text-emerald-400 font-semibold">
-                <Users className="w-4 h-4" /> {summitConfig.registeredCount} / {summitConfig.totalSeats} Seats Filled
-              </span>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-4 pt-4">
-              <button
-                onClick={() => {
-                  setActiveTab('register');
-                  document.getElementById('summit-tabs')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="px-8 py-3.5 rounded-xl shimmer-btn text-[#070A14] font-extrabold text-sm shadow-2xl hover:brightness-110 active:scale-95 transition-all"
-              >
-                Register Delegate Seat
-              </button>
-
-              <a
-                href="https://aquitas-aastitva11.onrender.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-6 py-3.5 rounded-xl bg-rose-600/30 hover:bg-rose-600/50 border border-rose-500/50 text-rose-100 font-bold text-sm flex items-center gap-2 shadow-lg transition-all"
-              >
-                <ExternalLink className="w-4 h-4 text-rose-300" />
-                <span>Visit Live Aequitas Website ↗</span>
-              </a>
-            </div>
+      <ScrollReveal direction="zoom" delay={0.05}>
+        <section className="relative min-h-[65vh] flex items-end pb-12 px-4 sm:px-8 overflow-hidden">
+          {/* Background Image */}
+          <div className="absolute inset-0 z-0">
+            <img
+              src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1600"
+              alt="Aequitas Summit Backdrop"
+              className="w-full h-full object-cover filter brightness-[0.25]"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#070A14] via-[#070A14]/80 to-transparent" />
           </div>
 
-          {/* 3D Planet Globe Orbiting Emblem */}
-          <div className="lg:col-span-5 w-full h-72 sm:h-96 min-h-[260px] relative z-20 flex items-center justify-center pointer-events-none">
-            <Astitva3DCanvas variant="summit" />
-          </div>
+          <div className="relative z-10 max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div className="lg:col-span-7 space-y-4 text-left">
+              {/* Top Banner Tag */}
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="px-3 py-1 rounded bg-rose-600 text-white font-bold text-xs uppercase tracking-widest flex items-center gap-1.5 animate-pulse shadow-md font-jakarta">
+                  <Play className="w-3.5 h-3.5 fill-current" /> NOW PLAYING
+                </span>
+                <span className="px-3 py-1 rounded bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] font-semibold text-xs uppercase tracking-wider backdrop-blur-md font-jakarta">
+                  Official Partnered Summit
+                </span>
+              </div>
 
-          <div className="lg:col-span-12 flex justify-center pt-4">
-            <ScrollIndicator targetId="summit-clock-banner" label="Scroll for Conference Clock" />
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-cormorant font-extrabold gold-gradient-text animate-text-reveal">
+                {summitConfig.name}
+              </h1>
+
+              <p className="text-base sm:text-lg text-var-text-secondary max-w-2xl font-light leading-relaxed animate-text-reveal animate-delay-1 font-jakarta">
+                {summitConfig.tagline}
+              </p>
+
+              <div className="flex flex-wrap items-center gap-6 text-xs sm:text-sm text-[#C4BBA3] pt-2 font-jakarta">
+                <span className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-[#D4AF37]" /> {summitConfig.date}
+                </span>
+                <span className="flex items-center gap-2 text-emerald-400 font-semibold">
+                  <Users className="w-4 h-4" /> {summitConfig.registeredCount} / {summitConfig.totalSeats} Seats Filled
+                </span>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-4 pt-4">
+                <button
+                  onClick={() => {
+                    setActiveTab('register');
+                    document.getElementById('summit-tabs')?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="px-8 py-3.5 rounded-xl shimmer-btn text-[#070A14] font-extrabold text-sm shadow-2xl hover:brightness-110 active:scale-95 transition-all min-touch"
+                >
+                  Register Delegate Seat
+                </button>
+
+                <a
+                  href="https://aquitas-aastitva11.onrender.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-6 py-3.5 rounded-xl bg-rose-600/30 hover:bg-rose-600/50 border border-rose-500/50 text-rose-100 font-bold text-sm flex items-center gap-2 shadow-lg transition-all min-touch font-jakarta"
+                >
+                  <ExternalLink className="w-4 h-4 text-rose-300" />
+                  <span>Visit Live Aequitas Website ↗</span>
+                </a>
+              </div>
+            </div>
+
+            {/* 3D Planet Globe Orbiting Emblem */}
+            <div className="lg:col-span-5 w-full h-72 sm:h-96 min-h-[260px] relative z-20 flex items-center justify-center pointer-events-none">
+              <Astitva3DCanvas variant="summit" />
+            </div>
+
+            <div className="lg:col-span-12 flex justify-center pt-4">
+              <ScrollIndicator targetId="summit-clock-banner" label="Scroll for Conference Clock" />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </ScrollReveal>
 
       {/* 2. FULL-WIDTH LIVE COUNTDOWN BANNER (GOLD BACKGROUND) */}
-      <section id="summit-clock-banner" className="bg-gradient-to-r from-[#D4AF37] via-[#F9E2C8] to-[#C59B67] text-[#070A14] py-6 px-4 shadow-xl">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-          <div>
-            <span className="text-xs uppercase tracking-widest font-extrabold opacity-85 block">
-              Live Conference Clock
+      <ScrollReveal direction="up" delay={0.1}>
+        <section id="summit-clock-banner" className="bg-gradient-to-r from-[#D4AF37] via-[#F9E2C8] to-[#C59B67] text-[#070A14] py-6 px-4 shadow-xl">
+          <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+            <div>
+              <span className="text-xs uppercase tracking-widest font-extrabold opacity-85 block font-jakarta">
+                Live Conference Clock
+              </span>
+              <h3 className="text-lg font-cormorant font-bold">
+                Countdown to Inaugural Session
+              </h3>
+            </div>
+
+            <div className="flex items-center gap-3 sm:gap-6 font-mono font-bold text-xl sm:text-3xl">
+              <div className="bg-[#070A14] text-[#D4AF37] px-3 py-1.5 rounded-xl">
+                <span>{countdown.days}d</span>
+              </div>
+              <span>:</span>
+              <div className="bg-[#070A14] text-[#FAF5EF] px-3 py-1.5 rounded-xl">
+                <span>{countdown.hours.toString().padStart(2, '0')}h</span>
+              </div>
+              <span>:</span>
+              <div className="bg-[#070A14] text-[#FAF5EF] px-3 py-1.5 rounded-xl">
+                <span>{countdown.minutes.toString().padStart(2, '0')}m</span>
+              </div>
+              <span>:</span>
+              <div className="bg-[#070A14] text-emerald-400 px-3 py-1.5 rounded-xl">
+                <span>{countdown.seconds.toString().padStart(2, '0')}s</span>
+              </div>
+            </div>
+
+            <span className="text-xs font-bold uppercase tracking-wider bg-[#070A14] text-[#FAF5EF] px-3 py-1.5 rounded-lg border border-[#D4AF37]/30 font-jakarta">
+              Powered by Aastitva Alliance
             </span>
-            <h3 className="text-lg font-serif font-bold">
-              Countdown to Inaugural Session
-            </h3>
           </div>
-
-          <div className="flex items-center gap-3 sm:gap-6 font-mono font-bold text-xl sm:text-3xl">
-            <div className="bg-[#070A14] text-[#D4AF37] px-3 py-1.5 rounded-xl">
-              <span>{countdown.days}d</span>
-            </div>
-            <span>:</span>
-            <div className="bg-[#070A14] text-[#FAF5EF] px-3 py-1.5 rounded-xl">
-              <span>{countdown.hours.toString().padStart(2, '0')}h</span>
-            </div>
-            <span>:</span>
-            <div className="bg-[#070A14] text-[#FAF5EF] px-3 py-1.5 rounded-xl">
-              <span>{countdown.minutes.toString().padStart(2, '0')}m</span>
-            </div>
-            <span>:</span>
-            <div className="bg-[#070A14] text-emerald-400 px-3 py-1.5 rounded-xl">
-              <span>{countdown.seconds.toString().padStart(2, '0')}s</span>
-            </div>
-          </div>
-
-          <span className="text-xs font-bold uppercase tracking-wider bg-[#070A14] text-[#FAF5EF] px-3 py-1.5 rounded-lg border border-[#D4AF37]/30">
-            Powered by Aastitva Alliance
-          </span>
-        </div>
-      </section>
+        </section>
+      </ScrollReveal>
 
       {/* TABS NAVIGATION */}
       <div id="summit-tabs" className="max-w-6xl mx-auto px-4 mt-12">

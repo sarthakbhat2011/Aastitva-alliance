@@ -12,6 +12,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
+import { ScrollReveal } from '../components/ScrollReveal';
 
 interface Props {
   onNavigate: (page: Page) => void;
@@ -73,24 +74,26 @@ export const HowItWorksPage: React.FC<Props> = ({ onNavigate }) => {
   return (
     <div className="relative font-sans text-[#FAF5EF] py-12 px-4 sm:px-6 max-w-7xl mx-auto space-y-16">
       {/* Hero Header with 3D Canvas Emblem */}
-      <div className="bg-gradient-to-br from-[#0D1427]/95 via-[#16203B]/90 to-[#070A14]/95 border border-[#D4AF37]/35 shadow-[0_16px_50px_rgba(0,0,0,0.85)] p-6 sm:p-12 rounded-3xl relative overflow-hidden flex flex-col lg:grid lg:grid-cols-12 gap-8 items-center">
-        <div className="w-full lg:col-span-8 space-y-4 text-left z-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-widest shadow-sm">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>7-Step Institutional Roadmap</span>
+      <ScrollReveal direction="zoom" delay={0.1}>
+        <div className="bg-gradient-to-br from-[#0D1427]/95 via-[#16203B]/90 to-[#070A14]/95 border border-[#D4AF37]/35 shadow-[0_16px_50px_rgba(0,0,0,0.85)] p-6 sm:p-12 rounded-3xl relative overflow-hidden flex flex-col lg:grid lg:grid-cols-12 gap-8 items-center">
+          <div className="w-full lg:col-span-8 space-y-4 text-left z-10">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-widest shadow-sm font-jakarta">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>7-Step Institutional Roadmap</span>
+            </div>
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-cormorant font-bold gold-gradient-text leading-tight">
+              How It Works
+            </h1>
+            <p className="text-sm sm:text-base text-[#C4BBA3] w-full max-w-2xl leading-relaxed font-jakarta">
+              From first inquiry to post-event impact report—our streamlined 7-phase process guarantees seamless execution for school leadership.
+            </p>
           </div>
-          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-serif font-bold gold-gradient-text leading-tight">
-            How It Works
-          </h1>
-          <p className="text-sm sm:text-base text-[#C4BBA3] w-full max-w-2xl leading-relaxed">
-            From first inquiry to post-event impact report—our streamlined 7-phase process guarantees seamless execution for school leadership.
-          </p>
-        </div>
 
-        <div className="w-full lg:col-span-4 h-44 sm:h-56 relative flex items-center justify-center z-0">
-          <Astitva3DCanvas variant="hero" />
+          <div className="w-full lg:col-span-4 h-44 sm:h-56 relative flex items-center justify-center z-0">
+            <Astitva3DCanvas variant="hero" />
+          </div>
         </div>
-      </div>
+      </ScrollReveal>
 
       {/* Timeline Steps */}
       <div className="relative space-y-8 before:absolute before:inset-0 before:left-6 sm:before:left-1/2 before:-translate-x-px before:h-full before:w-0.5 before:bg-[#D4AF37]/30 max-w-5xl mx-auto">
@@ -99,56 +102,59 @@ export const HowItWorksPage: React.FC<Props> = ({ onNavigate }) => {
           const isEven = idx % 2 === 0;
 
           return (
-            <div
-              key={s.num}
-              className={`relative flex flex-col sm:flex-row items-center gap-8 ${
-                isEven ? 'sm:flex-row-reverse' : ''
-              }`}
-            >
-              {/* Numbered Center Circle */}
-              <div className="absolute left-6 sm:left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-[#171026] border-2 border-[#D4AF37] text-[#D4AF37] font-serif font-bold text-sm flex items-center justify-center shadow-2xl z-10">
-                {s.num}
-              </div>
+            <ScrollReveal key={s.num} direction={isEven ? 'right' : 'left'} delay={idx * 0.05}>
+              <div
+                className={`relative flex flex-col sm:flex-row items-center gap-8 ${
+                  isEven ? 'sm:flex-row-reverse' : ''
+                }`}
+              >
+                {/* Numbered Center Circle */}
+                <div className="absolute left-6 sm:left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-[#171026] border-2 border-[#D4AF37] text-[#D4AF37] font-jakarta font-bold text-sm flex items-center justify-center shadow-2xl z-10">
+                  {s.num}
+                </div>
 
-              {/* Content Card */}
-              <div className="w-full sm:w-[calc(50%-2.5rem)] ml-16 sm:ml-0 glass-card rounded-2xl p-6 shadow-xl space-y-3 hover:border-[#D4AF37]/60 transition-all text-left animate-text-reveal">
-                <div className="flex items-center gap-3">
-                  <div className="p-2.5 rounded-xl bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/30">
-                    <Icon className="w-5 h-5" />
+                {/* Content Card */}
+                <div className="w-full sm:w-[calc(50%-2.5rem)] ml-16 sm:ml-0 glass-card rounded-2xl p-6 shadow-xl space-y-3 hover:border-[#D4AF37]/60 transition-all text-left font-jakarta">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 rounded-xl bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/30">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-lg font-jakarta font-bold text-var-text-primary">
+                      {s.title}
+                    </h3>
                   </div>
-                  <h3 className="text-lg font-serif font-bold text-var-text-primary">
-                    {s.title}
-                  </h3>
-                </div>
 
-                <p className="text-xs sm:text-sm text-var-text-secondary leading-relaxed">{s.desc}</p>
+                  <p className="text-xs sm:text-sm text-var-text-secondary leading-relaxed">{s.desc}</p>
 
-                <div className="pt-2 text-[11px] font-semibold text-[#D4AF37] flex items-center gap-1.5 border-t border-[#D4AF37]/20">
-                  <span>Key Outcome:</span>
-                  <span className="text-var-text-primary font-bold">{s.deliverable}</span>
+                  <div className="pt-2 text-[11px] font-semibold text-[#D4AF37] flex items-center gap-1.5 border-t border-[#D4AF37]/20">
+                    <span>Key Outcome:</span>
+                    <span className="text-var-text-primary font-bold">{s.deliverable}</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            </ScrollReveal>
           );
         })}
       </div>
 
       {/* Bottom CTA */}
-      <div className="text-center glass-card rounded-3xl p-10 space-y-4 max-w-3xl mx-auto">
-        <h2 className="text-2xl font-serif font-bold text-[#FAF5EF]">
-          Ready to Begin Step 01?
-        </h2>
-        <p className="text-xs text-[#C4BBA3]">
-          Submit a 2-minute inquiry form to receive your custom event proposal.
-        </p>
-        <button
-          onClick={() => onNavigate('contact')}
-          className="px-8 py-3.5 rounded-xl shimmer-btn text-[#171026] font-bold text-sm shadow-xl hover:brightness-110 flex items-center gap-2 mx-auto"
-        >
-          <span>Start Your Inquiry</span>
-          <ArrowRight className="w-4 h-4" />
-        </button>
-      </div>
+      <ScrollReveal direction="zoom" delay={0.1}>
+        <div className="text-center glass-card rounded-3xl p-10 space-y-4 max-w-3xl mx-auto font-jakarta">
+          <h2 className="text-2xl font-cormorant font-bold text-[#FAF5EF]">
+            Ready to Begin Step 01?
+          </h2>
+          <p className="text-xs text-[#C4BBA3]">
+            Submit a 2-minute inquiry form to receive your custom event proposal.
+          </p>
+          <button
+            onClick={() => onNavigate('contact')}
+            className="px-8 py-3.5 rounded-xl shimmer-btn text-[#171026] font-bold text-sm shadow-xl hover:brightness-110 flex items-center gap-2 mx-auto min-touch"
+          >
+            <span>Start Your Inquiry</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+      </ScrollReveal>
     </div>
   );
 };
