@@ -268,9 +268,27 @@
   -webkit-text-fill-color: transparent;
 }
 
-/* LIGHT MODE OVERRIDES for 100% Crisp Visibility & High Contrast */
+/* GLOBAL THEME TRANSITION ENGINE (Silky smooth switching across Original, Light, and Dark) */
+*, ::before, ::after {
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Exclude Framer Motion & Animated elements from color transition interference */
+[class*="motion-"],
+[class*="animate-"],
+.scroll-reveal-container {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.3s ease,
+              border-color 0.3s ease,
+              color 0.3s ease !important;
+}
+
+/* LIGHT MODE STYLING ENGINE */
 [data-theme="light"] {
-  color: #0F172A;
+  color-scheme: light;
 }
 
 [data-theme="light"] body {
@@ -278,29 +296,34 @@
   color: #0F172A !important;
 }
 
-/* 1. All dark background containers adapt smoothly to light glass cards in Light Mode */
-[data-theme="light"] [class*="bg-gradient-to-br"][class*="from-[#0D1427]"],
-[data-theme="light"] [class*="bg-gradient-to-r"][class*="from-[#16203B]"],
-[data-theme="light"] [class*="from-[#0D1427]"],
+/* Light mode card & container backgrounds */
+[data-theme="light"] .glass-card,
+[data-theme="light"] .glass-panel,
+[data-theme="light"] div[class*="from-[#0D1427]"],
+[data-theme="light"] section[class*="from-[#0D1427]"],
 [data-theme="light"] div[class*="bg-[#0D1427]"],
 [data-theme="light"] div[class*="bg-[#0B1120]"],
 [data-theme="light"] div[class*="bg-[#171026]"],
-[data-theme="light"] div[class*="bg-[#16203B]"],
-[data-theme="light"] div.glass-card,
-[data-theme="light"] div.glass-panel {
-  background-image: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 50%, #E2E8F0 100%) !important;
+[data-theme="light"] div[class*="bg-[#16203B]"] {
+  background-image: linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 60%, #F1F5F9 100%) !important;
   background-color: #FFFFFF !important;
   border-color: rgba(180, 138, 26, 0.35) !important;
   box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08) !important;
   color: #0F172A !important;
 }
 
-/* 2. Text colors inside light mode adapted containers */
-[data-theme="light"] [class*="text-[#FAF5EF]"],
-[data-theme="light"] [class*="text-white"] {
+/* Light mode text colors */
+[data-theme="light"] h1:not(.dark-photo-overlay *):not(.shimmer-btn *),
+[data-theme="light"] h2:not(.dark-photo-overlay *):not(.shimmer-btn *),
+[data-theme="light"] h3:not(.dark-photo-overlay *):not(.shimmer-btn *),
+[data-theme="light"] h4:not(.dark-photo-overlay *):not(.shimmer-btn *),
+[data-theme="light"] [class*="text-[#FAF5EF]"]:not(.dark-photo-overlay *):not(.shimmer-btn *),
+[data-theme="light"] [class*="text-white"]:not(.dark-photo-overlay *):not(.shimmer-btn *) {
   color: #0F172A !important;
+  -webkit-text-fill-color: initial;
 }
 
+[data-theme="light"] p,
 [data-theme="light"] [class*="text-[#cecece]"],
 [data-theme="light"] [class*="text-[#D3C5E5]"],
 [data-theme="light"] [class*="text-[#B8A9C9]"],
@@ -316,9 +339,7 @@
   color: #475569 !important;
 }
 
-/* 3. High-contrast Gold Gradient Text in Light Mode */
-[data-theme="light"] .gold-gradient-text,
-[data-theme="light"] .font-cormorant.gold-gradient-text {
+[data-theme="light"] .gold-gradient-text {
   background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 35%, #B48A1A 75%, #78350F 100%) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
@@ -330,24 +351,91 @@
   -webkit-text-fill-color: transparent !important;
 }
 
-[data-theme="light"] nav .font-jakarta,
-[data-theme="light"] header .font-jakarta {
+/* Light Mode Inputs, Selects & Textareas */
+[data-theme="light"] input,
+[data-theme="light"] select,
+[data-theme="light"] textarea {
+  background-color: #FFFFFF !important;
   color: #0F172A !important;
+  border-color: rgba(203, 213, 225, 0.8) !important;
 }
 
-/* 4. DARK PHOTO OVERLAYS SYSTEM (Preserves White/Gold Contrast on Image Overlays in Light Mode) */
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: #94A3B8 !important;
+}
+
+/* DARK MODE (OLED PITCH BLACK) STYLING ENGINE */
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+[data-theme="dark"] body {
+  background-color: #000000 !important;
+  color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .glass-card,
+[data-theme="dark"] .glass-panel,
+[data-theme="dark"] div[class*="bg-[#070A14]"],
+[data-theme="dark"] div[class*="bg-[#0D1427]"],
+[data-theme="dark"] div[class*="bg-[#171026]"],
+[data-theme="dark"] div[class*="bg-[#16203B]"] {
+  background-color: #05050A !important;
+  border-color: rgba(212, 175, 55, 0.45) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.95) !important;
+}
+
+[data-theme="dark"] [class*="text-[#C4BBA3]"],
+[data-theme="dark"] [class*="text-[#D3C5E5]"],
+[data-theme="dark"] .text-var-text-secondary {
+  color: #CBD5E1 !important;
+}
+
+/* BUTTON & BADGE CONTRAST PRESERVATION IN ALL THEMES */
+.shimmer-btn,
+.shimmer-btn *,
+[data-theme="light"] .shimmer-btn,
+[data-theme="light"] .shimmer-btn *,
+[data-theme="dark"] .shimmer-btn,
+[data-theme="dark"] .shimmer-btn * {
+  color: #070A14 !important;
+  -webkit-text-fill-color: #070A14 !important;
+  font-weight: 700 !important;
+}
+
+.bg-\[\#D4AF37\],
+.bg-\[\#D4AF37\] *,
+[data-theme="light"] .bg-\[\#D4AF37\],
+[data-theme="light"] .bg-\[\#D4AF37\] * {
+  color: #171026 !important;
+  -webkit-text-fill-color: #171026 !important;
+  font-weight: 700 !important;
+}
+
+/* DARK PHOTO OVERLAYS SYSTEM (Preserves White/Gold Contrast on Image Overlays in ALL Themes) */
 .dark-photo-overlay,
-[data-theme="light"] .dark-photo-overlay {
+[data-theme="light"] .dark-photo-overlay,
+[data-theme="dark"] .dark-photo-overlay {
   background-color: transparent !important;
   background-image: none !important;
   color: #FAF5EF !important;
 }
 
+.dark-photo-overlay h1,
+.dark-photo-overlay h2,
+.dark-photo-overlay h3,
+.dark-photo-overlay h4,
 .dark-photo-overlay [class*="text-[#FAF5EF]"],
 .dark-photo-overlay [class*="text-white"],
+[data-theme="light"] .dark-photo-overlay h1,
+[data-theme="light"] .dark-photo-overlay h2,
+[data-theme="light"] .dark-photo-overlay h3,
+[data-theme="light"] .dark-photo-overlay h4,
 [data-theme="light"] .dark-photo-overlay [class*="text-[#FAF5EF]"],
 [data-theme="light"] .dark-photo-overlay [class*="text-white"] {
   color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
 }
 
 .dark-photo-overlay .gold-gradient-text,
@@ -367,6 +455,7 @@
 [data-theme="light"] .dark-photo-overlay [class*="text-[#C4BBA3]"],
 [data-theme="light"] .dark-photo-overlay .text-var-text-secondary {
   color: #E2E8F0 !important;
+  -webkit-text-fill-color: initial;
 }
 
 /* Ensure Images in Light Mode are 100% Opaque & Vibrant */
