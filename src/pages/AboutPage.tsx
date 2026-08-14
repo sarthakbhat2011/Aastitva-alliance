@@ -105,7 +105,7 @@ export const AboutPage: React.FC<Props> = ({ onNavigate }) => {
             </p>
           </div>
 
-          <div className="relative h-80 sm:h-96 rounded-3xl overflow-hidden border border-[#D4AF37]/40 shadow-2xl">
+          <div className="relative h-80 sm:h-96 rounded-3xl overflow-hidden border border-[#D4AF37]/40 shadow-2xl dark-photo-overlay">
             <img
               src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1200"
               alt="Aastitva Team and Event Venue"

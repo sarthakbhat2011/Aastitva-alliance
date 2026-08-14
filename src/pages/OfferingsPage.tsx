@@ -54,7 +54,7 @@ export const OfferingsPage: React.FC<Props> = ({ onNavigate }) => {
             <ScrollReveal key={offering.id} direction="up" delay={idx * 0.08}>
               <div className="glass-card rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 hover:border-[#D4AF37]/50">
                 {/* Hero Card Banner */}
-                <div className="relative min-h-[220px] sm:min-h-[260px] flex items-end p-6 sm:p-8">
+                <div className="relative min-h-[220px] sm:min-h-[260px] flex items-end p-6 sm:p-8 dark-photo-overlay">
                   <img
                     src={offering.image}
                     alt={offering.title}

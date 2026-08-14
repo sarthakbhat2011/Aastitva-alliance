@@ -87,7 +87,7 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
 
       {/* 1. HERO - NETFLIX "NOW PLAYING" BRANDING */}
       <ScrollReveal direction="zoom" delay={0.05}>
-        <section className="relative min-h-[65vh] flex items-end pb-12 px-4 sm:px-8 overflow-hidden">
+        <section className="relative min-h-[65vh] flex items-end pb-12 px-4 sm:px-8 overflow-hidden dark-photo-overlay">
           {/* Background Image */}
           <div className="absolute inset-0 z-0">
             <img
