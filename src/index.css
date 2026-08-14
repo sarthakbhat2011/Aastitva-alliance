@@ -106,17 +106,26 @@
   }
 }
 
-/* Page Specific Typography Pairing Utilities */
-.font-cormorant {
-  font-family: 'Cormorant Garamond', serif;
+/* ==========================================================================
+   AEQUITAS HEADING TYPOGRAPHY SYSTEM (Strictly for Headings and Main Words)
+   ========================================================================== */
+@font-face {
+  font-family: 'Aequitas';
+  src: local('Cinzel Decorative'), local('Cinzel'), local('Playfair Display'), local('Cormorant Garamond');
+  font-weight: 400 900;
+  font-style: normal;
 }
 
-.font-cinzel-dec {
-  font-family: 'Cinzel Decorative', serif;
-}
-
-.font-cinzel {
-  font-family: 'Cinzel', serif;
+h1, h2, h3, h4, h5, h6,
+.font-aequitas,
+.font-cormorant,
+.font-cinzel-dec,
+.font-cinzel,
+.font-serif,
+.prestige-serif,
+.hero-headline-text,
+.brand-logo-text {
+  font-family: 'Aequitas', 'Cinzel Decorative', 'Cinzel', 'Playfair Display', 'Cormorant Garamond', serif !important;
 }
 
 .font-space {
@@ -125,12 +134,6 @@
 
 .font-jakarta {
   font-family: 'Plus Jakarta Sans', sans-serif;
-}
-
-/* Impeccable enforcement utilities */
-/* .prestige-serif is the only class that may use Cormorant/Playfair for editorial emphasis */
-.prestige-serif {
-  font-family: 'Cormorant Garamond', serif;
 }
 
 /* .ui-sans explicitly marks UI controls and small labels to use the interface sans */
