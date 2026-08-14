@@ -568,10 +568,31 @@
   animation: textShimmerGold 8s ease-in-out infinite alternate;
 }
 
-/* Un-boxed Clean Editorial Text Container Utility */
-.unboxed-text-flow {
+/* Impeccable Design System Utilities (impeccable.style) */
+.impeccable-header-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 1rem;
+  border-radius: 9999px;
+  background-color: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: var(--accent-gold);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.impeccable-text-flow {
   position: relative;
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
+}
+
+.impeccable-[#D4AF37]-divider {
+  border-left: 2px solid var(--accent-gold);
+  padding-left: 1.25rem;
 }
