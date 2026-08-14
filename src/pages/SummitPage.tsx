@@ -118,15 +118,6 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
                 {summitConfig.tagline}
               </p>
 
-              <div className="flex flex-wrap items-center gap-6 text-xs sm:text-sm text-[#C4BBA3] pt-2 font-jakarta">
-                <span className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-[#D4AF37]" /> {summitConfig.date}
-                </span>
-                <span className="flex items-center gap-2 text-emerald-400 font-semibold">
-                  <Users className="w-4 h-4" /> {summitConfig.registeredCount} / {summitConfig.totalSeats} Seats Filled
-                </span>
-              </div>
-
               <div className="flex flex-wrap items-center gap-4 pt-4">
                 <button
                   onClick={() => {
@@ -226,42 +217,6 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
         {/* TAB 1: OVERVIEW & COMMITTEES */}
         {activeTab === 'details' && (
           <div className="space-y-12 animate-page-enter">
-            {/* PARTNERSHIP HEADER (Prestigious Formal Institutional Heraldry) */}
-            <div className="py-10 text-center space-y-6 max-w-5xl mx-auto">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-widest animate-text-reveal">
-                <Landmark className="w-3.5 h-3.5" />
-                <span>INSTITUTIONAL CO-HOST ALLIANCE</span>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-11 gap-6 items-center pt-2 animate-text-reveal animate-delay-1">
-                {/* Left Pillar: Host Schools */}
-                <div className="md:col-span-5 space-y-2 text-center md:text-right">
-                  <span className="text-[11px] font-bold text-[#D4AF37] uppercase tracking-wider block">Co-Host Institutions</span>
-                  <h3 className="text-xl sm:text-2xl font-serif font-bold text-var-text-primary leading-tight">
-                    {summitConfig.partnerSchool}
-                  </h3>
-                </div>
-
-                {/* Center Heraldic Divider Badge */}
-                <div className="md:col-span-1 flex flex-col items-center justify-center my-2 md:my-0">
-                  <div className="w-10 h-10 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/50 text-[#D4AF37] flex items-center justify-center font-serif font-bold text-sm shadow-md">
-                    ✦
-                  </div>
-                </div>
-
-                {/* Right Pillar: Aastitva Infrastructure */}
-                <div className="md:col-span-5 space-y-2 text-center md:text-left">
-                  <span className="text-[11px] font-bold text-[#D4AF37] uppercase tracking-wider block">Academic Infrastructure Partner</span>
-                  <h3 className="text-xl sm:text-2xl font-serif font-bold text-var-text-primary leading-tight">
-                    Aastitva Alliance Infrastructure
-                  </h3>
-                </div>
-              </div>
-
-              <p className="text-sm sm:text-base text-var-text-secondary max-w-2xl mx-auto leading-relaxed pt-2 animate-text-reveal animate-delay-2">
-                Proudly partnered to deliver Jammu’s premier academic diplomacy conference with certified board chairs, technical logistics, and full operational support.
-              </p>
-            </div>
 
             {/* COMMITTEES SHOWCASE */}
             <div className="space-y-6">

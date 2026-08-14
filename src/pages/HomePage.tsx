@@ -289,16 +289,6 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown 
               <Astitva3DCanvas variant={heroMode === 'summit' ? 'summit' : 'hero'} />
 
               {/* Overlay Glass Floating Cards */}
-              <div className="absolute top-4 left-4 bg-[#050811]/90 border border-[#D4AF37]/30 p-3 rounded-xl backdrop-blur-md shadow-lg flex items-center gap-2.5 animate-float">
-                <div className="w-8 h-8 rounded-lg bg-[#E8A53E]/20 text-[#E8A53E] flex items-center justify-center font-bold text-xs">
-                  <Trophy className="w-4 h-4 text-[#E8A53E]" />
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-white font-inter">Summit Location</div>
-                  <div className="text-[10px] text-[#B8A9C9] font-inter">Jammu, J&K (Prestige Venue)</div>
-                </div>
-              </div>
-
               <div className="absolute bottom-4 right-4 bg-[#050811]/90 border border-[#D4AF37]/30 p-3 rounded-xl backdrop-blur-md shadow-lg flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs">
                   ✓
