@@ -175,13 +175,20 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
             ))}
           </div>
 
-          {/* Lightbox Modal for Founder Shoot Photos */}
+          {/* Lightbox Modal for Founder Shoot Photos - Instant No-Scroll View */}
           {activePhoto !== null && (
-            <div className="fixed inset-0 z-50 bg-[#070A14]/90 backdrop-blur-xl flex items-center justify-center p-4">
-              <div className="relative max-w-4xl w-full rounded-3xl bg-[#0D1427] border border-[#D4AF37]/50 p-6 space-y-4 shadow-2xl animate-page-enter">
+            <div
+              onClick={() => setActivePhoto(null)}
+              className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-page-enter"
+            >
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="relative max-w-3xl w-full rounded-3xl bg-[#0D1427] border border-[#D4AF37]/60 p-4 sm:p-6 space-y-4 shadow-2xl overflow-hidden my-auto"
+              >
                 <button
                   onClick={() => setActivePhoto(null)}
-                  className="absolute top-4 right-4 p-2.5 rounded-full bg-[#16203B] text-[#FAF5EF] hover:text-[#D4AF37] transition-colors border border-[#D4AF37]/30 min-touch"
+                  className="absolute top-3 right-3 z-30 p-2.5 rounded-full bg-[#16203B] text-[#FAF5EF] hover:text-[#D4AF37] transition-colors border border-[#D4AF37]/40 shadow-lg min-touch"
+                  aria-label="Close modal"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -190,19 +197,30 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
                   const item = founderPhotos.find((p) => p.id === activePhoto);
                   if (!item) return null;
                   return (
-                    <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-                      <div className="md:col-span-7 h-80 sm:h-96 rounded-2xl overflow-hidden border border-[#D4AF37]/30">
-                        <OptimizedImage src={item.img} alt={item.title} className="w-full h-full object-cover" priority={true} />
+                    <div className="space-y-4 text-left font-jakarta">
+                      {/* Crisp Viewport-Fit Image Container */}
+                      <div className="w-full h-64 sm:h-96 rounded-2xl overflow-hidden border border-[#D4AF37]/30 bg-[#070A14] flex items-center justify-center">
+                        <OptimizedImage
+                          src={item.img}
+                          alt={item.title}
+                          className="w-full h-full object-cover"
+                          priority={true}
+                        />
                       </div>
-                      <div className="md:col-span-5 space-y-4 text-left font-jakarta">
-                        <span className="px-3 py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-wider inline-block">
-                          Founder Editorial Portfolio
-                        </span>
-                        <h3 className="text-2xl font-cormorant font-bold text-[#FAF5EF]">{item.title}</h3>
-                        <p className="text-sm text-[#C4BBA3] leading-relaxed">{item.caption}</p>
-                        <div className="p-4 rounded-xl bg-[#16203B] border border-[#243563] text-xs text-[#FAF5EF]">
-                          <em>Note: Founder shoot slot ready for custom photos replacement.</em>
+
+                      <div className="space-y-2 pt-1">
+                        <div className="flex items-center justify-between gap-2 flex-wrap">
+                          <span className="px-3 py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-wider">
+                            {item.subtitle}
+                          </span>
+                          <span className="text-xs text-[#C4BBA3] font-medium">Founder Editorial Shoot</span>
                         </div>
+                        <h3 className="text-xl sm:text-2xl font-cormorant font-bold gold-gradient-text">
+                          {item.title}
+                        </h3>
+                        <p className="text-xs sm:text-sm text-var-text-secondary leading-relaxed">
+                          {item.caption}
+                        </p>
                       </div>
                     </div>
                   );

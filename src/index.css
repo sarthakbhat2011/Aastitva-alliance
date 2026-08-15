@@ -608,13 +608,21 @@ h1, h2, h3, h4, h5, h6,
   font-weight: 800 !important;
 }
 
-/* Dark Photo Card Overlays Adapt cleanly to Light Mode */
+/* LIGHT MODE STRENGTHENED FULL IMAGE OPACITY & HIGH VISIBILITY ENGINE */
+[data-theme="light"] img,
+[data-theme="light"] picture img,
+[data-theme="light"] .dark-photo-overlay img {
+  opacity: 1.0 !important;
+  filter: brightness(1.02) contrast(1.02) !important;
+  mix-blend-mode: normal !important;
+}
+
 [data-theme="light"] .dark-photo-overlay {
   border-color: rgba(180, 138, 26, 0.35) !important;
 }
 
 [data-theme="light"] .dark-photo-overlay [class*="bg-gradient-to-t"] {
-  background-image: linear-gradient(to top, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.75) 50%, rgba(255, 255, 255, 0.1) 100%) !important;
+  background-image: linear-gradient(to top, rgba(15, 23, 42, 0.75) 0%, rgba(15, 23, 42, 0.2) 50%, transparent 100%) !important;
 }
 
 [data-theme="light"] .dark-photo-overlay h1,
@@ -623,8 +631,9 @@ h1, h2, h3, h4, h5, h6,
 [data-theme="light"] .dark-photo-overlay h4,
 [data-theme="light"] .dark-photo-overlay p,
 [data-theme="light"] .dark-photo-overlay span:not([class*="bg-"]) {
-  color: #0F172A !important;
-  -webkit-text-fill-color: initial !important;
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.85) !important;
 }
 
 /* DARK MODE (OLED PITCH BLACK) STYLING ENGINE */
