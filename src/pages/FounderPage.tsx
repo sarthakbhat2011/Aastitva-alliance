@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Page } from '../types';
 import {
   Sparkles,
@@ -9,6 +10,8 @@ import {
   Feather,
   Maximize2,
   X,
+  ChevronLeft,
+  ChevronRight,
   Target,
   Compass,
   ArrowRight
@@ -25,6 +28,23 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
   const [activePhoto, setActivePhoto] = useState<number | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<string | null>('Jammu');
 
+  // Next / Prev photo navigation helpers
+  const handlePrevPhoto = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if (activePhoto === null) return;
+    const currentIndex = founderPhotos.findIndex((p) => p.id === activePhoto);
+    const prevIndex = (currentIndex - 1 + founderPhotos.length) % founderPhotos.length;
+    setActivePhoto(founderPhotos[prevIndex].id);
+  };
+
+  const handleNextPhoto = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    if (activePhoto === null) return;
+    const currentIndex = founderPhotos.findIndex((p) => p.id === activePhoto);
+    const nextIndex = (currentIndex + 1) % founderPhotos.length;
+    setActivePhoto(founderPhotos[nextIndex].id);
+  };
+
   // Lock body scroll when Lightbox Modal is open
   React.useEffect(() => {
     if (activePhoto !== null) {
@@ -35,6 +55,18 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
     return () => {
       document.body.style.overflow = '';
     };
+  }, [activePhoto]);
+
+  // Keyboard navigation listener (Left arrow, Right arrow, Escape key)
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (activePhoto === null) return;
+      if (e.key === 'Escape') setActivePhoto(null);
+      if (e.key === 'ArrowLeft') handlePrevPhoto();
+      if (e.key === 'ArrowRight') handleNextPhoto();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [activePhoto]);
 
   // 4 Editorial Founder Placeholder Photos
@@ -187,60 +219,6 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
             ))}
           </div>
 
-          {/* Lightbox Modal for Founder Shoot Photos - Instant No-Scroll Viewport Fit */}
-          {activePhoto !== null && (
-            <div
-              onClick={() => setActivePhoto(null)}
-              className="fixed inset-0 z-[999] bg-black/85 backdrop-blur-xl flex items-center justify-center p-3 sm:p-6 overflow-hidden animate-page-enter"
-            >
-              <div
-                onClick={(e) => e.stopPropagation()}
-                className="relative max-w-4xl w-full max-h-[90vh] rounded-3xl bg-[#0D1427] border border-[#D4AF37]/70 p-4 sm:p-6 shadow-2xl flex flex-col justify-between overflow-hidden theme-lightbox-dialog"
-              >
-                <button
-                  onClick={() => setActivePhoto(null)}
-                  className="absolute top-3 right-3 z-30 p-2.5 rounded-full bg-[#16203B] text-[#FAF5EF] hover:text-[#D4AF37] transition-colors border border-[#D4AF37]/50 shadow-lg min-touch"
-                  aria-label="Close modal"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-
-                {(() => {
-                  const item = founderPhotos.find((p) => p.id === activePhoto);
-                  if (!item) return null;
-                  return (
-                    <div className="flex flex-col h-full space-y-3 text-left font-jakarta overflow-hidden">
-                      {/* Zero-Scroll Viewport-Fit Image Container */}
-                      <div className="w-full flex-1 min-h-[300px] sm:min-h-[420px] max-h-[62vh] rounded-2xl overflow-hidden border border-[#D4AF37]/40 bg-black/70 flex items-center justify-center p-2 relative">
-                        <OptimizedImage
-                          src={item.img}
-                          alt={item.title}
-                          className="max-w-full max-h-full w-auto h-auto object-contain rounded-lg"
-                          priority={true}
-                        />
-                      </div>
-
-                      <div className="shrink-0 space-y-1.5 pt-1">
-                        <div className="flex items-center justify-between gap-2 flex-wrap">
-                          <span className="px-3 py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-wider">
-                            {item.subtitle}
-                          </span>
-                          <span className="text-xs text-var-text-secondary font-medium">Founder Portfolio Shoot</span>
-                        </div>
-                        <h3 className="text-xl sm:text-2xl font-cormorant font-bold gold-gradient-text">
-                          {item.title}
-                        </h3>
-                        <p className="text-xs sm:text-sm text-var-text-secondary leading-relaxed line-clamp-3">
-                          {item.caption}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })()}
-              </div>
-            </div>
-          )}
-
           {/* Editorial Story Text - Open Un-boxed Editorial Flow */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start pt-6">
             <div className="lg:col-span-7 space-y-6 text-left border-l-2 border-[#D4AF37]/50 pl-6 sm:pl-8">
@@ -285,6 +263,123 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
           </div>
         </section>
       </ScrollReveal>
+
+      {/* Global Interactive Founder Photo Spotlight Portal */}
+      {activePhoto !== null &&
+        createPortal(
+          <div
+            onClick={() => setActivePhoto(null)}
+            className="fixed inset-0 z-[99999] bg-black/90 backdrop-blur-2xl flex items-center justify-center p-3 sm:p-6 overflow-hidden animate-page-enter"
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-4xl w-full max-h-[92vh] rounded-3xl bg-[#0D1427] border border-[#D4AF37]/70 p-5 sm:p-7 shadow-2xl flex flex-col justify-between overflow-hidden theme-lightbox-dialog my-auto"
+            >
+              {(() => {
+                const item = founderPhotos.find((p) => p.id === activePhoto);
+                if (!item) return null;
+                const currentIndex = founderPhotos.findIndex((p) => p.id === activePhoto);
+
+                return (
+                  <div className="flex flex-col h-full space-y-4 text-left font-jakarta overflow-hidden">
+                    {/* Top Control Bar */}
+                    <div className="flex items-center justify-between gap-4 pb-2 border-b border-[#D4AF37]/20 z-30 shrink-0">
+                      <div className="flex items-center gap-2">
+                        <span className="px-3 py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-wider">
+                          {item.subtitle}
+                        </span>
+                        <span className="text-xs text-var-text-secondary font-medium">
+                          Photo {currentIndex + 1} of {founderPhotos.length}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={handlePrevPhoto}
+                          className="p-2 rounded-full bg-[#16203B] text-[#FAF5EF] hover:text-[#D4AF37] border border-[#D4AF37]/40 transition-colors shadow-md"
+                          title="Previous photo (Left Arrow)"
+                        >
+                          <ChevronLeft className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={handleNextPhoto}
+                          className="p-2 rounded-full bg-[#16203B] text-[#FAF5EF] hover:text-[#D4AF37] border border-[#D4AF37]/40 transition-colors shadow-md"
+                          title="Next photo (Right Arrow)"
+                        >
+                          <ChevronRight className="w-4 h-4" />
+                        </button>
+
+                        <button
+                          onClick={() => setActivePhoto(null)}
+                          className="p-2 rounded-full bg-rose-600/30 text-rose-100 hover:bg-rose-600/60 border border-rose-500/40 transition-colors ml-2 shadow-md"
+                          title="Close viewer (ESC)"
+                          aria-label="Close modal"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Main High-Res Image Viewport Stage */}
+                    <div className="relative flex-1 min-h-[260px] sm:min-h-[380px] max-h-[58vh] w-full rounded-2xl overflow-hidden bg-black/80 border border-[#D4AF37]/40 flex items-center justify-center p-2 group shadow-inner">
+                      <OptimizedImage
+                        src={item.img}
+                        alt={item.title}
+                        className="max-w-full max-h-full w-auto h-auto object-contain rounded-lg shadow-2xl"
+                        priority={true}
+                      />
+
+                      {/* Side Hover Arrows on Stage */}
+                      <button
+                        onClick={handlePrevPhoto}
+                        className="absolute left-3 p-3 rounded-full bg-black/60 text-[#D4AF37] border border-[#D4AF37]/40 hover:bg-[#D4AF37] hover:text-black transition-all shadow-xl backdrop-blur-md opacity-80 hover:opacity-100 min-touch"
+                        aria-label="Previous image"
+                      >
+                        <ChevronLeft className="w-6 h-6" />
+                      </button>
+                      <button
+                        onClick={handleNextPhoto}
+                        className="absolute right-3 p-3 rounded-full bg-black/60 text-[#D4AF37] border border-[#D4AF37]/40 hover:bg-[#D4AF37] hover:text-black transition-all shadow-xl backdrop-blur-md opacity-80 hover:opacity-100 min-touch"
+                        aria-label="Next image"
+                      >
+                        <ChevronRight className="w-6 h-6" />
+                      </button>
+                    </div>
+
+                    {/* Bottom Metadata & Action CTA */}
+                    <div className="shrink-0 space-y-2 pt-1">
+                      <h3 className="text-xl sm:text-2xl font-cormorant font-bold gold-gradient-text">
+                        {item.title}
+                      </h3>
+                      <p className="text-xs sm:text-sm text-var-text-secondary leading-relaxed line-clamp-2">
+                        {item.caption}
+                      </p>
+
+                      <div className="pt-2 flex items-center justify-between gap-4 flex-wrap border-t border-[#D4AF37]/15">
+                        <div className="flex items-center gap-1.5 text-[11px] text-[#D4AF37]">
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>Interactive Photo Showcase • Use Arrow Keys</span>
+                        </div>
+
+                        <button
+                          onClick={() => {
+                            setActivePhoto(null);
+                            onNavigate('contact');
+                          }}
+                          className="px-5 py-2.5 rounded-xl shimmer-btn text-[#070A14] font-bold text-xs shadow-lg hover:brightness-110 flex items-center gap-2 min-touch"
+                        >
+                          <span>Partner With Our Founder</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
+          </div>,
+          document.body
+        )}
 
       {/* Section 3: Beyond the Blueprint & Jammu Pilgrimage */}
       <ScrollReveal direction="up" delay={0.15}>
