@@ -596,13 +596,13 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown 
             </button>
 
             <a
-              href="https://aastitva-alliance-1.onrender.com"
+              href="https://aquitas-aastitva11.onrender.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 py-3.5 rounded-full bg-[#0D1427] text-[#D4AF37] border border-[#D4AF37]/50 hover:bg-[#16203B] text-sm font-bold shadow-lg transition-all flex items-center gap-2 min-touch"
+              className="px-6 py-3.5 rounded-full bg-[#0D1427] text-[#D4AF37] border border-[#D4AF37]/50 hover:bg-[#16203B] text-sm font-bold shadow-lg smooth-button-hover group flex items-center gap-2 min-touch"
             >
               <span>Visit Live Aequitas Portal</span>
-              <ExternalLink className="w-4 h-4" />
+              <ExternalLink className="w-4 h-4 smooth-icon-spin" />
             </a>
           </div>
         </section>

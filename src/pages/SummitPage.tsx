@@ -132,12 +132,12 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
                 </button>
 
                 <a
-                  href="https://aastitva-alliance-1.onrender.com"
+                  href="https://aquitas-aastitva11.onrender.com/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-6 py-3.5 rounded-xl bg-rose-600/30 hover:bg-rose-600/50 border border-rose-500/50 text-rose-100 font-bold text-sm flex items-center gap-2 shadow-lg transition-all min-touch font-jakarta"
+                  className="px-6 py-3.5 rounded-xl bg-rose-600/30 hover:bg-rose-600/50 border border-rose-500/50 text-rose-100 font-bold text-sm flex items-center gap-2 shadow-lg smooth-button-hover group min-touch font-jakarta"
                 >
-                  <ExternalLink className="w-4 h-4 text-rose-300" />
+                  <ExternalLink className="w-4 h-4 text-rose-300 smooth-icon-spin" />
                   <span>Visit Live Aequitas Website ↗</span>
                 </a>
               </div>

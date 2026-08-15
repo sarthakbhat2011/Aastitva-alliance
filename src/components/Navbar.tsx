@@ -111,10 +111,10 @@ export const Navbar: React.FC<Props> = ({
 
           <div className="flex items-center gap-2.5 shrink-0 text-[11px]">
             <a
-              href="https://aastitva-alliance-1.onrender.com"
+              href="https://aquitas-aastitva11.onrender.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:flex items-center gap-1 text-[#D4AF37] hover:text-[#FAF5EF] transition-colors font-medium"
+              className="hidden md:flex items-center gap-1 text-[#D4AF37] hover:text-[#FAF5EF] transition-colors font-medium smooth-button-hover group"
             >
               <span>Aequitas Site</span>
               <ArrowUpRight className="w-3 h-3" />
