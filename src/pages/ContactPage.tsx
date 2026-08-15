@@ -273,9 +273,9 @@ export const ContactPage: React.FC = () => {
                   <button
                     type="submit"
                     disabled={loading || !form.captchaVerified}
-                    className="w-full py-4 rounded-xl shimmer-btn text-[#171026] font-bold text-sm shadow-xl hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-50 min-touch"
+                    className="w-full py-4 rounded-xl shimmer-btn text-[#171026] font-bold text-sm shadow-xl smooth-button-hover group flex items-center justify-center gap-2 disabled:opacity-50 min-touch"
                   >
-                    <Send className="w-4 h-4" />
+                    <Send className="w-4 h-4 smooth-icon-spin" />
                     <span>{loading ? 'Sending Proposal Request...' : 'Send Inquiry Request'}</span>
                   </button>
                 </form>

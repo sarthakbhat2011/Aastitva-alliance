@@ -232,8 +232,8 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown 
         <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-10 items-center z-10 flex-1">
           {/* Left Hero Text Column (Exact PDF Specification) */}
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E8A53E]/15 border border-[#E8A53E]/30 text-[#E8A53E] text-xs font-semibold">
-              <Trophy className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E8A53E]/15 border border-[#E8A53E]/30 text-[#E8A53E] text-xs font-semibold smooth-badge-pulse">
+              <Trophy className="w-3.5 h-3.5 smooth-icon-spin" />
               <span>Academic & Leadership Network</span>
             </div>
 
@@ -257,27 +257,27 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown 
               {/* Button 1: "Partner With Us" (leads to form) */}
               <button
                 onClick={() => onNavigate('contact')}
-                className="px-7 py-3.5 rounded-xl shimmer-btn text-[#050811] text-sm font-bold shadow-[0_6px_25px_rgba(232,165,62,0.35)] hover:brightness-110 active:scale-95 transition-all flex items-center gap-2"
+                className="px-7 py-3.5 rounded-xl shimmer-btn text-[#050811] text-sm font-bold shadow-[0_6px_25px_rgba(232,165,62,0.35)] smooth-button-hover group flex items-center gap-2"
               >
                 <span>Partner With Us</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4 smooth-icon-spin" />
               </button>
 
               {/* Button 2: "Explore Offerings" (redirects to the offerings tab) */}
               <button
                 onClick={() => onNavigate('offerings')}
-                className="px-6 py-3.5 rounded-xl bg-[#0B1120] border border-[#D4AF37]/40 text-[#FAF5EF] text-sm font-semibold hover:border-[#E8A53E] hover:text-[#E8A53E] transition-all flex items-center gap-2"
+                className="px-6 py-3.5 rounded-xl bg-[#0B1120] border border-[#D4AF37]/40 text-[#FAF5EF] text-sm font-semibold hover:border-[#E8A53E] hover:text-[#E8A53E] smooth-button-hover group flex items-center gap-2"
               >
                 <span>Explore Offerings</span>
-                <ChevronRight className="w-4 h-4 text-[#E8A53E]" />
+                <ChevronRight className="w-4 h-4 text-[#E8A53E] smooth-icon-spin" />
               </button>
 
               {/* Button 3: "Book a Free Consultation Call" (15-minute call directly on a calendar) */}
               <button
                 onClick={() => setConsultationModalOpen(true)}
-                className="px-6 py-3.5 rounded-xl bg-[#050811] border border-[#B8A9C9]/40 text-[#D3C5E5] text-sm font-semibold hover:border-[#E8A53E] hover:text-white transition-all flex items-center gap-2 shadow-lg"
+                className="px-6 py-3.5 rounded-xl bg-[#050811] border border-[#B8A9C9]/40 text-[#D3C5E5] text-sm font-semibold hover:border-[#E8A53E] hover:text-white smooth-button-hover group flex items-center gap-2 shadow-lg"
               >
-                <Video className="w-4 h-4 text-[#E8A53E]" />
+                <Video className="w-4 h-4 text-[#E8A53E] smooth-icon-spin" />
                 <span>Book a Free Consultation Call</span>
               </button>
             </div>

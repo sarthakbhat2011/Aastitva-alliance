@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Sparkles, ChevronRight, ArrowUpRight, ShieldCheck, Settings, Clock } from 'lucide-react';
+import { Menu, X, Sparkles, ChevronRight, ArrowUpRight, ArrowRight, ShieldCheck, Settings, Clock } from 'lucide-react';
 import { AstitvaLogo } from './AstitvaLogo';
 import { ThemeToggle } from './ThemeToggle';
 import { Page, SummitConfig, CountdownTime } from '../types';
@@ -190,10 +190,10 @@ export const Navbar: React.FC<Props> = ({
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               <button
                 onClick={() => handleNavClick('contact')}
-                className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl shimmer-btn text-[#070A14] text-xs sm:text-sm font-extrabold shadow-[0_4px_20px_rgba(212,175,55,0.35)] hover:brightness-110 active:scale-95 transition-all whitespace-nowrap shrink-0 border border-[#FAF5EF]/30"
+                className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl shimmer-btn text-[#070A14] text-xs sm:text-sm font-extrabold shadow-[0_4px_20px_rgba(212,175,55,0.35)] smooth-button-hover group whitespace-nowrap shrink-0 border border-[#FAF5EF]/30"
               >
                 <span>Partner With Us</span>
-                <ChevronRight className="w-4 h-4" />
+                <ArrowRight className="w-3.5 h-3.5 smooth-icon-spin" />
               </button>
 
               {/* Mobile Menu Hamburger Toggle */}

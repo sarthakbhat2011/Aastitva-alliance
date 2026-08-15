@@ -249,14 +249,76 @@ h1, h2, h3, h4, h5, h6,
   transition: all 0.3s ease;
 }
 
-/* Lusion Interactive Kinetic Lift */
-.lusion-hover-tilt {
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+/* Lusion Interactive Kinetic Lift & Hardware Acceleration Engine */
+.gpu-accelerated {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 
-.lusion-hover-tilt:hover {
-  transform: translateY(-4px) scale(1.015);
-  box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.9), 0 0 30px rgba(212, 175, 55, 0.18);
+.lusion-hover-tilt,
+.smooth-card-rise {
+  will-change: transform, opacity, box-shadow;
+  transform: translateZ(0);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease;
+}
+
+.lusion-hover-tilt:hover,
+.smooth-card-rise:hover {
+  transform: translate3d(0, -6px, 0) scale(1.015);
+  box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.5), 0 0 25px rgba(212, 175, 55, 0.22);
+}
+
+.smooth-button-hover {
+  will-change: transform, opacity, filter;
+  transform: translateZ(0);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+}
+
+.smooth-button-hover:hover {
+  transform: translate3d(0, -2px, 0) scale(1.03);
+  filter: brightness(1.08);
+}
+
+.smooth-button-hover:active {
+  transform: translate3d(0, 0, 0) scale(0.97);
+}
+
+.smooth-icon-spin {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+}
+
+.group:hover .smooth-icon-spin,
+.smooth-icon-spin:hover {
+  transform: rotate(12deg) scale(1.15);
+}
+
+@keyframes smoothFloatSlow {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -8px, 0); }
+}
+
+.smooth-float-slow {
+  animation: smoothFloatSlow 6s ease-in-out infinite;
+}
+
+@keyframes smoothBadgePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.02); }
+}
+
+.smooth-badge-pulse {
+  animation: smoothBadgePulse 4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Luxury Metallic Text Gradients */

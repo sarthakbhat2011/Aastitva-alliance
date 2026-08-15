@@ -113,13 +113,13 @@ export const BlogPage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {filteredPosts.map((post, idx) => (
             <ScrollReveal key={post.id} direction="up" delay={idx * 0.08}>
-              <div className="glass-card rounded-3xl overflow-hidden hover:border-[#D4AF37]/60 transition-all flex flex-col justify-between h-full text-left font-jakarta">
+              <div className="glass-card rounded-3xl overflow-hidden shadow-2xl flex flex-col justify-between hover:border-[#D4AF37]/50 smooth-card-rise group text-left font-jakarta">
                 <div>
-                  <div className="h-48 overflow-hidden relative">
+                  <div className="relative h-48 w-full overflow-hidden bg-[#171026]">
                     <img
                       src={post.image}
                       alt={post.title}
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <span className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-[#171026]/90 border border-[#D4AF37]/40 text-[#D4AF37] text-[10px] font-bold uppercase backdrop-blur-md">
                       {post.category}
@@ -133,11 +133,11 @@ export const BlogPage: React.FC = () => {
                       <span>{post.readTime}</span>
                     </div>
 
-                    <h3 className="text-lg font-cormorant font-bold text-[#FAF5EF] line-clamp-2">
+                    <h3 className="text-lg font-cormorant font-bold text-var-text-primary line-clamp-2">
                       {post.title}
                     </h3>
 
-                    <p className="text-xs text-[#C4BBA3] line-clamp-3 leading-relaxed">
+                    <p className="text-xs text-var-text-secondary line-clamp-3 leading-relaxed">
                       {post.excerpt}
                     </p>
                   </div>
@@ -149,7 +149,7 @@ export const BlogPage: React.FC = () => {
                     className="text-xs font-bold text-[#D4AF37] hover:underline flex items-center gap-1 min-touch"
                   >
                     <span>Read Full Article</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <ArrowRight className="w-3.5 h-3.5 smooth-icon-spin" />
                   </button>
                 </div>
               </div>

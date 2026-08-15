@@ -63,13 +63,13 @@ export const FAQPage: React.FC = () => {
           const isOpen = openFaq === faq.id;
           return (
             <ScrollReveal key={faq.id} direction="up" delay={idx * 0.05}>
-              <div className="glass-card rounded-2xl overflow-hidden transition-all duration-300 hover:border-[#D4AF37]/50">
+              <div className="glass-card rounded-2xl overflow-hidden transition-all duration-300 hover:border-[#D4AF37]/50 smooth-card-rise group">
                 <button
                   onClick={() => setOpenFaq(isOpen ? null : faq.id)}
                   className="w-full p-6 text-left flex items-center justify-between gap-4 font-jakarta font-bold text-base text-[#FAF5EF] hover:text-[#D4AF37] min-touch"
                 >
                   <span className="flex items-center gap-3">
-                    <HelpCircle className="w-5 h-5 text-[#D4AF37] shrink-0" />
+                    <HelpCircle className="w-5 h-5 text-[#D4AF37] shrink-0 smooth-icon-spin" />
                     <span>{faq.question}</span>
                   </span>
                   {isOpen ? (

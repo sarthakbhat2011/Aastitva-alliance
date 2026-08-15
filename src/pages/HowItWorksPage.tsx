@@ -114,10 +114,10 @@ export const HowItWorksPage: React.FC<Props> = ({ onNavigate }) => {
                 </div>
 
                 {/* Content Card */}
-                <div className="w-full sm:w-[calc(50%-2.5rem)] ml-16 sm:ml-0 glass-card rounded-2xl p-6 shadow-xl space-y-3 hover:border-[#D4AF37]/60 transition-all text-left font-jakarta">
+                <div className="w-full sm:w-[calc(50%-2.5rem)] ml-16 sm:ml-0 glass-card rounded-2xl p-6 shadow-xl space-y-3 smooth-card-rise group text-left font-jakarta">
                   <div className="flex items-center gap-3">
                     <div className="p-2.5 rounded-xl bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/30">
-                      <Icon className="w-5 h-5" />
+                      <Icon className="w-5 h-5 smooth-icon-spin" />
                     </div>
                     <h3 className="text-lg font-jakarta font-bold text-var-text-primary">
                       {s.title}
