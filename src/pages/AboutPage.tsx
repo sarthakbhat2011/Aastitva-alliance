@@ -2,8 +2,9 @@ import React from 'react';
 import { Page } from '../types';
 import { Target, Compass, ShieldAlert, BookOpen, Sprout, Zap, Landmark, UserCheck, Sparkles, ArrowRight } from 'lucide-react';
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
-import { ScrollIndicator } from '../components/ScrollIndicator';
 import { ScrollReveal } from '../components/ScrollReveal';
+import { ScrollIndicator } from '../components/ScrollIndicator';
+import { OptimizedImage } from '../components/OptimizedImage';
 
 interface Props {
   onNavigate: (page: Page) => void;
@@ -106,7 +107,7 @@ export const AboutPage: React.FC<Props> = ({ onNavigate }) => {
           </div>
 
           <div className="relative h-80 sm:h-96 rounded-3xl overflow-hidden border border-[#D4AF37]/40 shadow-2xl dark-photo-overlay">
-            <img
+            <OptimizedImage
               src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1200"
               alt="Aastitva Team and Event Venue"
               className="w-full h-full object-cover"

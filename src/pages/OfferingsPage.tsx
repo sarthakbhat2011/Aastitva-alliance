@@ -3,50 +3,46 @@ import { Page } from '../types';
 import { OFFERINGS } from '../data';
 import { ChevronDown, ChevronUp, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
-import { ScrollIndicator } from '../components/ScrollIndicator';
 import { ScrollReveal } from '../components/ScrollReveal';
+import { OptimizedImage } from '../components/OptimizedImage';
 
 interface Props {
   onNavigate: (page: Page) => void;
 }
 
 export const OfferingsPage: React.FC<Props> = ({ onNavigate }) => {
-  const [expandedCard, setExpandedCard] = useState<string | null>('executive-board');
+  const [expandedCard, setExpandedCard] = useState<string | null>(null);
 
   const toggleExpand = (id: string) => {
     setExpandedCard(expandedCard === id ? null : id);
   };
 
   return (
-    <div className="relative font-sans text-[#FAF5EF] py-12 px-4 sm:px-6 max-w-7xl mx-auto space-y-16">
-      {/* Hero Header with 3D Canvas Emblem */}
+    <div className="relative font-sans text-[#FAF5EF] py-12 px-4 sm:px-6 max-w-7xl mx-auto space-y-12">
+      {/* Header Banner */}
       <ScrollReveal direction="zoom" delay={0.1}>
         <div className="bg-gradient-to-br from-[#0D1427]/95 via-[#16203B]/90 to-[#070A14]/95 border border-[#D4AF37]/35 shadow-[0_16px_50px_rgba(0,0,0,0.85)] p-6 sm:p-12 rounded-3xl relative overflow-hidden flex flex-col lg:grid lg:grid-cols-12 gap-8 items-center">
-          <div className="w-full lg:col-span-8 space-y-4 text-left z-10">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-widest shadow-sm font-jakarta">
+          <div className="w-full lg:col-span-8 space-y-4 text-left z-10 font-jakarta">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-widest shadow-sm">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Turnkey Infrastructure Modules</span>
+              <span>Full-Stack Capabilities</span>
             </div>
             <h1 className="text-2xl sm:text-4xl lg:text-5xl font-cormorant font-bold gold-gradient-text leading-tight">
-              Our Infrastructure Offerings
+              Modular Infrastructure & Service Modules
             </h1>
-            <p className="text-sm sm:text-base text-[#C4BBA3] w-full max-w-2xl leading-relaxed font-jakarta">
+            <p className="text-sm sm:text-base text-var-text-secondary w-full max-w-2xl leading-relaxed">
               Expandable, modular infrastructure packages tailored for school and university academic events across Jammu & Kashmir.
             </p>
           </div>
 
-          <div className="w-full lg:col-span-4 h-44 sm:h-60 relative flex items-center justify-center z-0">
+          <div className="w-full lg:col-span-4 h-44 sm:h-56 relative flex items-center justify-center z-0">
             <Astitva3DCanvas variant="hero" />
-          </div>
-
-          <div className="w-full lg:col-span-12 flex justify-center pt-2">
-            <ScrollIndicator targetId="offerings-list" label="Explore Modules" />
           </div>
         </div>
       </ScrollReveal>
 
-      {/* Expandable Offerings Cards */}
-      <div id="offerings-list" className="space-y-8">
+      {/* Offerings Modules Accordion / Cards List */}
+      <div className="space-y-8">
         {OFFERINGS.map((offering, idx) => {
           const isExpanded = expandedCard === offering.id;
 
@@ -55,10 +51,10 @@ export const OfferingsPage: React.FC<Props> = ({ onNavigate }) => {
               <div className="glass-card rounded-3xl overflow-hidden shadow-2xl transition-all duration-300 hover:border-[#D4AF37]/50">
                 {/* Hero Card Banner */}
                 <div className="relative min-h-[220px] sm:min-h-[260px] flex items-end p-6 sm:p-8 dark-photo-overlay">
-                  <img
+                  <OptimizedImage
                     src={offering.image}
                     alt={offering.title}
-                    className="absolute inset-0 w-full h-full object-cover filter brightness-50"
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#171026] via-[#171026]/70 to-transparent" />
 

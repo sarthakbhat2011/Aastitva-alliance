@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
 import { ScrollReveal } from '../components/ScrollReveal';
+import { OptimizedImage } from '../components/OptimizedImage';
 
 interface Props {
   onNavigate: (page: Page) => void;
@@ -147,7 +148,7 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
                 className="group relative rounded-3xl bg-[#0D1427] border border-[#243563]/50 hover:border-[#D4AF37]/60 overflow-hidden cursor-pointer transition-all duration-500 shadow-xl hover:-translate-y-1.5"
               >
                 <div className="relative h-80 w-full overflow-hidden bg-[#16203B]">
-                  <img
+                  <OptimizedImage
                     src={photo.img}
                     alt={photo.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter brightness-90 group-hover:brightness-100"
@@ -191,7 +192,7 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
                   return (
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
                       <div className="md:col-span-7 h-80 sm:h-96 rounded-2xl overflow-hidden border border-[#D4AF37]/30">
-                        <img src={item.img} alt={item.title} className="w-full h-full object-cover" />
+                        <OptimizedImage src={item.img} alt={item.title} className="w-full h-full object-cover" priority={true} />
                       </div>
                       <div className="md:col-span-5 space-y-4 text-left font-jakarta">
                         <span className="px-3 py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-wider inline-block">

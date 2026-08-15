@@ -5,6 +5,7 @@ import { COMMITTEES } from '../data';
 import { ScrollIndicator } from '../components/ScrollIndicator';
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
 import { ScrollReveal } from '../components/ScrollReveal';
+import { OptimizedImage } from '../components/OptimizedImage';
 import {
   Sparkles,
   Calendar,
@@ -90,10 +91,11 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
         <section className="relative min-h-[65vh] flex items-end pb-12 px-4 sm:px-8 overflow-hidden dark-photo-overlay">
           {/* Background Image */}
           <div className="absolute inset-0 z-0">
-            <img
+            <OptimizedImage
               src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1600"
               alt="Aequitas Summit Backdrop"
-              className="w-full h-full object-cover filter brightness-[0.25]"
+              className="w-full h-full object-cover"
+              priority={true}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#070A14] via-[#070A14]/80 to-transparent" />
           </div>
