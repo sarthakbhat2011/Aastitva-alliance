@@ -104,7 +104,7 @@ export const ContactPage: React.FC = () => {
               <span>Institutional Partnerships</span>
             </div>
             <h1 className="text-2xl sm:text-4xl lg:text-5xl font-cormorant font-bold gold-gradient-text leading-tight">
-              Partner With Astitva Alliance
+              Partner With Aastitva Alliance
             </h1>
             <p className="text-sm sm:text-base text-var-text-secondary w-full max-w-2xl leading-relaxed">
               Empower your institution with Jammu's premier academic event infrastructure. Submit your event scope to receive a customized Executive Board roster, venue layout, and budget plan within 24 hours.

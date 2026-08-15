@@ -1,4 +1,4 @@
-# 🏛️ Astitva Alliance — Academic Event Infrastructure Platform
+# 🏛️ Aastitva Alliance — Academic Event Infrastructure Platform
 
 > **The First & Only Academic Event Infrastructure Partner in Jammu, J&K, India.**  
 > Powers Model United Nations (MUNs), parliamentary debate summits, quizzes, and literary festivals across premier educational institutions.
@@ -77,4 +77,4 @@ npm run lint
 ---
 
 ## 📄 License
-Published under the **MIT License**. Created with excellence for **Astitva Alliance**.
+Published under the **MIT License**. Created with excellence for **Aastitva Alliance**.

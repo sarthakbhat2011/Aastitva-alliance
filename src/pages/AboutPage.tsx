@@ -67,7 +67,7 @@ export const AboutPage: React.FC<Props> = ({ onNavigate }) => {
           <div className="w-full lg:col-span-8 space-y-4 text-left z-10">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-widest shadow-sm">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>About Astitva Alliance</span>
+              <span>About Aastitva Alliance</span>
             </div>
             <h1 className="text-2xl sm:text-4xl lg:text-5xl font-cormorant font-bold gold-gradient-text leading-tight">
               Jammu's Premier Academic Infrastructure Partner
@@ -95,7 +95,7 @@ export const AboutPage: React.FC<Props> = ({ onNavigate }) => {
               Genesis & Mission
             </span>
             <h2 className="text-3xl sm:text-4xl font-cormorant font-bold text-var-text-primary">
-              Why We Founded Astitva Alliance
+              Why We Founded Aastitva Alliance
             </h2>
             <p className="text-base text-var-text-secondary leading-relaxed font-jakarta">
               Aastitva Alliance was born out of a shared observation of academic events in Jammu. For years, school festivals and MUNs suffered from fragmented organization—teachers overwhelmed with logistics, inexperienced chairs causing committee delays, and students missing out on genuine debate.

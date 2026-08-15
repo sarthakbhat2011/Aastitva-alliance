@@ -583,7 +583,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown 
           </h2>
 
           <p className="text-base sm:text-lg text-var-text-secondary max-w-2xl mx-auto leading-relaxed animate-text-reveal animate-delay-2">
-            Partner with Astitva Alliance for zero-risk infrastructure, elite Executive Board recruitment, and complete delegate preparation.
+            Partner with Aastitva Alliance for zero-risk infrastructure, elite Executive Board recruitment, and complete delegate preparation.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4 animate-text-reveal animate-delay-3">

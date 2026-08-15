@@ -55,7 +55,7 @@ export const AstitvaLogo: React.FC<Props> = ({
           {/* Real Official Logo Image if present, overlaid with Calligraphic Accent */}
           <img
             src="/astitva-logo.png"
-            alt="Astitva Official Emblem"
+            alt="Aastitva Official Emblem"
             className="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(212,175,55,0.4)] relative z-10 transition-transform duration-300 group-hover:scale-110"
             onError={(e) => {
               // Fallback SVG Calligraphic Monogram if image missing
@@ -77,9 +77,9 @@ export const AstitvaLogo: React.FC<Props> = ({
         <div className="flex flex-col relative z-10">
           <div className="flex items-baseline gap-2">
             
-            {/* "Astitva" Calligraphic Luxury Serif Typography */}
+            {/* "Aastitva" Calligraphic Luxury Serif Typography */}
             <span className={`font-cormorant brand-logo-text font-bold italic ${currentSize.text} bg-gradient-to-r from-[#FFFFFF] via-[#FAF5EF] to-[#E8A53E] group-hover:to-[#FFD700] bg-clip-text text-transparent leading-none drop-shadow-[0_2px_12px_rgba(255,255,255,0.2)] transition-all duration-300`}>
-              Astitva
+              Aastitva
             </span>
 
             {/* "ALLIANCE" Modern Institutional Sans */}

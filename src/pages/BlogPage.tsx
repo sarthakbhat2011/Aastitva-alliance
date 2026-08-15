@@ -29,7 +29,7 @@ export const BlogPage: React.FC = () => {
               <span>Academic Journal & Guides</span>
             </div>
             <h1 className="text-2xl sm:text-4xl lg:text-5xl font-cormorant font-bold gold-gradient-text leading-tight">
-              Astitva Academic Resources
+              Aastitva Academic Resources
             </h1>
             <p className="text-sm sm:text-base text-[#C4BBA3] w-full max-w-2xl leading-relaxed">
               In-depth guides on Model UN Rules of Procedure, position paper crafting, public speaking, and regional event logistics.

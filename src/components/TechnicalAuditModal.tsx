@@ -24,7 +24,7 @@ export const TechnicalAuditModal: React.FC<Props> = ({ isOpen, onClose, stats })
               <h3 className="text-xl font-serif font-bold text-[#FAF5EF]">
                 Technical & Infrastructure Audit
               </h3>
-              <p className="text-xs text-[#C4BBA3]">Astitva Alliance Render & SSL Performance Suite</p>
+              <p className="text-xs text-[#C4BBA3]">Aastitva Alliance Render & SSL Performance Suite</p>
             </div>
           </div>
           <button

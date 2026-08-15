@@ -28,7 +28,7 @@ export const FAQPage: React.FC = () => {
               Frequently Asked Questions
             </h1>
             <p className="text-sm sm:text-base text-var-text-secondary w-full max-w-2xl leading-relaxed">
-              Everything you need to know about partnering with Astitva Alliance for school and university academic events in Jammu.
+              Everything you need to know about partnering with Aastitva Alliance for school and university academic events in Jammu.
             </p>
           </div>
 
