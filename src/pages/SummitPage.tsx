@@ -130,7 +130,7 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
                 </button>
 
                 <a
-                  href="https://aquitas-aastitva11.onrender.com/"
+                  href="https://aastitva-alliance-1.onrender.com"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-6 py-3.5 rounded-xl bg-rose-600/30 hover:bg-rose-600/50 border border-rose-500/50 text-rose-100 font-bold text-sm flex items-center gap-2 shadow-lg transition-all min-touch font-jakarta"
