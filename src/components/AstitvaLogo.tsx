@@ -90,7 +90,7 @@ export const AstitvaLogo: React.FC<Props> = ({
 
           {showSubtitle && (
             <span className={`font-jakarta ${currentSize.sub} text-[#B8A9C9] group-hover:text-[#D3C5E5] tracking-normal font-normal mt-0.5 transition-colors duration-300`}>
-              Academic Event Infrastructure
+              Academic & Leadership Network
             </span>
           )}
         </div>

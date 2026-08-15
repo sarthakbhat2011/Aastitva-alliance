@@ -20,7 +20,7 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox }) => {
         <div className="space-y-4">
           <AstitvaLogo size="lg" />
           <p className="text-xs sm:text-sm text-[#D3C5E5] font-inter italic leading-relaxed">
-            "Jammu's First Academic Event Infrastructure Partner"
+            "Empowering Student Diplomacy & Academic Excellence"
           </p>
           <div className="flex items-center gap-3 pt-2">
             <a

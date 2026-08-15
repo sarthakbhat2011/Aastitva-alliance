@@ -70,7 +70,7 @@ export const AboutPage: React.FC<Props> = ({ onNavigate }) => {
               <span>About Aastitva Alliance</span>
             </div>
             <h1 className="text-2xl sm:text-4xl lg:text-5xl font-cormorant font-bold gold-gradient-text leading-tight">
-              Jammu's Premier Academic Infrastructure Partner
+              Empowering Institutions Through Turnkey Academic & Leadership Infrastructure
             </h1>
             <p className="text-sm sm:text-base text-[#C4BBA3] w-full max-w-2xl leading-relaxed font-jakarta">
               Empowering schools, secretariats, and student debaters across Jammu & Kashmir with world-class Executive Board recruitment, venue sourcing, and turnkey event execution.

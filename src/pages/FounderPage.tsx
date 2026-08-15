@@ -51,7 +51,7 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
       id: 4,
       title: 'Regional Summit Vision',
       subtitle: 'Aequitas Partnership',
-      caption: 'Pioneering Jammu’s first zero-risk academic infrastructure partner.',
+      caption: "Building a dependable, high-standard academic infrastructure partner for Jammu's institutions.",
       img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=1200',
     },
   ];

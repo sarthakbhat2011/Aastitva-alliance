@@ -234,12 +234,12 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown 
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E8A53E]/15 border border-[#E8A53E]/30 text-[#E8A53E] text-xs font-semibold">
               <Trophy className="w-3.5 h-3.5" />
-              <span>Academic Event Infrastructure Partner</span>
+              <span>Academic & Leadership Network</span>
             </div>
 
             {/* HEADLINE: Playfair Display 52px */}
             <h1 className="hero-headline-text animate-text-reveal">
-              The First & Only Academic Event Infrastructure Partner in Jammu
+              Empowering Premier Student Diplomacy & Academic Conferences
             </h1>
 
             {/* SUBHEADLINE: Inter 20px */}
