@@ -25,6 +25,18 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
   const [activePhoto, setActivePhoto] = useState<number | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<string | null>('Jammu');
 
+  // Lock body scroll when Lightbox Modal is open
+  React.useEffect(() => {
+    if (activePhoto !== null) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [activePhoto]);
+
   // 4 Editorial Founder Placeholder Photos
   const founderPhotos = [
     {
@@ -145,29 +157,29 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
               <div
                 key={photo.id}
                 onClick={() => setActivePhoto(photo.id)}
-                className="group relative rounded-3xl bg-[#0D1427] border border-[#243563]/50 hover:border-[#D4AF37]/60 overflow-hidden cursor-pointer transition-all duration-500 shadow-xl hover:-translate-y-1.5"
+                className="group relative rounded-3xl border border-[#D4AF37]/40 overflow-hidden cursor-pointer transition-all duration-500 shadow-xl hover:-translate-y-1.5 theme-card-surface"
               >
                 <div className="relative h-80 w-full overflow-hidden bg-[#16203B]">
                   <OptimizedImage
                     src={photo.img}
                     alt={photo.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 filter brightness-90 group-hover:brightness-100"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#070A14] via-[#070A14]/30 to-transparent opacity-90 group-hover:opacity-75 transition-opacity" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#070A14]/80 via-[#070A14]/20 to-transparent opacity-80 group-hover:opacity-60 transition-opacity theme-photo-gradient" />
 
                   <div className="absolute top-4 right-4 p-2 rounded-full bg-[#070A14]/80 text-[#D4AF37] opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-md">
                     <Maximize2 className="w-4 h-4" />
                   </div>
                 </div>
 
-                <div className="p-5 space-y-1.5 relative z-10 bg-[#070A14]/90">
+                <div className="p-5 space-y-1.5 relative z-10 theme-founder-caption-box">
                   <span className="text-[10px] text-[#D4AF37] uppercase tracking-wider font-bold block font-jakarta">
                     {photo.subtitle}
                   </span>
-                  <h3 className="text-base font-jakarta font-bold text-[#FAF5EF] group-hover:text-[#D4AF37] transition-colors">
+                  <h3 className="text-base font-jakarta font-bold text-var-text-primary group-hover:text-[#D4AF37] transition-colors">
                     {photo.title}
                   </h3>
-                  <p className="text-xs text-[#C4BBA3] line-clamp-2 leading-relaxed font-jakarta">
+                  <p className="text-xs text-var-text-secondary line-clamp-2 leading-relaxed font-jakarta">
                     {photo.caption}
                   </p>
                 </div>
@@ -175,19 +187,19 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
             ))}
           </div>
 
-          {/* Lightbox Modal for Founder Shoot Photos - Instant No-Scroll View */}
+          {/* Lightbox Modal for Founder Shoot Photos - Instant No-Scroll Viewport Fit */}
           {activePhoto !== null && (
             <div
               onClick={() => setActivePhoto(null)}
-              className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-page-enter"
+              className="fixed inset-0 z-[999] bg-black/85 backdrop-blur-xl flex items-center justify-center p-3 sm:p-6 overflow-hidden animate-page-enter"
             >
               <div
                 onClick={(e) => e.stopPropagation()}
-                className="relative max-w-3xl w-full rounded-3xl bg-[#0D1427] border border-[#D4AF37]/60 p-4 sm:p-6 space-y-4 shadow-2xl overflow-hidden my-auto"
+                className="relative max-w-4xl w-full max-h-[90vh] rounded-3xl bg-[#0D1427] border border-[#D4AF37]/70 p-4 sm:p-6 shadow-2xl flex flex-col justify-between overflow-hidden theme-lightbox-dialog"
               >
                 <button
                   onClick={() => setActivePhoto(null)}
-                  className="absolute top-3 right-3 z-30 p-2.5 rounded-full bg-[#16203B] text-[#FAF5EF] hover:text-[#D4AF37] transition-colors border border-[#D4AF37]/40 shadow-lg min-touch"
+                  className="absolute top-3 right-3 z-30 p-2.5 rounded-full bg-[#16203B] text-[#FAF5EF] hover:text-[#D4AF37] transition-colors border border-[#D4AF37]/50 shadow-lg min-touch"
                   aria-label="Close modal"
                 >
                   <X className="w-5 h-5" />
@@ -197,28 +209,28 @@ export const FounderPage: React.FC<Props> = ({ onNavigate }) => {
                   const item = founderPhotos.find((p) => p.id === activePhoto);
                   if (!item) return null;
                   return (
-                    <div className="space-y-4 text-left font-jakarta">
-                      {/* Crisp Viewport-Fit Image Container */}
-                      <div className="w-full h-64 sm:h-96 rounded-2xl overflow-hidden border border-[#D4AF37]/30 bg-[#070A14] flex items-center justify-center">
+                    <div className="flex flex-col h-full space-y-3 text-left font-jakarta overflow-hidden">
+                      {/* Zero-Scroll Viewport-Fit Image Container */}
+                      <div className="w-full flex-1 min-h-[300px] sm:min-h-[420px] max-h-[62vh] rounded-2xl overflow-hidden border border-[#D4AF37]/40 bg-black/70 flex items-center justify-center p-2 relative">
                         <OptimizedImage
                           src={item.img}
                           alt={item.title}
-                          className="w-full h-full object-cover"
+                          className="max-w-full max-h-full w-auto h-auto object-contain rounded-lg"
                           priority={true}
                         />
                       </div>
 
-                      <div className="space-y-2 pt-1">
+                      <div className="shrink-0 space-y-1.5 pt-1">
                         <div className="flex items-center justify-between gap-2 flex-wrap">
                           <span className="px-3 py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-wider">
                             {item.subtitle}
                           </span>
-                          <span className="text-xs text-[#C4BBA3] font-medium">Founder Editorial Shoot</span>
+                          <span className="text-xs text-var-text-secondary font-medium">Founder Portfolio Shoot</span>
                         </div>
                         <h3 className="text-xl sm:text-2xl font-cormorant font-bold gold-gradient-text">
                           {item.title}
                         </h3>
-                        <p className="text-xs sm:text-sm text-var-text-secondary leading-relaxed">
+                        <p className="text-xs sm:text-sm text-var-text-secondary leading-relaxed line-clamp-3">
                           {item.caption}
                         </p>
                       </div>
