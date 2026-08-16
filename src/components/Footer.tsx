@@ -29,6 +29,9 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox, onOpenRe
         {/* Column 1 — Brand */}
         <div className="space-y-4 text-left">
           <AstitvaLogo size="lg" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/35 text-[#D4AF37] text-[10px] sm:text-[11px] font-mono font-bold tracking-wider uppercase">
+            <span>Academic Event Management + Network Organisation</span>
+          </div>
           <p className="text-xs sm:text-sm text-[#D3C5E5] font-inter italic leading-relaxed">
             "Empowering Student Diplomacy & Academic Excellence"
           </p>

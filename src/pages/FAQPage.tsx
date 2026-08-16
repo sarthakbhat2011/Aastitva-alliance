@@ -16,9 +16,9 @@ export const FAQPage: React.FC = () => {
           <div className="space-y-8">
             <div className="space-y-3 text-left font-jakarta">
               <MagneticElement strength={0.25}>
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-widest shadow-sm cursor-pointer">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-mono font-bold uppercase tracking-wider shadow-sm cursor-pointer">
                   <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-                  <span>Institutional Knowledge Base</span>
+                  <span>Help Center • Academic Event Management + Network Organisation</span>
                 </div>
               </MagneticElement>
               <CinematicMaskReveal variant="gold-trace-sweep" duration={0.85}>

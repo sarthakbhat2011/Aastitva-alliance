@@ -259,9 +259,9 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
               className="lg:col-span-7 space-y-6 text-center lg:text-left"
             >
               <MagneticElement strength={0.25}>
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E8A53E]/15 border border-[#E8A53E]/30 text-[#E8A53E] text-xs font-semibold smooth-badge-pulse shadow-md cursor-pointer">
-                  <Trophy className="w-3.5 h-3.5 smooth-icon-spin" />
-                  <span>Academic & Leadership Network</span>
+                <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#E8A53E]/15 border border-[#E8A53E]/40 text-[#E8A53E] text-xs font-mono font-bold uppercase tracking-wider smooth-badge-pulse shadow-md cursor-pointer">
+                  <Sparkles className="w-3.5 h-3.5 animate-pulse text-[#D4AF37]" />
+                  <span>Academic Event Management + Network Organisation</span>
                 </div>
               </MagneticElement>
 

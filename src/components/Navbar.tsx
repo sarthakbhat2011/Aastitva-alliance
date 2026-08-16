@@ -111,10 +111,10 @@ export const Navbar: React.FC<Props> = ({
               {countdown.minutes.toString().padStart(2, '0')}m :{' '}
               {countdown.seconds.toString().padStart(2, '0')}s
             </span>
-            <span className="hidden sm:inline text-[#243563]">|</span>
-            <span className="hidden sm:flex items-center gap-1.5 text-[#D4AF37] font-mono font-semibold text-[11px] bg-[#16203B]/80 px-2.5 py-0.5 rounded-full border border-[#D4AF37]/30 shadow-sm">
-              <Clock className="w-3 h-3 text-[#D4AF37] animate-pulse shrink-0" />
-              <span>IST {istTime} (UTC+5:30)</span>
+            <span className="hidden lg:inline text-[#243563]">|</span>
+            <span className="hidden lg:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#D4AF37]/10 text-[#D4AF37] font-mono font-bold text-[10px] uppercase tracking-wider border border-[#D4AF37]/30 shadow-sm">
+              <Sparkles className="w-2.5 h-2.5 text-[#D4AF37] animate-pulse" />
+              <span>Academic Event Management + Network Organisation</span>
             </span>
           </div>
 

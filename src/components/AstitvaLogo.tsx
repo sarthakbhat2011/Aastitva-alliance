@@ -55,8 +55,8 @@ export const AstitvaLogo: React.FC<Props> = ({
           </div>
 
           {showSubtitle && (
-            <span className={`font-jakarta ${currentSize.sub} text-[#B8A9C9] tracking-normal font-normal mt-0.5`}>
-              Academic & Leadership Network
+            <span className={`font-mono ${currentSize.sub} text-[#D4AF37] tracking-[0.12em] font-bold uppercase mt-0.5`}>
+              Academic Event Management + Network Organisation
             </span>
           )}
         </div>

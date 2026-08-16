@@ -124,7 +124,7 @@ export const GlobalRegistrationModal: React.FC<Props> = ({
               Reserve Delegate Seat
             </h2>
             <p className="text-xs text-[#C4BBA3]">
-              Official partnered registration for <strong>{INITIAL_SUMMIT_CONFIG.name}</strong> • Powered by Aastitva Alliance
+              Official registration for <strong>{INITIAL_SUMMIT_CONFIG.name}</strong> • Academic Event Management + Network Organisation
             </p>
           </div>
 

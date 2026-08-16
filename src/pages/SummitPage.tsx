@@ -182,8 +182,8 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
                     <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping" />
                     <span>NOW PLAYING // REAL-TIME SUMMIT</span>
                   </span>
-                  <span className="px-3.5 py-1 rounded-full bg-[#581C87]/40 border border-[#C084FC]/40 text-[#E9D5FF] font-semibold text-xs uppercase tracking-wider font-jakarta">
-                    Inaugural Edition 2026
+                  <span className="px-3.5 py-1 rounded-full bg-[#581C87]/40 border border-[#C084FC]/40 text-[#E9D5FF] font-mono font-bold text-xs uppercase tracking-wider font-jakarta">
+                    Academic Event Management + Network Organisation
                   </span>
                 </div>
 
