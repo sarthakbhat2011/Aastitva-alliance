@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Page, SummitConfig, CountdownTime, AnalyticsStats } from './types';
 import { INITIAL_SUMMIT_CONFIG } from './data';
 import { ThemeProvider } from './context/ThemeContext';
@@ -7,9 +8,12 @@ import { Footer } from './components/Footer';
 import { TechnicalAuditModal } from './components/TechnicalAuditModal';
 import { AdminContentDrawer } from './components/AdminContentDrawer';
 import { DeveloperMailboxModal } from './components/DeveloperMailboxModal';
-import { LoadingScreen } from './components/LoadingScreen';
+import { GlobalRegistrationModal } from './components/GlobalRegistrationModal';
+import { CelestialOrbWidget } from './components/CelestialOrbWidget';
+import { AstitvaOSLoader } from './components/AstitvaOSLoader';
 import { GlobalBackground } from './components/GlobalBackground';
 import { ScrollControls } from './components/ScrollControls';
+import { SpatialAtmosphere } from './components/motion/SpatialAtmosphere';
 
 // Pages
 import { HomePage } from './pages/HomePage';
@@ -19,19 +23,18 @@ import { OfferingsPage } from './pages/OfferingsPage';
 import { HowItWorksPage } from './pages/HowItWorksPage';
 import { SummitPage } from './pages/SummitPage';
 import { SponsorsPage } from './pages/SponsorsPage';
-import { BlogPage } from './pages/BlogPage';
 import { FAQPage } from './pages/FAQPage';
-import { ContactPage } from './pages/ContactPage';
 
 export default function App() {
-  const [loading, setLoading] = useState(true);
+  const [osMode, setOsMode] = useState(true); // Boots into Astitva OS initially
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [summitConfig, setSummitConfig] = useState<SummitConfig>(INITIAL_SUMMIT_CONFIG);
 
-  // Modals / Drawers
+  // Global Modals / Drawers
   const [auditOpen, setAuditOpen] = useState(false);
   const [adminOpen, setAdminOpen] = useState(false);
   const [devMailboxOpen, setDevMailboxOpen] = useState(false);
+  const [globalRegisterOpen, setGlobalRegisterOpen] = useState(false);
 
   // Live countdown state
   const [countdown, setCountdown] = useState<CountdownTime>({
@@ -77,7 +80,7 @@ export default function App() {
       if (difference > 0) {
         const days = Math.floor(difference / (1000 * 60 * 60 * 24));
         const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const minutes = Math.floor((difference % (1000 * 60)) / (1000 * 60));
         const seconds = Math.floor((difference % (1000 * 60)) / 1000);
         setCountdown({ days, hours, minutes, seconds });
       } else {
@@ -96,6 +99,12 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleEnterSiteFromOS = (targetPage: Page = 'home') => {
+    setOsMode(false);
+    setCurrentPage(targetPage);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleUpdateConfig = (newConfig: SummitConfig) => {
     setSummitConfig(newConfig);
   };
@@ -108,6 +117,7 @@ export default function App() {
             onNavigate={handleNavigate}
             summitConfig={summitConfig}
             countdown={countdown}
+            onOpenRegister={() => setGlobalRegisterOpen(true)}
           />
         );
       case 'about':
@@ -115,25 +125,43 @@ export default function App() {
       case 'founder':
         return <FounderPage onNavigate={handleNavigate} />;
       case 'offerings':
-        return <OfferingsPage onNavigate={handleNavigate} />;
+        return (
+          <OfferingsPage
+            onNavigate={handleNavigate}
+            onOpenRegister={() => setGlobalRegisterOpen(true)}
+          />
+        );
       case 'how-it-works':
-        return <HowItWorksPage onNavigate={handleNavigate} />;
+        return (
+          <HowItWorksPage
+            onNavigate={handleNavigate}
+            onOpenRegister={() => setGlobalRegisterOpen(true)}
+          />
+        );
       case 'summit':
-        return <SummitPage summitConfig={summitConfig} countdown={countdown} />;
+        return (
+          <SummitPage
+            summitConfig={summitConfig}
+            countdown={countdown}
+            onNavigate={handleNavigate}
+          />
+        );
       case 'sponsors':
-        return <SponsorsPage onNavigate={handleNavigate} />;
-      case 'blog':
-        return <BlogPage />;
+        return (
+          <SponsorsPage
+            onNavigate={handleNavigate}
+            onOpenRegister={() => setGlobalRegisterOpen(true)}
+          />
+        );
       case 'faq':
         return <FAQPage />;
-      case 'contact':
-        return <ContactPage />;
       default:
         return (
           <HomePage
             onNavigate={handleNavigate}
             summitConfig={summitConfig}
             countdown={countdown}
+            onOpenRegister={() => setGlobalRegisterOpen(true)}
           />
         );
     }
@@ -142,14 +170,28 @@ export default function App() {
   return (
     <ThemeProvider>
       <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-primary)] flex flex-col font-sans selection:bg-[#D4AF37] selection:text-[#070A14] relative transition-colors duration-500">
-        {/* Pre-loader Screen */}
-        {loading && <LoadingScreen onComplete={() => setLoading(false)} />}
+        {/* Interactive Retro-Futuristic Astitva OS Environment */}
+        {osMode && (
+          <AstitvaOSLoader
+            onEnterSite={handleEnterSiteFromOS}
+            onOpenRegister={() => setGlobalRegisterOpen(true)}
+          />
+        )}
 
-        {/* Global Interactive Canvas & Ambient Lighting Background */}
-        <GlobalBackground />
+        {/* Global Interactive Canvas & Dynamic Galactic Nebula Constellation Background */}
+        <GlobalBackground currentPage={currentPage} />
+
+        {/* Multi-Depth Spatial Environment Atmosphere with Passing Cross-Viewport Traversers */}
+        <SpatialAtmosphere />
 
         {/* Top Scroll Reading Progress & Floating Scroll Top Button */}
         <ScrollControls />
+
+        {/* Floating 3D Celestial Planet Core Quick Portal Widget */}
+        <CelestialOrbWidget
+          onOpenRegister={() => setGlobalRegisterOpen(true)}
+          onOpenOS={() => setOsMode(true)}
+        />
 
         {/* Navigation Header */}
         <Navbar
@@ -158,17 +200,35 @@ export default function App() {
           summitConfig={summitConfig}
           onOpenAudit={() => setAuditOpen(true)}
           onOpenAdmin={() => setAdminOpen(true)}
+          onOpenOS={() => setOsMode(true)}
+          onOpenRegister={() => setGlobalRegisterOpen(true)}
         />
 
-        {/* Main Content Area with Route Transition */}
-        <main key={currentPage} className="flex-1 z-10 animate-page-enter">
-          {renderPage()}
-        </main>
+        {/* Main Content Area with Seamless Motion Route Transition */}
+        <AnimatePresence mode="wait">
+          <motion.main
+            key={currentPage}
+            initial={{ opacity: 0, y: 16, filter: 'blur(4px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, y: -16, filter: 'blur(4px)' }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="flex-1 z-10 gpu-accelerated"
+          >
+            {renderPage()}
+          </motion.main>
+        </AnimatePresence>
 
         {/* Footer */}
         <Footer 
           onNavigate={handleNavigate} 
           onOpenDevMailbox={() => setDevMailboxOpen(true)}
+          onOpenRegister={() => setGlobalRegisterOpen(true)}
+        />
+
+        {/* Global Delegate Registration Modal */}
+        <GlobalRegistrationModal
+          isOpen={globalRegisterOpen}
+          onClose={() => setGlobalRegisterOpen(false)}
         />
 
         {/* Developer Partner Mailbox Modal */}
@@ -181,14 +241,14 @@ export default function App() {
         <TechnicalAuditModal
           isOpen={auditOpen}
           onClose={() => setAuditOpen(false)}
-          stats={analytics}
+          analytics={analytics}
         />
 
-        {/* Admin Live Content Drawer */}
+        {/* Admin Content Drawer */}
         <AdminContentDrawer
           isOpen={adminOpen}
           onClose={() => setAdminOpen(false)}
-          config={summitConfig}
+          summitConfig={summitConfig}
           onUpdateConfig={handleUpdateConfig}
         />
       </div>

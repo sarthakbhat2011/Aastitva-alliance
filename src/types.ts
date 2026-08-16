@@ -6,9 +6,7 @@ export type Page =
   | 'how-it-works'
   | 'summit'
   | 'sponsors'
-  | 'blog'
-  | 'faq'
-  | 'contact';
+  | 'faq';
 
 export interface CountdownTime {
   days: number;

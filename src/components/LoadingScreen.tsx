@@ -168,9 +168,22 @@ export const LoadingScreen: React.FC<Props> = ({ onComplete }) => {
       <div className="absolute -top-30 -left-30 w-[550px] h-[550px] bg-gradient-to-br from-[#1C2A4F]/40 via-[#0B1021]/20 to-transparent rounded-full blur-[130px] animate-pulse-glow" />
       <div className="absolute -bottom-30 -right-30 w-[550px] h-[550px] bg-gradient-to-tl from-[#D4AF37]/18 via-[#16203B]/20 to-transparent rounded-full blur-[130px] animate-float" />
 
+      {/* Floating Spatial Fragments Assembling in 3D Space */}
+      <div className="absolute top-[20%] left-[15%] pointer-events-none opacity-40 animate-levitate-zerog">
+        <div className="px-3 py-1 rounded-full bg-[#0D1427]/80 border border-[#D4AF37]/30 text-[9px] font-mono text-[#D4AF37] tracking-widest shadow-xl">
+          ✦ SYNCHRONIZING CIRCUIT NODES
+        </div>
+      </div>
+
+      <div className="absolute bottom-[22%] right-[12%] pointer-events-none opacity-35 animate-wave-roll">
+        <div className="px-3 py-1 rounded-full bg-[#0D1427]/80 border border-[#D4AF37]/30 text-[9px] font-mono text-[#D4AF37] tracking-widest shadow-xl">
+          ✦ JAMMU & KASHMIR ACADEMIC CORE
+        </div>
+      </div>
+
       {/* Main Glass Center Card */}
-      <div className="relative z-10 flex flex-col items-center max-w-md px-8 py-10 text-center rounded-3xl bg-[#0D1427]/85 border border-[#D4AF37]/35 shadow-[0_20px_60px_rgba(0,0,0,0.8)] backdrop-blur-xl">
-        {/* Animated Enso Logo Emblem */}
+      <div className="relative z-10 flex flex-col items-center max-w-md px-8 py-10 text-center rounded-3xl bg-[#0D1427]/85 border border-[#D4AF37]/35 shadow-[0_20px_60px_rgba(0,0,0,0.8)] backdrop-blur-xl animate-aura-pulse">
+        {/* Clean Static Logo Mark */}
         <div className="mb-6 transform transition-all duration-500 hover:scale-110 drop-shadow-[0_0_25px_rgba(212,175,55,0.4)]">
           <AstitvaLogo size="xl" showSubtitle={false} variant="mark-only" />
         </div>

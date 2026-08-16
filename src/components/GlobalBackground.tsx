@@ -1,9 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 import { useTheme } from '../context/ThemeContext';
+import { Page } from '../types';
 
-export const GlobalBackground: React.FC = () => {
+interface Props {
+  currentPage?: Page;
+}
+
+export const GlobalBackground: React.FC<Props> = ({ currentPage = 'home' }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { theme } = useTheme();
+
+  // Pages featuring the celestial background suite & Saturn orbital model
+  const isGalacticPage = currentPage === 'about' || currentPage === 'founder' || currentPage === 'summit';
+  const showCelestialSaturn = currentPage === 'about' || currentPage === 'founder' || currentPage === 'summit' || currentPage === 'faq';
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -16,8 +25,8 @@ export const GlobalBackground: React.FC = () => {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    // Dynamic Particle Count based on resolution (up to 150 particles)
-    const particleCount = Math.min(Math.floor((width * height) / 9500), 150);
+    // Dynamic Particle Count based on resolution (up to 160 particles)
+    const particleCount = Math.min(Math.floor((width * height) / 9000), 160);
 
     interface Particle {
       x: number;
@@ -35,9 +44,21 @@ export const GlobalBackground: React.FC = () => {
     }
 
     const particles: Particle[] = [];
-    
-    // Select theme-adapted particle color palettes
+
+    // Select theme & page-adapted particle color palettes
     const getColors = () => {
+      if (isGalacticPage) {
+        if (theme === 'light') {
+          return ['#7C3AED', '#9333EA', '#6D28D9', '#B48A1A', '#2563EB', '#A855F7'];
+        }
+        return ['#C084FC', '#A855F7', '#D8B4FE', '#E9D5FF', '#F3E5AB', '#D4AF37', '#9333EA', '#7C3AED', '#818CF8'];
+      }
+      if (currentPage === 'faq') {
+        if (theme === 'light') {
+          return ['#B48A1A', '#2563EB', '#7C3AED', '#0284C7', '#D97706'];
+        }
+        return ['#D4AF37', '#9333EA', '#38BDF8', '#C084FC', '#F3E5AB', '#818CF8'];
+      }
       if (theme === 'light') {
         return ['#B48A1A', '#1E3A8A', '#2563EB', '#6D28D9', '#D97706', '#0284C7'];
       } else if (theme === 'dark') {
@@ -53,11 +74,13 @@ export const GlobalBackground: React.FC = () => {
       particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        radius: theme === 'light' ? Math.random() * 3.2 + 1.2 : Math.random() * 2.5 + 0.8,
+        radius: isGalacticPage || currentPage === 'faq'
+          ? (theme === 'light' ? Math.random() * 2.5 + 1.0 : Math.random() * 2.8 + 0.9)
+          : (theme === 'light' ? Math.random() * 3.2 + 1.2 : Math.random() * 2.5 + 0.8),
         vx: (Math.random() - 0.5) * 0.7,
         vy: (Math.random() - 0.5) * 0.7,
-        alpha: theme === 'light' ? Math.random() * 0.5 + 0.4 : Math.random() * 0.6 + 0.2,
-        maxAlpha: theme === 'light' ? 0.95 : Math.random() * 0.7 + 0.3,
+        alpha: theme === 'light' ? Math.random() * 0.45 + 0.35 : Math.random() * 0.6 + 0.25,
+        maxAlpha: theme === 'light' ? 0.9 : Math.random() * 0.75 + 0.35,
         pulseSpeed: Math.random() * 0.02 + 0.008,
         color: colors[Math.floor(Math.random() * colors.length)],
         shape: shapes[Math.floor(Math.random() * shapes.length)],
@@ -112,17 +135,155 @@ export const GlobalBackground: React.FC = () => {
 
     window.addEventListener('resize', handleResize);
 
+    // 3D Saturn Planetary Background State
+    let saturnRotation = 0;
+
     // Animation Loop
     const render = () => {
       // Smooth mouse easing
-      mouseX += (targetMouseX - mouseX) * 0.1;
-      mouseY += (targetMouseY - mouseY) * 0.1;
+      mouseX += (targetMouseX - mouseX) * 0.08;
+      mouseY += (targetMouseY - mouseY) * 0.08;
+      saturnRotation += 0.004;
 
       ctx.clearRect(0, 0, width, height);
 
-      // 1. Draw Mouse Interactive Radiant Glow Aura
-      const mouseGlow = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 260);
-      if (theme === 'light') {
+      // 1. Draw Page-Specific Cosmic Background Nebulas
+      if (isGalacticPage || currentPage === 'faq') {
+        if (theme === 'light') {
+          const neb1 = ctx.createRadialGradient(width * 0.5, height * 0.1, 0, width * 0.5, height * 0.1, width * 0.55);
+          neb1.addColorStop(0, 'rgba(192, 132, 252, 0.18)');
+          neb1.addColorStop(0.5, 'rgba(216, 180, 254, 0.08)');
+          neb1.addColorStop(1, 'rgba(241, 245, 249, 0)');
+          ctx.fillStyle = neb1;
+          ctx.fillRect(0, 0, width, height);
+
+          const neb2 = ctx.createRadialGradient(width * 0.15, height * 0.75, 0, width * 0.15, height * 0.75, width * 0.45);
+          neb2.addColorStop(0, 'rgba(147, 51, 234, 0.12)');
+          neb2.addColorStop(0.6, 'rgba(168, 85, 247, 0.05)');
+          neb2.addColorStop(1, 'rgba(241, 245, 249, 0)');
+          ctx.fillStyle = neb2;
+          ctx.fillRect(0, 0, width, height);
+
+          const neb3 = ctx.createRadialGradient(width * 0.85, height * 0.5, 0, width * 0.85, height * 0.5, width * 0.4);
+          neb3.addColorStop(0, 'rgba(168, 85, 247, 0.14)');
+          neb3.addColorStop(0.7, 'rgba(233, 213, 255, 0.06)');
+          neb3.addColorStop(1, 'rgba(241, 245, 249, 0)');
+          ctx.fillStyle = neb3;
+          ctx.fillRect(0, 0, width, height);
+        } else {
+          const neb1 = ctx.createRadialGradient(width * 0.5, height * 0.1, 0, width * 0.5, height * 0.1, width * 0.55);
+          neb1.addColorStop(0, 'rgba(109, 40, 217, 0.22)');
+          neb1.addColorStop(0.5, 'rgba(88, 28, 135, 0.12)');
+          neb1.addColorStop(1, 'rgba(0, 0, 0, 0)');
+          ctx.fillStyle = neb1;
+          ctx.fillRect(0, 0, width, height);
+
+          const neb2 = ctx.createRadialGradient(width * 0.15, height * 0.75, 0, width * 0.15, height * 0.75, width * 0.45);
+          neb2.addColorStop(0, 'rgba(67, 24, 255, 0.16)');
+          neb2.addColorStop(0.6, 'rgba(126, 34, 206, 0.08)');
+          neb2.addColorStop(1, 'rgba(0, 0, 0, 0)');
+          ctx.fillStyle = neb2;
+          ctx.fillRect(0, 0, width, height);
+
+          const neb3 = ctx.createRadialGradient(width * 0.85, height * 0.5, 0, width * 0.85, height * 0.5, width * 0.4);
+          neb3.addColorStop(0, 'rgba(147, 51, 234, 0.14)');
+          neb3.addColorStop(0.7, 'rgba(46, 16, 101, 0.06)');
+          neb3.addColorStop(1, 'rgba(0, 0, 0, 0)');
+          ctx.fillStyle = neb3;
+          ctx.fillRect(0, 0, width, height);
+        }
+      }
+
+      // 2. ETHEREAL 3D SATURN CELESTIAL BACKGROUND (Founders, FAQ & Live Summit)
+      if (showCelestialSaturn) {
+        ctx.save();
+        // Anchor Saturn smoothly in the background with subtle mouse parallax
+        const saturnCenterX = width * 0.78 + (mouseX - width / 2) * 0.035;
+        const saturnCenterY = height * 0.38 + (mouseY - height / 2) * 0.035;
+        const baseRadius = Math.min(width, height) * 0.18;
+
+        ctx.translate(saturnCenterX, saturnCenterY);
+
+        const globeAlpha = theme === 'light' ? 0.22 : 0.28;
+        const strokeColor = theme === 'light'
+          ? (isGalacticPage ? 'rgba(126, 34, 206, 0.35)' : 'rgba(180, 138, 26, 0.35)')
+          : (isGalacticPage ? 'rgba(192, 132, 252, 0.4)' : 'rgba(212, 175, 55, 0.35)');
+
+        // A. Subtle Celestial Planetary Glow Aura
+        const planetGlow = ctx.createRadialGradient(0, 0, baseRadius * 0.4, 0, 0, baseRadius * 1.8);
+        planetGlow.addColorStop(0, isGalacticPage ? 'rgba(168, 85, 247, 0.12)' : 'rgba(212, 175, 55, 0.1)');
+        planetGlow.addColorStop(0.6, isGalacticPage ? 'rgba(147, 51, 234, 0.05)' : 'rgba(37, 99, 235, 0.04)');
+        planetGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        ctx.fillStyle = planetGlow;
+        ctx.beginPath();
+        ctx.arc(0, 0, baseRadius * 1.8, 0, Math.PI * 2);
+        ctx.fill();
+
+        // B. Planetary Sphere Wireframe / Latitude Bands
+        ctx.lineWidth = 1.0;
+        ctx.strokeStyle = strokeColor;
+        ctx.globalAlpha = globeAlpha;
+
+        // Outer Sphere Perimeter
+        ctx.beginPath();
+        ctx.arc(0, 0, baseRadius, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Latitude Elliptical Rings
+        for (let lat = -3; lat <= 3; lat++) {
+          const latY = (lat / 4) * baseRadius * 0.85;
+          const latRadius = Math.sqrt(Math.max(0, baseRadius * baseRadius - latY * latY));
+          ctx.beginPath();
+          ctx.ellipse(0, latY, latRadius, latRadius * 0.28, 0, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        // Longitude Revolving Great Circles
+        for (let i = 0; i < 4; i++) {
+          const angle = saturnRotation + (i * Math.PI) / 4;
+          const longWidth = Math.cos(angle) * baseRadius;
+          ctx.beginPath();
+          ctx.ellipse(0, 0, Math.abs(longWidth), baseRadius, Math.PI / 14, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        // C. Concentric 3D Saturn Orbital Rings (Tilted Ethereal Belts)
+        const ringAngles = [
+          { rX: baseRadius * 1.45, rY: baseRadius * 0.42, tilt: -Math.PI / 7, alpha: 0.35 },
+          { rX: baseRadius * 1.75, rY: baseRadius * 0.52, tilt: -Math.PI / 7, alpha: 0.45 },
+          { rX: baseRadius * 2.05, rY: baseRadius * 0.62, tilt: -Math.PI / 7, alpha: 0.25 },
+        ];
+
+        ringAngles.forEach((ring) => {
+          ctx.save();
+          ctx.rotate(ring.tilt);
+          ctx.beginPath();
+          ctx.ellipse(0, 0, ring.rX, ring.rY, 0, 0, Math.PI * 2);
+          ctx.strokeStyle = theme === 'light'
+            ? 'rgba(168, 85, 247, 0.4)'
+            : 'rgba(233, 213, 255, 0.45)';
+          ctx.lineWidth = 1.2;
+          ctx.globalAlpha = ring.alpha * (theme === 'light' ? 0.7 : 0.9);
+          ctx.stroke();
+          ctx.restore();
+        });
+
+        ctx.restore();
+      }
+
+      // 3. Draw Mouse Interactive Radiant Glow Aura
+      const mouseGlow = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 280);
+      if (isGalacticPage || currentPage === 'faq') {
+        if (theme === 'light') {
+          mouseGlow.addColorStop(0, 'rgba(192, 132, 252, 0.3)');
+          mouseGlow.addColorStop(0.4, 'rgba(216, 180, 254, 0.15)');
+          mouseGlow.addColorStop(1, 'rgba(241, 245, 249, 0)');
+        } else {
+          mouseGlow.addColorStop(0, 'rgba(192, 132, 252, 0.28)');
+          mouseGlow.addColorStop(0.4, 'rgba(126, 34, 206, 0.18)');
+          mouseGlow.addColorStop(1, 'rgba(9, 6, 20, 0)');
+        }
+      } else if (theme === 'light') {
         mouseGlow.addColorStop(0, 'rgba(180, 138, 26, 0.45)');
         mouseGlow.addColorStop(0.5, 'rgba(37, 99, 235, 0.35)');
         mouseGlow.addColorStop(1, 'rgba(241, 245, 249, 0)');
@@ -133,10 +294,10 @@ export const GlobalBackground: React.FC = () => {
       }
       ctx.fillStyle = mouseGlow;
       ctx.beginPath();
-      ctx.arc(mouseX, mouseY, 260, 0, Math.PI * 2);
+      ctx.arc(mouseX, mouseY, 280, 0, Math.PI * 2);
       ctx.fill();
 
-      // 2. Draw Constellation Network Lines
+      // 4. Draw Constellation Network Lines
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
@@ -147,9 +308,19 @@ export const GlobalBackground: React.FC = () => {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            const lineAlpha = (1 - dist / 150) * (theme === 'light' ? 0.75 : 0.55);
-            ctx.strokeStyle = theme === 'light' ? `rgba(29, 78, 216, ${lineAlpha})` : `rgba(212, 175, 55, ${lineAlpha})`;
-            ctx.lineWidth = theme === 'light' ? 1.6 : 1.2;
+            const lineAlpha = (1 - dist / 150) * (theme === 'light' ? 0.75 : 0.6);
+            
+            if (isGalacticPage || currentPage === 'faq') {
+              ctx.strokeStyle = theme === 'light'
+                ? `rgba(147, 51, 234, ${lineAlpha * 0.7})`
+                : `rgba(168, 85, 247, ${lineAlpha * 0.9})`;
+            } else if (theme === 'light') {
+              ctx.strokeStyle = `rgba(29, 78, 216, ${lineAlpha})`;
+            } else {
+              ctx.strokeStyle = `rgba(212, 175, 55, ${lineAlpha})`;
+            }
+            
+            ctx.lineWidth = isGalacticPage || currentPage === 'faq' ? (theme === 'light' ? 1.4 : 1.3) : (theme === 'light' ? 1.6 : 1.2);
             ctx.stroke();
           }
         }
@@ -162,14 +333,24 @@ export const GlobalBackground: React.FC = () => {
           ctx.beginPath();
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(mouseX, mouseY);
-          const mouseLineAlpha = (1 - mdist / 190) * (theme === 'light' ? 0.85 : 0.65);
-          ctx.strokeStyle = theme === 'light' ? `rgba(180, 138, 26, ${mouseLineAlpha})` : `rgba(243, 229, 171, ${mouseLineAlpha})`;
-          ctx.lineWidth = theme === 'light' ? 1.8 : 1.4;
+          const mouseLineAlpha = (1 - mdist / 190) * (theme === 'light' ? 0.85 : 0.7);
+          
+          if (isGalacticPage || currentPage === 'faq') {
+            ctx.strokeStyle = theme === 'light'
+              ? `rgba(126, 34, 206, ${mouseLineAlpha * 0.85})`
+              : `rgba(233, 213, 255, ${mouseLineAlpha})`;
+          } else if (theme === 'light') {
+            ctx.strokeStyle = `rgba(180, 138, 26, ${mouseLineAlpha})`;
+          } else {
+            ctx.strokeStyle = `rgba(243, 229, 171, ${mouseLineAlpha})`;
+          }
+          
+          ctx.lineWidth = isGalacticPage || currentPage === 'faq' ? (theme === 'light' ? 1.6 : 1.5) : (theme === 'light' ? 1.8 : 1.4);
           ctx.stroke();
         }
       }
 
-      // 3. Update & Draw Particles (Circles, Diamonds, Rings)
+      // 5. Update & Draw Particles (Circles, Diamonds, Rings)
       particles.forEach((p) => {
         p.x += p.vx;
         p.y += p.vy;
@@ -202,7 +383,7 @@ export const GlobalBackground: React.FC = () => {
         ctx.strokeStyle = p.color;
         ctx.globalAlpha = Math.max(0.2, Math.min(1, p.alpha));
         ctx.shadowColor = p.color;
-        ctx.shadowBlur = p.radius * (theme === 'light' ? 5 : 4);
+        ctx.shadowBlur = p.radius * (isGalacticPage ? 6 : (theme === 'light' ? 5 : 4));
 
         if (p.shape === 'circle') {
           ctx.beginPath();
@@ -226,7 +407,7 @@ export const GlobalBackground: React.FC = () => {
         ctx.restore();
       });
 
-      // 4. Update & Draw Shooting Stars
+      // 6. Update & Draw Shooting Stars
       spawnShootingStar();
       for (let i = shootingStars.length - 1; i >= 0; i--) {
         const star = shootingStars[i];
@@ -236,7 +417,17 @@ export const GlobalBackground: React.FC = () => {
         const endY = star.y + Math.sin(star.angle) * star.length;
 
         const starGrad = ctx.createLinearGradient(star.x, star.y, endX, endY);
-        if (theme === 'light') {
+        if (isGalacticPage || currentPage === 'faq') {
+          if (theme === 'light') {
+            starGrad.addColorStop(0, `rgba(126, 34, 206, ${star.alpha})`);
+            starGrad.addColorStop(0.5, `rgba(180, 138, 26, ${star.alpha * 0.85})`);
+            starGrad.addColorStop(1, 'rgba(180, 138, 26, 0)');
+          } else {
+            starGrad.addColorStop(0, `rgba(233, 213, 255, ${star.alpha})`);
+            starGrad.addColorStop(0.5, `rgba(168, 85, 247, ${star.alpha * 0.85})`);
+            starGrad.addColorStop(1, 'rgba(212, 175, 55, 0)');
+          }
+        } else if (theme === 'light') {
           starGrad.addColorStop(0, `rgba(37, 99, 235, ${star.alpha})`);
           starGrad.addColorStop(0.5, `rgba(180, 138, 26, ${star.alpha * 0.9})`);
           starGrad.addColorStop(1, 'rgba(180, 138, 26, 0)');
@@ -250,7 +441,7 @@ export const GlobalBackground: React.FC = () => {
         ctx.moveTo(star.x, star.y);
         ctx.lineTo(endX, endY);
         ctx.strokeStyle = starGrad;
-        ctx.lineWidth = theme === 'light' ? 2.4 : 1.8;
+        ctx.lineWidth = isGalacticPage || currentPage === 'faq' ? 1.8 : 1.5;
         ctx.stroke();
 
         star.x += Math.cos(star.angle) * star.speed;
@@ -268,41 +459,17 @@ export const GlobalBackground: React.FC = () => {
     render();
 
     return () => {
+      cancelAnimationFrame(animationFrameId);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
-      cancelAnimationFrame(animationFrameId);
     };
-  }, [theme]);
+  }, [theme, isGalacticPage, showCelestialSaturn, currentPage]);
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-      {/* Dynamic Theme Atmospheric Nebulas */}
-      <div className={`absolute -top-40 -left-40 w-[750px] h-[750px] rounded-full blur-[140px] animate-pulse-glow transition-all duration-500 ${
-        theme === 'light'
-          ? 'bg-gradient-to-br from-[#3B82F6]/35 via-[#6366F1]/25 to-transparent'
-          : theme === 'dark'
-          ? 'bg-gradient-to-br from-[#1E1B4B]/50 via-[#0F172A]/40 to-transparent'
-          : 'bg-gradient-to-br from-[#1C2A4F]/40 via-[#10172D]/25 to-transparent'
-      }`} />
-
-      <div className={`absolute top-1/4 -right-40 w-[700px] h-[700px] rounded-full blur-[150px] animate-float transition-all duration-500 ${
-        theme === 'light'
-          ? 'bg-gradient-to-l from-[#F59E0B]/35 via-[#3B82F6]/25 to-transparent'
-          : theme === 'dark'
-          ? 'bg-gradient-to-l from-[#D4AF37]/25 via-[#0284C7]/20 to-transparent'
-          : 'bg-gradient-to-l from-[#D4AF37]/22 via-[#243563]/20 to-transparent'
-      }`} />
-
-      <div className={`absolute bottom-10 left-1/3 w-[850px] h-[850px] rounded-full blur-[160px] animate-pulse-glow transition-all duration-500 ${
-        theme === 'light'
-          ? 'bg-gradient-to-tr from-[#93C5FD]/30 via-[#C084FC]/25 to-transparent'
-          : theme === 'dark'
-          ? 'bg-gradient-to-tr from-[#000000] via-[#090D16]/80 to-transparent'
-          : 'bg-gradient-to-tr from-[#070A14] via-[#16203B]/30 to-transparent'
-      }`} />
-
-      {/* Interactive Canvas layer */}
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-[var(--canvas-opacity)] transition-opacity duration-500" />
-    </div>
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 pointer-events-none z-0 transition-opacity duration-700"
+      style={{ opacity: 'var(--canvas-opacity, 1.0)' }}
+    />
   );
 };

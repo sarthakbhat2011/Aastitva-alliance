@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Sparkles, ChevronRight, ArrowUpRight, ArrowRight, ShieldCheck, Settings, Clock } from 'lucide-react';
+import { motion } from 'motion/react';
+import { Menu, X, Sparkles, ChevronRight, ArrowUpRight, ArrowRight, ShieldCheck, Settings, Clock, Monitor, Volume2, VolumeX } from 'lucide-react';
 import { AstitvaLogo } from './AstitvaLogo';
 import { ThemeToggle } from './ThemeToggle';
 import { Page, SummitConfig, CountdownTime } from '../types';
+import { sounds } from '../utils/soundEffects';
+import { MagneticElement } from './motion/MagneticElement';
 
 interface Props {
   currentPage: Page;
@@ -10,6 +13,8 @@ interface Props {
   summitConfig: SummitConfig;
   onOpenAudit: () => void;
   onOpenAdmin: () => void;
+  onOpenOS?: () => void;
+  onOpenRegister?: () => void;
 }
 
 export const Navbar: React.FC<Props> = ({
@@ -18,9 +23,12 @@ export const Navbar: React.FC<Props> = ({
   summitConfig,
   onOpenAudit,
   onOpenAdmin,
+  onOpenOS,
+  onOpenRegister,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [soundActive, setSoundActive] = useState(sounds.isEnabled());
   const [countdown, setCountdown] = useState<CountdownTime>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
   const [istTime, setIstTime] = useState<string>('');
 
@@ -59,7 +67,7 @@ export const Navbar: React.FC<Props> = ({
       if (difference > 0) {
         const days = Math.floor(difference / (1000 * 60 * 60 * 24));
         const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const minutes = Math.floor((difference % (1000 * 60)) / (1000 * 60));
         const seconds = Math.floor((difference % (1000 * 60)) / 1000);
         setCountdown({ days, hours, minutes, seconds });
       } else {
@@ -72,17 +80,18 @@ export const Navbar: React.FC<Props> = ({
     return () => clearInterval(interval);
   }, [summitConfig.targetTimestamp]);
 
-  // Clean, decluttered primary navigation structure
+  // Primary navigation items
   const navItems: { id: Page; label: string; badge?: string }[] = [
     { id: 'home', label: 'Home' },
-    { id: 'founder', label: 'Founder', badge: 'NEW' },
-    { id: 'about', label: 'About' },
+    { id: 'about', label: 'About', badge: 'FOUNDER' },
     { id: 'offerings', label: 'Offerings' },
-    { id: 'summit', label: 'Live Summit', badge: 'LIVE' },
-    { id: 'blog', label: 'Resources' },
+    { id: 'how-it-works', label: 'How It Works' },
+    { id: 'summit', label: 'Current Summit', badge: 'LIVE' },
+    { id: 'faq', label: 'FAQ' },
   ];
 
   const handleNavClick = (page: Page) => {
+    sounds.playTap();
     onNavigate(page);
     setMobileMenuOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -110,33 +119,74 @@ export const Navbar: React.FC<Props> = ({
           </div>
 
           <div className="flex items-center gap-2.5 shrink-0 text-[11px]">
-            <a
-              href="https://aquitas-aastitva11.onrender.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden md:flex items-center gap-1 text-[#D4AF37] hover:text-[#FAF5EF] transition-colors font-medium smooth-button-hover group"
-            >
-              <span>Aequitas Site</span>
-              <ArrowUpRight className="w-3 h-3" />
-            </a>
+            {onOpenOS && (
+              <MagneticElement strength={0.25}>
+                <button
+                  onClick={() => {
+                    sounds.playChime();
+                    onOpenOS();
+                  }}
+                  className="hidden md:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#16203B] text-[#D4AF37] border border-[#D4AF37]/40 hover:bg-[#D4AF37] hover:text-[#070A14] transition-all font-mono font-bold shadow-sm cursor-pointer"
+                  title="Switch to Retro-Futuristic Astitva OS Environment"
+                >
+                  <Monitor className="w-3 h-3" />
+                  <span>Astitva OS</span>
+                </button>
+              </MagneticElement>
+            )}
+
+            <MagneticElement strength={0.2}>
+              <a
+                href="https://aquitas-aastitva11.onrender.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden md:flex items-center gap-1 text-[#D4AF37] hover:text-[#FAF5EF] transition-colors font-medium smooth-button-hover group px-2 py-0.5 rounded-lg"
+              >
+                <span>Aequitas Site</span>
+                <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </a>
+            </MagneticElement>
+
+            {/* Sound FX Synthesizer Toggle */}
+            <MagneticElement strength={0.3}>
+              <button
+                onClick={() => {
+                  const isNowOn = sounds.toggleSound();
+                  setSoundActive(isNowOn);
+                }}
+                className={`p-1.5 rounded-full border transition-all cursor-pointer ${
+                  soundActive
+                    ? 'bg-[#D4AF37] text-[#070A14] border-[#D4AF37] shadow-[0_0_10px_#D4AF37]'
+                    : 'bg-[#16203B] text-[#C4BBA3] border-[#D4AF37]/30 hover:text-[#FAF5EF]'
+                }`}
+                title={soundActive ? 'Sound FX Enabled (Web Audio API)' : 'Enable Futuristic Sound FX'}
+              >
+                {soundActive ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
+              </button>
+            </MagneticElement>
 
             <button
-              onClick={onOpenAudit}
-              className="p-1 rounded text-[#9E93C4] hover:text-[#FAF5EF] transition-colors"
+              onClick={() => {
+                sounds.playTap();
+                onOpenAudit();
+              }}
+              className="p-1 rounded text-[#9E93C4] hover:text-[#FAF5EF] transition-colors cursor-pointer"
               title="System Diagnostics & SSL Status"
             >
               <ShieldCheck className="w-3.5 h-3.5" />
             </button>
 
             <button
-              onClick={onOpenAdmin}
-              className="p-1 rounded text-[#9E93C4] hover:text-[#D4AF37] transition-colors"
+              onClick={() => {
+                sounds.playTap();
+                onOpenAdmin();
+              }}
+              className="p-1 rounded text-[#9E93C4] hover:text-[#D4AF37] transition-colors cursor-pointer"
               title="Edit Event Content"
             >
               <Settings className="w-3.5 h-3.5" />
             </button>
 
-            {/* Theme Selector (Original / Light / Dark) */}
             <ThemeToggle variant="full" className="ml-1" />
           </div>
         </div>
@@ -152,30 +202,38 @@ export const Navbar: React.FC<Props> = ({
           }`}
         >
           <div className="flex items-center justify-between gap-3 sm:gap-6">
-            {/* Brand Logo */}
+            {/* Brand Logo - Stable, Clean & Static Anchor */}
             <button
               onClick={() => handleNavClick('home')}
-              className="text-left focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 rounded-xl p-0.5 transition-transform hover:scale-[1.02] shrink-0"
+              className="text-left focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 rounded-xl p-0.5 shrink-0 cursor-pointer"
               aria-label="Aastitva Alliance Home"
             >
               <AstitvaLogo size="sm" />
             </button>
 
-            {/* Desktop Navigation Links */}
-            <div className="hidden lg:flex items-center gap-1 xl:gap-2 bg-[#070A14]/85 p-1.5 rounded-xl border border-[#D4AF37]/30 backdrop-blur-md shrink-0 shadow-inner">
+            {/* Desktop Navigation Links with Smooth Indicator Glide */}
+            <div className="hidden lg:flex items-center gap-1 xl:gap-2 bg-[#070A14]/85 p-1.5 rounded-xl border border-[#D4AF37]/30 backdrop-blur-md shrink-0 shadow-inner relative">
               {navItems.map((item) => {
                 const active = currentPage === item.id;
                 return (
                   <button
                     key={item.id}
                     onClick={() => handleNavClick(item.id)}
-                    className={`relative px-3 xl:px-4 py-2 text-xs xl:text-sm font-semibold rounded-lg transition-all duration-300 flex items-center gap-1.5 whitespace-nowrap ${
+                    onMouseEnter={() => sounds.playHover()}
+                    className={`relative px-3 xl:px-4 py-2 text-xs xl:text-sm font-semibold rounded-lg transition-colors duration-200 flex items-center gap-1.5 whitespace-nowrap z-10 cursor-pointer ${
                       active
-                        ? 'text-[#FAF5EF] font-bold bg-gradient-to-r from-[#16203B] via-[#243563] to-[#16203B] border border-[#D4AF37]/60 shadow-[0_2px_14px_rgba(212,175,55,0.25)]'
-                        : 'text-[#C4BBA3] hover:text-[#FAF5EF] hover:bg-[#16203B]/60'
+                        ? 'text-[#FAF5EF] font-bold'
+                        : 'text-[#C4BBA3] hover:text-[#FAF5EF]'
                     }`}
                   >
-                    {item.label}
+                    {active && (
+                      <motion.div
+                        layoutId="navbarActiveIndicator"
+                        className="absolute inset-0 rounded-lg bg-gradient-to-r from-[#16203B] via-[#243563] to-[#16203B] border border-[#D4AF37]/60 shadow-[0_2px_14px_rgba(212,175,55,0.25)] -z-10"
+                        transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                      />
+                    )}
+                    <span>{item.label}</span>
                     {item.badge && (
                       <span className="px-1.5 py-0.2 text-[8px] font-extrabold uppercase rounded-full bg-gradient-to-r from-[#D4AF37] to-[#B38F24] text-[#070A14] shadow-sm animate-pulse">
                         {item.badge}
@@ -186,20 +244,32 @@ export const Navbar: React.FC<Props> = ({
               })}
             </div>
 
-            {/* CTA Button & Mobile Toggle */}
+            {/* CTA Button & Mobile Toggle with Magnetic Response */}
             <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-              <button
-                onClick={() => handleNavClick('contact')}
-                className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl shimmer-btn text-[#070A14] text-xs sm:text-sm font-extrabold shadow-[0_4px_20px_rgba(212,175,55,0.35)] smooth-button-hover group whitespace-nowrap shrink-0 border border-[#FAF5EF]/30"
-              >
-                <span>Partner With Us</span>
-                <ArrowRight className="w-3.5 h-3.5 smooth-icon-spin" />
-              </button>
+              <MagneticElement strength={0.35}>
+                <button
+                  onClick={() => {
+                    sounds.playTap();
+                    if (onOpenRegister) {
+                      onOpenRegister();
+                    } else {
+                      handleNavClick('summit');
+                    }
+                  }}
+                  className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl shimmer-btn text-[#070A14] text-xs sm:text-sm font-extrabold shadow-[0_4px_20px_rgba(212,175,55,0.35)] btn-sheen-sweep group whitespace-nowrap shrink-0 border border-[#FAF5EF]/30 cursor-pointer"
+                >
+                  <span>Partner With Us</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </MagneticElement>
 
-              {/* Mobile Menu Hamburger Toggle */}
+              {/* Mobile Menu Toggle */}
               <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2.5 rounded-xl bg-[#070A14] text-[#FAF5EF] border border-[#D4AF37]/40 hover:bg-[#16203B] transition-colors focus:outline-none min-w-[40px] min-h-[40px] flex items-center justify-center shadow-md shrink-0"
+                onClick={() => {
+                  sounds.playTap();
+                  setMobileMenuOpen(!mobileMenuOpen);
+                }}
+                className="lg:hidden p-2.5 rounded-xl bg-[#070A14] text-[#FAF5EF] border border-[#D4AF37]/40 hover:bg-[#16203B] transition-colors focus:outline-none min-w-[40px] min-h-[40px] flex items-center justify-center shadow-md shrink-0 cursor-pointer"
                 aria-label="Toggle Navigation Menu"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5 text-[#D4AF37]" /> : <Menu className="w-5 h-5 text-[#FAF5EF]" />}
@@ -237,14 +307,34 @@ export const Navbar: React.FC<Props> = ({
               </div>
 
               <div className="pt-3 flex flex-col gap-3">
+                {onOpenOS && (
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      onOpenOS();
+                    }}
+                    className="w-full py-2.5 rounded-xl bg-[#16203B] border border-[#D4AF37]/40 text-[#D4AF37] font-mono text-xs font-bold flex items-center justify-center gap-2"
+                  >
+                    <Monitor className="w-4 h-4" />
+                    <span>Launch Astitva OS Environment</span>
+                  </button>
+                )}
+
                 <div className="flex items-center justify-between px-2 py-1.5 rounded-xl bg-[#070A14] border border-[#D4AF37]/30">
                   <span className="text-xs font-semibold text-[#D4AF37]">Color Theme:</span>
                   <ThemeToggle variant="full" />
                 </div>
 
                 <button
-                  onClick={() => handleNavClick('contact')}
-                  className="w-full py-3 rounded-xl shimmer-btn text-[#070A14] font-bold text-center text-sm shadow-lg min-h-[48px] flex items-center justify-center gap-2"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    if (onOpenRegister) {
+                      onOpenRegister();
+                    } else {
+                      handleNavClick('summit');
+                    }
+                  }}
+                  className="w-full py-3 rounded-xl shimmer-btn text-[#070A14] font-bold text-center text-sm shadow-lg min-h-[48px] flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>Partner With Us</span>
                   <ChevronRight className="w-4 h-4" />
