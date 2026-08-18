@@ -88,7 +88,7 @@ export const OFFERINGS: Offering[] = [
     ],
     image: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1200',
     category: 'EXECUTIVE BOARD & HUMAN RESOURCE:',
-    highlights: ['25+ Certified Board Members', 'Zero-Bias Guarantee', 'Complete ROP Compliance'],
+    highlights: [],
   },
   {
     id: 'venue-logistics',

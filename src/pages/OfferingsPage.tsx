@@ -118,14 +118,16 @@ export const OfferingsPage: React.FC<Props> = ({ onNavigate, onOpenRegister }) =
                     </div>
 
                     {/* Highlights Ribbon */}
-                    <div className="bg-[#050811]/90 px-6 sm:px-8 py-3 border-y border-[#D4AF37]/20 flex flex-wrap items-center gap-4 text-xs font-jakarta">
-                      <span className="text-[#D4AF37] font-bold uppercase text-[10px] tracking-wider">Key Deliverables:</span>
-                      {offering.highlights.map((h, i) => (
-                        <span key={i} className="flex items-center gap-1.5 text-[#FAF5EF] font-medium">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> {h}
-                        </span>
-                      ))}
-                    </div>
+                    {offering.highlights && offering.highlights.length > 0 && (
+                      <div className="bg-[#050811]/90 px-6 sm:px-8 py-3 border-y border-[#D4AF37]/20 flex flex-wrap items-center gap-4 text-xs font-jakarta">
+                        <span className="text-[#D4AF37] font-bold uppercase text-[10px] tracking-wider">Key Deliverables:</span>
+                        {offering.highlights.map((h, i) => (
+                          <span key={i} className="flex items-center gap-1.5 text-[#FAF5EF] font-medium">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> {h}
+                          </span>
+                        ))}
+                      </div>
+                    )}
 
                     {/* Expandable "Learn More" Section */}
                     {isExpanded && (
