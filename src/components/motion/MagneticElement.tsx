@@ -24,7 +24,7 @@ export const MagneticElement: React.FC<Props> = ({
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (disabled || !ref.current) return;
+    if (disabled || !ref.current || (typeof window !== 'undefined' && window.innerWidth < 768)) return;
     const { clientX, clientY } = e;
     const { left, top, width, height } = ref.current.getBoundingClientRect();
     const centerX = left + width / 2;

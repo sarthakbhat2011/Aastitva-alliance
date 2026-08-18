@@ -17,25 +17,25 @@ export const AastitvaHelpCenterXP: React.FC = () => {
   return (
     <div className="w-full rounded-3xl bg-gradient-to-b from-[#0B1224]/95 via-[#070A14]/95 to-[#050811]/95 border-2 border-[#D4AF37]/50 shadow-[0_25px_80px_rgba(0,0,0,0.9)] overflow-hidden font-jakarta text-left space-y-0 relative">
       {/* Windows XP Futuristic Help Center Titlebar */}
-      <div className="bg-gradient-to-r from-[#16203B] via-[#0D1427] to-[#16203B] px-4 py-2.5 border-b border-[#D4AF37]/35 flex items-center justify-between select-none font-mono">
-        <div className="flex items-center gap-2.5">
-          <div className="p-1 rounded bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37]">
+      <div className="bg-gradient-to-r from-[#16203B] via-[#0D1427] to-[#16203B] px-3.5 sm:px-4 py-2 sm:py-2.5 border-b border-[#D4AF37]/35 flex items-center justify-between select-none font-mono">
+        <div className="flex items-center gap-2 max-w-[70%] sm:max-w-none">
+          <div className="p-1 rounded bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] shrink-0">
             <HelpCircle className="w-3.5 h-3.5" />
           </div>
-          <span className="text-xs font-bold text-[#FAF5EF] tracking-wider">
-            Aastitva_Knowledge_Base.hlp [Official Institutional FAQ]
+          <span className="text-xs font-bold text-[#FAF5EF] tracking-wider truncate">
+            Aastitva_Knowledge_Base.hlp
           </span>
         </div>
 
         <div className="flex items-center gap-1.5 shrink-0">
-          <span className="w-3 h-3 rounded-full bg-amber-500/80 border border-amber-300/40" />
-          <span className="w-3 h-3 rounded-full bg-emerald-500/80 border border-emerald-300/40" />
-          <span className="w-3 h-3 rounded-full bg-rose-500/80 border border-rose-300/40" />
+          <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-amber-500/80 border border-amber-300/40" />
+          <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-500/80 border border-emerald-300/40" />
+          <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-rose-500/80 border border-rose-300/40" />
         </div>
       </div>
 
       {/* Main Help Center Body */}
-      <div className="p-6 sm:p-10 space-y-6">
+      <div className="p-4 sm:p-10 space-y-4 sm:space-y-6">
         {/* Instant Search Filter Bar */}
         <div className="relative">
           <Search className="w-4 h-4 text-[#D4AF37] absolute left-4 top-1/2 -translate-y-1/2" />
@@ -49,7 +49,7 @@ export const AastitvaHelpCenterXP: React.FC = () => {
         </div>
 
         {/* Total Questions Count Badge */}
-        <div className="flex items-center justify-between text-xs text-[#C4BBA3] px-1 font-mono">
+        <div className="flex flex-col sm:flex-row gap-1 sm:items-center sm:justify-between text-[11px] sm:text-xs text-[#C4BBA3] px-1 font-mono">
           <span>Displaying {filteredFaqs.length} of {FAQS.length} Verified Inquiries</span>
           <span className="text-[#D4AF37] font-bold">Standard Institutional Guidelines</span>
         </div>

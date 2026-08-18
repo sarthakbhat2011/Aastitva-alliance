@@ -278,26 +278,26 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
                 </h3>
               </div>
 
-              {/* Glowing Digital Digits */}
-              <div className="flex items-center gap-3 sm:gap-6 font-mono font-bold text-2xl sm:text-4xl">
-                <div className="bg-[#070A14] text-[#D4AF37] px-4 py-2 rounded-2xl shadow-xl flex flex-col items-center min-w-[65px]">
+              {/* Glowing Digital Digits (Responsive for narrow mobile screens) */}
+              <div className="flex items-center justify-center gap-1.5 sm:gap-4 md:gap-6 font-mono font-bold text-xl sm:text-3xl md:text-4xl w-full sm:w-auto">
+                <div className="bg-[#070A14] text-[#D4AF37] px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl shadow-xl flex flex-col items-center min-w-[50px] sm:min-w-[65px]">
                   <span>{countdown.days}</span>
-                  <span className="text-[9px] font-sans font-semibold text-[#C4BBA3] uppercase tracking-wider">Days</span>
+                  <span className="text-[8px] sm:text-[9px] font-sans font-semibold text-[#C4BBA3] uppercase tracking-wider">Days</span>
                 </div>
-                <span className="text-[#070A14] font-black">:</span>
-                <div className="bg-[#070A14] text-[#FAF5EF] px-4 py-2 rounded-2xl shadow-xl flex flex-col items-center min-w-[65px]">
+                <span className="text-[#070A14] font-black text-sm sm:text-xl">:</span>
+                <div className="bg-[#070A14] text-[#FAF5EF] px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl shadow-xl flex flex-col items-center min-w-[50px] sm:min-w-[65px]">
                   <span>{countdown.hours.toString().padStart(2, '0')}</span>
-                  <span className="text-[9px] font-sans font-semibold text-[#C4BBA3] uppercase tracking-wider">Hours</span>
+                  <span className="text-[8px] sm:text-[9px] font-sans font-semibold text-[#C4BBA3] uppercase tracking-wider">Hours</span>
                 </div>
-                <span className="text-[#070A14] font-black">:</span>
-                <div className="bg-[#070A14] text-[#FAF5EF] px-4 py-2 rounded-2xl shadow-xl flex flex-col items-center min-w-[65px]">
+                <span className="text-[#070A14] font-black text-sm sm:text-xl">:</span>
+                <div className="bg-[#070A14] text-[#FAF5EF] px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl shadow-xl flex flex-col items-center min-w-[50px] sm:min-w-[65px]">
                   <span>{countdown.minutes.toString().padStart(2, '0')}</span>
-                  <span className="text-[9px] font-sans font-semibold text-[#C4BBA3] uppercase tracking-wider">Mins</span>
+                  <span className="text-[8px] sm:text-[9px] font-sans font-semibold text-[#C4BBA3] uppercase tracking-wider">Mins</span>
                 </div>
-                <span className="text-[#070A14] font-black">:</span>
-                <div className="bg-[#070A14] text-emerald-400 px-4 py-2 rounded-2xl shadow-xl flex flex-col items-center min-w-[65px]">
+                <span className="text-[#070A14] font-black text-sm sm:text-xl">:</span>
+                <div className="bg-[#070A14] text-emerald-400 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl shadow-xl flex flex-col items-center min-w-[50px] sm:min-w-[65px]">
                   <span>{countdown.seconds.toString().padStart(2, '0')}</span>
-                  <span className="text-[9px] font-sans font-semibold text-[#C4BBA3] uppercase tracking-wider">Secs</span>
+                  <span className="text-[8px] sm:text-[9px] font-sans font-semibold text-[#C4BBA3] uppercase tracking-wider">Secs</span>
                 </div>
               </div>
 

@@ -118,28 +118,42 @@ export const SpatialFloatingElement: React.FC<SpatialFloatingElementProps> = ({
     }
   }, [depthLayer, passBehind]);
 
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(typeof window !== 'undefined' && window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const ampMultiplier = isMobile ? 0.35 : 1.0;
+  const rotMultiplier = isMobile ? 0.4 : 1.0;
+
   // Floating keyframe animations (soft, controlled organic breathing)
   const keyframeX = [
     0,
-    presetConfig.ampX * 0.75,
-    -presetConfig.ampX * 0.6,
-    presetConfig.ampX * 0.35,
+    presetConfig.ampX * 0.75 * ampMultiplier,
+    -presetConfig.ampX * 0.6 * ampMultiplier,
+    presetConfig.ampX * 0.35 * ampMultiplier,
     0,
   ];
 
   const keyframeY = [
     0,
-    -presetConfig.ampY,
-    presetConfig.ampY * 0.45,
-    -presetConfig.ampY * 0.6,
+    -presetConfig.ampY * ampMultiplier,
+    presetConfig.ampY * 0.45 * ampMultiplier,
+    -presetConfig.ampY * 0.6 * ampMultiplier,
     0,
   ];
 
   const keyframeRotate = [
     0,
-    presetConfig.rot,
-    -presetConfig.rot * 0.7,
-    presetConfig.rot * 0.3,
+    presetConfig.rot * rotMultiplier,
+    -presetConfig.rot * 0.7 * rotMultiplier,
+    presetConfig.rot * 0.3 * rotMultiplier,
     0,
   ];
 

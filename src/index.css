@@ -1483,6 +1483,60 @@ h1, h2, h3, h4, h5, h6,
   }
 }
 
+/* ========================================================================= */
+/* MOBILE-ONLY ARCHITECTURAL GRID & RESPONSIVENESS SYSTEM (MAX-WIDTH: 767PX) */
+/* ========================================================================= */
+@media (max-width: 767px) {
+  html, body {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    position: relative;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Controlled text wrapping and no runaway font scaling */
+  h1, h2, h3, h4, h5, h6, p, span, blockquote {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Safe interactive touch targets */
+  button, a, input, select, textarea {
+    min-height: 40px;
+    touch-action: manipulation;
+  }
+
+  /* Damped transform offsets for mobile safe viewport */
+  .gpu-accelerated {
+    will-change: transform, opacity;
+  }
+
+  /* Soften heavy desktop glow filters on mobile to maintain 60fps */
+  .blur-3xl {
+    filter: blur(48px) !important;
+  }
+  .blur-\[130px\] {
+    filter: blur(50px) !important;
+  }
+  .blur-\[110px\] {
+    filter: blur(40px) !important;
+  }
+
+  /* Clean responsive card padding */
+  .mobile-safe-container {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+  }
+
+  /* Ensure video & 3D canvas stay within boundaries */
+  canvas, svg {
+    max-width: 100% !important;
+  }
+}
+
+
 
 
 

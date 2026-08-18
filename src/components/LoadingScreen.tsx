@@ -168,36 +168,36 @@ export const LoadingScreen: React.FC<Props> = ({ onComplete }) => {
       <div className="absolute -top-30 -left-30 w-[550px] h-[550px] bg-gradient-to-br from-[#1C2A4F]/40 via-[#0B1021]/20 to-transparent rounded-full blur-[130px] animate-pulse-glow" />
       <div className="absolute -bottom-30 -right-30 w-[550px] h-[550px] bg-gradient-to-tl from-[#D4AF37]/18 via-[#16203B]/20 to-transparent rounded-full blur-[130px] animate-float" />
 
-      {/* Floating Spatial Fragments Assembling in 3D Space */}
-      <div className="absolute top-[20%] left-[15%] pointer-events-none opacity-40 animate-levitate-zerog">
+      {/* Floating Spatial Fragments Assembling in 3D Space (Desktop Only to prevent mobile crowding) */}
+      <div className="hidden md:block absolute top-[20%] left-[15%] pointer-events-none opacity-40 animate-levitate-zerog">
         <div className="px-3 py-1 rounded-full bg-[#0D1427]/80 border border-[#D4AF37]/30 text-[9px] font-mono text-[#D4AF37] tracking-widest shadow-xl">
           ✦ SYNCHRONIZING CIRCUIT NODES
         </div>
       </div>
 
-      <div className="absolute bottom-[22%] right-[12%] pointer-events-none opacity-35 animate-wave-roll">
+      <div className="hidden md:block absolute bottom-[22%] right-[12%] pointer-events-none opacity-35 animate-wave-roll">
         <div className="px-3 py-1 rounded-full bg-[#0D1427]/80 border border-[#D4AF37]/30 text-[9px] font-mono text-[#D4AF37] tracking-widest shadow-xl">
           ✦ JAMMU & KASHMIR ACADEMIC CORE
         </div>
       </div>
 
       {/* Main Glass Center Card */}
-      <div className="relative z-10 flex flex-col items-center max-w-md px-8 py-10 text-center rounded-3xl bg-[#0D1427]/85 border border-[#D4AF37]/35 shadow-[0_20px_60px_rgba(0,0,0,0.8)] backdrop-blur-xl animate-aura-pulse">
+      <div className="relative z-10 flex flex-col items-center max-w-md w-[90vw] sm:w-auto px-5 py-7 sm:px-8 sm:py-10 text-center rounded-3xl bg-[#0D1427]/90 border border-[#D4AF37]/40 shadow-[0_20px_60px_rgba(0,0,0,0.85)] backdrop-blur-xl animate-aura-pulse">
         {/* Clean Static Logo Mark */}
-        <div className="mb-6 transform transition-all duration-500 hover:scale-110 drop-shadow-[0_0_25px_rgba(212,175,55,0.4)]">
-          <AstitvaLogo size="xl" showSubtitle={false} variant="mark-only" />
+        <div className="mb-4 sm:mb-6 transform transition-all duration-500 hover:scale-105 drop-shadow-[0_0_25px_rgba(212,175,55,0.4)]">
+          <AstitvaLogo size="lg" showSubtitle={false} variant="mark-only" />
         </div>
 
         {/* Brand Title */}
-        <h1 className="text-3xl font-serif font-bold gold-gradient-text tracking-tight mb-1">
+        <h1 className="text-2xl sm:text-3xl font-serif font-bold gold-gradient-text tracking-tight mb-1">
           Aastitva Alliance
         </h1>
-        <p className="text-xs uppercase tracking-[0.3em] text-[#C4BBA3] font-medium mb-6 flex items-center gap-1.5 justify-center">
+        <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[#C4BBA3] font-medium mb-5 sm:mb-6 flex items-center gap-1.5 justify-center">
           <Sparkles className="w-3 h-3 text-[#D4AF37]" /> Academic & Leadership Network
         </p>
 
         {/* Progress Bar Container */}
-        <div className="w-72 h-2 bg-[#070A14] rounded-full overflow-hidden border border-[#D4AF37]/30 relative mb-3 p-0.5 shadow-inner">
+        <div className="w-full max-w-[270px] sm:w-72 h-2 bg-[#070A14] rounded-full overflow-hidden border border-[#D4AF37]/30 relative mb-3 p-0.5 shadow-inner">
           <div
             className="h-full bg-gradient-to-r from-[#D4AF37] via-[#FFF5DC] to-[#D4AF37] transition-all duration-200 rounded-full shadow-[0_0_15px_rgba(212,175,55,0.9)]"
             style={{ width: `${progress}%` }}
@@ -205,19 +205,19 @@ export const LoadingScreen: React.FC<Props> = ({ onComplete }) => {
         </div>
 
         {/* Percentage Counter & Status */}
-        <div className="flex justify-between w-72 text-xs font-mono text-[#C4BBA3] mb-4">
-          <span className="text-[#FAF5EF] font-semibold">LOADING CORE ENGINE</span>
+        <div className="flex justify-between w-full max-w-[270px] sm:w-72 text-xs font-mono text-[#C4BBA3] mb-4">
+          <span className="text-[#FAF5EF] font-semibold text-[11px] sm:text-xs">LOADING CORE ENGINE</span>
           <span className="text-[#D4AF37] font-bold">{progress}%</span>
         </div>
 
         {/* Live Status Ticker */}
-        <div className="w-72 p-2.5 rounded-xl bg-[#070A14]/80 border border-[#243563]/40 text-[11px] text-[#C4BBA3] flex items-center justify-center gap-2 font-mono animate-page-enter">
+        <div className="w-full max-w-[270px] sm:w-72 p-2 sm:p-2.5 rounded-xl bg-[#070A14]/80 border border-[#243563]/40 text-[10px] sm:text-[11px] text-[#C4BBA3] flex items-center justify-center gap-2 font-mono animate-page-enter">
           <ShieldCheck className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
           <span className="truncate">{statusLogs[statusIndex]}</span>
         </div>
 
         {/* Interactive Click Tip */}
-        <p className="text-[10px] text-[#C4BBA3]/70 tracking-wider uppercase mt-4 flex items-center gap-1">
+        <p className="text-[9px] sm:text-[10px] text-[#C4BBA3]/70 tracking-wider uppercase mt-4 flex items-center gap-1">
           <Zap className="w-3 h-3 text-[#D4AF37] animate-bounce" /> Click anywhere to accelerate load
         </p>
       </div>

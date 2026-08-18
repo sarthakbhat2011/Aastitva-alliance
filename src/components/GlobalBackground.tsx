@@ -25,8 +25,11 @@ export const GlobalBackground: React.FC<Props> = ({ currentPage = 'home' }) => {
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    // Dynamic Particle Count based on resolution (up to 160 particles)
-    const particleCount = Math.min(Math.floor((width * height) / 9000), 160);
+    // Dynamic Particle Count based on resolution (mobile-optimized to prevent clustering)
+    const isMobile = width < 768;
+    const particleCount = isMobile
+      ? Math.min(Math.floor((width * height) / 22000), 40)
+      : Math.min(Math.floor((width * height) / 9000), 160);
 
     interface Particle {
       x: number;
@@ -197,14 +200,23 @@ export const GlobalBackground: React.FC<Props> = ({ currentPage = 'home' }) => {
       // 2. ETHEREAL 3D SATURN CELESTIAL BACKGROUND (Founders, FAQ & Live Summit)
       if (showCelestialSaturn) {
         ctx.save();
-        // Anchor Saturn smoothly in the background with subtle mouse parallax
-        const saturnCenterX = width * 0.78 + (mouseX - width / 2) * 0.035;
-        const saturnCenterY = height * 0.38 + (mouseY - height / 2) * 0.035;
-        const baseRadius = Math.min(width, height) * 0.18;
+        // Anchor Saturn smoothly in the background with subtle mouse parallax (mobile-adapted)
+        const isMobileScreen = width < 768;
+        const saturnCenterX = isMobileScreen
+          ? width * 0.5
+          : width * 0.78 + (mouseX - width / 2) * 0.035;
+        const saturnCenterY = isMobileScreen
+          ? height * 0.2
+          : height * 0.38 + (mouseY - height / 2) * 0.035;
+        const baseRadius = isMobileScreen
+          ? Math.min(width, height) * 0.22
+          : Math.min(width, height) * 0.18;
 
         ctx.translate(saturnCenterX, saturnCenterY);
 
-        const globeAlpha = theme === 'light' ? 0.22 : 0.28;
+        const globeAlpha = isMobileScreen
+          ? (theme === 'light' ? 0.16 : 0.2)
+          : (theme === 'light' ? 0.22 : 0.28);
         const strokeColor = theme === 'light'
           ? (isGalacticPage ? 'rgba(126, 34, 206, 0.35)' : 'rgba(180, 138, 26, 0.35)')
           : (isGalacticPage ? 'rgba(192, 132, 252, 0.4)' : 'rgba(212, 175, 55, 0.35)');
@@ -297,18 +309,19 @@ export const GlobalBackground: React.FC<Props> = ({ currentPage = 'home' }) => {
       ctx.arc(mouseX, mouseY, 280, 0, Math.PI * 2);
       ctx.fill();
 
-      // 4. Draw Constellation Network Lines
+      // 4. Draw Constellation Network Lines (damped on mobile for clean breathing room)
+      const maxConnDist = isMobile ? 90 : 150;
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
           const dx = particles[i].x - particles[j].x;
           const dy = particles[i].y - particles[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
-          if (dist < 150) {
+          if (dist < maxConnDist) {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            const lineAlpha = (1 - dist / 150) * (theme === 'light' ? 0.75 : 0.6);
+            const lineAlpha = (1 - dist / maxConnDist) * (theme === 'light' ? 0.75 : 0.6);
             
             if (isGalacticPage || currentPage === 'faq') {
               ctx.strokeStyle = theme === 'light'

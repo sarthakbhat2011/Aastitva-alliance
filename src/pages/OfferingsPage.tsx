@@ -81,7 +81,7 @@ export const OfferingsPage: React.FC<Props> = ({ onNavigate, onOpenRegister }) =
                     className="rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 bg-[#0D1427]/90 border-2 border-[#D4AF37]/35 hover:border-[#D4AF37]"
                   >
                     {/* Full-Width Hero Card Banner */}
-                    <div className="relative min-h-[240px] sm:min-h-[280px] flex items-end p-6 sm:p-8 dark-photo-overlay overflow-hidden">
+                    <div className="relative min-h-[220px] sm:min-h-[280px] flex items-end p-4 sm:p-8 dark-photo-overlay overflow-hidden">
                       <OptimizedImage
                         src={offering.image}
                         alt={offering.title}
@@ -108,7 +108,7 @@ export const OfferingsPage: React.FC<Props> = ({ onNavigate, onOpenRegister }) =
                               sounds.playTap();
                               toggleExpand(offering.id);
                             }}
-                            className="px-5 py-3 rounded-xl bg-[#070A14]/90 border border-[#D4AF37]/50 text-[#D4AF37] text-xs font-bold hover:bg-[#16203B] hover:text-[#FAF5EF] transition-all flex items-center gap-2 shrink-0 self-start sm:self-auto backdrop-blur-md min-touch font-jakarta cursor-pointer shadow-lg"
+                            className="px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-[#070A14]/90 border border-[#D4AF37]/50 text-[#D4AF37] text-xs font-bold hover:bg-[#16203B] hover:text-[#FAF5EF] transition-all flex items-center gap-2 shrink-0 self-start sm:self-auto backdrop-blur-md min-touch font-jakarta cursor-pointer shadow-lg"
                           >
                             <span>{isExpanded ? 'Show Less' : 'Learn More'}</span>
                             {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -119,11 +119,11 @@ export const OfferingsPage: React.FC<Props> = ({ onNavigate, onOpenRegister }) =
 
                     {/* Highlights Ribbon */}
                     {offering.highlights && offering.highlights.length > 0 && (
-                      <div className="bg-[#050811]/90 px-6 sm:px-8 py-3 border-y border-[#D4AF37]/20 flex flex-wrap items-center gap-4 text-xs font-jakarta">
+                      <div className="bg-[#050811]/90 px-4 sm:px-8 py-2.5 sm:py-3 border-y border-[#D4AF37]/20 flex flex-wrap items-center gap-2.5 sm:gap-4 text-xs font-jakarta">
                         <span className="text-[#D4AF37] font-bold uppercase text-[10px] tracking-wider">Key Deliverables:</span>
                         {offering.highlights.map((h, i) => (
-                          <span key={i} className="flex items-center gap-1.5 text-[#FAF5EF] font-medium">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> {h}
+                          <span key={i} className="flex items-center gap-1.5 text-[#FAF5EF] font-medium text-[11px] sm:text-xs">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" /> {h}
                           </span>
                         ))}
                       </div>
@@ -131,7 +131,7 @@ export const OfferingsPage: React.FC<Props> = ({ onNavigate, onOpenRegister }) =
 
                     {/* Expandable "Learn More" Section */}
                     {isExpanded && (
-                      <div className="p-6 sm:p-8 bg-[#0B1120]/95 space-y-6 animate-page-enter font-jakarta text-left border-t border-[#D4AF37]/20">
+                      <div className="p-4 sm:p-8 bg-[#0B1120]/95 space-y-4 sm:space-y-6 animate-page-enter font-jakarta text-left border-t border-[#D4AF37]/20">
                         <p className="text-sm text-[#C4BBA3] leading-relaxed">
                           {offering.description}
                         </p>
