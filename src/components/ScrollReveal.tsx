@@ -23,30 +23,39 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
   staggerChildren = 0,
   once = true,
 }) => {
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    const check = () => setIsMobile(typeof window !== 'undefined' && window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
   const getInitialPosition = () => {
     switch (direction) {
       case 'up':
-        return { opacity: 0, y: distance, scale: 0.98 };
+        return { opacity: 0, y: isMobile ? 24 : distance, scale: 0.98 };
       case 'down':
-        return { opacity: 0, y: -distance, scale: 0.98 };
+        return { opacity: 0, y: isMobile ? -24 : -distance, scale: 0.98 };
       case 'left':
-        return { opacity: 0, x: distance, scale: 0.98 };
+        return isMobile ? { opacity: 0, y: 20, scale: 0.98 } : { opacity: 0, x: distance, scale: 0.98 };
       case 'right':
-        return { opacity: 0, x: -distance, scale: 0.98 };
+        return isMobile ? { opacity: 0, y: 20, scale: 0.98 } : { opacity: 0, x: -distance, scale: 0.98 };
       case 'zoom':
-        return { opacity: 0, scale: 0.90, filter: 'blur(4px)' };
+        return { opacity: 0, scale: isMobile ? 0.95 : 0.90, filter: isMobile ? 'none' : 'blur(4px)' };
       case 'flip-3d':
-        return { opacity: 0, rotateX: 25, y: 35, scale: 0.94, filter: 'blur(4px)' };
+        return isMobile ? { opacity: 0, y: 20, scale: 0.98 } : { opacity: 0, rotateX: 25, y: 35, scale: 0.94, filter: 'blur(4px)' };
       case 'origami':
-        return { opacity: 0, rotateY: -20, x: -25, scale: 0.95 };
+        return isMobile ? { opacity: 0, y: 20, scale: 0.98 } : { opacity: 0, rotateY: -20, x: -25, scale: 0.95 };
       case 'blur-in':
-        return { opacity: 0, filter: 'blur(12px)', scale: 0.96 };
+        return isMobile ? { opacity: 0, y: 16 } : { opacity: 0, filter: 'blur(12px)', scale: 0.96 };
       case 'mask-reveal':
         return { opacity: 0, clipPath: 'inset(10% 0 10% 0)', y: 20 };
       case 'none':
         return { opacity: 0 };
       default:
-        return { opacity: 0, y: distance, scale: 0.98 };
+        return { opacity: 0, y: isMobile ? 24 : distance, scale: 0.98 };
     }
   };
 
@@ -62,8 +71,8 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
       filter: 'blur(0px)',
       clipPath: 'inset(0% 0 0% 0)',
       transition: {
-        duration,
-        delay,
+        duration: isMobile ? Math.min(duration, 0.55) : duration,
+        delay: isMobile ? delay * 0.7 : delay,
         ease: [0.16, 1, 0.3, 1], // Custom smooth cubic-bezier
         staggerChildren: staggerChildren > 0 ? staggerChildren : undefined,
       },
@@ -74,7 +83,7 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
     <motion.div
       initial="hidden"
       whileInView="visible"
-      viewport={{ once, margin: '-50px' }}
+      viewport={{ once, margin: isMobile ? '-20px' : '-50px' }}
       variants={variants}
       style={{ perspective: 1200 }}
       className={`gpu-accelerated ${className}`}

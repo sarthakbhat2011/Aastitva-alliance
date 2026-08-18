@@ -616,20 +616,20 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
                   Founder & Secretariat Credibility
                 </span>
                 <h3 className="text-2xl sm:text-3xl font-playfair font-bold text-var-text-primary">
-                  Led by Jammu’s Most Experienced Debate Directors
+                  Built on Academic Event Management & Network Governance
                 </h3>
                 <p className="text-sm text-var-text-secondary max-w-xl">
-                  25+ certified chairs, 100% parliamentary compliance, and verified institutional summit execution.
+                  Dedicated institutional support, transparent operations, and authentic regional network governance.
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-center justify-center gap-8">
+              <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8">
                 <SpatialFloatingElement preset="card-float" speed={0.9} delay={0}>
                   <div className="text-center space-y-1 p-3.5 rounded-2xl bg-[#0D1427]/60 border border-[#D4AF37]/30 shadow-lg">
                     <div className="text-3xl font-bold text-[#E8A53E]">
-                      <CounterTicker value={25} suffix="+" duration={1.6} />
+                      <CounterTicker value={13} duration={1.6} />
                     </div>
-                    <div className="text-[11px] font-semibold text-var-text-secondary uppercase tracking-wider">Certified EB Members</div>
+                    <div className="text-[11px] font-semibold text-var-text-secondary uppercase tracking-wider">Circuit Hubs</div>
                   </div>
                 </SpatialFloatingElement>
 
@@ -638,16 +638,16 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
                     <div className="text-3xl font-bold text-[#E8A53E]">
                       <CounterTicker value={100} suffix="%" duration={1.8} />
                     </div>
-                    <div className="text-[11px] font-semibold text-var-text-secondary uppercase tracking-wider">ROP Compliance</div>
+                    <div className="text-[11px] font-semibold text-var-text-secondary uppercase tracking-wider">Transparency</div>
                   </div>
                 </SpatialFloatingElement>
 
                 <SpatialFloatingElement preset="card-float" speed={1.0} delay={0.8}>
                   <div className="text-center space-y-1 p-3.5 rounded-2xl bg-[#0D1427]/60 border border-[#D4AF37]/30 shadow-lg">
                     <div className="text-3xl font-bold text-[#E8A53E]">
-                      <CounterTicker value={0} prefix="₹" duration={1.2} />
+                      <CounterTicker value={1} suffix="st" duration={1.2} />
                     </div>
-                    <div className="text-[11px] font-semibold text-var-text-secondary uppercase tracking-wider">Risk Guarantee</div>
+                    <div className="text-[11px] font-semibold text-var-text-secondary uppercase tracking-wider">Live Summit</div>
                   </div>
                 </SpatialFloatingElement>
               </div>

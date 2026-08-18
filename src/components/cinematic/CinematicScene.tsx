@@ -61,7 +61,48 @@ export const CinematicScene: React.FC<CinematicSceneProps> = ({
   const calmScale = useTransform(smoothProgress, [0, 0.5, 1], [0.99, 1.0, 0.995]);
   const calmY = useTransform(smoothProgress, [0, 0.5, 1], [10 * intensity, 0, -10 * intensity]);
 
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    const check = () => setIsMobile(typeof window !== 'undefined' && window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
   const getStyle = () => {
+    if (isMobile) {
+      // Directed vertical portrait camera flow for mobile
+      switch (shotType) {
+        case 'tracking-shot':
+          return {
+            y: trackY,
+          };
+        case 'lens-focus':
+          return {
+            scale: lensScale,
+            opacity: estOpacity,
+          };
+        case 'theatrical-prop':
+          return {
+            y: propY,
+          };
+        case 'reflective-calm':
+          return {
+            scale: calmScale,
+            y: calmY,
+          };
+        case 'establishing-shot':
+        default:
+          return {
+            scale: estScale,
+            opacity: estOpacity,
+            y: estY,
+          };
+      }
+    }
+
+    // Standard Desktop Wide-Shot Cinema Rig (100% locked & preserved)
     switch (shotType) {
       case 'tracking-shot':
         return {

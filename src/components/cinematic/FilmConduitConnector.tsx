@@ -44,18 +44,24 @@ export const FilmConduitConnector: React.FC<FilmConduitConnectorProps> = ({
       {/* Center Cinematic Node Token */}
       <motion.div
         style={{ opacity: glowOpacity }}
-        className="my-1.5 flex items-center gap-2 px-3 py-1 rounded-full bg-[#0D1427]/80 border border-[#D4AF37]/35 text-[#D4AF37] shadow-lg backdrop-blur-md"
+        className="my-1.5 flex items-center gap-2 px-3 py-1 rounded-full bg-[#0D1427]/90 border border-[#D4AF37]/45 text-[#D4AF37] shadow-lg backdrop-blur-md"
       >
         <span className="text-[10px] text-[#D4AF37] animate-pulse">{glyph}</span>
         {label && (
-          <span className="text-[9px] font-mono uppercase tracking-[0.25em] text-[#C4BBA3]">
+          <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-[#C4BBA3]">
             {label}
           </span>
         )}
       </motion.div>
 
-      {/* Lower Extension Line */}
-      <div className="w-px h-10 sm:h-14 bg-gradient-to-b from-[#D4AF37]/40 to-transparent" />
+      {/* Lower Extension Line with subtle downward particle beacon */}
+      <div className="relative w-px h-10 sm:h-14 bg-gradient-to-b from-[#D4AF37]/50 via-[#D4AF37]/20 to-transparent flex flex-col items-center">
+        <motion.div
+          animate={{ y: [0, 24, 0], opacity: [0.2, 0.9, 0.2] }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+          className="w-1 h-1 rounded-full bg-[#D4AF37] shadow-[0_0_8px_#D4AF37]"
+        />
+      </div>
     </div>
   );
 };
