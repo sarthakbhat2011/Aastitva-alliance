@@ -382,18 +382,21 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
       {/* LIVE COUNTDOWN SECTION (Scene 02: The Summit Horizon) */}
       <CinematicScene shotType="theatrical-prop" intensity={0.9} cameraTilt={true}>
         <ScrollReveal direction="up" delay={0.1}>
-          <section id="explore-section" className="py-16 px-4 sm:px-6 bg-[#0B1120]/90 border-b border-[#D4AF37]/20 relative overflow-hidden">
-            <div className="max-w-5xl mx-auto text-center space-y-8 relative z-10">
-              <div className="space-y-2">
-                <span className="px-3.5 py-1 rounded-full bg-[#E8A53E]/20 text-[#E8A53E] text-xs font-bold uppercase tracking-widest border border-[#E8A53E]/30">
-                  Official Summit Countdown
-                </span>
-                <CinematicMaskReveal variant="anamorphic-split" duration={0.8}>
-                  <h2 className="text-3xl sm:text-5xl font-playfair font-bold text-white tracking-wider">
-                    THE SUMMIT BEGINS IN
-                  </h2>
-                </CinematicMaskReveal>
-                <p className="text-xs sm:text-sm text-[#B8A9C9] font-mono tracking-widest">
+          <section id="explore-section" className="py-16 sm:py-24 px-4 sm:px-6 bg-[#0B1120]/90 border-b border-[#D4AF37]/20 relative overflow-hidden">
+            {/* Ambient Movie-style Light Flares across the Edges */}
+            <div className="absolute -left-20 top-1/2 -translate-y-1/2 w-64 h-64 bg-[#D4AF37]/15 rounded-full blur-[90px] pointer-events-none" />
+            <div className="absolute -right-20 top-1/2 -translate-y-1/2 w-64 h-64 bg-[#7C3AED]/15 rounded-full blur-[90px] pointer-events-none" />
+
+            <div className="max-w-5xl mx-auto text-center space-y-6 sm:space-y-8 relative z-10">
+              <div className="space-y-2.5 sm:space-y-3 flex flex-col items-center">
+                <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#E8A53E]/20 text-[#E8A53E] text-[11px] sm:text-xs font-bold uppercase tracking-widest border border-[#E8A53E]/40 shadow-sm">
+                  <Sparkles className="w-3 h-3 text-[#E8A53E] fill-current" />
+                  <span>Official Summit Countdown</span>
+                </div>
+                <h2 className="text-2xl sm:text-5xl font-playfair font-bold text-white tracking-wider uppercase leading-tight">
+                  The Summit Begins In
+                </h2>
+                <p className="text-[10px] sm:text-sm text-[#D4AF37] font-mono tracking-widest uppercase font-semibold">
                   (Days · Hours · Minutes · Seconds)
                 </p>
               </div>

@@ -42,30 +42,58 @@ export const SpatialAtmosphere: React.FC = () => {
         </div>
       </ViewportTraverser>
 
-      {/* 3. Floating Spatial Ambient Micro-Orbs (Layered in 3D Depth) */}
-      <div className="absolute top-[18%] left-[8%]">
-        <SpatialFloatingElement preset="wave" speed={0.7} depthLayer="background" amplitudeX={6} amplitudeY={8}>
-          <div className="w-2.5 h-2.5 rounded-full bg-gradient-to-tr from-[#D4AF37] to-amber-200 shadow-[0_0_12px_rgba(212,175,55,0.4)] opacity-20" />
-        </SpatialFloatingElement>
-      </div>
-
-      <div className="absolute top-[42%] right-[6%]">
-        <SpatialFloatingElement preset="orbital" speed={0.6} depthLayer="deep-background" amplitudeX={7} amplitudeY={7}>
-          <div className="w-3.5 h-3.5 rounded-full border border-[#D4AF37]/30 flex items-center justify-center opacity-20">
-            <div className="w-1 h-1 rounded-full bg-[#D4AF37]" />
+      {/* 3. Floating Spatial Ambient Micro-Orbs & Edge Beacons (Layered across the full screen) */}
+      {/* Top Left Corner Ambient Beacon */}
+      <div className="absolute top-[8%] left-[3%]">
+        <SpatialFloatingElement preset="orbital" speed={0.8} depthLayer="background" amplitudeX={8} amplitudeY={8}>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#0D1427]/60 border border-[#D4AF37]/25 backdrop-blur-md opacity-40 shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-ping" />
+            <span className="text-[7.5px] font-mono text-[#D4AF37] tracking-widest uppercase">JAMMU HQ // 32.72°N</span>
           </div>
         </SpatialFloatingElement>
       </div>
 
-      <div className="absolute top-[75%] left-[12%]">
-        <SpatialFloatingElement preset="deep-drift" speed={0.7} depthLayer="background" amplitudeX={8} amplitudeY={10}>
-          <div className="w-2 h-2 rounded-full bg-emerald-400/30 shadow-[0_0_10px_rgba(52,211,153,0.3)] opacity-20" />
+      {/* Top Right Corner Ambient Beacon */}
+      <div className="absolute top-[12%] right-[3%]">
+        <SpatialFloatingElement preset="wave" speed={0.7} depthLayer="deep-background" amplitudeX={6} amplitudeY={8}>
+          <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#16203B]/50 border border-[#A855F7]/30 opacity-35 shadow-md">
+            <Sparkles className="w-2.5 h-2.5 text-[#E9D5FF]" />
+            <span className="text-[7.5px] font-mono text-[#E9D5FF] tracking-wider uppercase">CIRCUIT ACTIVE</span>
+          </div>
         </SpatialFloatingElement>
       </div>
 
-      <div className="absolute top-[88%] right-[15%]">
-        <SpatialFloatingElement preset="gentle" speed={0.7} depthLayer="deep-background" amplitudeX={5} amplitudeY={7}>
-          <div className="w-3 h-3 rounded-full border border-dashed border-[#D4AF37]/30 opacity-15 animate-spin-slow" />
+      {/* Far-Left Vertical Edge Coordinate Marker */}
+      <div className="absolute top-[48%] -left-1">
+        <SpatialFloatingElement preset="gentle" speed={0.6} depthLayer="background" amplitudeX={4} amplitudeY={12}>
+          <div className="py-2 px-1 rounded-r-lg bg-[#070A14]/80 border-y border-r border-[#D4AF37]/30 text-[7px] font-mono text-[#D4AF37]/50 [writing-mode:vertical-lr] tracking-[0.25em] opacity-40 select-none">
+            AASTITVA // PROTOCOL
+          </div>
+        </SpatialFloatingElement>
+      </div>
+
+      {/* Far-Right Vertical Edge Coordinate Marker */}
+      <div className="absolute top-[55%] -right-1">
+        <SpatialFloatingElement preset="gentle" speed={0.6} depthLayer="background" amplitudeX={4} amplitudeY={12}>
+          <div className="py-2 px-1 rounded-l-lg bg-[#070A14]/80 border-y border-l border-[#D4AF37]/30 text-[7px] font-mono text-[#D4AF37]/50 [writing-mode:vertical-lr] tracking-[0.25em] opacity-40 select-none">
+            13 CIRCUIT HUBS
+          </div>
+        </SpatialFloatingElement>
+      </div>
+
+      {/* Bottom Left Corner Ambient Node */}
+      <div className="absolute bottom-[18%] left-[4%]">
+        <SpatialFloatingElement preset="deep-drift" speed={0.75} depthLayer="background" amplitudeX={8} amplitudeY={10}>
+          <div className="w-3 h-3 rounded-full bg-gradient-to-tr from-[#D4AF37] to-amber-200 shadow-[0_0_14px_rgba(212,175,55,0.5)] opacity-30" />
+        </SpatialFloatingElement>
+      </div>
+
+      {/* Bottom Right Corner Ambient Beacon */}
+      <div className="absolute bottom-[12%] right-[4%]">
+        <SpatialFloatingElement preset="orbital" speed={0.65} depthLayer="deep-background" amplitudeX={7} amplitudeY={7}>
+          <div className="w-4 h-4 rounded-full border border-[#D4AF37]/35 flex items-center justify-center opacity-30 shadow-[0_0_15px_rgba(212,175,55,0.25)]">
+            <div className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
+          </div>
         </SpatialFloatingElement>
       </div>
     </div>
