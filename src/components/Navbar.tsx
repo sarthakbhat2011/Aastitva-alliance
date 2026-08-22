@@ -98,18 +98,20 @@ export const Navbar: React.FC<Props> = ({
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full transition-all duration-300">
-      {/* Top Subtle Live Countdown Ticker */}
-      <div className="bg-[#070A14]/95 border-b border-[#243563]/30 text-[11px] py-1 px-4 text-[#C4BBA3] backdrop-blur-md">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
-          <div className="hidden sm:flex items-center gap-2 overflow-x-auto whitespace-nowrap scrollbar-none py-0.5">
-            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] font-semibold text-[10px] tracking-wider uppercase border border-[#D4AF37]/30">
-              <Sparkles className="w-2.5 h-2.5 animate-pulse text-[#D4AF37]" /> Summit 2026 Countdown
+    <header className="sticky top-0 z-50 w-full transition-all duration-300 select-none">
+      {/* Top Subtle Live Status Bar */}
+      <div className="bg-[#070A14]/98 border-b border-[#D4AF37]/20 text-[10px] sm:text-[11px] py-1 px-3 sm:px-6 text-[#C4BBA3] backdrop-blur-md">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
+          {/* Left: Countdown (Visible on both Mobile & Desktop) */}
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-hidden whitespace-nowrap py-0.5">
+            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] font-semibold text-[9px] sm:text-[10px] tracking-wider uppercase border border-[#D4AF37]/30 shrink-0">
+              <Sparkles className="w-2.5 h-2.5 animate-pulse text-[#D4AF37]" />
+              <span className="hidden xs:inline">Summit</span> 2026
             </span>
-            <span className="text-[#FAF5EF] font-mono font-semibold tracking-wider">
+            <span className="text-[#FAF5EF] font-mono font-semibold tracking-wider text-[10px] sm:text-xs">
               {countdown.days}d : {countdown.hours.toString().padStart(2, '0')}h :{' '}
-              {countdown.minutes.toString().padStart(2, '0')}m :{' '}
-              {countdown.seconds.toString().padStart(2, '0')}s
+              {countdown.minutes.toString().padStart(2, '0')}m
+              <span className="hidden sm:inline"> : {countdown.seconds.toString().padStart(2, '0')}s</span>
             </span>
             <span className="hidden lg:inline text-[#243563]">|</span>
             <span className="hidden lg:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#D4AF37]/10 text-[#D4AF37] font-mono font-bold text-[10px] uppercase tracking-wider border border-[#D4AF37]/30 shadow-sm">
@@ -118,7 +120,8 @@ export const Navbar: React.FC<Props> = ({
             </span>
           </div>
 
-          <div className="flex items-center gap-2.5 shrink-0 text-[11px]">
+          {/* Right: Quick Controls & Theme */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0 text-[11px]">
             {onOpenOS && (
               <MagneticElement strength={0.25}>
                 <button
@@ -154,14 +157,14 @@ export const Navbar: React.FC<Props> = ({
                   const isNowOn = sounds.toggleSound();
                   setSoundActive(isNowOn);
                 }}
-                className={`p-1.5 rounded-full border transition-all cursor-pointer ${
+                className={`p-1 sm:p-1.5 rounded-full border transition-all cursor-pointer ${
                   soundActive
                     ? 'bg-[#D4AF37] text-[#070A14] border-[#D4AF37] shadow-[0_0_10px_#D4AF37]'
                     : 'bg-[#16203B] text-[#C4BBA3] border-[#D4AF37]/30 hover:text-[#FAF5EF]'
                 }`}
                 title={soundActive ? 'Sound FX Enabled (Web Audio API)' : 'Enable Futuristic Sound FX'}
               >
-                {soundActive ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
+                {soundActive ? <Volume2 className="w-3 sm:w-3.5 h-3 sm:h-3.5" /> : <VolumeX className="w-3 sm:w-3.5 h-3 sm:h-3.5" />}
               </button>
             </MagneticElement>
 
@@ -173,7 +176,7 @@ export const Navbar: React.FC<Props> = ({
               className="p-1 rounded text-[#9E93C4] hover:text-[#FAF5EF] transition-colors cursor-pointer"
               title="System Diagnostics & SSL Status"
             >
-              <ShieldCheck className="w-3.5 h-3.5" />
+              <ShieldCheck className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
             </button>
 
             <button
@@ -184,28 +187,28 @@ export const Navbar: React.FC<Props> = ({
               className="p-1 rounded text-[#9E93C4] hover:text-[#D4AF37] transition-colors cursor-pointer"
               title="Edit Event Content"
             >
-              <Settings className="w-3.5 h-3.5" />
+              <Settings className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
             </button>
 
-            <ThemeToggle variant="full" className="ml-1" />
+            <ThemeToggle variant="compact" className="ml-0.5" />
           </div>
         </div>
       </div>
 
       {/* Main Floating Glass Navbar Container */}
-      <div className="w-full px-3 sm:px-6 pt-2 pb-2 transition-all duration-300">
+      <div className="w-full px-2.5 sm:px-6 pt-1.5 sm:pt-2 pb-1.5 sm:pb-2 transition-all duration-300">
         <nav
           className={`max-w-7xl mx-auto rounded-2xl transition-all duration-300 ${
             scrolled
-              ? 'bg-[#0D1427]/95 backdrop-blur-xl border border-[#D4AF37]/45 shadow-[0_14px_45px_rgba(0,0,0,0.9)] py-2.5 px-4 sm:px-6'
-              : 'bg-[#0D1427]/85 backdrop-blur-md border border-[#D4AF37]/25 hover:border-[#D4AF37]/45 py-3 px-4 sm:px-6'
+              ? 'bg-[#0D1427]/95 backdrop-blur-xl border border-[#D4AF37]/45 shadow-[0_14px_45px_rgba(0,0,0,0.9)] py-2 px-3 sm:px-6'
+              : 'bg-[#0D1427]/85 backdrop-blur-md border border-[#D4AF37]/25 hover:border-[#D4AF37]/45 py-2 sm:py-3 px-3 sm:px-6'
           }`}
         >
-          <div className="flex items-center justify-between gap-3 sm:gap-6">
+          <div className="flex items-center justify-between gap-2 sm:gap-6">
             {/* Brand Logo - Stable, Clean & Static Anchor */}
             <button
               onClick={() => handleNavClick('home')}
-              className="text-left focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 rounded-xl p-0.5 shrink-0 cursor-pointer"
+              className="text-left focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 rounded-xl p-0.5 shrink-0 cursor-pointer min-w-0"
               aria-label="Aastitva Alliance Home"
             >
               <AstitvaLogo size="sm" />
@@ -256,10 +259,12 @@ export const Navbar: React.FC<Props> = ({
                       handleNavClick('summit');
                     }
                   }}
-                  className="hidden sm:inline-flex items-center gap-1.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl shimmer-btn text-[#070A14] text-xs sm:text-sm font-extrabold shadow-[0_4px_20px_rgba(212,175,55,0.35)] btn-sheen-sweep group whitespace-nowrap shrink-0 border border-[#FAF5EF]/30 cursor-pointer"
+                  className="inline-flex items-center gap-1 px-3 sm:px-5 py-1.5 sm:py-2.5 rounded-xl shimmer-btn text-[#070A14] text-[11px] sm:text-sm font-extrabold shadow-[0_4px_20px_rgba(212,175,55,0.35)] btn-sheen-sweep group whitespace-nowrap shrink-0 border border-[#FAF5EF]/30 cursor-pointer min-h-[38px] sm:min-h-[44px]"
                 >
-                  <span>Partner With Us</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current" />
+                  <span className="hidden xs:inline">Partner With Us</span>
+                  <span className="xs:hidden">Partner</span>
+                  <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </MagneticElement>
 
@@ -269,44 +274,76 @@ export const Navbar: React.FC<Props> = ({
                   sounds.playTap();
                   setMobileMenuOpen(!mobileMenuOpen);
                 }}
-                className="lg:hidden p-2.5 rounded-xl bg-[#070A14] text-[#FAF5EF] border border-[#D4AF37]/40 hover:bg-[#16203B] transition-colors focus:outline-none min-w-[40px] min-h-[40px] flex items-center justify-center shadow-md shrink-0 cursor-pointer"
+                className="lg:hidden p-2 rounded-xl bg-[#070A14] text-[#FAF5EF] border border-[#D4AF37]/50 hover:bg-[#16203B] transition-colors focus:outline-none min-w-[38px] min-h-[38px] flex items-center justify-center shadow-md shrink-0 cursor-pointer"
                 aria-label="Toggle Navigation Menu"
               >
-                {mobileMenuOpen ? <X className="w-5 h-5 text-[#D4AF37]" /> : <Menu className="w-5 h-5 text-[#FAF5EF]" />}
+                {mobileMenuOpen ? <X className="w-4 h-4 text-[#D4AF37]" /> : <Menu className="w-4 h-4 text-[#FAF5EF]" />}
               </button>
             </div>
           </div>
 
-          {/* Full Mobile Navigation Drawer */}
+          {/* DEDICATED MOBILE HORIZONTAL NAVIGATION BAR (Visible at the header for instant 1-tap browsing) */}
+          <div className="lg:hidden mt-2 pt-2 border-t border-[#D4AF37]/20 flex items-center gap-1.5 overflow-x-auto scrollbar-none py-1 -mx-1 px-1">
+            {navItems.map((item) => {
+              const active = currentPage === item.id;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleNavClick(item.id)}
+                  className={`px-3 py-1.5 rounded-xl text-[11px] font-bold whitespace-nowrap shrink-0 flex items-center gap-1 transition-all cursor-pointer ${
+                    active
+                      ? 'bg-gradient-to-r from-[#D4AF37] to-[#E8A53E] text-[#070A14] shadow-[0_0_15px_rgba(212,175,55,0.45)] font-extrabold border border-[#FFF5DC]'
+                      : 'bg-[#070A14]/80 text-[#C4BBA3] border border-[#D4AF37]/25 hover:text-[#FAF5EF] hover:border-[#D4AF37]/60'
+                  }`}
+                >
+                  <span>{item.label}</span>
+                  {item.badge && (
+                    <span
+                      className={`px-1 py-0.1 text-[7.5px] font-extrabold uppercase rounded-full ${
+                        active ? 'bg-[#070A14] text-[#D4AF37]' : 'bg-[#D4AF37] text-[#070A14]'
+                      }`}
+                    >
+                      {item.badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Full Mobile Navigation Drawer (Expanded Menu) */}
           {mobileMenuOpen && (
-            <div className="lg:hidden mt-4 pt-4 border-t border-[#243563]/40 space-y-2 animate-page-enter">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div className="lg:hidden mt-3 pt-3 border-t border-[#D4AF37]/30 space-y-2 animate-page-enter">
+              <div className="grid grid-cols-1 gap-1.5">
                 {navItems.map((item) => {
                   const active = currentPage === item.id;
                   return (
                     <button
                       key={item.id}
                       onClick={() => handleNavClick(item.id)}
-                      className={`w-full text-left px-4 py-3 rounded-xl text-sm font-semibold flex items-center justify-between min-h-[48px] transition-colors ${
+                      className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-between min-h-[44px] transition-colors ${
                         active
-                          ? 'bg-[#16203B] text-[#FAF5EF] border border-[#D4AF37]/45 font-bold'
-                          : 'text-[#C4BBA3] hover:bg-[#070A14] hover:text-[#FAF5EF]'
+                          ? 'bg-gradient-to-r from-[#16203B] to-[#243563] text-[#FAF5EF] border border-[#D4AF37] font-bold shadow-md'
+                          : 'bg-[#070A14]/60 text-[#C4BBA3] border border-[#D4AF37]/20 hover:bg-[#16203B] hover:text-[#FAF5EF]'
                       }`}
                     >
-                      <span>{item.label}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37]" />
+                        <span>{item.label}</span>
+                      </div>
                       {item.badge ? (
-                        <span className="px-2 py-0.5 text-[10px] font-bold rounded-full bg-[#D4AF37] text-[#070A14]">
+                        <span className="px-2 py-0.5 text-[9px] font-extrabold rounded-full bg-[#D4AF37] text-[#070A14]">
                           {item.badge}
                         </span>
                       ) : (
-                        <ChevronRight className="w-4 h-4 text-[#243563]" />
+                        <ChevronRight className="w-3.5 h-3.5 text-[#D4AF37]/60" />
                       )}
                     </button>
                   );
                 })}
               </div>
 
-              <div className="pt-3 flex flex-col gap-3">
+              <div className="pt-2 flex flex-col gap-2">
                 {onOpenOS && (
                   <button
                     onClick={() => {
@@ -320,11 +357,6 @@ export const Navbar: React.FC<Props> = ({
                   </button>
                 )}
 
-                <div className="flex items-center justify-between px-2 py-1.5 rounded-xl bg-[#070A14] border border-[#D4AF37]/30">
-                  <span className="text-xs font-semibold text-[#D4AF37]">Color Theme:</span>
-                  <ThemeToggle variant="full" />
-                </div>
-
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);
@@ -334,9 +366,10 @@ export const Navbar: React.FC<Props> = ({
                       handleNavClick('summit');
                     }
                   }}
-                  className="w-full py-3 rounded-xl shimmer-btn text-[#070A14] font-bold text-center text-sm shadow-lg min-h-[48px] flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-2.5 rounded-xl shimmer-btn text-[#070A14] font-bold text-center text-xs shadow-lg min-h-[44px] flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <span>Partner With Us</span>
+                  <Sparkles className="w-3.5 h-3.5 fill-current" />
+                  <span>Partner With Us / Reserve Seat</span>
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>

@@ -41,21 +41,21 @@ export const AstitvaLogo: React.FC<Props> = ({
 
       {/* BRAND NAME & TAGLINE TYPOGRAPHY */}
       {variant !== 'mark-only' && (
-        <div className="flex flex-col text-left">
-          <div className="flex items-baseline gap-2">
+        <div className="flex flex-col text-left min-w-0 max-w-[190px] xs:max-w-[250px] sm:max-w-none">
+          <div className="flex items-baseline gap-1.5 sm:gap-2 truncate">
             {/* "Aastitva" Calligraphic Luxury Serif Typography */}
             <span className={`font-cormorant brand-logo-text font-bold italic ${currentSize.text} bg-gradient-to-r from-[#FFFFFF] via-[#FAF5EF] to-[#E8A53E] bg-clip-text text-transparent leading-none drop-shadow-[0_2px_10px_rgba(255,255,255,0.15)]`}>
               Aastitva
             </span>
 
             {/* "ALLIANCE" Modern Institutional Sans */}
-            <span className="font-jakarta text-[11px] sm:text-[12px] font-extrabold uppercase tracking-[0.22em] text-[#E8A53E]">
+            <span className="font-jakarta text-[10px] sm:text-[12px] font-extrabold uppercase tracking-[0.18em] sm:tracking-[0.22em] text-[#E8A53E]">
               ALLIANCE
             </span>
           </div>
 
           {showSubtitle && (
-            <span className={`font-mono ${currentSize.sub} text-[#D4AF37] tracking-[0.12em] font-bold uppercase mt-0.5`}>
+            <span className={`font-mono ${currentSize.sub} text-[#D4AF37] tracking-[0.06em] sm:tracking-[0.12em] font-bold uppercase mt-0.5 truncate block max-w-[170px] xs:max-w-[220px] sm:max-w-none`}>
               Academic Event Management + Network Organisation
             </span>
           )}
