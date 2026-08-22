@@ -88,9 +88,9 @@ export const HowItWorksPage: React.FC<Props> = ({ onNavigate, onOpenRegister }) 
           <div className="space-y-8">
             <div className="space-y-3 text-left font-jakarta">
               <MagneticElement strength={0.25}>
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-mono font-bold uppercase tracking-wider shadow-sm cursor-pointer">
-                  <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-                  <span>Process & Architecture • Academic Event Management + Network Organisation</span>
+                <div className="inline-flex items-center justify-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-1.5 rounded-2xl sm:rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] text-[9.5px] xs:text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider shadow-sm cursor-pointer max-w-[92vw] sm:max-w-none">
+                  <Sparkles className="w-3.5 h-3.5 animate-pulse shrink-0" />
+                  <span className="break-words">Process & Architecture • Academic Event Management + Network Organisation</span>
                 </div>
               </MagneticElement>
               <CinematicMaskReveal variant="gold-trace-sweep" duration={0.85}>

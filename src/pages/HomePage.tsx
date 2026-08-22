@@ -258,10 +258,10 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
               className="lg:col-span-7 space-y-6 text-center lg:text-left"
             >
-              <MagneticElement strength={0.25}>
-                <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#E8A53E]/15 border border-[#E8A53E]/40 text-[#E8A53E] text-xs font-mono font-bold uppercase tracking-wider smooth-badge-pulse shadow-md cursor-pointer">
-                  <Sparkles className="w-3.5 h-3.5 animate-pulse text-[#D4AF37]" />
-                  <span>Academic Event Management + Network Organisation</span>
+              <MagneticElement strength={0.25} className="w-full flex justify-center lg:justify-start">
+                <div className="inline-flex items-center justify-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-1.5 rounded-2xl sm:rounded-full bg-[#E8A53E]/15 border border-[#E8A53E]/40 text-[#E8A53E] text-[9.5px] xs:text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider smooth-badge-pulse shadow-md cursor-pointer max-w-[92vw] sm:max-w-none text-center">
+                  <Sparkles className="w-3.5 h-3.5 animate-pulse text-[#D4AF37] shrink-0" />
+                  <span className="break-words">Academic Event Management + Network Organisation</span>
                 </div>
               </MagneticElement>
 
@@ -270,7 +270,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.75, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="text-2xl sm:text-5xl lg:text-6xl font-playfair font-bold gold-gradient-text leading-tight tracking-tight"
+                className="text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-playfair font-bold gold-gradient-text leading-tight tracking-tight break-words max-w-full"
               >
                 Collapsing the Distance to Existence for Academic & Leadership Events
               </motion.h1>

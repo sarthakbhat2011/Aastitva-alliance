@@ -118,9 +118,9 @@ export const AboutFounderPage: React.FC<Props> = ({ onNavigate }) => {
             <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#4318FF]/20 rounded-full blur-3xl pointer-events-none" />
 
             <div className="space-y-6 text-left relative z-10 max-w-4xl">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#581C87]/40 border border-[#C084FC]/50 text-[#E9D5FF] text-xs font-mono font-bold uppercase tracking-wider shadow-sm font-jakarta">
-                <Sparkles className="w-3.5 h-3.5 animate-pulse text-[#D4AF37]" />
-                <span>About Aastitva Alliance • Academic Event Management + Network Organisation</span>
+              <div className="inline-flex items-center justify-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-1.5 rounded-2xl sm:rounded-full bg-[#581C87]/40 border border-[#C084FC]/50 text-[#E9D5FF] text-[9.5px] xs:text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider shadow-sm font-jakarta max-w-[92vw] sm:max-w-none">
+                <Sparkles className="w-3.5 h-3.5 animate-pulse text-[#D4AF37] shrink-0" />
+                <span className="break-words">About Aastitva Alliance • Academic Event Management + Network Organisation</span>
               </div>
 
               <CinematicMaskReveal variant="gold-trace-sweep" duration={0.9}>

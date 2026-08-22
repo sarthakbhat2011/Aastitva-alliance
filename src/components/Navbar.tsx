@@ -198,17 +198,17 @@ export const Navbar: React.FC<Props> = ({
       {/* Main Floating Glass Navbar Container */}
       <div className="w-full px-2.5 sm:px-6 pt-1.5 sm:pt-2 pb-1.5 sm:pb-2 transition-all duration-300">
         <nav
-          className={`max-w-7xl mx-auto rounded-2xl transition-all duration-300 ${
+          className={`max-w-7xl mx-auto rounded-2xl transition-all duration-300 overflow-hidden ${
             scrolled
               ? 'bg-[#0D1427]/95 backdrop-blur-xl border border-[#D4AF37]/45 shadow-[0_14px_45px_rgba(0,0,0,0.9)] py-2 px-3 sm:px-6'
               : 'bg-[#0D1427]/85 backdrop-blur-md border border-[#D4AF37]/25 hover:border-[#D4AF37]/45 py-2 sm:py-3 px-3 sm:px-6'
           }`}
         >
-          <div className="flex items-center justify-between gap-2 sm:gap-6">
+          <div className="flex items-center justify-between gap-1.5 sm:gap-6 w-full">
             {/* Brand Logo - Stable, Clean & Static Anchor */}
             <button
               onClick={() => handleNavClick('home')}
-              className="text-left focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 rounded-xl p-0.5 shrink-0 cursor-pointer min-w-0"
+              className="text-left focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 rounded-xl p-0.5 shrink-0 min-w-0 max-w-[62vw] xs:max-w-[70vw] sm:max-w-none cursor-pointer"
               aria-label="Aastitva Alliance Home"
             >
               <AstitvaLogo size="sm" />
