@@ -170,14 +170,16 @@ export const LoadingScreen: React.FC<Props> = ({ onComplete }) => {
 
       {/* Floating Spatial Fragments Assembling in 3D Space (Desktop Only to prevent mobile crowding) */}
       <div className="hidden md:block absolute top-[20%] left-[15%] pointer-events-none opacity-40 animate-levitate-zerog">
-        <div className="px-3 py-1 rounded-full bg-[#0D1427]/80 border border-[#D4AF37]/30 text-[9px] font-mono text-[#D4AF37] tracking-widest shadow-xl">
-          ✦ SYNCHRONIZING CIRCUIT NODES
+        <div className="px-3 py-1 rounded-full bg-[#0D1427]/80 border border-[#D4AF37]/30 text-[9px] font-mono text-[#D4AF37] tracking-widest shadow-xl flex items-center gap-1">
+          <Sparkles className="w-2.5 h-2.5 fill-current" />
+          <span>SYNCHRONIZING CIRCUIT NODES</span>
         </div>
       </div>
 
       <div className="hidden md:block absolute bottom-[22%] right-[12%] pointer-events-none opacity-35 animate-wave-roll">
-        <div className="px-3 py-1 rounded-full bg-[#0D1427]/80 border border-[#D4AF37]/30 text-[9px] font-mono text-[#D4AF37] tracking-widest shadow-xl">
-          ✦ JAMMU & KASHMIR ACADEMIC CORE
+        <div className="px-3 py-1 rounded-full bg-[#0D1427]/80 border border-[#D4AF37]/30 text-[9px] font-mono text-[#D4AF37] tracking-widest shadow-xl flex items-center gap-1">
+          <Sparkles className="w-2.5 h-2.5 fill-current" />
+          <span>JAMMU & KASHMIR ACADEMIC CORE</span>
         </div>
       </div>
 

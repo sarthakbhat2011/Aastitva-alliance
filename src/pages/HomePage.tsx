@@ -372,7 +372,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
                 <span className="text-xs sm:text-sm font-semibold text-[#EAE0C8] tracking-wider uppercase font-inter">
                   {cat.label}
                 </span>
-                <span className="text-[#E8A53E] text-xs font-bold ml-2">✦</span>
+                <Sparkles className="w-3 h-3 text-[#E8A53E] ml-2 fill-current" />
               </div>
             );
           })}

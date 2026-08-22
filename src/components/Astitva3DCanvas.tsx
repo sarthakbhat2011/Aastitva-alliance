@@ -324,7 +324,7 @@ export const Astitva3DCanvas: React.FC<Props> = ({
       className={`relative w-full h-full group ${
         onOpenRegister ? 'cursor-pointer pointer-events-auto' : 'pointer-events-none'
       } ${className}`}
-      title={onOpenRegister ? '✦ Click Orbiting Celestial Core to Open Summit Registration' : undefined}
+      title={onOpenRegister ? 'Click Orbiting Celestial Core to Open Summit Registration' : undefined}
     >
       <div ref={mountRef} className="w-full h-full relative" />
 
@@ -336,7 +336,7 @@ export const Astitva3DCanvas: React.FC<Props> = ({
           }`}
         >
           <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-          <span>Click Celestial Core to Register ✦</span>
+          <span>Click Celestial Core to Register</span>
         </div>
       )}
     </div>

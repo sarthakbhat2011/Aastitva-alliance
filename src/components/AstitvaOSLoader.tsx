@@ -21,6 +21,12 @@ import {
   ArrowRight,
   ChevronRight,
   CheckCircle2,
+  Home,
+  Briefcase,
+  Settings2,
+  Users,
+  HelpCircle,
+  Rocket,
 } from 'lucide-react';
 import { COMMITTEES, INITIAL_SUMMIT_CONFIG } from '../data';
 
@@ -224,17 +230,17 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
     <div className="fixed inset-0 z-50 flex flex-col bg-[#050811] text-[#FAF5EF] font-mono select-none overflow-hidden w-full h-full">
       {/* 1. INITIAL RETRO BIOS BOOT OVERLAY */}
       {!bootComplete && (
-        <div className="absolute inset-0 z-50 bg-[#070A14] flex flex-col items-center justify-center p-4 sm:p-6 text-left space-y-6">
-          <div className="max-w-md w-full space-y-4 font-mono text-xs px-2">
-            <div className="flex items-center gap-3">
-              <AstitvaLogo size="md" variant="mark-only" showSubtitle={false} />
+        <div className="absolute inset-0 z-50 bg-[#070A14] flex flex-col items-center justify-center p-6 sm:p-8 text-left space-y-6 sm:space-y-8">
+          <div className="max-w-md w-full space-y-5 sm:space-y-6 font-mono text-xs px-2 sm:px-0">
+            <div className="flex items-center gap-3.5">
+              <AstitvaLogo size="sm" variant="mark-only" showSubtitle={false} />
               <div>
-                <h1 className="text-base sm:text-lg font-bold text-[#D4AF37]">AASTITVA OS v2.4.0</h1>
-                <p className="text-[10px] text-[#C4BBA3]">Academic & Leadership Infrastructure Kernel</p>
+                <h1 className="text-base sm:text-lg font-bold text-[#D4AF37] tracking-wider">AASTITVA OS v2.4.0</h1>
+                <p className="text-[10px] sm:text-[11px] text-[#C4BBA3]">Academic & Leadership Infrastructure Kernel</p>
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#0D1427] border border-[#D4AF37]/40 space-y-2 text-[#C4BBA3] shadow-2xl text-[11px] sm:text-xs">
+            <div className="p-4 sm:p-5 rounded-2xl bg-[#0D1427]/90 border border-[#D4AF37]/35 space-y-2 text-[#C4BBA3] shadow-2xl text-[10px] sm:text-xs">
               <p className="text-[#FAF5EF]">BIOS Date: 08/16/2026 00:00:00</p>
               <p>CPU: Quantum Diplomatic Core @ 4.80GHz [OK]</p>
               <p>RAM: 32768MB High-Speed Logic Buffer [OK]</p>
@@ -244,8 +250,8 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
             </div>
 
             {/* Boot Progress Bar */}
-            <div className="space-y-1">
-              <div className="w-full h-2.5 rounded-full bg-[#16203B] overflow-hidden border border-[#D4AF37]/30">
+            <div className="space-y-1.5">
+              <div className="w-full h-2 rounded-full bg-[#16203B] overflow-hidden border border-[#D4AF37]/30">
                 <div
                   className="h-full bg-gradient-to-r from-[#D4AF37] via-[#FFF5DC] to-[#D4AF37] transition-all duration-150 shadow-[0_0_12px_#D4AF37]"
                   style={{ width: `${bootProgress}%` }}
@@ -260,9 +266,10 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
             <div className="pt-2 text-center">
               <button
                 onClick={() => setBootComplete(true)}
-                className="text-[11px] text-[#D4AF37] hover:text-[#FAF5EF] underline font-bold px-3 py-1 rounded min-touch"
+                className="px-5 py-2.5 rounded-xl bg-[#16203B] text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-bold shadow-md hover:border-[#D4AF37] hover:scale-105 active:scale-95 transition-all inline-flex items-center gap-1.5 cursor-pointer min-touch"
               >
-                Skip Boot Sequence [Enter] ➔
+                <span>Skip Boot Sequence [Enter]</span>
+                <ArrowRight className="w-3.5 h-3.5 text-[#D4AF37]" />
               </button>
             </div>
           </div>
@@ -443,9 +450,10 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
               <div className="pt-2 flex items-center justify-between gap-3 flex-wrap border-t border-[#D4AF37]/20">
                 <button
                   onClick={() => onOpenRegister && onOpenRegister()}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B89220] text-[#070A14] font-extrabold text-xs shadow-lg"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B89220] text-[#070A14] font-extrabold text-xs shadow-lg inline-flex items-center gap-1.5 cursor-pointer"
                 >
-                  Quick Register Delegate Seat ✦
+                  <Sparkles className="w-3.5 h-3.5 fill-current" />
+                  <span>Quick Register Delegate Seat</span>
                 </button>
               </div>
             </div>
@@ -675,34 +683,41 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
 
               <div className="space-y-1 text-xs max-h-64 overflow-y-auto custom-scrollbar">
                 {[
-                  { page: 'home', label: '🏠 Homepage (Main Portal)' },
-                  { page: 'summit', label: '🌐 Live Summit (Aequitas 2026)' },
-                  { page: 'about', label: '📜 About & Founder (The Chronicle)' },
-                  { page: 'offerings', label: '💼 Core Offerings & Directorship' },
-                  { page: 'how-it-works', label: '⚙️ How It Works (6-Stage Pipeline)' },
-                  { page: 'sponsors', label: '🤝 Sponsors & Partners' },
-                  { page: 'faq', label: '❓ Frequently Asked Questions' },
-                ].map((item) => (
-                  <button
-                    key={item.page}
-                    onClick={() => {
-                      setStartMenuOpen(false);
-                      onEnterSite(item.page as Page);
-                    }}
-                    className="w-full px-3 py-2 rounded-xl text-left text-[#C4BBA3] hover:text-[#FAF5EF] hover:bg-[#16203B] hover:border hover:border-[#D4AF37]/40 flex items-center justify-between transition-all"
-                  >
-                    <span>{item.label}</span>
-                    <ChevronRight className="w-3.5 h-3.5 text-[#D4AF37]" />
-                  </button>
-                ))}
+                  { page: 'home', label: 'Homepage (Main Portal)', icon: Home },
+                  { page: 'summit', label: 'Live Summit (Aequitas 2026)', icon: Globe },
+                  { page: 'about', label: 'About & Founder (The Chronicle)', icon: FileText },
+                  { page: 'offerings', label: 'Core Offerings & Directorship', icon: Briefcase },
+                  { page: 'how-it-works', label: 'How It Works (6-Stage Pipeline)', icon: Settings2 },
+                  { page: 'sponsors', label: 'Sponsors & Partners', icon: Users },
+                  { page: 'faq', label: 'Frequently Asked Questions', icon: HelpCircle },
+                ].map((item) => {
+                  const IconComp = item.icon;
+                  return (
+                    <button
+                      key={item.page}
+                      onClick={() => {
+                        setStartMenuOpen(false);
+                        onEnterSite(item.page as Page);
+                      }}
+                      className="w-full px-3 py-2 rounded-xl text-left text-[#C4BBA3] hover:text-[#FAF5EF] hover:bg-[#16203B] hover:border hover:border-[#D4AF37]/40 flex items-center justify-between transition-all cursor-pointer"
+                    >
+                      <div className="flex items-center gap-2">
+                        <IconComp className="w-3.5 h-3.5 text-[#D4AF37]" />
+                        <span>{item.label}</span>
+                      </div>
+                      <ChevronRight className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    </button>
+                  );
+                })}
               </div>
 
               <div className="pt-2 border-t border-[#D4AF37]/20">
                 <button
                   onClick={() => onEnterSite('home')}
-                  className="w-full py-2.5 rounded-xl shimmer-btn text-[#070A14] font-bold text-xs shadow-md"
+                  className="w-full py-2.5 rounded-xl shimmer-btn text-[#070A14] font-bold text-xs shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  🚀 Launch Website
+                  <Rocket className="w-3.5 h-3.5 text-[#070A14] fill-current" />
+                  <span>Launch Website</span>
                 </button>
               </div>
             </div>

@@ -76,9 +76,10 @@ export const CelestialOrbWidget: React.FC<Props> = ({ onOpenRegister, onOpenOS }
                   sounds.playChime();
                   onOpenRegister();
                 }}
-                className="px-3 py-1 rounded-xl shimmer-btn text-[#070A14] text-[10px] font-bold shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                className="px-3 py-1 rounded-xl shimmer-btn text-[#070A14] text-[10px] font-bold shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer inline-flex items-center gap-1"
               >
-                Register ✦
+                <Sparkles className="w-2.5 h-2.5 fill-current" />
+                <span>Register</span>
               </button>
             </MagneticElement>
             {onOpenOS && (

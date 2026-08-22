@@ -15,6 +15,7 @@ import {
   Eye,
   Scale,
   Compass,
+  Camera,
 } from 'lucide-react';
 import { ScrollReveal } from '../components/ScrollReveal';
 import { OptimizedImage } from '../components/OptimizedImage';
@@ -250,8 +251,9 @@ export const AboutFounderPage: React.FC<Props> = ({ onNavigate }) => {
 
             {/* 3-4 Photo Gallery Shoots (PDF Page 1 Specification) */}
             <div className="pt-6">
-              <div className="text-[11px] font-mono uppercase text-[#D4AF37] font-bold tracking-widest mb-4">
-                ✦ Founder Visual Chronicle (3-4 Editorial Shoots)
+              <div className="text-[11px] font-mono uppercase text-[#D4AF37] font-bold tracking-widest mb-4 flex items-center gap-1.5">
+                <Camera className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span>Founder Visual Chronicle (3-4 Editorial Shoots)</span>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {founderPhotos.map((photo) => (

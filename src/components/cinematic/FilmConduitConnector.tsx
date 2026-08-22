@@ -1,16 +1,15 @@
 import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
+import { Sparkles } from 'lucide-react';
 
 interface FilmConduitConnectorProps {
   label?: string;
-  glyph?: string;
   className?: string;
   direction?: 'down' | 'cross-right' | 'pulse';
 }
 
 export const FilmConduitConnector: React.FC<FilmConduitConnectorProps> = ({
   label,
-  glyph = '✦',
   className = '',
   direction = 'down',
 }) => {
@@ -46,7 +45,7 @@ export const FilmConduitConnector: React.FC<FilmConduitConnectorProps> = ({
         style={{ opacity: glowOpacity }}
         className="my-1.5 flex items-center gap-2 px-3 py-1 rounded-full bg-[#0D1427]/90 border border-[#D4AF37]/45 text-[#D4AF37] shadow-lg backdrop-blur-md"
       >
-        <span className="text-[10px] text-[#D4AF37] animate-pulse">{glyph}</span>
+        <Sparkles className="w-3 h-3 text-[#D4AF37] animate-pulse fill-current" />
         {label && (
           <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-[#C4BBA3]">
             {label}

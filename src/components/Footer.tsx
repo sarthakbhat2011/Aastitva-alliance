@@ -1,7 +1,7 @@
 import React from 'react';
 import { AstitvaLogo } from './AstitvaLogo';
 import { Page } from '../types';
-import { Mail, Phone, ArrowUp, Instagram, Linkedin, MessageSquare } from 'lucide-react';
+import { Mail, Phone, ArrowUp, Instagram, Linkedin, MessageSquare, Key } from 'lucide-react';
 import { MagneticElement } from './motion/MagneticElement';
 import { sounds } from '../utils/soundEffects';
 
@@ -167,9 +167,9 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox, onOpenRe
                   onOpenDevMailbox();
                 }}
                 className="px-3 py-1 rounded-xl bg-[#0B1120] hover:bg-[#121B33] text-[#E8A53E] border border-[#D4AF37]/30 transition-colors flex items-center gap-1.5 font-bold cursor-pointer"
-                title="Open Developer Partner Mailbox"
               >
-                <span>🔑 Dev Partner Mailbox</span>
+                <Key className="w-3.5 h-3.5 text-[#E8A53E]" />
+                <span>Dev Partner Mailbox</span>
               </button>
             </MagneticElement>
           )}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   MapPin,
+  Mountain,
   Globe,
   CheckCircle2,
   Navigation,
@@ -694,8 +695,14 @@ export const IndiaNetworkMap: React.FC = () => {
 
               {/* Coordinates and Elevation HUD */}
               <div className="flex items-center gap-3 text-[10px] sm:text-xs font-mono text-[#D4AF37] opacity-90 flex-wrap">
-                <span>📍 GPS: {selectedData.coordinates}</span>
-                <span>⛰ Elevation: {selectedData.elevation}</span>
+                <span className="inline-flex items-center gap-1">
+                  <MapPin className="w-3 h-3 text-[#D4AF37]" />
+                  <span>GPS: {selectedData.coordinates}</span>
+                </span>
+                <span className="inline-flex items-center gap-1">
+                  <Mountain className="w-3 h-3 text-[#D4AF37]" />
+                  <span>Elevation: {selectedData.elevation}</span>
+                </span>
               </div>
 
               <p className="text-[11px] sm:text-sm text-[#C4BBA3] leading-relaxed max-w-xl font-jakarta">

@@ -41,8 +41,9 @@ export const AastitvaEmblemHologram: React.FC<Props> = ({ onOpenRegister }) => {
         </p>
       </div>
 
-      <span className="px-3.5 py-1.5 rounded-full bg-[#16203B] text-[#D4AF37] text-[11px] font-mono border border-[#D4AF37]/40 shadow-md group-hover:bg-[#D4AF37] group-hover:text-[#070A14] transition-colors">
-        ✦ Click to Open Registration Gate
+      <span className="px-3.5 py-1.5 rounded-full bg-[#16203B] text-[#D4AF37] text-[11px] font-mono border border-[#D4AF37]/40 shadow-md group-hover:bg-[#D4AF37] group-hover:text-[#070A14] transition-colors inline-flex items-center gap-1">
+        <Sparkles className="w-3 h-3 fill-current" />
+        <span>Click to Open Registration Gate</span>
       </span>
     </div>
   );

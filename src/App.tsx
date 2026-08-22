@@ -185,24 +185,28 @@ export default function App() {
         <SpatialAtmosphere />
 
         {/* Top Scroll Reading Progress & Floating Scroll Top Button */}
-        <ScrollControls />
+        {!osMode && <ScrollControls />}
 
         {/* Floating 3D Celestial Planet Core Quick Portal Widget */}
-        <CelestialOrbWidget
-          onOpenRegister={() => setGlobalRegisterOpen(true)}
-          onOpenOS={() => setOsMode(true)}
-        />
+        {!osMode && (
+          <CelestialOrbWidget
+            onOpenRegister={() => setGlobalRegisterOpen(true)}
+            onOpenOS={() => setOsMode(true)}
+          />
+        )}
 
         {/* Navigation Header */}
-        <Navbar
-          currentPage={currentPage}
-          onNavigate={handleNavigate}
-          summitConfig={summitConfig}
-          onOpenAudit={() => setAuditOpen(true)}
-          onOpenAdmin={() => setAdminOpen(true)}
-          onOpenOS={() => setOsMode(true)}
-          onOpenRegister={() => setGlobalRegisterOpen(true)}
-        />
+        {!osMode && (
+          <Navbar
+            currentPage={currentPage}
+            onNavigate={handleNavigate}
+            summitConfig={summitConfig}
+            onOpenAudit={() => setAuditOpen(true)}
+            onOpenAdmin={() => setAdminOpen(true)}
+            onOpenOS={() => setOsMode(true)}
+            onOpenRegister={() => setGlobalRegisterOpen(true)}
+          />
+        )}
 
         {/* Main Content Area with Seamless Motion Route Transition */}
         <AnimatePresence mode="wait">
