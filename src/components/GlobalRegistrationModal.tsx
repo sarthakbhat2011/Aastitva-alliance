@@ -103,42 +103,42 @@ export const GlobalRegistrationModal: React.FC<Props> = ({
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative max-w-2xl w-full rounded-3xl bg-gradient-to-b from-[#0D1427] via-[#070A14] to-[#0D1427] border-2 border-[#D4AF37]/60 shadow-[0_25px_80px_rgba(0,0,0,0.95)] overflow-hidden my-auto font-jakarta text-left"
+        className="relative max-w-[94vw] sm:max-w-2xl w-full rounded-2xl sm:rounded-3xl bg-gradient-to-b from-[#0D1427] via-[#070A14] to-[#0D1427] border-2 border-[#D4AF37]/60 shadow-[0_25px_80px_rgba(0,0,0,0.95)] overflow-hidden my-auto font-jakarta text-left"
       >
         {/* Futuristic Top Glowing HUD Bar */}
         <div className="h-1.5 bg-gradient-to-r from-[#D4AF37] via-[#FFF5DC] to-[#52459E] shadow-[0_0_15px_rgba(212,175,55,0.8)]" />
 
         {/* Modal Header */}
-        <div className="p-6 sm:p-8 pb-4 flex items-start justify-between gap-4 border-b border-[#D4AF37]/20 relative">
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-3 py-0.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-[11px] font-bold uppercase tracking-wider flex items-center gap-1">
+        <div className="p-4 sm:p-8 pb-3 sm:pb-4 flex items-start justify-between gap-3 sm:gap-4 border-b border-[#D4AF37]/20 relative">
+          <div className="space-y-1 sm:space-y-1.5">
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+              <span className="px-2.5 sm:px-3 py-0.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-[10px] sm:text-[11px] font-bold uppercase tracking-wider flex items-center gap-1">
                 <Sparkles className="w-3 h-3 text-[#D4AF37]" />
                 <span>Summit Portal 2026</span>
               </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[10px] font-bold uppercase tracking-wider">
+              <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider">
                 Registration Active
               </span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-cormorant font-bold gold-gradient-text">
+            <h2 className="text-xl sm:text-3xl font-cormorant font-bold gold-gradient-text">
               Reserve Delegate Seat
             </h2>
-            <p className="text-xs text-[#C4BBA3]">
+            <p className="text-[11px] sm:text-xs text-[#C4BBA3]">
               Official registration for <strong>{INITIAL_SUMMIT_CONFIG.name}</strong> • Academic Event Management + Network Organisation
             </p>
           </div>
 
           <button
             onClick={onClose}
-            className="p-2.5 rounded-full bg-[#16203B] text-[#C4BBA3] hover:text-rose-400 hover:bg-rose-950/40 border border-[#D4AF37]/30 transition-all shadow-md min-touch shrink-0"
+            className="p-2 sm:p-2.5 rounded-full bg-[#16203B] text-[#C4BBA3] hover:text-rose-400 hover:bg-rose-950/40 border border-[#D4AF37]/30 transition-all shadow-md min-touch shrink-0"
             aria-label="Close registration portal"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
 
         {/* Modal Content Body */}
-        <div className="p-6 sm:p-8 pt-6 max-h-[75vh] overflow-y-auto custom-scrollbar">
+        <div className="p-4 sm:p-8 pt-4 sm:pt-6 max-h-[78vh] overflow-y-auto custom-scrollbar">
           {submitted ? (
             <div className="p-8 rounded-2xl bg-emerald-500/10 border-2 border-emerald-400/50 text-center space-y-5">
               <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-400/50 flex items-center justify-center mx-auto shadow-[0_0_30px_rgba(16,185,129,0.3)]">

@@ -13,12 +13,12 @@ export const AstitvaLogo: React.FC<Props> = ({
   showSubtitle = true,
   variant = 'full',
 }) => {
-  // Noticeably larger than previous sizes (sm: 56px, md: 72px, lg: 96px, xl: 112px), perfectly proportioned
+  // Proportioned scaling: compact on mobile (< 768px: max-height 38px-42px), grand on desktop
   const sizeMap = {
-    sm: { mark: 'w-13 h-13 sm:w-14 sm:h-14', text: 'text-xl sm:text-2xl', sub: 'text-[10px] sm:text-[11px]' },
-    md: { mark: 'w-16 h-16 sm:w-18 sm:h-18', text: 'text-2xl sm:text-3xl', sub: 'text-[11px] sm:text-[12px]' },
-    lg: { mark: 'w-20 h-20 sm:w-24 sm:h-24', text: 'text-3xl sm:text-4xl', sub: 'text-xs sm:text-sm' },
-    xl: { mark: 'w-24 h-24 sm:w-28 sm:h-28', text: 'text-4xl sm:text-5xl', sub: 'text-sm sm:text-base' },
+    sm: { mark: 'w-10 h-10 max-h-[38px] max-w-[38px] sm:w-14 sm:h-14 sm:max-h-none sm:max-w-none', text: 'text-lg sm:text-2xl', sub: 'text-[9px] sm:text-[11px]' },
+    md: { mark: 'w-11 h-11 max-h-[42px] max-w-[42px] sm:w-18 sm:h-18 sm:max-h-none sm:max-w-none', text: 'text-xl sm:text-3xl', sub: 'text-[9px] sm:text-[12px]' },
+    lg: { mark: 'w-16 h-16 sm:w-24 sm:h-24', text: 'text-2xl sm:text-4xl', sub: 'text-xs sm:text-sm' },
+    xl: { mark: 'w-20 h-20 sm:w-28 sm:h-28', text: 'text-3xl sm:text-5xl', sub: 'text-xs sm:text-base' },
   };
 
   const currentSize = sizeMap[size];

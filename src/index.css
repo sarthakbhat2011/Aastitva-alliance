@@ -1484,12 +1484,13 @@ h1, h2, h3, h4, h5, h6,
 }
 
 /* ========================================================================= */
-/* MOBILE-ONLY ARCHITECTURAL GRID & RESPONSIVENESS SYSTEM (MAX-WIDTH: 767PX) */
+/* MOBILE-ONLY ARCHITECTURAL GRID & RESPONSIVENESS SYSTEM (MAX-WIDTH: 768PX) */
 /* ========================================================================= */
-@media (max-width: 767px) {
-  html, body {
+@media (max-width: 768px) {
+  html, body, #root {
+    width: 100vw !important;
+    max-width: 100% !important;
     overflow-x: hidden !important;
-    max-width: 100vw !important;
     position: relative;
     -webkit-text-size-adjust: 100%;
   }
@@ -1500,9 +1501,9 @@ h1, h2, h3, h4, h5, h6,
     overflow-wrap: break-word;
   }
 
-  /* Safe interactive touch targets */
+  /* Safe interactive touch targets (minimum 44px) */
   button, a, input, select, textarea {
-    min-height: 40px;
+    min-height: 44px;
     touch-action: manipulation;
   }
 
@@ -1511,15 +1512,20 @@ h1, h2, h3, h4, h5, h6,
     will-change: transform, opacity;
   }
 
+  /* Prevent elements getting stuck blurred on mobile during scroll-triggered animations */
+  .blur-in, [style*="blur("] {
+    filter: none !important;
+  }
+
   /* Soften heavy desktop glow filters on mobile to maintain 60fps */
   .blur-3xl {
-    filter: blur(48px) !important;
+    filter: blur(36px) !important;
   }
   .blur-\[130px\] {
-    filter: blur(50px) !important;
+    filter: blur(40px) !important;
   }
   .blur-\[110px\] {
-    filter: blur(40px) !important;
+    filter: blur(32px) !important;
   }
 
   /* Clean responsive card padding */
@@ -1533,6 +1539,11 @@ h1, h2, h3, h4, h5, h6,
   /* Ensure video & 3D canvas stay within boundaries */
   canvas, svg {
     max-width: 100% !important;
+  }
+
+  /* Mobile Safe Area Bottom Clearance */
+  .mobile-floating-control {
+    bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px)) !important;
   }
 }
 

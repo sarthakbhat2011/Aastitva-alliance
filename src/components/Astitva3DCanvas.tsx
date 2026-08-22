@@ -21,18 +21,21 @@ export const Astitva3DCanvas: React.FC<Props> = ({
     if (!container) return;
 
     // Dimensions
+    const isMobile = window.innerWidth < 768;
     const width = container.clientWidth || window.innerWidth;
-    const height = container.clientHeight || 500;
+    const height = container.clientHeight || (isMobile ? 260 : 500);
 
     // Scene
     const scene = new THREE.Scene();
 
     // Camera
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-    camera.position.z = variant === 'minimal' ? 6.5 : variant === 'emblem' ? 5.5 : 8;
+    camera.position.z = isMobile
+      ? variant === 'minimal' ? 7.5 : variant === 'emblem' ? 6.5 : 10.5
+      : variant === 'minimal' ? 6.5 : variant === 'emblem' ? 5.5 : 8;
 
     // Renderer
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: !isMobile, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
@@ -151,7 +154,7 @@ export const Astitva3DCanvas: React.FC<Props> = ({
     // -------------------------------------------------------------
     // 5. BACKGROUND CONSTELLATION DUST
     // -------------------------------------------------------------
-    const particleCount = variant === 'hero' ? 220 : 100;
+    const particleCount = isMobile ? (variant === 'hero' ? 80 : 40) : (variant === 'hero' ? 220 : 100);
     const particlesGeo = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);

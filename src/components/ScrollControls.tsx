@@ -48,9 +48,9 @@ export const ScrollControls: React.FC = () => {
           onClick={scrollToTop}
           aria-label="Scroll back to top of page"
           title="Scroll to Top"
-          className="fixed bottom-6 right-6 z-40 p-3.5 rounded-2xl bg-[#070A14]/85 border border-[#D4AF37]/50 text-[#D4AF37] hover:text-white hover:bg-[#D4AF37] hover:border-[#D4AF37] shadow-[0_10px_30px_rgba(0,0,0,0.5)] backdrop-blur-md transition-all duration-300 group min-touch focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
+          className="fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] right-4 sm:right-6 z-40 p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-[#070A14]/90 border border-[#D4AF37]/50 text-[#D4AF37] hover:text-white hover:bg-[#D4AF37] hover:border-[#D4AF37] shadow-[0_10px_30px_rgba(0,0,0,0.5)] backdrop-blur-md transition-all duration-300 group min-touch focus:outline-none focus:ring-2 focus:ring-[#D4AF37]"
         >
-          <ArrowUp className="w-5 h-5 transition-transform duration-300 group-hover:-translate-y-1" />
+          <ArrowUp className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-300 group-hover:-translate-y-1" />
         </motion.button>
       )}
     </>

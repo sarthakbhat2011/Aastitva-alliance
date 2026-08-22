@@ -265,12 +265,12 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
                 </div>
               </MagneticElement>
 
-              {/* HEADLINE: Playfair Display with Stable, Premium Gold Shimmer */}
+              {/* HEADLINE: Playfair Display with Stable, Premium Gold Shimmer (Responsive clamp on mobile) */}
               <motion.h1
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.75, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className="text-3xl sm:text-5xl lg:text-6xl font-playfair font-bold gold-gradient-text leading-tight tracking-tight"
+                className="text-2xl sm:text-5xl lg:text-6xl font-playfair font-bold gold-gradient-text leading-tight tracking-tight"
               >
                 Collapsing the Distance to Existence for Academic & Leadership Events
               </motion.h1>
@@ -280,7 +280,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.65, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                className="text-base sm:text-xl text-[#FAF5EF] font-inter font-light leading-relaxed"
+                className="text-sm sm:text-xl text-[#FAF5EF] font-inter font-light leading-relaxed"
               >
                 Giving events and the people behind them the infrastructure to become fully what they were always meant to be.
               </motion.p>
@@ -296,9 +296,9 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
               </motion.p>
 
               {/* THREE HERO BUTTONS (PDF Page 1 Specification) */}
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-3">
+              <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-3 w-full">
                 {/* Button 1: "Partner With Us" (leads to form) */}
-                <MagneticElement strength={0.35}>
+                <MagneticElement strength={0.35} className="w-full sm:w-auto max-w-[320px] sm:max-w-none">
                   <button
                     onClick={() => {
                       sounds.playTap();
@@ -308,7 +308,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
                         onNavigate('summit');
                       }
                     }}
-                    className="px-7 py-3.5 rounded-xl shimmer-btn text-[#050811] text-sm font-bold shadow-[0_6px_25px_rgba(232,165,62,0.35)] btn-sheen-sweep group flex items-center gap-2 cursor-pointer"
+                    className="w-full sm:w-auto px-7 py-3.5 rounded-xl shimmer-btn text-[#050811] text-sm font-bold shadow-[0_6px_25px_rgba(232,165,62,0.35)] btn-sheen-sweep group flex items-center justify-center gap-2 cursor-pointer min-h-[44px]"
                   >
                     <span>Partner With Us</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -316,13 +316,13 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
                 </MagneticElement>
 
                 {/* Button 2: "Explore Offerings" (redirects to the offerings tab) */}
-                <MagneticElement strength={0.3}>
+                <MagneticElement strength={0.3} className="w-full sm:w-auto max-w-[320px] sm:max-w-none">
                   <button
                     onClick={() => {
                       sounds.playTap();
                       onNavigate('offerings');
                     }}
-                    className="px-6 py-3.5 rounded-xl bg-[#0B1120] border border-[#D4AF37]/40 text-[#FAF5EF] text-sm font-semibold hover:border-[#E8A53E] hover:text-[#E8A53E] smooth-button-hover group flex items-center gap-2 cursor-pointer"
+                    className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-[#0B1120] border border-[#D4AF37]/40 text-[#FAF5EF] text-sm font-semibold hover:border-[#E8A53E] hover:text-[#E8A53E] smooth-button-hover group flex items-center justify-center gap-2 cursor-pointer min-h-[44px]"
                   >
                     <span>Explore Offerings</span>
                     <ChevronRight className="w-4 h-4 text-[#E8A53E] group-hover:translate-x-1 transition-transform" />
@@ -330,13 +330,13 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
                 </MagneticElement>
 
                 {/* Button 3: "Book a Free Consultation Call" (15-minute call directly on a calendar) */}
-                <MagneticElement strength={0.3}>
+                <MagneticElement strength={0.3} className="w-full sm:w-auto max-w-[320px] sm:max-w-none">
                   <button
                     onClick={() => {
                       sounds.playChime();
                       setConsultationModalOpen(true);
                     }}
-                    className="px-6 py-3.5 rounded-xl bg-[#050811] border border-[#B8A9C9]/40 text-[#D3C5E5] text-sm font-semibold hover:border-[#E8A53E] hover:text-white smooth-button-hover group flex items-center gap-2 shadow-lg cursor-pointer"
+                    className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-[#050811] border border-[#B8A9C9]/40 text-[#D3C5E5] text-sm font-semibold hover:border-[#E8A53E] hover:text-white smooth-button-hover group flex items-center justify-center gap-2 shadow-lg cursor-pointer min-h-[44px]"
                   >
                     <Video className="w-4 h-4 text-[#E8A53E] smooth-icon-spin" />
                     <span>Book a Free Consultation Call</span>

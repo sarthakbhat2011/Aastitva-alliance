@@ -16,7 +16,27 @@ export const CinematicMaskReveal: React.FC<CinematicMaskRevealProps> = ({
   duration = 0.85,
   className = '',
 }) => {
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    const check = () => setIsMobile(typeof window !== 'undefined' && window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+
   const getVariants = () => {
+    if (isMobile) {
+      return {
+        hidden: { opacity: 0, y: 12 },
+        visible: {
+          opacity: 1,
+          y: 0,
+          transition: { duration: Math.min(duration, 0.45), delay: delay * 0.5, ease: [0.16, 1, 0.3, 1] },
+        },
+      };
+    }
+
     switch (variant) {
       case 'curtain-wipe':
         return {
@@ -67,13 +87,13 @@ export const CinematicMaskReveal: React.FC<CinematicMaskRevealProps> = ({
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: '-40px' }}
+        viewport={{ once: true, margin: isMobile ? '-10px' : '-40px' }}
         variants={variants}
         className="w-full relative"
       >
         {children}
-        {/* Cinematic Shimmer Laser Edge */}
-        {variant === 'gold-trace-sweep' && (
+        {/* Cinematic Shimmer Laser Edge (Desktop Only) */}
+        {!isMobile && variant === 'gold-trace-sweep' && (
           <motion.div
             initial={{ left: '-10%', opacity: 0 }}
             whileInView={{ left: '110%', opacity: [0, 1, 0] }}

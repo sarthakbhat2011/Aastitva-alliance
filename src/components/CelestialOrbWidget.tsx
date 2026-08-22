@@ -10,22 +10,23 @@ interface Props {
 }
 
 export const CelestialOrbWidget: React.FC<Props> = ({ onOpenRegister, onOpenOS }) => {
-  const [minimized, setMinimized] = useState(false);
+  const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
+  const [minimized, setMinimized] = useState(isMobile);
   const [hovered, setHovered] = useState(false);
 
   if (minimized) {
     return (
-      <MagneticElement strength={0.4} className="fixed bottom-6 left-6 z-40">
+      <MagneticElement strength={0.4} className="fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] left-4 sm:left-6 z-40">
         <button
           onClick={() => {
             sounds.playTap();
             setMinimized(false);
           }}
-          className="p-3.5 rounded-full bg-[#0D1427]/95 border-2 border-[#D4AF37] text-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.5)] hover:scale-110 active:scale-95 transition-all group backdrop-blur-xl cursor-pointer"
+          className="p-3 sm:p-3.5 rounded-full bg-[#0D1427]/95 border-2 border-[#D4AF37] text-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.5)] hover:scale-110 active:scale-95 transition-all group backdrop-blur-xl cursor-pointer"
           title="Open Aastitva OS Quick Portal"
         >
-          <Zap className="w-5 h-5 text-[#D4AF37] animate-pulse" />
-          <span className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
+          <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-[#D4AF37] animate-pulse" />
+          <span className="absolute -top-1 -right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-emerald-400 animate-ping" />
         </button>
       </MagneticElement>
     );
@@ -35,7 +36,7 @@ export const CelestialOrbWidget: React.FC<Props> = ({ onOpenRegister, onOpenOS }
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className="fixed bottom-6 left-6 z-40 flex flex-col items-start gap-2 font-jakarta select-none"
+      className="fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] left-4 sm:left-6 z-40 flex flex-col items-start gap-2 font-jakarta select-none"
     >
       {/* Interactive Futuristic XP Tooltip Card */}
       <AnimatePresence>

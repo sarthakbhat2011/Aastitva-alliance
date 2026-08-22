@@ -228,21 +228,21 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
                 </div>
 
                 {/* PDF Specified Action Buttons: "Register Now" and "View Agenda" */}
-                <div className="flex flex-wrap items-center gap-4 pt-2">
-                  <MagneticElement strength={0.35}>
+                <div className="flex flex-col sm:flex-row items-center gap-3.5 sm:gap-4 pt-2 relative z-20 w-full">
+                  <MagneticElement strength={0.35} className="w-full sm:w-auto">
                     <button
                       onClick={() => handleOpenQuickRegister()}
-                      className="px-8 py-4 rounded-2xl shimmer-btn text-[#070A14] font-extrabold text-sm shadow-[0_10px_35px_rgba(212,175,55,0.4)] hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 min-touch cursor-pointer btn-sheen-sweep"
+                      className="w-full sm:w-auto px-8 py-3.5 sm:py-4 rounded-2xl shimmer-btn text-[#070A14] font-extrabold text-sm shadow-[0_10px_35px_rgba(212,175,55,0.4)] hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 min-touch cursor-pointer btn-sheen-sweep min-h-[44px]"
                     >
                       <Sparkles className="w-4 h-4 fill-current" />
                       <span>Register Now</span>
                     </button>
                   </MagneticElement>
 
-                  <MagneticElement strength={0.3}>
+                  <MagneticElement strength={0.3} className="w-full sm:w-auto">
                     <button
                       onClick={() => scrollToSection('councils-agenda')}
-                      className="px-6 py-4 rounded-2xl bg-[#1C103B] hover:bg-[#2A1654] border border-[#A855F7]/50 text-[#E9D5FF] font-bold text-sm flex items-center gap-2 shadow-lg smooth-button-hover group min-touch font-jakarta cursor-pointer"
+                      className="w-full sm:w-auto px-6 py-3.5 sm:py-4 rounded-2xl bg-[#1C103B] hover:bg-[#2A1654] border border-[#A855F7]/50 text-[#E9D5FF] font-bold text-sm flex items-center justify-center gap-2 shadow-lg smooth-button-hover group min-touch font-jakarta cursor-pointer min-h-[44px]"
                     >
                       <FileText className="w-4 h-4 text-[#D4AF37] group-hover:scale-110 transition-transform" />
                       <span>View Agenda</span>
@@ -251,8 +251,8 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
                 </div>
               </div>
 
-              {/* 3D Celestial Planet Globe Orbiting Core */}
-              <div className="lg:col-span-5 w-full h-80 sm:h-[450px] min-h-[300px] relative z-20 flex items-center justify-center">
+              {/* 3D Celestial Planet Globe Orbiting Core (Compact, bounded & layered safely on mobile) */}
+              <div className="lg:col-span-5 w-full h-[250px] sm:h-[450px] max-w-[280px] sm:max-w-none mx-auto relative z-10 flex items-center justify-center mt-4 sm:mt-0">
                 <SpatialFloatingElement preset="orbital" speed={0.65} depthLayer="midground">
                   <Astitva3DCanvas variant="summit" onOpenRegister={() => handleOpenQuickRegister()} />
                 </SpatialFloatingElement>

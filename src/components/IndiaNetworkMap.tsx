@@ -261,7 +261,7 @@ export const IndiaNetworkMap: React.FC = () => {
       </div>
 
       {/* Main Extravagant Seamless Connected Map Container */}
-      <div className="relative rounded-3xl bg-gradient-to-b from-[#050811] via-[#090E1D] to-[#050811] border-2 border-[#D4AF37]/45 p-4 sm:p-8 overflow-hidden min-h-[760px] sm:min-h-[920px] flex flex-col justify-between shadow-[0_30px_90px_rgba(0,0,0,0.95)]">
+      <div className="relative rounded-3xl bg-gradient-to-b from-[#050811] via-[#090E1D] to-[#050811] border-2 border-[#D4AF37]/45 p-4 sm:p-8 overflow-hidden min-h-0 sm:min-h-[920px] flex flex-col justify-between shadow-[0_30px_90px_rgba(0,0,0,0.95)]">
         {/* Ambient Topographic Grid & Cosmic Glow */}
         <div className="absolute inset-0 bg-[radial-gradient(#D4AF37_1px,transparent_1px)] [background-size:32px_32px] opacity-20 pointer-events-none" />
         <div className="absolute top-10 left-10 w-96 h-96 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none" />
@@ -292,7 +292,7 @@ export const IndiaNetworkMap: React.FC = () => {
         </div>
 
         {/* INTERCONNECTED GEOGRAPHICAL MAP SVG STAGE */}
-        <div className="relative w-full h-[580px] sm:h-[740px] my-4 flex items-center justify-center overflow-hidden">
+        <div className="relative w-full h-[320px] sm:h-[580px] md:h-[740px] my-2 sm:my-4 flex items-center justify-center overflow-hidden">
           <svg
             className="w-full h-full max-w-4xl select-none filter drop-shadow-[0_0_30px_rgba(212,175,55,0.25)]"
             viewBox="0 0 1000 1050"
@@ -674,44 +674,44 @@ export const IndiaNetworkMap: React.FC = () => {
         </div>
 
         {/* Selected Hub Knowledge Dossier Drawer with Real-Time Coordinates */}
-        <div className="relative z-30 mt-2 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-[#16203B]/95 via-[#0D1427]/95 to-[#16203B]/95 border-2 border-[#D4AF37]/70 shadow-[0_20px_50px_rgba(0,0,0,0.9)] backdrop-blur-xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 transition-all duration-500 animate-cinematic-3d-flip">
-          <div className="flex items-start gap-4 text-left">
-            <div className="p-4 rounded-2xl bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/50 shrink-0 shadow-inner">
-              <Navigation className="w-7 h-7 animate-pulse text-[#D4AF37]" />
+        <div className="relative z-30 mt-2 p-3.5 sm:p-8 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#16203B]/95 via-[#0D1427]/95 to-[#16203B]/95 border-2 border-[#D4AF37]/70 shadow-[0_20px_50px_rgba(0,0,0,0.9)] backdrop-blur-xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3.5 sm:gap-6 transition-all duration-500 max-h-[220px] sm:max-h-none overflow-y-auto custom-scrollbar">
+          <div className="flex items-start gap-3 sm:gap-4 text-left">
+            <div className="p-2.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/50 shrink-0 shadow-inner">
+              <Navigation className="w-5 h-5 sm:w-7 sm:h-7 animate-pulse text-[#D4AF37]" />
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center gap-2.5 flex-wrap">
-                <h4 className="font-cormorant font-bold text-2xl sm:text-3xl text-[#FAF5EF]">
+            <div className="space-y-1 sm:space-y-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h4 className="font-cormorant font-bold text-lg sm:text-3xl text-[#FAF5EF]">
                   {selectedData.name}
                 </h4>
-                <span className="px-3 py-0.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-bold uppercase tracking-wider">
+                <span className="px-2 py-0.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-[10px] sm:text-xs font-bold uppercase tracking-wider">
                   {selectedData.state}
                 </span>
-                <span className="px-3 py-0.5 rounded-full bg-[#52459E]/40 border border-[#52459E]/60 text-[#D4AF37] text-xs font-mono font-bold uppercase tracking-wider">
+                <span className="px-2 py-0.5 rounded-full bg-[#52459E]/40 border border-[#52459E]/60 text-[#D4AF37] text-[10px] sm:text-xs font-mono font-bold uppercase tracking-wider">
                   {selectedData.region}
                 </span>
               </div>
 
               {/* Coordinates and Elevation HUD */}
-              <div className="flex items-center gap-4 text-xs font-mono text-[#D4AF37] opacity-90 flex-wrap">
+              <div className="flex items-center gap-3 text-[10px] sm:text-xs font-mono text-[#D4AF37] opacity-90 flex-wrap">
                 <span>📍 GPS: {selectedData.coordinates}</span>
                 <span>⛰ Elevation: {selectedData.elevation}</span>
               </div>
 
-              <p className="text-xs sm:text-sm text-[#C4BBA3] leading-relaxed max-w-xl font-jakarta">
+              <p className="text-[11px] sm:text-sm text-[#C4BBA3] leading-relaxed max-w-xl font-jakarta">
                 {selectedData.role}
               </p>
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 shrink-0 w-full lg:w-auto">
-            <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 shrink-0 w-full lg:w-auto">
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
               {selectedData.highlights.map((h, idx) => (
                 <span
                   key={idx}
-                  className="px-3.5 py-1.5 rounded-xl bg-[#070A14] border border-[#D4AF37]/40 text-[#FAF5EF] text-xs font-semibold inline-flex items-center gap-1.5 shadow-md"
+                  className="px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl bg-[#070A14] border border-[#D4AF37]/40 text-[#FAF5EF] text-[10px] sm:text-xs font-semibold inline-flex items-center gap-1.5 shadow-md"
                 >
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                   <span>{h}</span>
                 </span>
               ))}
