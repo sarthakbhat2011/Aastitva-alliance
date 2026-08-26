@@ -293,7 +293,7 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
         </div>
 
         {/* DESKTOP SHORTCUT ICONS (Top bar on mobile vs Left column on desktop) */}
-        <div className="relative z-20 flex flex-row sm:flex-col gap-1.5 sm:gap-4 w-full sm:w-fit overflow-x-auto pb-1 sm:pb-0 scrollbar-none shrink-0 justify-between sm:justify-start">
+        <div className="relative z-20 flex flex-row sm:flex-col gap-1.5 sm:gap-4 w-full sm:w-fit overflow-x-auto pb-2 sm:pb-0 scrollbar-none shrink-0 justify-between sm:justify-start">
           {/* Icon 1: Launch Web Homepage */}
           <button
             onDoubleClick={() => onEnterSite('home')}
@@ -372,7 +372,7 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
           <div
             onClick={() => bringToFront('summit')}
             style={{ zIndex: windows.summit.zIndex }}
-            className={`fixed sm:absolute inset-x-2 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 top-[76px] sm:top-10 max-w-2xl w-auto sm:w-[640px] max-h-[calc(100vh-146px)] sm:max-h-[80vh] rounded-2xl sm:rounded-3xl bg-[#0D1427]/98 border-2 border-[#D4AF37]/65 shadow-[0_25px_80px_rgba(0,0,0,0.95)] backdrop-blur-2xl flex flex-col overflow-hidden transition-all font-sans ${
+            className={`fixed sm:absolute inset-x-2.5 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 top-[82px] sm:top-10 max-w-2xl w-auto sm:w-[640px] max-h-[calc(100vh-152px)] sm:max-h-[80vh] rounded-2xl sm:rounded-3xl bg-[#0D1427]/98 border-2 border-[#D4AF37]/65 shadow-[0_25px_80px_rgba(0,0,0,0.95)] backdrop-blur-2xl flex flex-col overflow-hidden transition-all font-sans ${
               activeWindowId === 'summit' ? 'ring-2 ring-[#D4AF37]/50' : 'opacity-90'
             }`}
           >
@@ -422,12 +422,15 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
                 </button>
               </div>
 
-              <p className="text-[10.5px] sm:text-xs text-[#C4BBA3] leading-relaxed font-jakarta">
-                {INITIAL_SUMMIT_CONFIG.tagline} Partnered exclusively with <strong>{INITIAL_SUMMIT_CONFIG.partnerSchool}</strong>.
-              </p>
+              {/* Subtly Spaced Institutional Quote / Partner Tagline Card */}
+              <div className="p-2 sm:p-3 rounded-xl bg-[#070A14]/75 border border-[#D4AF37]/20 my-1 sm:my-1.5">
+                <p className="text-[10px] sm:text-xs text-[#C4BBA3] leading-relaxed font-jakarta italic">
+                  "{INITIAL_SUMMIT_CONFIG.tagline} Partnered exclusively with <strong className="text-[#FAF5EF] not-italic">{INITIAL_SUMMIT_CONFIG.partnerSchool}</strong>."
+                </p>
+              </div>
 
               {/* Committee Roster */}
-              <div className="space-y-1.5 sm:space-y-2">
+              <div className="space-y-1.5 sm:space-y-2 pt-0.5">
                 <span className="text-[9.5px] sm:text-[11px] font-mono font-bold text-[#D4AF37] uppercase tracking-wider block">
                   Debate Committees Roster
                 </span>
@@ -465,7 +468,7 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
           <div
             onClick={() => bringToFront('founder')}
             style={{ zIndex: windows.founder.zIndex }}
-            className={`fixed sm:absolute inset-x-2 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 top-[76px] sm:top-10 max-w-2xl w-auto sm:w-[640px] max-h-[calc(100vh-146px)] sm:max-h-[80vh] rounded-2xl sm:rounded-3xl bg-[#0D1427]/98 border-2 border-[#D4AF37]/65 shadow-[0_25px_80px_rgba(0,0,0,0.95)] backdrop-blur-2xl flex flex-col overflow-hidden transition-all font-sans ${
+            className={`fixed sm:absolute inset-x-2.5 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 top-[82px] sm:top-10 max-w-2xl w-auto sm:w-[640px] max-h-[calc(100vh-152px)] sm:max-h-[80vh] rounded-2xl sm:rounded-3xl bg-[#0D1427]/98 border-2 border-[#D4AF37]/65 shadow-[0_25px_80px_rgba(0,0,0,0.95)] backdrop-blur-2xl flex flex-col overflow-hidden transition-all font-sans ${
               activeWindowId === 'founder' ? 'ring-2 ring-[#D4AF37]/50' : 'opacity-90'
             }`}
           >
@@ -532,7 +535,7 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
           <div
             onClick={() => bringToFront('map')}
             style={{ zIndex: windows.map.zIndex }}
-            className={`fixed sm:absolute inset-x-2 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 top-[76px] sm:top-10 max-w-2xl w-auto sm:w-[640px] max-h-[calc(100vh-146px)] sm:max-h-[80vh] rounded-2xl sm:rounded-3xl bg-[#0D1427]/98 border-2 border-[#D4AF37]/65 shadow-[0_25px_80px_rgba(0,0,0,0.95)] backdrop-blur-2xl flex flex-col overflow-hidden transition-all font-sans ${
+            className={`fixed sm:absolute inset-x-2.5 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 top-[82px] sm:top-10 max-w-2xl w-auto sm:w-[640px] max-h-[calc(100vh-152px)] sm:max-h-[80vh] rounded-2xl sm:rounded-3xl bg-[#0D1427]/98 border-2 border-[#D4AF37]/65 shadow-[0_25px_80px_rgba(0,0,0,0.95)] backdrop-blur-2xl flex flex-col overflow-hidden transition-all font-sans ${
               activeWindowId === 'map' ? 'ring-2 ring-[#D4AF37]/50' : 'opacity-90'
             }`}
           >
@@ -600,7 +603,7 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
           <div
             onClick={() => bringToFront('terminal')}
             style={{ zIndex: windows.terminal.zIndex }}
-            className={`fixed sm:absolute inset-x-2 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 top-[76px] sm:top-10 max-w-xl w-auto sm:w-[580px] max-h-[calc(100vh-146px)] sm:max-h-[70vh] rounded-2xl sm:rounded-3xl bg-[#050811]/98 border-2 border-[#D4AF37]/65 shadow-[0_25px_80px_rgba(0,0,0,0.95)] backdrop-blur-2xl flex flex-col overflow-hidden transition-all font-mono ${
+            className={`fixed sm:absolute inset-x-2.5 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 top-[82px] sm:top-10 max-w-xl w-auto sm:w-[580px] max-h-[calc(100vh-152px)] sm:max-h-[70vh] rounded-2xl sm:rounded-3xl bg-[#050811]/98 border-2 border-[#D4AF37]/65 shadow-[0_25px_80px_rgba(0,0,0,0.95)] backdrop-blur-2xl flex flex-col overflow-hidden transition-all font-mono ${
               activeWindowId === 'terminal' ? 'ring-2 ring-[#D4AF37]/50' : 'opacity-90'
             }`}
           >
