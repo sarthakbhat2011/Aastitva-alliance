@@ -1,7 +1,7 @@
 import React from 'react';
 import { AstitvaLogo } from './AstitvaLogo';
 import { Page } from '../types';
-import { Mail, Phone, ArrowUp, Instagram, Linkedin, MessageSquare, Key } from 'lucide-react';
+import { Mail, Phone, ArrowUp, Instagram, MessageSquare, Key } from 'lucide-react';
 import { MagneticElement } from './motion/MagneticElement';
 import { sounds } from '../utils/soundEffects';
 
@@ -45,16 +45,6 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox, onOpenRe
               >
                 <Instagram className="w-3.5 h-3.5" />
               </a>
-              <a
-                href="https://www.linkedin.com/company/aastitva-alliance"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-                onClick={() => sounds.playTap()}
-                className="w-8 h-8 rounded-lg bg-[#0B1120] border border-[#D4AF37]/30 text-[#E8A53E] hover:bg-[#E8A53E] hover:text-[#050811] flex items-center justify-center transition-all shadow-sm"
-              >
-                <Linkedin className="w-3.5 h-3.5" />
-              </a>
             </div>
           </div>
 
@@ -78,18 +68,6 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox, onOpenRe
                 className="w-10 h-10 rounded-xl bg-[#0B1120] border border-[#D4AF37]/30 text-[#E8A53E] hover:bg-[#E8A53E] hover:text-[#050811] flex items-center justify-center transition-all shadow-md cursor-pointer"
               >
                 <Instagram className="w-4 h-4" />
-              </a>
-            </MagneticElement>
-            <MagneticElement strength={0.4}>
-              <a
-                href="https://www.linkedin.com/company/aastitva-alliance"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-                onMouseEnter={() => sounds.playHover()}
-                className="w-10 h-10 rounded-xl bg-[#0B1120] border border-[#D4AF37]/30 text-[#E8A53E] hover:bg-[#E8A53E] hover:text-[#050811] flex items-center justify-center transition-all shadow-md cursor-pointer"
-              >
-                <Linkedin className="w-4 h-4" />
               </a>
             </MagneticElement>
           </div>
