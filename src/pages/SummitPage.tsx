@@ -343,7 +343,7 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
                 {COMMITTEES.map((comm) => (
                   <PerspectiveCard key={comm.id} maxTilt={6} scale={1.01}>
-                    <div className="p-6 rounded-3xl bg-[#140C2C]/90 border border-[#A855F7]/30 shadow-xl space-y-4 hover:border-[#D4AF37] transition-all flex flex-col justify-between h-full">
+                    <div className="p-6 rounded-3xl bg-[#140C2C]/90 border border-[#A855F7]/30 shadow-xl space-y-4 hover:border-[#D4AF37] transition-all flex flex-col justify-between h-full animate-aura-pulse">
                       <div className="space-y-3">
                         <div className="flex items-center justify-between gap-2">
                           <span className="px-3 py-1 rounded-full bg-[#581C87]/40 text-[#D4AF37] font-mono font-bold text-xs border border-[#C084FC]/30">

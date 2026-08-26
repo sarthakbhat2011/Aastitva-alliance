@@ -230,17 +230,17 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
     <div className="fixed inset-0 z-50 flex flex-col bg-[#050811] text-[#FAF5EF] font-mono select-none overflow-hidden w-full h-full">
       {/* 1. INITIAL RETRO BIOS BOOT OVERLAY */}
       {!bootComplete && (
-        <div className="absolute inset-0 z-50 bg-[#070A14] flex flex-col items-center justify-center p-6 sm:p-8 text-left space-y-6 sm:space-y-8">
-          <div className="max-w-md w-full space-y-5 sm:space-y-6 font-mono text-xs px-2 sm:px-0">
-            <div className="flex items-center gap-3.5">
+        <div className="absolute inset-0 z-50 bg-[#070A14] flex flex-col items-center justify-center p-4 sm:p-8 text-left space-y-4 sm:space-y-8">
+          <div className="max-w-sm sm:max-w-md w-full space-y-4 sm:space-y-6 font-mono text-xs px-2 sm:px-0">
+            <div className="flex items-center gap-3">
               <AstitvaLogo size="sm" variant="mark-only" showSubtitle={false} />
               <div>
-                <h1 className="text-base sm:text-lg font-bold text-[#D4AF37] tracking-wider">AASTITVA OS v2.4.0</h1>
-                <p className="text-[10px] sm:text-[11px] text-[#C4BBA3]">Academic & Leadership Infrastructure Kernel</p>
+                <h1 className="text-sm sm:text-lg font-bold text-[#D4AF37] tracking-wider">AASTITVA OS v2.4.0</h1>
+                <p className="text-[9px] sm:text-[11px] text-[#C4BBA3]">Academic & Leadership Infrastructure Kernel</p>
               </div>
             </div>
 
-            <div className="p-4 sm:p-5 rounded-2xl bg-[#0D1427]/90 border border-[#D4AF37]/35 space-y-2 text-[#C4BBA3] shadow-2xl text-[10px] sm:text-xs">
+            <div className="p-3.5 sm:p-5 rounded-2xl bg-[#0D1427]/90 border border-[#D4AF37]/35 space-y-1.5 sm:space-y-2 text-[#C4BBA3] shadow-2xl text-[9.5px] sm:text-xs">
               <p className="text-[#FAF5EF]">BIOS Date: 08/16/2026 00:00:00</p>
               <p>CPU: Quantum Diplomatic Core @ 4.80GHz [OK]</p>
               <p>RAM: 32768MB High-Speed Logic Buffer [OK]</p>
@@ -250,23 +250,23 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
             </div>
 
             {/* Boot Progress Bar */}
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               <div className="w-full h-2 rounded-full bg-[#16203B] overflow-hidden border border-[#D4AF37]/30">
                 <div
                   className="h-full bg-gradient-to-r from-[#D4AF37] via-[#FFF5DC] to-[#D4AF37] transition-all duration-150 shadow-[0_0_12px_#D4AF37]"
                   style={{ width: `${bootProgress}%` }}
                 />
               </div>
-              <div className="flex justify-between text-[10px] text-[#C4BBA3]">
+              <div className="flex justify-between text-[9px] sm:text-[10px] text-[#C4BBA3]">
                 <span>INITIALIZING SUBSYSTEMS</span>
                 <span className="text-[#D4AF37] font-bold">{bootProgress}%</span>
               </div>
             </div>
 
-            <div className="pt-2 text-center">
+            <div className="pt-1 sm:pt-2 text-center">
               <button
                 onClick={() => setBootComplete(true)}
-                className="px-5 py-2.5 rounded-xl bg-[#16203B] text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-bold shadow-md hover:border-[#D4AF37] hover:scale-105 active:scale-95 transition-all inline-flex items-center gap-1.5 cursor-pointer min-touch"
+                className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-[#16203B] text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-bold shadow-md hover:border-[#D4AF37] hover:scale-105 active:scale-95 transition-all inline-flex items-center gap-1.5 cursor-pointer min-touch"
               >
                 <span>Skip Boot Sequence [Enter]</span>
                 <ArrowRight className="w-3.5 h-3.5 text-[#D4AF37]" />
@@ -277,7 +277,7 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
       )}
 
       {/* 2. OS DESKTOP ENVIRONMENT */}
-      <div className="relative flex-1 bg-gradient-to-b from-[#070A14] via-[#0D1427] to-[#050811] overflow-hidden p-3 sm:p-6 flex flex-col justify-between">
+      <div className="relative flex-1 bg-gradient-to-b from-[#070A14] via-[#0D1427] to-[#050811] overflow-hidden p-2.5 sm:p-6 flex flex-col justify-between">
         {/* Subtle Desktop Wallpaper Grid & Cosmic Glow */}
         <div className="absolute inset-0 bg-[radial-gradient(#D4AF37_1px,transparent_1px)] [background-size:36px_36px] opacity-15 pointer-events-none" />
         <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-[#D4AF37]/10 rounded-full blur-[130px] pointer-events-none" />
@@ -285,25 +285,25 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
 
         {/* Desktop Central Fused 3D Saturn Celestial Orb & Watermark */}
         <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none px-4 text-center z-0">
-          <div className="w-80 h-80 sm:w-96 sm:h-96 opacity-40">
+          <div className="w-64 h-64 sm:w-96 sm:h-96 opacity-35">
             <Astitva3DCanvas variant="hero" />
           </div>
-          <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#D4AF37] mt-2 opacity-30">AASTITVA ALLIANCE</h2>
-          <p className="text-[10px] sm:text-xs uppercase tracking-[0.3em] text-[#C4BBA3] opacity-30">Collapsing the Distance to Existence</p>
+          <h2 className="text-xl sm:text-4xl font-serif font-bold text-[#D4AF37] mt-1 opacity-25">AASTITVA ALLIANCE</h2>
+          <p className="text-[9px] sm:text-xs uppercase tracking-[0.25em] text-[#C4BBA3] opacity-25">Collapsing the Distance to Existence</p>
         </div>
 
         {/* DESKTOP SHORTCUT ICONS (Top / Left on mobile vs Left column on desktop) */}
-        <div className="relative z-10 flex flex-row sm:flex-col flex-wrap gap-2.5 sm:gap-4 w-full sm:w-fit overflow-x-auto pb-2 sm:pb-0">
+        <div className="relative z-10 flex flex-row sm:flex-col gap-2 sm:gap-4 w-full sm:w-fit overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
           {/* Icon 1: Launch Web Homepage */}
           <button
             onDoubleClick={() => onEnterSite('home')}
             onClick={() => onEnterSite('home')}
-            className="group flex flex-col items-center gap-1 p-2 sm:p-3 rounded-2xl bg-[#0D1427]/80 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all w-20 sm:w-24 text-center cursor-pointer shadow-lg backdrop-blur-md shrink-0"
+            className="group flex flex-col items-center gap-1 p-1.5 sm:p-3 rounded-2xl bg-[#0D1427]/85 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/35 hover:border-[#D4AF37] transition-all w-16 sm:w-24 text-center cursor-pointer shadow-lg backdrop-blur-md shrink-0"
           >
-            <div className="p-2.5 sm:p-3 rounded-2xl bg-gradient-to-br from-[#D4AF37] to-[#B89220] text-[#070A14] shadow-xl group-hover:scale-110 transition-transform">
-              <Play className="w-5 h-5 fill-current" />
+            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-gradient-to-br from-[#D4AF37] to-[#B89220] text-[#070A14] shadow-xl group-hover:scale-110 transition-transform">
+              <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-current" />
             </div>
-            <span className="text-[10px] sm:text-[11px] font-sans font-bold text-[#FAF5EF] group-hover:text-[#D4AF37] leading-tight">
+            <span className="text-[9px] sm:text-[11px] font-sans font-bold text-[#FAF5EF] group-hover:text-[#D4AF37] leading-tight">
               ENTER SITE
             </span>
           </button>
@@ -312,13 +312,13 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
           <button
             onDoubleClick={() => bringToFront('summit')}
             onClick={() => bringToFront('summit')}
-            className="group flex flex-col items-center gap-1 p-2 sm:p-3 rounded-2xl bg-[#0D1427]/80 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all w-20 sm:w-24 text-center cursor-pointer shadow-lg backdrop-blur-md shrink-0"
+            className="group flex flex-col items-center gap-1 p-1.5 sm:p-3 rounded-2xl bg-[#0D1427]/85 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/35 hover:border-[#D4AF37] transition-all w-16 sm:w-24 text-center cursor-pointer shadow-lg backdrop-blur-md shrink-0"
           >
-            <div className="p-2.5 sm:p-3 rounded-2xl bg-[#16203B] text-[#D4AF37] border border-[#D4AF37]/40 shadow-xl group-hover:scale-110 transition-transform">
-              <Globe className="w-5 h-5" />
+            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-[#16203B] text-[#D4AF37] border border-[#D4AF37]/40 shadow-xl group-hover:scale-110 transition-transform">
+              <Globe className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <span className="text-[10px] sm:text-[11px] font-sans font-semibold text-[#C4BBA3] group-hover:text-[#D4AF37] leading-tight">
-              Summit 2026
+            <span className="text-[9px] sm:text-[11px] font-sans font-semibold text-[#C4BBA3] group-hover:text-[#D4AF37] leading-tight truncate w-full">
+              Summit
             </span>
           </button>
 
@@ -326,13 +326,13 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
           <button
             onDoubleClick={() => bringToFront('founder')}
             onClick={() => bringToFront('founder')}
-            className="group flex flex-col items-center gap-1 p-2 sm:p-3 rounded-2xl bg-[#0D1427]/80 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all w-20 sm:w-24 text-center cursor-pointer shadow-lg backdrop-blur-md shrink-0"
+            className="group flex flex-col items-center gap-1 p-1.5 sm:p-3 rounded-2xl bg-[#0D1427]/85 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/35 hover:border-[#D4AF37] transition-all w-16 sm:w-24 text-center cursor-pointer shadow-lg backdrop-blur-md shrink-0"
           >
-            <div className="p-2.5 sm:p-3 rounded-2xl bg-[#16203B] text-[#D4AF37] border border-[#D4AF37]/40 shadow-xl group-hover:scale-110 transition-transform">
-              <FileText className="w-5 h-5" />
+            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-[#16203B] text-[#D4AF37] border border-[#D4AF37]/40 shadow-xl group-hover:scale-110 transition-transform">
+              <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <span className="text-[10px] sm:text-[11px] font-sans font-semibold text-[#C4BBA3] group-hover:text-[#D4AF37] leading-tight">
-              About/Founder
+            <span className="text-[9px] sm:text-[11px] font-sans font-semibold text-[#C4BBA3] group-hover:text-[#D4AF37] leading-tight truncate w-full">
+              About
             </span>
           </button>
 
@@ -340,13 +340,13 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
           <button
             onDoubleClick={() => bringToFront('map')}
             onClick={() => bringToFront('map')}
-            className="group flex flex-col items-center gap-1 p-2 sm:p-3 rounded-2xl bg-[#0D1427]/80 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all w-20 sm:w-24 text-center cursor-pointer shadow-lg backdrop-blur-md shrink-0"
+            className="group flex flex-col items-center gap-1 p-1.5 sm:p-3 rounded-2xl bg-[#0D1427]/85 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/35 hover:border-[#D4AF37] transition-all w-16 sm:w-24 text-center cursor-pointer shadow-lg backdrop-blur-md shrink-0"
           >
-            <div className="p-2.5 sm:p-3 rounded-2xl bg-[#16203B] text-[#D4AF37] border border-[#D4AF37]/40 shadow-xl group-hover:scale-110 transition-transform">
-              <Compass className="w-5 h-5" />
+            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-[#16203B] text-[#D4AF37] border border-[#D4AF37]/40 shadow-xl group-hover:scale-110 transition-transform">
+              <Compass className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <span className="text-[10px] sm:text-[11px] font-sans font-semibold text-[#C4BBA3] group-hover:text-[#D4AF37] leading-tight">
-              Network Map
+            <span className="text-[9px] sm:text-[11px] font-sans font-semibold text-[#C4BBA3] group-hover:text-[#D4AF37] leading-tight truncate w-full">
+              Network
             </span>
           </button>
 
@@ -354,12 +354,12 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
           <button
             onDoubleClick={() => bringToFront('terminal')}
             onClick={() => bringToFront('terminal')}
-            className="group flex flex-col items-center gap-1 p-2 sm:p-3 rounded-2xl bg-[#0D1427]/80 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all w-20 sm:w-24 text-center cursor-pointer shadow-lg backdrop-blur-md shrink-0"
+            className="group flex flex-col items-center gap-1 p-1.5 sm:p-3 rounded-2xl bg-[#0D1427]/85 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/35 hover:border-[#D4AF37] transition-all w-16 sm:w-24 text-center cursor-pointer shadow-lg backdrop-blur-md shrink-0"
           >
-            <div className="p-2.5 sm:p-3 rounded-2xl bg-[#16203B] text-[#D4AF37] border border-[#D4AF37]/40 shadow-xl group-hover:scale-110 transition-transform">
-              <Terminal className="w-5 h-5" />
+            <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-[#16203B] text-[#D4AF37] border border-[#D4AF37]/40 shadow-xl group-hover:scale-110 transition-transform">
+              <Terminal className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <span className="text-[10px] sm:text-[11px] font-sans font-semibold text-[#C4BBA3] group-hover:text-[#D4AF37] leading-tight">
+            <span className="text-[9px] sm:text-[11px] font-sans font-semibold text-[#C4BBA3] group-hover:text-[#D4AF37] leading-tight truncate w-full">
               Terminal
             </span>
           </button>
@@ -372,13 +372,13 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
           <div
             onClick={() => bringToFront('summit')}
             style={{ zIndex: windows.summit.zIndex }}
-            className={`fixed sm:absolute inset-x-2 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 top-16 sm:top-10 max-w-2xl w-auto sm:w-[640px] max-h-[72vh] sm:max-h-[80vh] rounded-3xl bg-[#0D1427]/95 border-2 border-[#D4AF37]/65 shadow-[0_25px_80px_rgba(0,0,0,0.95)] backdrop-blur-2xl flex flex-col overflow-hidden transition-all font-sans ${
+            className={`fixed sm:absolute inset-x-2.5 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 top-14 sm:top-10 max-w-2xl w-auto sm:w-[640px] max-h-[64vh] sm:max-h-[80vh] rounded-2xl sm:rounded-3xl bg-[#0D1427]/98 border-2 border-[#D4AF37]/65 shadow-[0_25px_80px_rgba(0,0,0,0.95)] backdrop-blur-2xl flex flex-col overflow-hidden transition-all font-sans ${
               activeWindowId === 'summit' ? 'ring-2 ring-[#D4AF37]/50' : 'opacity-90'
             }`}
           >
-            <div className="px-4 py-2.5 bg-gradient-to-r from-[#16203B] to-[#0D1427] border-b border-[#D4AF37]/30 flex items-center justify-between shrink-0">
+            <div className="px-3.5 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-[#16203B] to-[#0D1427] border-b border-[#D4AF37]/30 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#D4AF37] truncate">
-                <Globe className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                <Globe className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#D4AF37] shrink-0" />
                 <span className="truncate">Aequitas_Summit_2026.exe</span>
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
@@ -403,45 +403,45 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
               </div>
             </div>
 
-            <div className="p-4 sm:p-6 space-y-4 text-left overflow-y-auto custom-scrollbar">
-              <div className="flex items-center justify-between gap-3 flex-wrap pb-2 border-b border-[#D4AF37]/20">
+            <div className="p-3.5 sm:p-6 space-y-3 sm:space-y-4 text-left overflow-y-auto custom-scrollbar">
+              <div className="flex items-center justify-between gap-2 flex-wrap pb-2 border-b border-[#D4AF37]/20">
                 <div>
-                  <span className="px-2.5 py-0.5 rounded-full bg-rose-600/30 text-rose-300 border border-rose-500/40 text-[10px] font-bold uppercase tracking-wider">
+                  <span className="px-2 py-0.5 rounded-full bg-rose-600/30 text-rose-300 border border-rose-500/40 text-[9px] sm:text-[10px] font-bold uppercase tracking-wider">
                     Official Partnered Summit
                   </span>
-                  <h3 className="text-xl sm:text-2xl font-serif font-bold gold-gradient-text mt-1">
+                  <h3 className="text-lg sm:text-2xl font-serif font-bold gold-gradient-text mt-0.5 sm:mt-1">
                     {INITIAL_SUMMIT_CONFIG.name}
                   </h3>
                 </div>
                 <button
                   onClick={() => onEnterSite('summit')}
-                  className="px-4 py-2 rounded-xl shimmer-btn text-[#070A14] font-bold text-xs shadow-md flex items-center gap-1.5"
+                  className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl shimmer-btn text-[#070A14] font-bold text-[11px] sm:text-xs shadow-md flex items-center gap-1"
                 >
-                  <span>Open Full Page</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
+                  <span>Open Page</span>
+                  <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 </button>
               </div>
 
-              <p className="text-xs text-[#C4BBA3] leading-relaxed font-jakarta">
+              <p className="text-[11px] sm:text-xs text-[#C4BBA3] leading-relaxed font-jakarta">
                 {INITIAL_SUMMIT_CONFIG.tagline} Partnered exclusively with <strong>{INITIAL_SUMMIT_CONFIG.partnerSchool}</strong>.
               </p>
 
               {/* Committee Roster */}
               <div className="space-y-2">
-                <span className="text-[11px] font-mono font-bold text-[#D4AF37] uppercase tracking-wider block">
+                <span className="text-[10px] sm:text-[11px] font-mono font-bold text-[#D4AF37] uppercase tracking-wider block">
                   Debate Committees Roster
                 </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 sm:max-h-none overflow-y-auto sm:overflow-visible">
                   {COMMITTEES.slice(0, 4).map((c) => (
                     <div
                       key={c.id}
-                      className="p-3 rounded-xl bg-[#070A14]/80 border border-[#D4AF37]/25 space-y-1"
+                      className="p-2.5 sm:p-3 rounded-xl bg-[#070A14]/80 border border-[#D4AF37]/25 space-y-0.5 sm:space-y-1"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-[#FAF5EF]">{c.code}</span>
-                        <span className="text-[10px] text-[#D4AF37] font-mono">{c.seats} Seats</span>
+                        <span className="text-[11px] sm:text-xs font-bold text-[#FAF5EF]">{c.code}</span>
+                        <span className="text-[9px] sm:text-[10px] text-[#D4AF37] font-mono">{c.seats} Seats</span>
                       </div>
-                      <p className="text-[10px] text-[#C4BBA3] line-clamp-1 italic">"{c.agenda}"</p>
+                      <p className="text-[9.5px] sm:text-[10px] text-[#C4BBA3] line-clamp-1 italic">"{c.agenda}"</p>
                     </div>
                   ))}
                 </div>
@@ -450,7 +450,7 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
               <div className="pt-2 flex items-center justify-between gap-3 flex-wrap border-t border-[#D4AF37]/20">
                 <button
                   onClick={() => onOpenRegister && onOpenRegister()}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B89220] text-[#070A14] font-extrabold text-xs shadow-lg inline-flex items-center gap-1.5 cursor-pointer"
+                  className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B89220] text-[#070A14] font-extrabold text-xs shadow-lg inline-flex items-center gap-1.5 cursor-pointer"
                 >
                   <Sparkles className="w-3.5 h-3.5 fill-current" />
                   <span>Quick Register Delegate Seat</span>
@@ -465,13 +465,13 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
           <div
             onClick={() => bringToFront('founder')}
             style={{ zIndex: windows.founder.zIndex }}
-            className={`fixed sm:absolute inset-x-2 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 top-16 sm:top-14 max-w-2xl w-auto sm:w-[640px] max-h-[72vh] sm:max-h-[80vh] rounded-3xl bg-[#0D1427]/95 border-2 border-[#D4AF37]/65 shadow-[0_25px_80px_rgba(0,0,0,0.95)] backdrop-blur-2xl flex flex-col overflow-hidden transition-all font-sans ${
+            className={`fixed sm:absolute inset-x-2.5 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 top-14 sm:top-10 max-w-2xl w-auto sm:w-[640px] max-h-[64vh] sm:max-h-[80vh] rounded-2xl sm:rounded-3xl bg-[#0D1427]/98 border-2 border-[#D4AF37]/65 shadow-[0_25px_80px_rgba(0,0,0,0.95)] backdrop-blur-2xl flex flex-col overflow-hidden transition-all font-sans ${
               activeWindowId === 'founder' ? 'ring-2 ring-[#D4AF37]/50' : 'opacity-90'
             }`}
           >
-            <div className="px-4 py-2.5 bg-gradient-to-r from-[#16203B] to-[#0D1427] border-b border-[#D4AF37]/30 flex items-center justify-between shrink-0">
+            <div className="px-3.5 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-[#16203B] to-[#0D1427] border-b border-[#D4AF37]/30 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#D4AF37] truncate">
-                <FileText className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                <FileText className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#D4AF37] shrink-0" />
                 <span className="truncate">About_Founder_Chronicle.sys</span>
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
@@ -496,19 +496,19 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
               </div>
             </div>
 
-            <div className="p-4 sm:p-6 space-y-4 text-left overflow-y-auto custom-scrollbar font-jakarta">
-              <span className="text-[10px] font-mono text-[#D4AF37] uppercase tracking-widest font-bold block">
+            <div className="p-3.5 sm:p-6 space-y-3 sm:space-y-4 text-left overflow-y-auto custom-scrollbar font-jakarta">
+              <span className="text-[9px] sm:text-[10px] font-mono text-[#D4AF37] uppercase tracking-widest font-bold block">
                 The Philosophy of Existence
               </span>
-              <h3 className="text-xl sm:text-2xl font-serif font-bold text-[#FAF5EF]">
+              <h3 className="text-lg sm:text-2xl font-serif font-bold text-[#FAF5EF]">
                 "Collapsing the distance between ideas and full existence."
               </h3>
-              <p className="text-xs text-[#C4BBA3] leading-relaxed">
+              <p className="text-[11px] sm:text-xs text-[#C4BBA3] leading-relaxed">
                 Aastitva translates to existence, the state of truly being, fully and completely. We exist to give events and the people behind them the infrastructure to become fully what they were always meant to be.
               </p>
 
-              <div className="p-4 rounded-xl bg-[#070A14]/80 border-l-4 border-[#D4AF37] text-xs space-y-1">
-                <span className="text-[10px] text-[#D4AF37] font-bold uppercase">The Conscience of Aastitva</span>
+              <div className="p-3 sm:p-4 rounded-xl bg-[#070A14]/80 border-l-4 border-[#D4AF37] text-[11px] sm:text-xs space-y-1">
+                <span className="text-[9.5px] sm:text-[10px] text-[#D4AF37] font-bold uppercase">The Conscience of Aastitva</span>
                 <p className="italic text-[#FAF5EF]">
                   "Existence isn't a privilege reserved for the schools that can already afford it. It should be something every student gets a chance at."
                 </p>
@@ -517,9 +517,9 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
               <div className="pt-2 flex justify-between items-center border-t border-[#D4AF37]/20">
                 <button
                   onClick={() => onEnterSite('about')}
-                  className="px-5 py-2.5 rounded-xl shimmer-btn text-[#070A14] font-bold text-xs shadow-lg flex items-center gap-1.5"
+                  className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl shimmer-btn text-[#070A14] font-bold text-[11px] sm:text-xs shadow-lg flex items-center gap-1.5"
                 >
-                  <span>Read Full Chronicle (8 Chapters)</span>
+                  <span>Read Full Chronicle</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -532,13 +532,13 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
           <div
             onClick={() => bringToFront('map')}
             style={{ zIndex: windows.map.zIndex }}
-            className={`fixed sm:absolute inset-x-2 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 top-16 sm:top-14 max-w-2xl w-auto sm:w-[640px] max-h-[72vh] sm:max-h-[80vh] rounded-3xl bg-[#0D1427]/95 border-2 border-[#D4AF37]/65 shadow-[0_25px_80px_rgba(0,0,0,0.95)] backdrop-blur-2xl flex flex-col overflow-hidden transition-all font-sans ${
+            className={`fixed sm:absolute inset-x-2.5 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 top-14 sm:top-10 max-w-2xl w-auto sm:w-[640px] max-h-[64vh] sm:max-h-[80vh] rounded-2xl sm:rounded-3xl bg-[#0D1427]/98 border-2 border-[#D4AF37]/65 shadow-[0_25px_80px_rgba(0,0,0,0.95)] backdrop-blur-2xl flex flex-col overflow-hidden transition-all font-sans ${
               activeWindowId === 'map' ? 'ring-2 ring-[#D4AF37]/50' : 'opacity-90'
             }`}
           >
-            <div className="px-4 py-2.5 bg-gradient-to-r from-[#16203B] to-[#0D1427] border-b border-[#D4AF37]/30 flex items-center justify-between shrink-0">
+            <div className="px-3.5 py-2 sm:px-4 sm:py-2.5 bg-gradient-to-r from-[#16203B] to-[#0D1427] border-b border-[#D4AF37]/30 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#D4AF37] truncate">
-                <Compass className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                <Compass className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#D4AF37] shrink-0" />
                 <span className="truncate">Regional_Network_Matrix.map</span>
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
@@ -563,19 +563,19 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
               </div>
             </div>
 
-            <div className="p-4 sm:p-6 space-y-4 text-left overflow-y-auto custom-scrollbar font-jakarta">
-              <h3 className="text-xl font-serif font-bold text-[#FAF5EF]">
+            <div className="p-3.5 sm:p-6 space-y-3 sm:space-y-4 text-left overflow-y-auto custom-scrollbar font-jakarta">
+              <h3 className="text-lg sm:text-xl font-serif font-bold text-[#FAF5EF]">
                 13 Interconnected Regional Hubs
               </h3>
-              <p className="text-xs text-[#C4BBA3] leading-relaxed">
-                Beyond Jammu, professional alliances established across Delhi, Pune, Jaipur, Abohar (Rajasthan), Haryana, Dehradun (Uttarakhand), Amritsar, Ludhiana (Punjab), Kashmir, Chandigarh, Meerut (UP), and Himachal Pradesh.
+              <p className="text-[11px] sm:text-xs text-[#C4BBA3] leading-relaxed">
+                Beyond Jammu, alliances established across Delhi, Pune, Jaipur, Rajasthan, Haryana, Uttarakhand, Punjab, Kashmir, Chandigarh, UP, and Himachal Pradesh.
               </p>
 
-              <div className="flex flex-wrap gap-2 pt-2">
-                {['Jammu', 'Kashmir', 'Himachal Pradesh', 'Amritsar', 'Ludhiana', 'Chandigarh', 'Abohar', 'Dehradun', 'Haryana', 'Delhi', 'Meerut', 'Jaipur', 'Pune'].map((city) => (
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                {['Jammu', 'Kashmir', 'Himachal', 'Amritsar', 'Ludhiana', 'Chandigarh', 'Abohar', 'Dehradun', 'Haryana', 'Delhi', 'Meerut', 'Jaipur', 'Pune'].map((city) => (
                   <span
                     key={city}
-                    className="px-2.5 py-1 rounded-lg bg-[#070A14] border border-[#D4AF37]/35 text-[#D4AF37] text-xs font-semibold"
+                    className="px-2 py-0.5 rounded-lg bg-[#070A14] border border-[#D4AF37]/35 text-[#D4AF37] text-[10px] sm:text-xs font-semibold"
                   >
                     • {city}
                   </span>
@@ -585,9 +585,9 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
               <div className="pt-2 flex justify-between items-center border-t border-[#D4AF37]/20">
                 <button
                   onClick={() => onEnterSite('about')}
-                  className="px-5 py-2.5 rounded-xl shimmer-btn text-[#070A14] font-bold text-xs shadow-lg flex items-center gap-1.5"
+                  className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl shimmer-btn text-[#070A14] font-bold text-[11px] sm:text-xs shadow-lg flex items-center gap-1.5"
                 >
-                  <span>Explore Interactive Map on Site</span>
+                  <span>Explore Interactive Map</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -600,13 +600,13 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
           <div
             onClick={() => bringToFront('terminal')}
             style={{ zIndex: windows.terminal.zIndex }}
-            className={`fixed sm:absolute inset-x-2 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 top-16 sm:top-14 max-w-xl w-auto sm:w-[580px] max-h-[70vh] rounded-3xl bg-[#050811]/98 border-2 border-[#D4AF37]/65 shadow-[0_25px_80px_rgba(0,0,0,0.95)] backdrop-blur-2xl flex flex-col overflow-hidden transition-all font-mono ${
+            className={`fixed sm:absolute inset-x-2.5 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 top-14 sm:top-10 max-w-xl w-auto sm:w-[580px] max-h-[60vh] sm:max-h-[70vh] rounded-2xl sm:rounded-3xl bg-[#050811]/98 border-2 border-[#D4AF37]/65 shadow-[0_25px_80px_rgba(0,0,0,0.95)] backdrop-blur-2xl flex flex-col overflow-hidden transition-all font-mono ${
               activeWindowId === 'terminal' ? 'ring-2 ring-[#D4AF37]/50' : 'opacity-90'
             }`}
           >
-            <div className="px-4 py-2.5 bg-[#0D1427] border-b border-[#D4AF37]/30 flex items-center justify-between shrink-0">
+            <div className="px-3.5 py-2 sm:px-4 sm:py-2.5 bg-[#0D1427] border-b border-[#D4AF37]/30 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#D4AF37] truncate">
-                <Terminal className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                <Terminal className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#D4AF37] shrink-0" />
                 <span className="truncate">Astitva_Terminal.sh</span>
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
@@ -622,7 +622,7 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
               </div>
             </div>
 
-            <div className="p-4 space-y-3 text-xs text-left overflow-y-auto custom-scrollbar flex-1">
+            <div className="p-3 sm:p-4 space-y-2 text-[11px] sm:text-xs text-left overflow-y-auto custom-scrollbar flex-1">
               {terminalHistory.map((item, idx) => (
                 <p
                   key={idx}
@@ -655,12 +655,12 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
       </div>
 
       {/* 4. RETRO-MODERN RESPONSIVE TASKBAR (Bottom OS Bar) */}
-      <div className="relative z-50 h-14 bg-gradient-to-r from-[#070A14] via-[#0D1427] to-[#070A14] border-t-2 border-[#D4AF37]/45 px-3 sm:px-6 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.8)] backdrop-blur-xl">
+      <div className="relative z-50 h-13 sm:h-14 bg-gradient-to-r from-[#070A14] via-[#0D1427] to-[#070A14] border-t-2 border-[#D4AF37]/45 px-2.5 sm:px-6 flex items-center justify-between shadow-[0_-10px_30px_rgba(0,0,0,0.8)] backdrop-blur-xl">
         {/* Left: START Menu Button */}
         <div className="relative">
           <button
             onClick={() => setStartMenuOpen(!startMenuOpen)}
-            className={`px-3 sm:px-4 py-2 rounded-xl text-xs font-mono font-extrabold flex items-center gap-2 transition-all min-touch ${
+            className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-mono font-extrabold flex items-center gap-1.5 sm:gap-2 transition-all min-touch ${
               startMenuOpen
                 ? 'bg-[#D4AF37] text-[#070A14] shadow-[0_0_15px_rgba(212,175,55,0.8)] scale-105'
                 : 'bg-gradient-to-r from-[#16203B] to-[#0D1427] text-[#FAF5EF] border border-[#D4AF37]/50 hover:border-[#D4AF37]'
@@ -672,7 +672,7 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
 
           {/* START MENU POPUP */}
           {startMenuOpen && (
-            <div className="absolute bottom-14 left-0 w-72 sm:w-80 rounded-2xl bg-[#0D1427]/98 border-2 border-[#D4AF37]/60 shadow-[0_20px_60px_rgba(0,0,0,0.95)] p-4 space-y-3 backdrop-blur-2xl animate-page-enter font-sans text-left z-50">
+            <div className="absolute bottom-14 left-0 w-[84vw] max-w-xs sm:max-w-none sm:w-80 rounded-2xl bg-[#0D1427]/98 border-2 border-[#D4AF37]/60 shadow-[0_20px_60px_rgba(0,0,0,0.95)] p-3 sm:p-4 space-y-2.5 sm:space-y-3 backdrop-blur-2xl animate-page-enter font-sans text-left z-50">
               <div className="flex items-center gap-3 pb-3 border-b border-[#D4AF37]/30">
                 <AstitvaLogo size="md" variant="mark-only" showSubtitle={false} />
                 <div>

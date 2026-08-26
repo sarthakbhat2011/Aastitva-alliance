@@ -78,7 +78,7 @@ export const OfferingsPage: React.FC<Props> = ({ onNavigate, onOpenRegister }) =
                 <ScrollReveal direction={isEven ? 'left' : 'right'} delay={0.05}>
                   <div
                     onMouseEnter={() => sounds.playHover()}
-                    className="rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 bg-[#0D1427]/90 border-2 border-[#D4AF37]/35 hover:border-[#D4AF37]"
+                    className="rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 bg-[#0D1427]/90 border-2 border-[#D4AF37]/35 hover:border-[#D4AF37] animate-aura-pulse"
                   >
                     {/* Full-Width Hero Card Banner */}
                     <div className="relative min-h-[220px] sm:min-h-[280px] flex items-end p-4 sm:p-8 dark-photo-overlay overflow-hidden">

@@ -142,7 +142,7 @@ export const HowItWorksPage: React.FC<Props> = ({ onNavigate, onOpenRegister }) 
                     delay={idx * 0.25}
                   >
                     <PerspectiveCard maxTilt={6} scale={1.02} onMouseEnter={() => sounds.playHover()}>
-                      <div className="p-6 sm:p-8 rounded-3xl bg-[#0D1427]/90 border-2 border-[#D4AF37]/35 hover:border-[#D4AF37] shadow-2xl transition-all duration-300 font-jakarta space-y-2">
+                      <div className="p-6 sm:p-8 rounded-3xl bg-[#0D1427]/90 border-2 border-[#D4AF37]/35 hover:border-[#D4AF37] shadow-2xl transition-all duration-300 font-jakarta space-y-2 animate-aura-pulse">
                         <div
                           className={`flex items-center gap-3 ${
                             isEven ? 'sm:justify-end justify-start' : 'justify-start'
