@@ -99,6 +99,25 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Lock body & document scroll when in OS Mode to prevent background web app from leaking on mobile scroll
+  useEffect(() => {
+    if (osMode) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+      window.scrollTo(0, 0);
+    } else {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.touchAction = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.touchAction = '';
+    };
+  }, [osMode]);
+
   const handleEnterSiteFromOS = (targetPage: Page = 'home') => {
     setOsMode(false);
     setCurrentPage(targetPage);
@@ -208,26 +227,30 @@ export default function App() {
           />
         )}
 
-        {/* Main Content Area with Seamless Motion Route Transition */}
-        <AnimatePresence mode="wait">
-          <motion.main
-            key={currentPage}
-            initial={{ opacity: 0, y: 16, filter: 'blur(4px)' }}
-            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, y: -16, filter: 'blur(4px)' }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="flex-1 z-10 gpu-accelerated"
-          >
-            {renderPage()}
-          </motion.main>
-        </AnimatePresence>
+        {/* Main Content Area with Seamless Motion Route Transition (Only rendered when OS mode is false) */}
+        {!osMode && (
+          <AnimatePresence mode="wait">
+            <motion.main
+              key={currentPage}
+              initial={{ opacity: 0, y: 16, filter: 'blur(4px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, y: -16, filter: 'blur(4px)' }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="flex-1 z-10 gpu-accelerated"
+            >
+              {renderPage()}
+            </motion.main>
+          </AnimatePresence>
+        )}
 
-        {/* Footer */}
-        <Footer 
-          onNavigate={handleNavigate} 
-          onOpenDevMailbox={() => setDevMailboxOpen(true)}
-          onOpenRegister={() => setGlobalRegisterOpen(true)}
-        />
+        {/* Footer (Only rendered when OS mode is false) */}
+        {!osMode && (
+          <Footer 
+            onNavigate={handleNavigate} 
+            onOpenDevMailbox={() => setDevMailboxOpen(true)}
+            onOpenRegister={() => setGlobalRegisterOpen(true)}
+          />
+        )}
 
         {/* Global Delegate Registration Modal */}
         <GlobalRegistrationModal

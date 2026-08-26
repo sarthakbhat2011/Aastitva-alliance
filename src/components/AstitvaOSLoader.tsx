@@ -227,7 +227,7 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-[#050811] text-[#FAF5EF] font-mono select-none overflow-hidden w-full h-full">
+    <div className="fixed inset-0 z-50 flex flex-col bg-[#050811] text-[#FAF5EF] font-mono select-none overflow-hidden w-full h-full h-[100dvh] overscroll-none">
       {/* 1. INITIAL RETRO BIOS BOOT OVERLAY */}
       {!bootComplete && (
         <div className="absolute inset-0 z-50 bg-[#070A14] flex flex-col items-center justify-center p-4 sm:p-8 text-left space-y-4 sm:space-y-8">
