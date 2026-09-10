@@ -58,9 +58,9 @@ export const EventArchitectureSandbox: React.FC<Props> = ({ onScheduleBriefing }
   };
 
   const scaleStats = {
-    interschool: { delegates: '150 - 250', committees: '4 Committees', days: '2-Day Conclave', readiness: '96%' },
-    regional: { delegates: '300 - 500', committees: '6 Committees', days: '2 to 3 Days', readiness: '98%' },
-    flagship: { delegates: '600 - 1000+', committees: '8+ Councils', days: '3-Day Flagship', readiness: '99.4%' },
+    interschool: { delegates: '150 - 250', committees: '4 Committees', days: '2-Day Conclave', framework: 'Full Support' },
+    regional: { delegates: '300 - 500', committees: '6 Committees', days: '2 to 3 Days', framework: 'Comprehensive' },
+    flagship: { delegates: '600 - 1000+', committees: '8+ Councils', days: '3-Day Flagship', framework: 'Flagship Scope' },
   };
 
   const currentStats = scaleStats[eventScale];
@@ -165,8 +165,8 @@ export const EventArchitectureSandbox: React.FC<Props> = ({ onScheduleBriefing }
             <strong className="text-base text-[#FAF5EF] font-bold">{currentStats.days}</strong>
           </div>
           <div>
-            <span className="text-[10px] font-mono text-[#D4AF37] uppercase block">Readiness</span>
-            <strong className="text-base text-emerald-400 font-bold">{currentStats.readiness}</strong>
+            <span className="text-[10px] font-mono text-[#D4AF37] uppercase block">Coverage</span>
+            <strong className="text-base text-emerald-400 font-bold">{currentStats.framework}</strong>
           </div>
         </div>
 

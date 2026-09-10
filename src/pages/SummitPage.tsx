@@ -73,7 +73,7 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
     {
       id: 1,
       title: 'Grand Plenary Auditorium',
-      desc: 'Tiered acoustic hall seating 400+ delegates with broadcast-grade podiums.',
+      desc: 'Tiered acoustic hall with broadcast-grade podiums and structured conference seating.',
       image: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1200',
     },
     {
@@ -222,7 +222,7 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
                       <div className="flex items-center gap-2 text-[10px] text-[#D4AF37] font-mono uppercase font-bold">
                         <Users className="w-3.5 h-3.5" /> Delegate Cap
                       </div>
-                      <p className="text-xs font-bold text-emerald-400 mt-1 font-jakarta">350+ Total Capacity</p>
+                      <p className="text-xs font-bold text-emerald-400 mt-1 font-jakarta">By Delegation Application</p>
                     </div>
                   </SpatialFloatingElement>
                 </div>
@@ -581,19 +581,19 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div className="p-6 rounded-2xl bg-[#180F33]/80 border border-[#A855F7]/25 space-y-2">
-                  <span className="text-2xl sm:text-3xl font-bold font-cormorant text-[#FAF5EF]">350+</span>
-                  <p className="text-xs text-[#E9D5FF] font-semibold">Projected Attendance</p>
-                  <p className="text-[11px] text-[#DDD6FE]">Delegates and faculty advisors from across Jammu & Kashmir.</p>
+                  <span className="text-xl sm:text-2xl font-bold font-cormorant text-[#FAF5EF]">Delegate Roll</span>
+                  <p className="text-xs text-[#E9D5FF] font-semibold">Verified Attendance</p>
+                  <p className="text-[11px] text-[#DDD6FE]">Official participant directory, institutional delegations, and faculty advisors.</p>
                 </div>
                 <div className="p-6 rounded-2xl bg-[#180F33]/80 border border-[#A855F7]/25 space-y-2">
-                  <span className="text-2xl sm:text-3xl font-bold font-cormorant text-[#FAF5EF]">6 Councils</span>
+                  <span className="text-xl sm:text-2xl font-bold font-cormorant text-[#FAF5EF]">Proceedings</span>
                   <p className="text-xs text-[#E9D5FF] font-semibold">Simultaneous Committees</p>
-                  <p className="text-[11px] text-[#DDD6FE]">Full documentation, resolution clauses, and press transcripts.</p>
+                  <p className="text-[11px] text-[#DDD6FE]">Full documentation, passed resolutions, and executive chair reports.</p>
                 </div>
                 <div className="p-6 rounded-2xl bg-[#180F33]/80 border border-[#A855F7]/25 space-y-2">
-                  <span className="text-2xl sm:text-3xl font-bold font-cormorant text-[#FAF5EF]">100%</span>
+                  <span className="text-xl sm:text-2xl font-bold font-cormorant text-[#FAF5EF]">Case Study</span>
                   <p className="text-xs text-[#E9D5FF] font-semibold">Verified Transparency</p>
-                  <p className="text-[11px] text-[#DDD6FE]">Post-event recap with official photography, awards list, and case study.</p>
+                  <p className="text-[11px] text-[#DDD6FE]">Post-event recap with official photography, awards list, and institutional report.</p>
                 </div>
               </div>
 

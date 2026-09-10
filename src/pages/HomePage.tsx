@@ -14,7 +14,6 @@ import confetti from 'canvas-confetti';
 import { MagneticElement } from '../components/motion/MagneticElement';
 import { PerspectiveCard } from '../components/motion/PerspectiveCard';
 import { TextReveal } from '../components/motion/TextReveal';
-import { CounterTicker } from '../components/motion/CounterTicker';
 import { SpatialFloatingElement } from '../components/motion/SpatialFloatingElement';
 import { CinematicScene } from '../components/cinematic/CinematicScene';
 import { CinematicMaskReveal } from '../components/cinematic/CinematicMaskReveal';
@@ -539,8 +538,8 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
                   icon: BookOpen,
                 },
                 {
-                  title: 'MARKETING & PARTICIPANT ACQUISITION',
-                  desc: 'Filling seats through social media promotion, campus outreach across 30+ schools, and registration management.',
+                  title: 'MARKETING & PARTICIPANT OUTREACH',
+                  desc: 'Supporting outreach planning, promotional design assets, and structured online registration management.',
                   icon: Globe,
                 },
                 {
@@ -626,31 +625,37 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
                 </p>
               </div>
 
-              <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full md:w-auto">
                 <SpatialFloatingElement preset="card-float" speed={0.9} delay={0}>
-                  <div className="text-center space-y-1 p-3.5 rounded-2xl bg-[#0D1427]/60 border border-[#D4AF37]/30 shadow-lg">
-                    <div className="text-3xl font-bold text-[#E8A53E]">
-                      <CounterTicker value={13} duration={1.6} />
+                  <div className="text-left space-y-1 p-4 rounded-2xl bg-[#0D1427]/75 border border-[#D4AF37]/35 shadow-lg min-w-[170px]">
+                    <div className="flex items-center gap-2 text-[#E8A53E] text-xs font-mono font-bold uppercase tracking-wider">
+                      <Shield className="w-4 h-4 text-[#D4AF37]" />
+                      <span>Directorship</span>
                     </div>
-                    <div className="text-[11px] font-semibold text-var-text-secondary uppercase tracking-wider">Circuit Hubs</div>
+                    <h4 className="text-sm font-bold text-[#FAF5EF]">Hands-On Leadership</h4>
+                    <p className="text-[11px] text-var-text-secondary leading-snug">Personal on-ground coordination at every event.</p>
                   </div>
                 </SpatialFloatingElement>
 
-                <SpatialFloatingElement preset="card-float" speed={1.1} delay={0.4}>
-                  <div className="text-center space-y-1 p-3.5 rounded-2xl bg-[#0D1427]/60 border border-[#D4AF37]/30 shadow-lg">
-                    <div className="text-3xl font-bold text-[#E8A53E]">
-                      <CounterTicker value={100} suffix="%" duration={1.8} />
+                <SpatialFloatingElement preset="card-float" speed={1.1} delay={0.3}>
+                  <div className="text-left space-y-1 p-4 rounded-2xl bg-[#0D1427]/75 border border-[#D4AF37]/35 shadow-lg min-w-[170px]">
+                    <div className="flex items-center gap-2 text-[#E8A53E] text-xs font-mono font-bold uppercase tracking-wider">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                      <span>Transparency</span>
                     </div>
-                    <div className="text-[11px] font-semibold text-var-text-secondary uppercase tracking-wider">Transparency</div>
+                    <h4 className="text-sm font-bold text-[#FAF5EF]">Radical Honesty</h4>
+                    <p className="text-[11px] text-var-text-secondary leading-snug">Zero hidden fees, direct costs, and clear scopes.</p>
                   </div>
                 </SpatialFloatingElement>
 
-                <SpatialFloatingElement preset="card-float" speed={1.0} delay={0.8}>
-                  <div className="text-center space-y-1 p-3.5 rounded-2xl bg-[#0D1427]/60 border border-[#D4AF37]/30 shadow-lg">
-                    <div className="text-3xl font-bold text-[#E8A53E]">
-                      <CounterTicker value={1} suffix="st" duration={1.2} />
+                <SpatialFloatingElement preset="card-float" speed={1.0} delay={0.6}>
+                  <div className="text-left space-y-1 p-4 rounded-2xl bg-[#0D1427]/75 border border-[#D4AF37]/35 shadow-lg min-w-[170px]">
+                    <div className="flex items-center gap-2 text-[#E8A53E] text-xs font-mono font-bold uppercase tracking-wider">
+                      <Award className="w-4 h-4 text-[#D4AF37]" />
+                      <span>Excellence</span>
                     </div>
-                    <div className="text-[11px] font-semibold text-var-text-secondary uppercase tracking-wider">Live Summit</div>
+                    <h4 className="text-sm font-bold text-[#FAF5EF]">Academic Rigour</h4>
+                    <p className="text-[11px] text-var-text-secondary leading-snug">Authentic ROP frameworks and verified rubrics.</p>
                   </div>
                 </SpatialFloatingElement>
               </div>

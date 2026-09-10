@@ -245,7 +245,7 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
               <p>CPU: Quantum Diplomatic Core @ 4.80GHz [OK]</p>
               <p>RAM: 32768MB High-Speed Logic Buffer [OK]</p>
               <p>Security: 256-Bit SSL Diplomatic Gateway [ACTIVE]</p>
-              <p>Network: 13 Northern Subcontinent Regional Hubs [ONLINE]</p>
+              <p>Network: Regional Inter-School Circuit [ONLINE]</p>
               <p className="text-[#D4AF37]">Loading Aastitva Desktop Environment...</p>
             </div>
 
@@ -568,7 +568,7 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
 
             <div className="p-3 sm:p-6 space-y-2.5 sm:space-y-4 text-left overflow-y-auto custom-scrollbar font-jakarta flex-1">
               <h3 className="text-base sm:text-xl font-serif font-bold text-[#FAF5EF]">
-                13 Interconnected Regional Hubs
+                Interconnected Regional Network
               </h3>
               <p className="text-[10.5px] sm:text-xs text-[#C4BBA3] leading-relaxed">
                 Beyond Jammu, alliances established across Delhi, Pune, Jaipur, Rajasthan, Haryana, Uttarakhand, Punjab, Kashmir, Chandigarh, UP, and Himachal Pradesh.

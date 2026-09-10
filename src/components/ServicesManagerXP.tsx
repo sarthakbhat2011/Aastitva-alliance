@@ -48,7 +48,7 @@ export const ServicesManagerXP: React.FC<Props> = ({ onOpenRegister }) => {
       `[BANDWIDTH] Simulating acoustic audio, stage tech & delegate room throughput...`,
       `[CURRICULUM] Verifying study guide background dossiers and double-blind scoring matrix...`,
       `[COVENANT] Confirming zero-middlemen protocol and radical transparency promise...`,
-      `[READY] All systems verified 100% compliant with Aastitva Institutional Standards!`,
+      `[READY] All systems aligned with Aastitva Institutional Standards!`,
     ];
 
     steps.forEach((stepText, index) => {
@@ -77,7 +77,7 @@ Module Name: ${activeOffering.title}
 Category: ${activeOffering.category}
 Subtitle: ${activeOffering.subtitle}
 Verification Hash: SHA-256 [0x9F4C2A1E8B]
-Academic Compliance: 100% UN Rules of Procedure Standard
+Academic Compliance: Aligned with Standard UN Rules of Procedure
 Impartiality Index: Zero-Bias Guarantee
 
 OFFICIAL SPECIFICATIONS & DELIVERABLES:
@@ -126,7 +126,7 @@ Status: VERIFIED & READY FOR INSTITUTIONAL DEPLOYMENT
         <div className="lg:col-span-5 space-y-2">
           <div className="text-[10px] font-mono uppercase text-[#D4AF37] font-bold tracking-widest pb-1 border-b border-[#D4AF37]/20 flex items-center justify-between">
             <span>Modular Packages ({OFFERINGS.length})</span>
-            <span className="text-emerald-400">● 100% Online</span>
+            <span className="text-emerald-400">● Available</span>
           </div>
 
           <div className="space-y-1.5 max-h-[380px] overflow-y-auto pr-1">

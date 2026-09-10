@@ -54,8 +54,8 @@ export const TechnicalAuditModal: React.FC<Props> = ({ isOpen, onClose, stats })
           </div>
           <div className="p-4 rounded-xl bg-[#2D2359] border border-[#52459E]/30 text-center">
             <Cloud className="w-5 h-5 mx-auto mb-1 text-[#D4AF37]" />
-            <span className="text-lg font-bold text-[#FAF5EF]">99.8% CDN</span>
-            <p className="text-[11px] text-[#C4BBA3] mt-1">Hit Cache Ratio</p>
+            <span className="text-lg font-bold text-[#FAF5EF]">Edge CDN</span>
+            <p className="text-[11px] text-[#C4BBA3] mt-1">Global Distribution</p>
           </div>
         </div>
 
@@ -98,9 +98,9 @@ export const TechnicalAuditModal: React.FC<Props> = ({ isOpen, onClose, stats })
           <div className="flex items-start gap-3 p-3 rounded-lg bg-[#2D2359]/60 border border-[#52459E]/20">
             <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
             <div>
-              <span className="font-semibold text-[#FAF5EF]">Real-time Live Analytics Tracker</span>
+              <span className="font-semibold text-[#FAF5EF]">Privacy-Compliant Analytics & Telemetry</span>
               <p className="text-xs text-[#C4BBA3] mt-0.5">
-                Tracks active sessions ({stats.uniqueVisitors} unique visitors), total views ({stats.pageViews} hits), and form conversions without invasive cookies.
+                Audits client connection speed, response latency, and TLS encryption securely without invasive third-party tracking cookies.
               </p>
             </div>
           </div>

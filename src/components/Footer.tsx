@@ -48,11 +48,7 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox, onOpenRe
             </div>
           </div>
 
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/35 text-[#D4AF37] text-[9px] sm:text-[11px] font-mono font-bold tracking-wider uppercase">
-            <span className="truncate">Academic Event Management + Network Organisation</span>
-          </div>
-
-          <p className="text-xs sm:text-sm text-[#D3C5E5] font-inter italic leading-relaxed">
+          <p className="text-xs sm:text-sm text-[#D3C5E5] font-inter italic leading-relaxed pt-1">
             "Empowering Student Diplomacy & Academic Excellence"
           </p>
 
