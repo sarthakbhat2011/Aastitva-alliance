@@ -25,13 +25,13 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox, onOpenRe
 
   return (
     <footer className="bg-[#050811] text-[#FAF5EF] border-t border-[#D4AF37]/30 font-sans pt-8 sm:pt-16 pb-8 sm:pb-12 px-3.5 sm:px-6 relative z-10">
-      {/* Mobile Boxy Layout (< md) vs Desktop 4-Column Grid (md+) */}
-      <div className="max-w-7xl mx-auto space-y-4 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-10 pb-8 sm:pb-12 border-b border-[#D4AF37]/20">
+      {/* Mobile Boxy Layout (< md) vs Desktop 12-Column Balanced Grid (md+) */}
+      <div className="max-w-7xl mx-auto space-y-4 md:space-y-0 md:grid md:grid-cols-12 md:gap-8 lg:gap-10 pb-8 sm:pb-12 border-b border-[#D4AF37]/20">
         
         {/* Box 1: Brand & Identity Box */}
-        <div className="p-4 sm:p-0 rounded-2xl md:rounded-none bg-[#0D1427]/80 md:bg-transparent border border-[#D4AF37]/25 md:border-none space-y-3.5 text-left shadow-lg md:shadow-none">
-          <div className="flex items-center justify-between gap-3">
-            <AstitvaLogo size="md" />
+        <div className="p-4 sm:p-0 rounded-2xl md:rounded-none bg-[#0D1427]/80 md:bg-transparent border border-[#D4AF37]/25 md:border-none space-y-3.5 text-left shadow-lg md:shadow-none md:col-span-6 lg:col-span-5 min-w-0 overflow-hidden">
+          <div className="flex items-center justify-between gap-3 min-w-0">
+            <AstitvaLogo size="md" className="min-w-0" />
             
             {/* Social Links on mobile (inline with header) */}
             <div className="flex items-center gap-2 md:hidden">
@@ -48,7 +48,7 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox, onOpenRe
             </div>
           </div>
 
-          <p className="text-xs sm:text-sm text-[#D3C5E5] font-inter italic leading-relaxed pt-1">
+          <p className="text-xs sm:text-sm text-[#D3C5E5] font-inter italic leading-relaxed pt-1 max-w-sm">
             "Empowering Student Diplomacy & Academic Excellence"
           </p>
 
@@ -72,7 +72,7 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox, onOpenRe
         {/* Box 2 & 3: Navigation Grid (Compact 2-Column on Mobile, Discrete Columns on Desktop) */}
         <div className="grid grid-cols-2 gap-3 sm:gap-6 md:contents">
           {/* Quick Links Card */}
-          <div className="p-3.5 sm:p-0 rounded-2xl md:rounded-none bg-[#0D1427]/70 md:bg-transparent border border-[#D4AF37]/20 md:border-none space-y-2.5 text-left shadow-md md:shadow-none">
+          <div className="p-3.5 sm:p-0 rounded-2xl md:rounded-none bg-[#0D1427]/70 md:bg-transparent border border-[#D4AF37]/20 md:border-none space-y-2.5 text-left shadow-md md:shadow-none md:col-span-3 lg:col-span-2 min-w-0">
             <h4 className="text-[11px] sm:text-xs uppercase tracking-widest text-[#E8A53E] font-bold font-inter flex items-center gap-1">
               <span>Quick Links</span>
             </h4>
@@ -99,7 +99,7 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox, onOpenRe
           </div>
 
           {/* Resources & Scope Card */}
-          <div className="p-3.5 sm:p-0 rounded-2xl md:rounded-none bg-[#0D1427]/70 md:bg-transparent border border-[#D4AF37]/20 md:border-none space-y-2.5 text-left shadow-md md:shadow-none flex flex-col justify-between">
+          <div className="p-3.5 sm:p-0 rounded-2xl md:rounded-none bg-[#0D1427]/70 md:bg-transparent border border-[#D4AF37]/20 md:border-none space-y-2.5 text-left shadow-md md:shadow-none md:col-span-3 lg:col-span-2 min-w-0 flex flex-col justify-between">
             <div className="space-y-2.5">
               <h4 className="text-[11px] sm:text-xs uppercase tracking-widest text-[#E8A53E] font-bold font-inter">
                 Resources
@@ -143,7 +143,7 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox, onOpenRe
         </div>
 
         {/* Box 4: Institutional Desk (Visible on Desktop) */}
-        <div className="hidden md:block space-y-3 text-left">
+        <div className="hidden md:block space-y-3 text-left md:col-span-12 lg:col-span-3 min-w-0">
           <h4 className="text-xs uppercase tracking-widest text-[#E8A53E] font-bold font-inter">
             Institutional Desk
           </h4>

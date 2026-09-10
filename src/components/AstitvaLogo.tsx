@@ -24,7 +24,7 @@ export const AstitvaLogo: React.FC<Props> = ({
   const currentSize = sizeMap[size];
 
   return (
-    <div className={`relative inline-flex items-center gap-3.5 select-none ${className}`}>
+    <div className={`relative inline-flex items-center gap-3.5 select-none max-w-full ${className}`}>
       {/* 
         CLEAN, SIMPLE, CIRCULAR STATIC LOGO MARK
         Completely static: No revolving planets, no orbital rings, no 3D effects, no pulse/glow gimmicks.
@@ -55,7 +55,7 @@ export const AstitvaLogo: React.FC<Props> = ({
           </div>
 
           {showSubtitle && (
-            <span className={`font-mono ${currentSize.sub} text-[#D4AF37] tracking-[0.04em] sm:tracking-[0.12em] font-bold uppercase mt-0.5 truncate block w-full max-w-[150px] xs:max-w-[210px] sm:max-w-none`}>
+            <span className={`font-mono ${currentSize.sub} text-[#D4AF37] tracking-[0.03em] sm:tracking-[0.05em] font-bold uppercase mt-0.5 leading-snug block w-full max-w-full break-words whitespace-normal`}>
               Academic Event Management + Network Organisation
             </span>
           )}
