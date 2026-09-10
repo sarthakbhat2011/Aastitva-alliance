@@ -75,31 +75,32 @@ export const ConclaveKernelHUD: React.FC = () => {
       {/* Main HUD Body with Fused 3D Holographic Orbiting Core */}
       <div className="p-3.5 sm:p-7 space-y-4 sm:space-y-6 font-jakarta">
         {/* Module Switcher Tabs */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 text-xs font-mono">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 text-xs">
           {[
-            { id: 'kernel', label: 'Kernel Engine', icon: Cpu },
-            { id: 'eb', label: 'Executive Board', icon: ShieldCheck },
-            { id: 'network', label: 'Regional Grid', icon: Radio },
-            { id: 'transparency', label: 'Founder Covenant', icon: Zap },
+            { id: 'kernel', label: 'Kernel', title: 'Kernel Engine v2.4', icon: Cpu },
+            { id: 'eb', label: 'Exec Board', title: 'Executive Board Allocation Subsystem', icon: ShieldCheck },
+            { id: 'network', label: 'Network', title: 'Regional Geodesic Grid', icon: Radio },
+            { id: 'transparency', label: 'Covenant', title: 'Founder Covenant & Transparency Engine', icon: Zap },
           ].map((tab) => {
             const IconComp = tab.icon;
             const isActive = activeModule === tab.id;
             return (
               <button
                 key={tab.id}
+                title={tab.title}
                 onClick={() => {
                   sounds.playTap();
                   setActiveModule(tab.id as any);
                 }}
                 onMouseEnter={() => sounds.playHover()}
-                className={`p-2 sm:p-2.5 rounded-xl border flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 transition-all cursor-pointer ${
+                className={`min-w-0 overflow-hidden px-2 sm:px-3 py-2 sm:py-2.5 rounded-xl border flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer ${
                   isActive
                     ? 'bg-[#D4AF37] text-[#070A14] font-bold border-[#FAF5EF] shadow-lg'
                     : 'bg-[#070A14]/80 text-[#C4BBA3] border-[#D4AF37]/25 hover:border-[#D4AF37] hover:bg-[#16203B]'
                 }`}
               >
                 <IconComp className="w-3.5 h-3.5 shrink-0" />
-                <span className="text-[10.5px] sm:text-xs font-semibold whitespace-nowrap">{tab.label}</span>
+                <span className="text-[11px] sm:text-xs font-semibold truncate select-none">{tab.label}</span>
               </button>
             );
           })}
