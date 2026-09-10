@@ -294,10 +294,13 @@ export const IndiaNetworkMap: React.FC = () => {
 
         {/* INTERCONNECTED GEOGRAPHICAL MAP SVG STAGE */}
         <div className="relative w-full h-[320px] sm:h-[580px] md:h-[740px] my-2 sm:my-4 flex items-center justify-center overflow-hidden">
+          <div className="absolute inset-0 bg-[#D4AF37]/5 rounded-full blur-[80px] pointer-events-none" />
           <svg
-            className="w-full h-full max-w-4xl select-none filter drop-shadow-[0_0_30px_rgba(212,175,55,0.25)]"
+            className="w-full h-full max-w-4xl select-none relative z-10"
             viewBox="0 0 1000 1050"
             fill="none"
+            shapeRendering="geometricPrecision"
+            textRendering="geometricPrecision"
           >
             <defs>
               {/* Active State Gradient */}
@@ -675,7 +678,7 @@ export const IndiaNetworkMap: React.FC = () => {
         </div>
 
         {/* Selected Hub Knowledge Dossier Drawer with Real-Time Coordinates */}
-        <div className="relative z-30 mt-2 p-3.5 sm:p-8 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#16203B]/95 via-[#0D1427]/95 to-[#16203B]/95 border-2 border-[#D4AF37]/70 shadow-[0_20px_50px_rgba(0,0,0,0.9)] backdrop-blur-xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3.5 sm:gap-6 transition-all duration-500 max-h-[220px] sm:max-h-none overflow-y-auto custom-scrollbar">
+        <div className="relative z-30 mt-2 p-3.5 sm:p-8 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#16203B] via-[#0D1427] to-[#16203B] border-2 border-[#D4AF37]/60 shadow-[0_15px_40px_rgba(0,0,0,0.85)] flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3.5 sm:gap-6 transition-all duration-300 max-h-[220px] sm:max-h-none overflow-y-auto custom-scrollbar">
           <div className="flex items-start gap-3 sm:gap-4 text-left">
             <div className="p-2.5 sm:p-4 rounded-xl sm:rounded-2xl bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/50 shrink-0 shadow-inner">
               <Navigation className="w-5 h-5 sm:w-7 sm:h-7 animate-pulse text-[#D4AF37]" />

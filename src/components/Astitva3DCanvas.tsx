@@ -34,10 +34,10 @@ export const Astitva3DCanvas: React.FC<Props> = ({
       ? variant === 'minimal' ? 7.5 : variant === 'emblem' ? 6.5 : 10.5
       : variant === 'minimal' ? 6.5 : variant === 'emblem' ? 5.5 : 8;
 
-    // Renderer
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: !isMobile, powerPreference: 'high-performance' });
+    // Renderer with true antialiasing and crisp pixel ratio
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' });
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     container.appendChild(renderer.domElement);
 
     // Determine current theme

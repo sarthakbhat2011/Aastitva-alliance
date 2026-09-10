@@ -112,14 +112,13 @@ export const CinematicScene: React.FC<CinematicSceneProps> = ({
         };
       case 'lens-focus':
         return {
-          filter: lensBlur,
+          opacity: estOpacity,
           scale: lensScale,
         };
       case 'theatrical-prop':
         return {
           y: propY,
           rotateX: propRotateX,
-          transformPerspective: 1200,
         };
       case 'reflective-calm':
         return {
@@ -138,7 +137,7 @@ export const CinematicScene: React.FC<CinematicSceneProps> = ({
 
   return (
     <div ref={containerRef} className={`relative overflow-visible ${className}`}>
-      <motion.div style={getStyle()} className="gpu-accelerated w-full">
+      <motion.div style={getStyle()} className="w-full">
         {children}
       </motion.div>
     </div>

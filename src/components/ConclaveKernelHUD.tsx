@@ -9,11 +9,11 @@ export const ConclaveKernelHUD: React.FC = () => {
   const modules = {
     kernel: {
       title: 'Aastitva Core Event Kernel v2.4',
-      status: 'OPERATIONAL • 100% HEALTH',
+      status: 'OPERATIONAL • ACTIVE',
       metrics: [
-        { label: 'Rules of Procedure', value: 'Strict UN Standard', status: 'Optimal' },
-        { label: 'Operational Latency', value: 'Zero Middlemen', status: 'Active' },
-        { label: 'Event Execution Index', value: 'Institutional Grade', status: 'Verified' },
+        { label: 'Rules of Procedure', value: 'UN Standard', status: 'Optimal' },
+        { label: 'Operational Model', value: 'Zero Middlemen', status: 'Active' },
+        { label: 'Execution Quality', value: 'Institutional', status: 'Verified' },
       ],
       desc: 'Simplifying the operational complexity of academic events so student ideas reach full, complete existence without administrative friction.',
     },
@@ -21,28 +21,28 @@ export const ConclaveKernelHUD: React.FC = () => {
       title: 'Executive Board Allocation Subsystem',
       status: 'VERIFIED • UNBIASED ROSTER',
       metrics: [
-        { label: 'Chair Screening Tier', value: 'Top 5% Regional Circuit', status: 'Active' },
+        { label: 'Chair Screening Tier', value: 'Pre-Vetted Circuit', status: 'Active' },
         { label: 'Marking Matrix Integrity', value: 'Zero-Bias Protocol', status: 'Locked' },
-        { label: 'Background Guide Prep', value: 'Comprehensive Dossiers', status: 'Ready' },
+        { label: 'Background Guides', value: 'Verified Dossiers', status: 'Ready' },
       ],
       desc: 'Handpicking impartial, seasoned Executive Board members and providing rigorous delegate training bootcamps.',
     },
     network: {
       title: 'Subcontinent Regional Geodesic Grid',
-      status: '13 HUBS INTERCONNECTED',
+      status: 'REGIONAL NETWORK ONLINE',
       metrics: [
         { label: 'Primary Founding Core', value: 'Jammu Operations HQ', status: 'Online' },
         { label: 'Regional Reach', value: 'North & Western India', status: 'Linked' },
-        { label: 'Grassroots Access', value: 'Jammu District Tour', status: 'Active' },
+        { label: 'Grassroots Access', value: 'Jammu District Outreach', status: 'Active' },
       ],
-      desc: 'Expanding institutional event infrastructure across 13 established regional hubs from Kashmir to Pune.',
+      desc: 'Expanding institutional event infrastructure across connected regional academic hubs from Kashmir to Pune.',
     },
     transparency: {
       title: 'Radical Transparency & Covenant Engine',
       status: 'FOUNDER PERSONAL RESPONSIBILITY',
       metrics: [
-        { label: 'Hidden Costs', value: '0% (Zero Surcharges)', status: 'Guaranteed' },
-        { label: 'Bureaucracy Level', value: 'None (Direct Contact)', status: 'Verified' },
+        { label: 'Hidden Costs', value: 'Zero Surcharges', status: 'Guaranteed' },
+        { label: 'Bureaucracy Level', value: 'Direct Contact', status: 'Verified' },
         { label: 'Conversation Integrity', value: 'Honest From Day One', status: 'Covenant' },
       ],
       desc: 'No hidden costs, no vague promises—a founder who takes direct personal responsibility as a covenant for every event.',
@@ -77,10 +77,10 @@ export const ConclaveKernelHUD: React.FC = () => {
         {/* Module Switcher Tabs */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2 text-xs font-mono">
           {[
-            { id: 'kernel', label: 'Kernel.sys', icon: Cpu },
-            { id: 'eb', label: 'ExecBoard.dll', icon: ShieldCheck },
-            { id: 'network', label: 'GridMap.net', icon: Radio },
-            { id: 'transparency', label: 'Covenant.sec', icon: Zap },
+            { id: 'kernel', label: 'Kernel Engine', icon: Cpu },
+            { id: 'eb', label: 'Executive Board', icon: ShieldCheck },
+            { id: 'network', label: 'Regional Grid', icon: Radio },
+            { id: 'transparency', label: 'Founder Covenant', icon: Zap },
           ].map((tab) => {
             const IconComp = tab.icon;
             const isActive = activeModule === tab.id;
@@ -94,12 +94,12 @@ export const ConclaveKernelHUD: React.FC = () => {
                 onMouseEnter={() => sounds.playHover()}
                 className={`p-2 sm:p-2.5 rounded-xl border flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-[#D4AF37] text-[#070A14] font-bold border-[#FAF5EF] shadow-lg scale-102'
+                    ? 'bg-[#D4AF37] text-[#070A14] font-bold border-[#FAF5EF] shadow-lg'
                     : 'bg-[#070A14]/80 text-[#C4BBA3] border-[#D4AF37]/25 hover:border-[#D4AF37] hover:bg-[#16203B]'
                 }`}
               >
                 <IconComp className="w-3.5 h-3.5 shrink-0" />
-                <span className="truncate text-[11px] sm:text-xs">{tab.label}</span>
+                <span className="text-[10.5px] sm:text-xs font-semibold whitespace-nowrap">{tab.label}</span>
               </button>
             );
           })}
@@ -141,7 +141,7 @@ export const ConclaveKernelHUD: React.FC = () => {
           {/* Right Column: Embedded 3D Saturn Celestial Orb Matrix */}
           <div className="md:col-span-4 h-40 sm:h-56 relative rounded-2xl overflow-hidden bg-black/50 border border-[#D4AF37]/30 flex items-center justify-center p-1">
             <Astitva3DCanvas variant="minimal" />
-            <div className="absolute bottom-2 left-2 right-2 px-2 py-1 rounded bg-[#070A14]/80 text-[9px] font-mono text-[#D4AF37] text-center border border-[#D4AF37]/20 backdrop-blur-md">
+            <div className="absolute bottom-2 left-2 right-2 px-2 py-1 rounded bg-[#070A14]/90 text-[9px] font-mono text-[#D4AF37] text-center border border-[#D4AF37]/30 shadow-md">
               Quantum Planetary Core
             </div>
           </div>
