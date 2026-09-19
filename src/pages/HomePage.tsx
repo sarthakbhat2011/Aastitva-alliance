@@ -99,6 +99,29 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: body.toString(),
       }).catch((err) => console.log('Silent Google Form POST:', err));
+
+      // Persist to Developer Mailbox for administrative oversight
+      const trackingId = `AEQ-QUICK-${Math.floor(1000 + Math.random() * 9000)}`;
+      const nowTime = new Date().toLocaleString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        dateStyle: 'medium',
+        timeStyle: 'short',
+      });
+      const existingMailbox = JSON.parse(localStorage.getItem('astitva_partner_mailbox') || '[]');
+      const newMailboxEntry = {
+        id: trackingId,
+        timestamp: nowTime,
+        schoolName: form.schoolName.trim() || 'Not Specified',
+        contactPerson: `${form.fullName.trim()} (${form.grade || 'N/A'})`,
+        email: form.email.trim(),
+        phone: form.phone.trim(),
+        eventType: `Aequitas Quick Register: ${form.firstChoiceCommittee} / ${form.secondChoiceCommittee}`,
+        preferredDate: '2026-10-24',
+        message: `[QUICK REGISTRATION - ${trackingId}]\nDelegate: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.schoolName.trim()}\nGrade: ${form.grade}\n1st Choice: ${form.firstChoiceCommittee}\n2nd Choice: ${form.secondChoiceCommittee}\nExperience: ${form.experienceLevel}`,
+        status: 'New',
+      };
+      localStorage.setItem('astitva_partner_mailbox', JSON.stringify([newMailboxEntry, ...existingMailbox]));
+      window.dispatchEvent(new Event('astitva_partner_submitted'));
     } catch (err) {
       console.log('Background submit:', err);
     }

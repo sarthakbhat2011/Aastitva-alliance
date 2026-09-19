@@ -298,7 +298,7 @@ export const AequitasRegistrationPage: React.FC = () => {
         body: body.toString(),
       }).catch((err) => console.log('Silent Google Form response:', err));
 
-      // Also persist to local application storage for delegate access
+      // Also persist to local application storage and Developer Mailbox
       try {
         const stored = JSON.parse(localStorage.getItem('aequitas_delegate_applications') || '[]');
         stored.push({
@@ -307,8 +307,25 @@ export const AequitasRegistrationPage: React.FC = () => {
           ...form,
         });
         localStorage.setItem('aequitas_delegate_applications', JSON.stringify(stored));
+
+        // Persist directly to Developer Mailbox (astitva_partner_mailbox) for Developer Desk access
+        const existingMailbox = JSON.parse(localStorage.getItem('astitva_partner_mailbox') || '[]');
+        const newMailboxEntry = {
+          id: trackingId,
+          timestamp: nowTime,
+          schoolName: form.institution.trim(),
+          contactPerson: `${form.fullName.trim()} (${form.grade})`,
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          eventType: `Aequitas 2026 Delegate: ${form.firstChoiceCommittee} [${form.firstChoicePortfolio.trim()}]`,
+          preferredDate: '2026-10-24',
+          message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.institution.trim()}\nAcademic Division: ${form.grade}\nPrior MUN Experience: ${form.priorExperience}\nHonors / Accolades: ${form.priorAccolades.trim() || 'None'}\n1st Choice Committee: ${form.firstChoiceCommittee} (Preferred: ${form.firstChoicePortfolio.trim()})\n2nd Choice Committee: ${form.secondChoiceCommittee} (Preferred: ${form.secondChoicePortfolio.trim()})\nStatement of Purpose:\n${form.statement.trim()}`,
+          status: 'New',
+        };
+        localStorage.setItem('astitva_partner_mailbox', JSON.stringify([newMailboxEntry, ...existingMailbox]));
+        window.dispatchEvent(new Event('astitva_partner_submitted'));
       } catch (e) {
-        // ignore storage errors
+        console.error('Failed to log to developer mailbox:', e);
       }
     } catch (err) {
       console.log('Submission dispatch error:', err);
@@ -537,7 +554,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                           <input
                             type="text"
                             required
-                            placeholder="e.g. Sarthak Bhat"
+                            placeholder="e.g. Aarav Sharma"
                             value={form.fullName}
                             onChange={(e) => setForm({ ...form, fullName: e.target.value })}
                             className={`w-full pl-13 pr-4 py-3 rounded-xl bg-[#050811] border text-white text-sm focus:outline-none transition-colors ${
@@ -866,9 +883,6 @@ export const AequitasRegistrationPage: React.FC = () => {
                             >
                               <div className="flex items-center justify-between">
                                 <span className="font-bold text-xs text-white">{comm.code}</span>
-                                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-[#D4AF37]/15 text-[#D4AF37]">
-                                  {comm.seats} seats
-                                </span>
                               </div>
                               <p className="text-[10px] text-[#C4BBA3] truncate mt-1">{comm.name}</p>
                               {isFirst && (
@@ -908,7 +922,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                           >
                             {COMMITTEES.map((comm) => (
                               <option key={comm.id} value={`${comm.code} - ${comm.name}`}>
-                                {comm.code} - {comm.name} ({comm.seats} Seats)
+                                {comm.code} - {comm.name}
                               </option>
                             ))}
                           </select>
@@ -961,7 +975,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                           >
                             {COMMITTEES.map((comm) => (
                               <option key={comm.id} value={`${comm.code} - ${comm.name}`}>
-                                {comm.code} - {comm.name} ({comm.seats} Seats)
+                                {comm.code} - {comm.name}
                               </option>
                             ))}
                           </select>

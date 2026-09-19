@@ -123,6 +123,29 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
         },
         body: body.toString(),
       }).catch((err) => console.log('Silent Google Form POST:', err));
+
+      // Save to Developer Mailbox
+      try {
+        const existingMailbox = JSON.parse(localStorage.getItem('astitva_partner_mailbox') || '[]');
+        const nowTime = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
+        const trackingId = `AEQ-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+        const newEntry = {
+          id: trackingId,
+          timestamp: nowTime,
+          schoolName: form.institution.trim(),
+          contactPerson: `${form.fullName.trim()} (${form.grade})`,
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          eventType: `Summit Page Registration: ${form.firstChoiceCommittee}`,
+          preferredDate: '2026-10-24',
+          message: `[SUMMIT PAGE DELEGATE REGISTRATION]\n1st Choice: ${form.firstChoiceCommittee} [${form.firstChoicePortfolio}]\n2nd Choice: ${form.secondChoiceCommittee} [${form.secondChoicePortfolio}]\nDivision: ${form.grade}\nExperience: ${form.priorExperience}`,
+          status: 'New',
+        };
+        localStorage.setItem('astitva_partner_mailbox', JSON.stringify([newEntry, ...existingMailbox]));
+        window.dispatchEvent(new Event('astitva_partner_submitted'));
+      } catch (err) {
+        console.error('Failed to log to developer mailbox:', err);
+      }
     } catch (err) {
       console.log('Background submit:', err);
     }

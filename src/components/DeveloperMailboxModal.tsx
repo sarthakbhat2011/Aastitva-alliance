@@ -27,7 +27,7 @@ interface Props {
   onClose: () => void;
 }
 
-const DEV_PASSCODE = 'mailsofpartners@2026';
+const DEV_PASSCODE = 'bhatsarthakunrivalledunion2011,2001';
 const STORAGE_KEY = 'astitva_partner_mailbox';
 const AUTH_SESSION_KEY = 'astitva_dev_partner_authorized';
 
@@ -169,11 +169,11 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
               <h2 className="text-xl font-serif font-bold text-[#FAF5EF] flex items-center gap-2">
                 Developer Mailbox
                 <span className="px-2.5 py-0.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-[10px] font-bold tracking-wider uppercase">
-                  Partner With Us Inquiries
+                  Partners & Delegate Registrations
                 </span>
               </h2>
               <p className="text-xs text-[#C4BBA3]">
-                Strictly dedicated to Institutional & Organizational Partnership registrations.
+                Central repository for all Institutional Partnership inquiries and Aequitas Summit Delegate applications.
               </p>
             </div>
           </div>
@@ -265,7 +265,7 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search partner registrations..."
+                    placeholder="Search registrations and inquiries..."
                     className="w-full pl-9 pr-4 py-2 rounded-xl bg-[#070A14] border border-[#243563] text-xs text-white placeholder-[#768074] focus:outline-none focus:border-[#D4AF37]"
                   />
                   <Search className="w-4 h-4 text-[#C4BBA3] absolute left-3 top-2.5" />

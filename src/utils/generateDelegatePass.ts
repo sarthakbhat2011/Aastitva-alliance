@@ -294,24 +294,16 @@ export function generateDelegatePassDataUrl(data: DelegatePassData): string {
   ctx.letterSpacing = '2px';
   ctx.fillText('AASTITVA ALLIANCE • EXECUTIVE SECRETARIAT', width / 2, footerY + 54);
 
-  // Right: Simulated Barcode / RFID Credentials Block
+  // Right: Clean Security & Accreditation Seal (No Barcode)
   ctx.textAlign = 'right';
-  const barcodeX = width - 90;
-  const barY = footerY + 18;
-  const barHeight = 26;
-
-  // Draw simulated barcode stripes
-  const barPattern = [3, 1, 4, 2, 1, 3, 2, 4, 1, 2, 3, 1, 4, 2, 1, 3, 2, 1, 4, 2, 3, 1, 2, 4, 1];
-  let currentBarX = barcodeX - 160;
+  ctx.font = 'bold 12px "Space Grotesk", font-mono, monospace';
   ctx.fillStyle = '#D4AF37';
-  barPattern.forEach((w) => {
-    ctx.fillRect(currentBarX, barY, w, barHeight);
-    currentBarX += w + 3;
-  });
+  ctx.fillText('SOVEREIGN PASS', width - 90, footerY + 34);
 
-  ctx.font = '9px "Space Grotesk", font-mono, monospace';
-  ctx.fillStyle = 'rgba(212, 175, 55, 0.8)';
-  ctx.fillText(data.trackingId || 'AEQ-2026-SECURE', barcodeX, barY + 44);
+  ctx.font = '10px "Space Grotesk", sans-serif';
+  ctx.fillStyle = '#C4BBA3';
+  ctx.letterSpacing = '1px';
+  ctx.fillText('OFFICIAL CONCLAVE SEAL', width - 90, footerY + 54);
   ctx.restore();
 
   return canvas.toDataURL('image/png');
