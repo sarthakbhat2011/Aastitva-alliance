@@ -111,7 +111,7 @@ const COMMON_INSTITUTIONS = [
 ];
 
 const GOOGLE_FORM_ACTION =
-  'https://docs.google.com/forms/d/e/1FAIpQLScBGLm5S3STYlDHqXT8EojVv0F4o-wMOxWRW563YrE1B1x1DQ/formResponse';
+  'https://docs.google.com/forms/d/e/1FAIpQLSdgVhSI5tgSKD4vk_m8YWI0q6zFuJFytzer4R7-DSbzu7G8rg/formResponse';
 
 export const AequitasRegistrationPage: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
