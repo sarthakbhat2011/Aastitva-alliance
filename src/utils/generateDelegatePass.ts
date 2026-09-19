@@ -14,7 +14,7 @@ export interface DelegatePassData {
   fullName: string;
   institution: string;
   grade: string;
-  trackingId: string;
+  trackingId?: string;
 }
 
 const POETIC_QUOTE =
@@ -272,17 +272,7 @@ export function generateDelegatePassDataUrl(data: DelegatePassData): string {
   ctx.lineTo(width - 90, footerY);
   ctx.stroke();
 
-  // Left: Tracking ID & SSL Status
-  ctx.textAlign = 'left';
-  ctx.font = 'bold 12px "Space Grotesk", font-mono, monospace';
-  ctx.fillStyle = '#D4AF37';
-  ctx.fillText(`PASS ID: ${data.trackingId || 'AEQ-2026-CONFIRMED'}`, 90, footerY + 32);
-
-  ctx.font = '10px "Space Grotesk", font-mono, monospace';
-  ctx.fillStyle = '#34D399';
-  ctx.fillText('STATUS: ACCREDITED • 256-BIT SSL VERIFIED', 90, footerY + 54);
-
-  // Center: Date & Venue
+  // Center: Date, Venue & Executive Secretariat
   ctx.textAlign = 'center';
   ctx.font = 'bold 13px "Cinzel", "Times New Roman", serif';
   ctx.fillStyle = '#FAF5EF';
@@ -292,18 +282,7 @@ export function generateDelegatePassDataUrl(data: DelegatePassData): string {
   ctx.font = '10px "Space Grotesk", sans-serif';
   ctx.fillStyle = '#C4BBA3';
   ctx.letterSpacing = '2px';
-  ctx.fillText('AASTITVA ALLIANCE • EXECUTIVE SECRETARIAT', width / 2, footerY + 54);
-
-  // Right: Clean Security & Accreditation Seal (No Barcode)
-  ctx.textAlign = 'right';
-  ctx.font = 'bold 12px "Space Grotesk", font-mono, monospace';
-  ctx.fillStyle = '#D4AF37';
-  ctx.fillText('SOVEREIGN PASS', width - 90, footerY + 34);
-
-  ctx.font = '10px "Space Grotesk", sans-serif';
-  ctx.fillStyle = '#C4BBA3';
-  ctx.letterSpacing = '1px';
-  ctx.fillText('OFFICIAL CONCLAVE SEAL', width - 90, footerY + 54);
+  ctx.fillText('AASTITVA ALLIANCE • EXECUTIVE SECRETARIAT • OFFICIAL CONCLAVE SEAL', width / 2, footerY + 54);
   ctx.restore();
 
   return canvas.toDataURL('image/png');
