@@ -10,20 +10,23 @@ import {
   X,
   ArrowRight,
   Quote,
-  Clock,
   ChevronLeft,
   ChevronRight,
   Eye,
   EyeOff,
+  Globe,
+  Compass,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { CountdownTime } from '../types';
 import { sounds } from '../utils/soundEffects';
+import { Astitva3DCanvas } from './Astitva3DCanvas';
+import { COMMITTEES } from '../data';
 
 interface Props {
   onUnlock: () => void;
   onOpenRegister: () => void;
-  countdown: CountdownTime;
+  countdown?: CountdownTime;
 }
 
 const DEV_PASSCODE = 'bhatsarthakunrivalledunion2011,2001';
@@ -54,7 +57,6 @@ const QUOTES = [
 export const ComingSoonScreen: React.FC<Props> = ({
   onUnlock,
   onOpenRegister,
-  countdown,
 }) => {
   const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -65,6 +67,18 @@ export const ComingSoonScreen: React.FC<Props> = ({
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
+  // Ensure full page scrolling is unlocked
+  useEffect(() => {
+    document.body.style.overflow = 'auto';
+    document.documentElement.style.overflow = 'auto';
+    document.body.style.touchAction = 'auto';
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.touchAction = '';
+    };
+  }, []);
+
   // Auto rotate quotes every 6 seconds
   useEffect(() => {
     const timer = setInterval(() => {
@@ -73,7 +87,7 @@ export const ComingSoonScreen: React.FC<Props> = ({
     return () => clearInterval(timer);
   }, []);
 
-  // Ambient Starfield & Particle Glow Canvas
+  // Ambient Starfield, Shooting Stars & Galactic Planetary Effects Canvas
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -84,6 +98,17 @@ export const ComingSoonScreen: React.FC<Props> = ({
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
+    let mouseX = width / 2;
+    let mouseY = height / 2;
+    let targetMouseX = mouseX;
+    let targetMouseY = mouseY;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      targetMouseX = e.clientX;
+      targetMouseY = e.clientY;
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+
     const handleResize = () => {
       if (!canvas) return;
       width = canvas.width = window.innerWidth;
@@ -91,55 +116,156 @@ export const ComingSoonScreen: React.FC<Props> = ({
     };
     window.addEventListener('resize', handleResize);
 
+    // 1. Galactic Starfield
     const stars: {
       x: number;
       y: number;
       radius: number;
       alpha: number;
+      pulseSpeed: number;
       speed: number;
       color: string;
     }[] = [];
 
-    const colors = ['#D4AF37', '#FAF5EF', '#38BDF8', '#C084FC'];
+    const starColors = ['#D4AF37', '#FAF5EF', '#38BDF8', '#C084FC', '#FDE047'];
 
-    for (let i = 0; i < 90; i++) {
+    for (let i = 0; i < 120; i++) {
       stars.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        radius: Math.random() * 1.5 + 0.4,
+        radius: Math.random() * 1.6 + 0.4,
         alpha: Math.random() * 0.8 + 0.2,
-        speed: Math.random() * 0.4 + 0.1,
-        color: colors[Math.floor(Math.random() * colors.length)],
+        pulseSpeed: Math.random() * 0.02 + 0.005,
+        speed: Math.random() * 0.3 + 0.05,
+        color: starColors[Math.floor(Math.random() * starColors.length)],
       });
     }
+
+    // 2. Shooting Stars System
+    interface ShootingStar {
+      x: number;
+      y: number;
+      length: number;
+      speed: number;
+      angle: number;
+      alpha: number;
+      color: string;
+      active: boolean;
+    }
+
+    const shootingStars: ShootingStar[] = [];
+    const spawnShootingStar = () => {
+      if (Math.random() < 0.45 && shootingStars.filter((s) => s.active).length < 4) {
+        const palettes = [
+          'rgba(212, 175, 55, ',   // Imperial Gold
+          'rgba(255, 255, 255, ',   // Pure Starlight White
+          'rgba(192, 132, 252, ',   // Royal Violet
+          'rgba(56, 189, 248, ',    // Electric Cyan
+        ];
+        shootingStars.push({
+          x: Math.random() * (width * 1.2) - width * 0.1,
+          y: Math.random() * (height * 0.5),
+          length: Math.random() * 120 + 70,
+          speed: Math.random() * 9 + 5,
+          angle: Math.PI / 4 + (Math.random() - 0.5) * 0.25,
+          alpha: 1.0,
+          color: palettes[Math.floor(Math.random() * palettes.length)],
+          active: true,
+        });
+      }
+    };
+
+    // 3. Planetary Orbital Geometry State
+    let planetRotation = 0;
 
     const render = () => {
       ctx.clearRect(0, 0, width, height);
 
-      // Deep galactic nebula radial glow
-      const grad = ctx.createRadialGradient(
-        width / 2,
-        height / 2,
+      // Mouse Parallax Easing
+      mouseX += (targetMouseX - mouseX) * 0.05;
+      mouseY += (targetMouseY - mouseY) * 0.05;
+      planetRotation += 0.003;
+
+      // A. Deep Cosmic Nebula Gradients
+      const nebula1 = ctx.createRadialGradient(
+        width * 0.5 + (mouseX - width / 2) * 0.04,
+        height * 0.35 + (mouseY - height / 2) * 0.04,
         0,
-        width / 2,
-        height / 2,
-        Math.max(width, height) * 0.7
+        width * 0.5,
+        height * 0.35,
+        Math.max(width, height) * 0.65
       );
-      grad.addColorStop(0, 'rgba(19, 28, 59, 0.45)');
-      grad.addColorStop(0.5, 'rgba(11, 18, 36, 0.6)');
-      grad.addColorStop(1, 'rgba(5, 8, 17, 0.95)');
-      ctx.fillStyle = grad;
+      nebula1.addColorStop(0, 'rgba(88, 28, 135, 0.28)'); // Deep royal purple
+      nebula1.addColorStop(0.4, 'rgba(30, 27, 75, 0.35)'); // Navy violet
+      nebula1.addColorStop(0.75, 'rgba(15, 23, 42, 0.55)');
+      nebula1.addColorStop(1, 'rgba(5, 8, 17, 0.95)');
+      ctx.fillStyle = nebula1;
       ctx.fillRect(0, 0, width, height);
 
-      // Render drifting stars
+      // B. Warm Golden Starlight Horizon Glow
+      const goldNebula = ctx.createRadialGradient(
+        width * 0.5,
+        height * 0.45,
+        0,
+        width * 0.5,
+        height * 0.45,
+        width * 0.4
+      );
+      goldNebula.addColorStop(0, 'rgba(212, 175, 55, 0.12)');
+      goldNebula.addColorStop(0.6, 'rgba(212, 175, 55, 0.03)');
+      goldNebula.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = goldNebula;
+      ctx.fillRect(0, 0, width, height);
+
+      // C. Celestial Planetary Background Rings & Latitude Bands
+      ctx.save();
+      const planetCenterX = width * 0.5 + (mouseX - width / 2) * 0.02;
+      const planetCenterY = height * 0.48 + (mouseY - height / 2) * 0.02;
+      ctx.translate(planetCenterX, planetCenterY);
+
+      // Giant outer orbital planetary ring
+      ctx.beginPath();
+      ctx.ellipse(0, 0, Math.min(width, height) * 0.46, Math.min(width, height) * 0.16, -Math.PI / 10 + Math.sin(planetRotation * 0.5) * 0.04, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.16)';
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([8, 12]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Secondary inclined orbital ring
+      ctx.beginPath();
+      ctx.ellipse(0, 0, Math.min(width, height) * 0.56, Math.min(width, height) * 0.2, Math.PI / 8 - Math.cos(planetRotation * 0.4) * 0.03, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(168, 85, 247, 0.12)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 10]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Tertiary faint wide perimeter ring
+      ctx.beginPath();
+      ctx.ellipse(0, 0, Math.min(width, height) * 0.68, Math.min(width, height) * 0.24, -Math.PI / 6, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.08)';
+      ctx.lineWidth = 0.8;
+      ctx.setLineDash([2, 14]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.restore();
+
+      // D. Draw & Twinkle Drifting Stars
       stars.forEach((star) => {
         ctx.save();
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
         ctx.fillStyle = star.color;
+
+        // Twinkle
+        star.alpha += Math.sin(planetRotation * 10 + star.x) * star.pulseSpeed;
+        star.alpha = Math.max(0.15, Math.min(0.95, star.alpha));
+
         ctx.globalAlpha = star.alpha;
         ctx.shadowColor = star.color;
-        ctx.shadowBlur = star.radius * 4;
+        ctx.shadowBlur = star.radius * 3.5;
         ctx.fill();
         ctx.restore();
 
@@ -150,6 +276,42 @@ export const ComingSoonScreen: React.FC<Props> = ({
         }
       });
 
+      // E. Update & Draw Shooting Stars (Meteors with radiant multi-color trails)
+      spawnShootingStar();
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        const star = shootingStars[i];
+        if (!star.active) continue;
+
+        const endX = star.x + Math.cos(star.angle) * star.length;
+        const endY = star.y + Math.sin(star.angle) * star.length;
+
+        const starGrad = ctx.createLinearGradient(star.x, star.y, endX, endY);
+        starGrad.addColorStop(0, `${star.color}${star.alpha})`);
+        starGrad.addColorStop(0.4, `${star.color}${star.alpha * 0.7})`);
+        starGrad.addColorStop(1, `${star.color}0)`);
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(star.x, star.y);
+        ctx.lineTo(endX, endY);
+        ctx.strokeStyle = starGrad;
+        ctx.lineWidth = 2.2;
+        ctx.lineCap = 'round';
+        ctx.shadowColor = '#FAF5EF';
+        ctx.shadowBlur = 6;
+        ctx.stroke();
+        ctx.restore();
+
+        star.x += Math.cos(star.angle) * star.speed;
+        star.y += Math.sin(star.angle) * star.speed;
+        star.alpha -= 0.012;
+
+        if (star.alpha <= 0 || star.x > width + 100 || star.y > height + 100) {
+          star.active = false;
+          shootingStars.splice(i, 1);
+        }
+      }
+
       animationFrameId = requestAnimationFrame(render);
     };
 
@@ -157,6 +319,7 @@ export const ComingSoonScreen: React.FC<Props> = ({
 
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('mousemove', handleMouseMove);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
@@ -168,8 +331,8 @@ export const ComingSoonScreen: React.FC<Props> = ({
     if (passcode.trim() === DEV_PASSCODE) {
       sounds.playChime();
       confetti({
-        particleCount: 80,
-        spread: 70,
+        particleCount: 90,
+        spread: 75,
         origin: { y: 0.6 },
       });
 
@@ -198,17 +361,17 @@ export const ComingSoonScreen: React.FC<Props> = ({
   };
 
   return (
-    <div className="relative min-h-screen w-full bg-[#050811] text-[#FAF5EF] flex flex-col justify-between overflow-x-hidden select-none font-sans">
-      {/* Background Starfield Canvas */}
+    <div className="relative min-h-screen w-full bg-[#050811] text-[#FAF5EF] flex flex-col justify-between overflow-x-hidden overflow-y-auto font-sans selection:bg-[#D4AF37] selection:text-[#070A14]">
+      {/* Background Starfield, Galactic Nebulas & Shooting Stars Canvas */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full pointer-events-none z-0"
+        className="fixed inset-0 w-full h-full pointer-events-none z-0"
       />
 
-      {/* Radiant Atmosphere Backlight */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[900px] h-[400px] bg-gradient-to-b from-[#D4AF37]/15 via-[#1E293B]/20 to-transparent blur-[140px] pointer-events-none z-0" />
+      {/* Radiant Atmospheric Center Spotlight */}
+      <div className="fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] sm:w-[1100px] h-[500px] bg-gradient-to-b from-[#7C3AED]/15 via-[#D4AF37]/15 to-transparent blur-[160px] pointer-events-none z-0" />
 
-      {/* TOP BAR: Conclave accreditation & Registration Portal link */}
+      {/* TOP HEADER: Branding & Registration Portal Button */}
       <header className="relative z-10 w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37] shadow-[0_0_20px_rgba(212,175,55,0.25)]">
@@ -238,8 +401,8 @@ export const ComingSoonScreen: React.FC<Props> = ({
         </button>
       </header>
 
-      {/* CENTER CONTENT: Buzz Headline, Countdown & Rotating Quotes */}
-      <main className="relative z-10 w-full max-w-5xl mx-auto px-6 py-8 sm:py-12 flex flex-col items-center text-center my-auto space-y-8">
+      {/* MAIN SCROLLABLE CONTENT */}
+      <main className="relative z-10 w-full max-w-5xl mx-auto px-6 py-6 sm:py-10 flex flex-col items-center text-center space-y-8 sm:space-y-12">
         {/* Status Pill with Pulsing Dot */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
@@ -257,7 +420,7 @@ export const ComingSoonScreen: React.FC<Props> = ({
         </motion.div>
 
         {/* Main Buzz Headline */}
-        <div className="space-y-4 max-w-4xl">
+        <div className="space-y-3.5 max-w-4xl">
           <motion.h1
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -280,62 +443,118 @@ export const ComingSoonScreen: React.FC<Props> = ({
           </motion.p>
         </div>
 
-        {/* LIVE SUMMIT COUNTDOWN MATRIX */}
+        {/* 3D PLANETARY CORES & CELESTIAL SYSTEM VIEWPORT */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, delay: 0.3 }}
-          className="p-5 sm:p-6 rounded-3xl bg-[#0D1427]/80 border border-[#D4AF37]/35 shadow-[0_20px_60px_rgba(0,0,0,0.8)] backdrop-blur-xl max-w-xl w-full"
+          transition={{ duration: 0.8, delay: 0.25 }}
+          className="w-full max-w-4xl relative rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-[#0D1427]/85 via-[#070A14]/85 to-[#0A0F1D]/85 border border-[#D4AF37]/35 shadow-[0_25px_80px_rgba(0,0,0,0.85)] backdrop-blur-2xl overflow-hidden text-center space-y-6"
         >
-          <div className="flex items-center justify-between pb-4 mb-4 border-b border-[#243563]/60 text-xs">
-            <span className="font-mono text-[11px] text-[#D4AF37] uppercase tracking-wider flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-[#D4AF37]" />
-              Inaugural Conclave: Aequitas Summit 2026
-            </span>
-            <span className="font-mono text-[10px] text-[#A39B88]">
-              October 24–25, 2026 • Jammu
+          {/* Top Orbit Label Bar */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pb-3 border-b border-[#243563]/60 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-ping" />
+              <span className="font-mono text-[11px] text-[#D4AF37] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <Globe className="w-3.5 h-3.5 text-[#D4AF37]" />
+                Interactive 3D Diplomatic Planetary Core & Orbit System
+              </span>
+            </div>
+            <span className="font-mono text-[10px] text-[#C4BBA3] bg-[#16203B]/80 px-2.5 py-0.5 rounded-full border border-[#243563]">
+              Aequitas Summit 2026 • 6 Planetary Councils Active
             </span>
           </div>
 
-          <div className="grid grid-cols-4 gap-2 sm:gap-4 text-center">
-            {[
-              { label: 'DAYS', value: countdown.days },
-              { label: 'HOURS', value: countdown.hours },
-              { label: 'MINUTES', value: countdown.minutes },
-              { label: 'SECONDS', value: countdown.seconds },
-            ].map((unit, i) => (
-              <div
-                key={i}
-                className="p-2.5 sm:p-3.5 rounded-2xl bg-[#070A14]/90 border border-[#243563] shadow-inner flex flex-col items-center"
-              >
-                <span className="text-2xl sm:text-4xl font-serif font-bold text-white tracking-tight">
-                  {String(unit.value).padStart(2, '0')}
-                </span>
-                <span className="text-[9px] sm:text-[10px] font-mono text-[#D4AF37] tracking-widest mt-1">
-                  {unit.label}
-                </span>
-              </div>
-            ))}
+          {/* 3D WebGL Planetary Canvas Container */}
+          <div className="relative w-full h-[320px] sm:h-[420px] mx-auto flex items-center justify-center">
+            <Astitva3DCanvas
+              variant="hero"
+              onOpenRegister={onOpenRegister}
+              className="w-full h-full"
+            />
+            {/* Subtle center halo behind sphere */}
+            <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+              <div className="w-64 h-64 rounded-full bg-radial from-[#D4AF37]/15 to-transparent blur-2xl" />
+            </div>
+          </div>
+
+          {/* 6 Sovereign Planetary Councils Bar */}
+          <div className="space-y-2 pt-2">
+            <span className="text-[10px] font-mono text-[#A39B88] uppercase tracking-widest block">
+              Official Council Chambers • Orbiting Satellite Nodes
+            </span>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              {COMMITTEES.map((comm) => (
+                <div
+                  key={comm.id}
+                  onClick={() => {
+                    sounds.playTap();
+                    onOpenRegister();
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-[#070A14] border border-[#243563] hover:border-[#D4AF37]/70 text-white hover:text-[#D4AF37] transition-all text-xs font-medium cursor-pointer shadow-sm flex items-center gap-1.5"
+                >
+                  <span className="text-[10px] font-mono text-[#D4AF37] font-bold">
+                    {comm.code}
+                  </span>
+                  <span>{comm.name}</span>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Primary Action Button */}
-          <div className="mt-5 pt-4 border-t border-[#243563]/60">
+          <div className="pt-4 border-t border-[#243563]/60 flex flex-col sm:flex-row items-center justify-center gap-3">
             <button
               onClick={() => {
                 sounds.playTap();
                 onOpenRegister();
               }}
-              className="w-full py-3.5 rounded-xl shimmer-btn text-[#070A14] font-bold text-sm tracking-wide shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-xl shimmer-btn text-[#070A14] font-bold text-sm tracking-wide shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <Sparkles className="w-4 h-4" />
-              <span>Register Now for Aequitas Summit 2026</span>
+              <span>Register for Aequitas Summit 2026 Portal</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </motion.div>
 
+        {/* CONCLAVE ROADMAP & PREVIEW CARDS */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-4xl text-left">
+          <div className="p-5 rounded-2xl bg-[#0D1427]/60 border border-[#243563] backdrop-blur-md space-y-2">
+            <div className="flex items-center gap-2 text-[#D4AF37] font-mono text-xs font-bold uppercase">
+              <Compass className="w-4 h-4" />
+              <span>Inaugural Conclave</span>
+            </div>
+            <h4 className="text-base font-serif font-bold text-white">October 24–25, 2026</h4>
+            <p className="text-xs text-[#C4BBA3] leading-relaxed">
+              Two days of high-stakes parliamentary deliberation, international crisis simulations, and keynote diplomatic addresses in Jammu, J&K.
+            </p>
+          </div>
+
+          <div className="p-5 rounded-2xl bg-[#0D1427]/60 border border-[#243563] backdrop-blur-md space-y-2">
+            <div className="flex items-center gap-2 text-sky-400 font-mono text-xs font-bold uppercase">
+              <ShieldCheck className="w-4 h-4" />
+              <span>Executive Quality</span>
+            </div>
+            <h4 className="text-base font-serif font-bold text-white">Zero Compromise Standard</h4>
+            <p className="text-xs text-[#C4BBA3] leading-relaxed">
+              Certified executive board chairs, standardized evaluation matrices, and complete logistical operational architecture.
+            </p>
+          </div>
+
+          <div className="p-5 rounded-2xl bg-[#0D1427]/60 border border-[#243563] backdrop-blur-md space-y-2">
+            <div className="flex items-center gap-2 text-purple-400 font-mono text-xs font-bold uppercase">
+              <Sparkles className="w-4 h-4" />
+              <span>Delegate Accreditation</span>
+            </div>
+            <h4 className="text-base font-serif font-bold text-white">High-Resolution Pass</h4>
+            <p className="text-xs text-[#C4BBA3] leading-relaxed">
+              Instant verifiable credentials with personalized Delegate Pass PNG download upon registration completion.
+            </p>
+          </div>
+        </div>
+
         {/* ROTATING EXCELLENCE QUOTES DECK */}
-        <div className="w-full max-w-2xl relative min-h-[110px] flex items-center justify-center">
+        <div className="w-full max-w-2xl relative min-h-[120px] flex items-center justify-center pt-2">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentQuoteIndex}
@@ -343,10 +562,10 @@ export const ComingSoonScreen: React.FC<Props> = ({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.5 }}
-              className="space-y-2 px-6"
+              className="space-y-2 px-8 text-center"
             >
-              <Quote className="w-5 h-5 text-[#D4AF37]/50 mx-auto mb-1" />
-              <p className="text-xs sm:text-sm font-serif italic text-[#FAF5EF]/90 leading-relaxed max-w-xl mx-auto">
+              <Quote className="w-5 h-5 text-[#D4AF37]/60 mx-auto mb-1" />
+              <p className="text-sm sm:text-base font-serif italic text-[#FAF5EF]/95 leading-relaxed max-w-xl mx-auto">
                 "{QUOTES[currentQuoteIndex].quote}"
               </p>
               <p className="text-[10px] font-mono uppercase tracking-widest text-[#D4AF37]">
@@ -358,14 +577,14 @@ export const ComingSoonScreen: React.FC<Props> = ({
           {/* Quote navigation controls */}
           <button
             onClick={prevQuote}
-            className="absolute left-0 p-1.5 rounded-full text-[#768074] hover:text-[#D4AF37] transition-colors"
+            className="absolute left-0 p-2 rounded-full text-[#768074] hover:text-[#D4AF37] hover:bg-[#16203B]/50 transition-colors cursor-pointer"
             aria-label="Previous quote"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
           <button
             onClick={nextQuote}
-            className="absolute right-0 p-1.5 rounded-full text-[#768074] hover:text-[#D4AF37] transition-colors"
+            className="absolute right-0 p-2 rounded-full text-[#768074] hover:text-[#D4AF37] hover:bg-[#16203B]/50 transition-colors cursor-pointer"
             aria-label="Next quote"
           >
             <ChevronRight className="w-4 h-4" />

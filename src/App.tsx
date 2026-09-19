@@ -137,12 +137,12 @@ export default function App() {
   };
 
   // Lock body & document scroll when in OS Mode to prevent background web app from leaking on mobile scroll
-  // (Only active on main website, strictly bypassed on standalone registration portal)
+  // (Strictly bypassed on standalone registration portal and Coming Soon screen to allow full natural scrolling)
   useEffect(() => {
-    if (isStandaloneRegister) {
-      document.body.style.overflow = '';
-      document.documentElement.style.overflow = '';
-      document.body.style.touchAction = '';
+    if (isStandaloneRegister || !isSiteUnlocked) {
+      document.body.style.overflow = 'auto';
+      document.documentElement.style.overflow = 'auto';
+      document.body.style.touchAction = 'auto';
       return;
     }
 
@@ -161,7 +161,7 @@ export default function App() {
       document.documentElement.style.overflow = '';
       document.body.style.touchAction = '';
     };
-  }, [osMode, isStandaloneRegister]);
+  }, [osMode, isStandaloneRegister, isSiteUnlocked]);
 
   // Deep link & route listener for standalone registration portal
   useEffect(() => {
