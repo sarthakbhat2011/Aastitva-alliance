@@ -1,0 +1,26 @@
+[
+  {
+    "id": "partner-17861001",
+    "timestamp": "2026-08-07 18:30",
+    "schoolName": "Heritage International School, Jammu",
+    "contactPerson": "Devansh Sharma (Academic Coordinator)",
+    "email": "academics@heritageschooljammu.in",
+    "phone": "+91 94191 22334",
+    "eventType": "Model United Nations (MUN) Executive Board Allocation",
+    "preferredDate": "2026-10-15",
+    "message": "Requesting full Executive Board allocation for 6 committees and Rules of Procedure delegate training workshop.",
+    "status": "In Review"
+  },
+  {
+    "id": "partner-17861002",
+    "timestamp": "2026-08-07 20:15",
+    "schoolName": "Delhi Public School, Jammu",
+    "contactPerson": "Meenakshi Malhotra (Vice Principal)",
+    "email": "viceprincipal@dpsjammu.in",
+    "phone": "+91 98765 11223",
+    "eventType": "Institutional Collaboration & Youth Parliament",
+    "preferredDate": "2026-11-20",
+    "message": "Seeking institutional partner agreement for co-hosting the Jammu Youth Leadership Symposium 2026.",
+    "status": "New"
+  }
+]

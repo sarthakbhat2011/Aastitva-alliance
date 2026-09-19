@@ -16,6 +16,7 @@ import {
   EyeOff,
   Globe,
   Compass,
+  Mail,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { CountdownTime } from '../types';
@@ -27,6 +28,7 @@ interface Props {
   onUnlock: () => void;
   onOpenRegister: () => void;
   countdown?: CountdownTime;
+  onOpenDevMailbox?: () => void;
 }
 
 const DEV_PASSCODE = 'bhatsarthakunrivalledunion2011,2001';
@@ -58,6 +60,7 @@ export const ComingSoonScreen: React.FC<Props> = ({
   onUnlock,
   onOpenRegister,
   countdown,
+  onOpenDevMailbox,
 }) => {
   const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -325,8 +328,8 @@ export const ComingSoonScreen: React.FC<Props> = ({
     };
   }, []);
 
-  const handleAuthorize = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleAuthorize = (action: 'unlock' | 'mailbox' = 'unlock', e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setIsVerifying(true);
 
     if (passcode.trim() === DEV_PASSCODE) {
@@ -338,12 +341,21 @@ export const ComingSoonScreen: React.FC<Props> = ({
       });
 
       sessionStorage.setItem('astitva_site_unlocked', 'true');
+      sessionStorage.setItem('astitva_dev_partner_authorized', 'true');
       setPasscodeError('');
       setTimeout(() => {
         setIsVerifying(false);
         setShowAuthModal(false);
-        onUnlock();
-      }, 500);
+        if (action === 'mailbox') {
+          if (onOpenDevMailbox) {
+            onOpenDevMailbox();
+          } else {
+            onUnlock();
+          }
+        } else {
+          onUnlock();
+        }
+      }, 400);
     } else {
       sounds.playHover();
       setIsVerifying(false);
@@ -768,7 +780,7 @@ export const ComingSoonScreen: React.FC<Props> = ({
                 </button>
               </div>
 
-              <form onSubmit={handleAuthorize} className="space-y-4 text-left text-xs">
+              <form onSubmit={(e) => handleAuthorize('unlock', e)} className="space-y-4 text-left text-xs">
                 <div>
                   <label className="block text-[#D4AF37] font-semibold mb-1.5 uppercase font-mono tracking-wider text-[11px]">
                     Developer Authorization Code
@@ -800,18 +812,27 @@ export const ComingSoonScreen: React.FC<Props> = ({
                   </div>
                 )}
 
-                <div className="pt-1 flex items-center justify-end gap-2">
+                <div className="pt-2 flex flex-wrap items-center justify-end gap-2">
                   <button
                     type="button"
                     onClick={() => setShowAuthModal(false)}
-                    className="px-4 py-2 rounded-xl bg-[#16203B] hover:bg-[#243563] text-white font-semibold transition-colors"
+                    className="px-3 py-2 rounded-xl bg-[#16203B] hover:bg-[#243563] text-white font-semibold transition-colors"
                   >
                     Cancel
                   </button>
                   <button
+                    type="button"
+                    onClick={() => handleAuthorize('mailbox')}
+                    disabled={isVerifying}
+                    className="px-4 py-2 rounded-xl bg-[#D4AF37]/20 hover:bg-[#D4AF37]/35 border border-[#D4AF37]/50 text-[#D4AF37] font-bold flex items-center gap-1.5 shadow-lg active:scale-95 transition-all cursor-pointer"
+                  >
+                    <Mail className="w-4 h-4" />
+                    <span>Open Mailbox</span>
+                  </button>
+                  <button
                     type="submit"
                     disabled={isVerifying}
-                    className="px-5 py-2 rounded-xl shimmer-btn text-[#070A14] font-bold flex items-center gap-1.5 shadow-lg hover:brightness-110 active:scale-95 transition-all cursor-pointer"
+                    className="px-4 py-2 rounded-xl shimmer-btn text-[#070A14] font-bold flex items-center gap-1.5 shadow-lg hover:brightness-110 active:scale-95 transition-all cursor-pointer"
                   >
                     <Unlock className="w-4 h-4" />
                     <span>{isVerifying ? 'Authenticating...' : 'Unlock Website'}</span>

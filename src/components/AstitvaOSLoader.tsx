@@ -27,12 +27,14 @@ import {
   Users,
   HelpCircle,
   Rocket,
+  Mail,
 } from 'lucide-react';
 import { COMMITTEES, INITIAL_SUMMIT_CONFIG } from '../data';
 
 interface Props {
   onEnterSite: (targetPage?: Page) => void;
   onOpenRegister?: () => void;
+  onOpenDevMailbox?: () => void;
 }
 
 interface OSWindow {
@@ -44,7 +46,7 @@ interface OSWindow {
   zIndex: number;
 }
 
-export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }) => {
+export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister, onOpenDevMailbox }) => {
   const [bootProgress, setBootProgress] = useState(0);
   const [bootComplete, setBootComplete] = useState(false);
   const [startMenuOpen, setStartMenuOpen] = useState(false);
@@ -182,6 +184,7 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
           { text: '  offerings  - View full academic & debate service matrix', type: 'resp' },
           { text: '  map        - Inspect 13-city Northern India network map', type: 'resp' },
           { text: '  register   - Trigger official delegate application modal', type: 'resp' },
+          { text: '  mailbox    - Access encrypted Developer Mailbox console', type: 'resp' },
           { text: '  enter      - Launch the complete Aastitva Alliance website', type: 'resp' },
           { text: '  clear      - Clear terminal screen buffer', type: 'resp' }
         );
@@ -206,6 +209,16 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
       case 'register':
         onOpenRegister && onOpenRegister();
         newHistory.push({ text: 'Launching Delegate Registration Gateway...', type: 'resp' });
+        break;
+      case 'mailbox':
+      case 'mail':
+      case 'dev':
+        if (onOpenDevMailbox) {
+          onOpenDevMailbox();
+          newHistory.push({ text: 'Opening Encrypted Developer Mailbox...', type: 'resp' });
+        } else {
+          newHistory.push({ text: 'Developer Mailbox not available.', type: 'resp' });
+        }
         break;
       case 'enter':
       case 'home':
@@ -363,6 +376,23 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
               Terminal
             </span>
           </button>
+
+          {/* Icon 6: Developer Mailbox */}
+          {onOpenDevMailbox && (
+            <button
+              onDoubleClick={onOpenDevMailbox}
+              onClick={onOpenDevMailbox}
+              className="group flex flex-col items-center gap-1 p-1.5 sm:p-3 rounded-xl sm:rounded-2xl bg-[#0D1427]/90 hover:bg-[#D4AF37]/20 border border-[#D4AF37]/40 hover:border-[#D4AF37] transition-all flex-1 sm:flex-none sm:w-24 text-center cursor-pointer shadow-lg backdrop-blur-md shrink-0"
+              title="Encrypted Developer Mailbox"
+            >
+              <div className="p-1.5 sm:p-3 rounded-lg sm:rounded-2xl bg-[#16203B] text-[#D4AF37] border border-[#D4AF37]/40 shadow-xl group-hover:scale-110 transition-transform">
+                <Mail className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
+              </div>
+              <span className="text-[8.5px] sm:text-[11px] font-sans font-semibold text-[#C4BBA3] group-hover:text-[#D4AF37] leading-tight truncate w-full">
+                Mailbox
+              </span>
+            </button>
+          )}
         </div>
 
         {/* 3. RETRO-MODERN RESPONSIVE WINDOWS (Centered and non-overlapping on mobile and desktop) */}
@@ -712,6 +742,21 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister }
                     </button>
                   );
                 })}
+                {onOpenDevMailbox && (
+                  <button
+                    onClick={() => {
+                      setStartMenuOpen(false);
+                      onOpenDevMailbox();
+                    }}
+                    className="w-full px-3 py-2 rounded-xl text-left text-[#D4AF37] hover:bg-[#16203B] hover:border hover:border-[#D4AF37]/40 flex items-center justify-between transition-all cursor-pointer font-mono"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Mail className="w-3.5 h-3.5 text-[#D4AF37]" />
+                      <span>Developer Mailbox</span>
+                    </div>
+                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/30">SECURE</span>
+                  </button>
+                )}
               </div>
 
               <div className="pt-2 border-t border-[#D4AF37]/20">

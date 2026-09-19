@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Page, SummitConfig, CountdownTime, RegistrationFormData } from '../types';
+import { Page, SummitConfig, CountdownTime, RegistrationFormData, PartnerMailEntry } from '../types';
+import { saveEntryToMailbox } from '../utils/mailboxApi';
 import { ConclaveKernelHUD } from '../components/ConclaveKernelHUD';
 import { ConsultationModal } from '../components/ConsultationModal';
 import { ScrollIndicator } from '../components/ScrollIndicator';
@@ -72,7 +73,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
     agreedToTerms: true,
   });
 
-  const handleQuickRegister = (e: React.FormEvent) => {
+  const handleQuickRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormSubmitted(true);
     confetti({
@@ -86,11 +87,12 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
         'https://docs.google.com/forms/d/e/1FAIpQLScBGLm5S3STYlDHqXT8EojVv0F4o-wMOxWRW563YrE1B1x1DQ/formResponse';
 
       const body = new URLSearchParams();
-      body.append('entry.200562055', form.fullName);
-      body.append('entry.1045781291', form.email);
-      body.append('entry.1166974658', form.phone);
-      body.append('entry.1065046570', form.schoolName);
-      body.append('entry.839337160', form.firstChoiceCommittee);
+      body.append('entry.780764261', form.fullName);
+      body.append('entry.830016473', form.email);
+      body.append('entry.86288026', form.phone);
+      body.append('entry.1083196564', form.schoolName);
+      body.append('entry.278555826', form.grade);
+      body.append('entry.977018072', form.firstChoiceCommittee);
       body.append('entry.1843230671', form.secondChoiceCommittee);
 
       fetch(GOOGLE_FORM_ACTION, {
@@ -100,15 +102,14 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
         body: body.toString(),
       }).catch((err) => console.log('Silent Google Form POST:', err));
 
-      // Persist to Developer Mailbox for administrative oversight
+      // Persist to Developer Mailbox & Server Disk
       const trackingId = `AEQ-QUICK-${Math.floor(1000 + Math.random() * 9000)}`;
       const nowTime = new Date().toLocaleString('en-IN', {
         timeZone: 'Asia/Kolkata',
         dateStyle: 'medium',
         timeStyle: 'short',
       });
-      const existingMailbox = JSON.parse(localStorage.getItem('astitva_partner_mailbox') || '[]');
-      const newMailboxEntry = {
+      const newMailboxEntry: PartnerMailEntry = {
         id: trackingId,
         timestamp: nowTime,
         schoolName: form.schoolName.trim() || 'Not Specified',
@@ -120,8 +121,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
         message: `[QUICK REGISTRATION - ${trackingId}]\nDelegate: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.schoolName.trim()}\nGrade: ${form.grade}\n1st Choice: ${form.firstChoiceCommittee}\n2nd Choice: ${form.secondChoiceCommittee}\nExperience: ${form.experienceLevel}`,
         status: 'New',
       };
-      localStorage.setItem('astitva_partner_mailbox', JSON.stringify([newMailboxEntry, ...existingMailbox]));
-      window.dispatchEvent(new Event('astitva_partner_submitted'));
+      await saveEntryToMailbox(newMailboxEntry);
     } catch (err) {
       console.log('Background submit:', err);
     }

@@ -3,7 +3,8 @@ import { createPortal } from 'react-dom';
 import confetti from 'canvas-confetti';
 import { X, CheckCircle2, Sparkles, ShieldCheck, Send, Globe, Award, Calendar, MapPin, ArrowUpRight } from 'lucide-react';
 import { COMMITTEES, INITIAL_SUMMIT_CONFIG } from '../data';
-import { RegistrationFormData } from '../types';
+import { RegistrationFormData, PartnerMailEntry } from '../types';
+import { saveEntryToMailbox } from '../utils/mailboxApi';
 
 interface Props {
   isOpen: boolean;
@@ -56,7 +57,7 @@ export const GlobalRegistrationModal: React.FC<Props> = ({
   const GOOGLE_FORM_ACTION =
     'https://docs.google.com/forms/d/e/1FAIpQLScBGLm5S3STYlDHqXT8EojVv0F4o-wMOxWRW563YrE1B1x1DQ/formResponse';
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -81,12 +82,11 @@ export const GlobalRegistrationModal: React.FC<Props> = ({
         body: body.toString(),
       }).catch((err) => console.log('Silent Google Form submit:', err));
 
-      // Save to Developer Mailbox
+      // Save to Developer Mailbox & Server Disk
       try {
-        const existingMailbox = JSON.parse(localStorage.getItem('astitva_partner_mailbox') || '[]');
         const nowTime = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
         const trackingId = `AEQ-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-        const newEntry = {
+        const newEntry: PartnerMailEntry = {
           id: trackingId,
           timestamp: nowTime,
           schoolName: form.institution.trim(),
@@ -98,8 +98,7 @@ export const GlobalRegistrationModal: React.FC<Props> = ({
           message: `[MODAL DELEGATE REGISTRATION]\n1st Choice: ${form.firstChoiceCommittee} [${form.firstChoicePortfolio}]\n2nd Choice: ${form.secondChoiceCommittee} [${form.secondChoicePortfolio}]\nDivision: ${form.grade}\nExperience: ${form.priorExperience}`,
           status: 'New',
         };
-        localStorage.setItem('astitva_partner_mailbox', JSON.stringify([newEntry, ...existingMailbox]));
-        window.dispatchEvent(new Event('astitva_partner_submitted'));
+        await saveEntryToMailbox(newEntry);
       } catch (err) {
         console.error('Failed to log to developer mailbox:', err);
       }

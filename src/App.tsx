@@ -30,16 +30,33 @@ import { ComingSoonScreen } from './components/ComingSoonScreen';
 const checkSiteUnlocked = () => {
   if (typeof window === 'undefined') return false;
   const search = window.location.search.toLowerCase();
+  const path = window.location.pathname.toLowerCase();
   if (
     search.includes('dev=bhatsarthakunrivalledunion2011,2001') ||
     search.includes('dev=true') ||
     search.includes('dev=preview') ||
-    search.includes('unlock=true')
+    search.includes('unlock=true') ||
+    search.includes('mailbox') ||
+    path.startsWith('/mailbox')
   ) {
     sessionStorage.setItem('astitva_site_unlocked', 'true');
     return true;
   }
   return sessionStorage.getItem('astitva_site_unlocked') === 'true';
+};
+
+const checkMailboxRequested = () => {
+  if (typeof window === 'undefined') return false;
+  const search = window.location.search.toLowerCase();
+  const path = window.location.pathname.toLowerCase();
+  const hash = window.location.hash.toLowerCase();
+  return (
+    search.includes('mailbox=true') ||
+    search.includes('mailbox') ||
+    search.includes('dev=mailbox') ||
+    path.startsWith('/mailbox') ||
+    hash === '#mailbox'
+  );
 };
 
 const isRegistrationUrl = () => {
@@ -70,7 +87,7 @@ export default function App() {
   // Global Modals / Drawers
   const [auditOpen, setAuditOpen] = useState(false);
   const [adminOpen, setAdminOpen] = useState(false);
-  const [devMailboxOpen, setDevMailboxOpen] = useState(false);
+  const [devMailboxOpen, setDevMailboxOpen] = useState<boolean>(checkMailboxRequested);
   const [globalRegisterOpen, setGlobalRegisterOpen] = useState(false);
 
   // Live countdown state
@@ -167,6 +184,9 @@ export default function App() {
   useEffect(() => {
     const handleLocationChange = () => {
       setIsStandaloneRegister(isRegistrationUrl());
+      if (checkMailboxRequested()) {
+        setDevMailboxOpen(true);
+      }
     };
     window.addEventListener('popstate', handleLocationChange);
     window.addEventListener('hashchange', handleLocationChange);
@@ -205,8 +225,13 @@ export default function App() {
       <ThemeProvider>
         <ComingSoonScreen
           onUnlock={() => setIsSiteUnlocked(true)}
+          onOpenDevMailbox={() => setDevMailboxOpen(true)}
           onOpenRegister={handleOpenRegisterPortal}
           countdown={countdown}
+        />
+        <DeveloperMailboxModal
+          isOpen={devMailboxOpen}
+          onClose={() => setDevMailboxOpen(false)}
         />
       </ThemeProvider>
     );
@@ -288,6 +313,7 @@ export default function App() {
           <AstitvaOSLoader
             onEnterSite={handleEnterSiteFromOS}
             onOpenRegister={handleOpenRegisterPortal}
+            onOpenDevMailbox={() => setDevMailboxOpen(true)}
           />
         )}
 

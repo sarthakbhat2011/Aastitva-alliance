@@ -40,6 +40,9 @@ import {
   downloadDelegatePassPng,
   DelegatePassData,
 } from '../utils/generateDelegatePass';
+import { PartnerMailEntry } from '../types';
+import { saveEntryToMailbox } from '../utils/mailboxApi';
+import { DeveloperMailboxModal } from '../components/DeveloperMailboxModal';
 
 interface FormState {
   fullName: string;
@@ -123,6 +126,16 @@ export const AequitasRegistrationPage: React.FC = () => {
   const [submissionTime, setSubmissionTime] = useState('');
   const [passDataUrl, setPassDataUrl] = useState<string>('');
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [devMailboxOpen, setDevMailboxOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const search = window.location.search.toLowerCase();
+      if (search.includes('mailbox=true') || search.includes('tab=mailbox') || search.includes('dev=')) {
+        setDevMailboxOpen(true);
+      }
+    }
+  }, []);
 
   const [form, setForm] = useState<FormState>({
     fullName: '',
@@ -535,7 +548,7 @@ export const AequitasRegistrationPage: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateStep(4)) return;
 
@@ -628,9 +641,8 @@ export const AequitasRegistrationPage: React.FC = () => {
         });
         localStorage.setItem('aequitas_delegate_applications', JSON.stringify(stored));
 
-        // Persist directly to Developer Mailbox (astitva_partner_mailbox) for Developer Desk access
-        const existingMailbox = JSON.parse(localStorage.getItem('astitva_partner_mailbox') || '[]');
-        const newMailboxEntry = {
+        // Persist directly to Developer Mailbox & server disk
+        const newMailboxEntry: PartnerMailEntry = {
           id: trackingId,
           timestamp: nowTime,
           schoolName: form.institution.trim(),
@@ -642,8 +654,7 @@ export const AequitasRegistrationPage: React.FC = () => {
           message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.institution.trim()}\nAcademic Division: ${form.grade}\nPrior MUN Experience: ${form.priorExperience}\nHonors / Accolades: ${form.priorAccolades.trim() || 'None'}\n1st Choice Committee: ${form.firstChoiceCommittee} (Preferred: ${form.firstChoicePortfolio.trim()})\n2nd Choice Committee: ${form.secondChoiceCommittee} (Preferred: ${form.secondChoicePortfolio.trim()})\n3rd Choice Committee: ${form.thirdChoiceCommittee} (Preferred: ${form.thirdChoicePortfolio.trim()})\nStatement of Purpose:\n${form.statement.trim()}`,
           status: 'New',
         };
-        localStorage.setItem('astitva_partner_mailbox', JSON.stringify([newMailboxEntry, ...existingMailbox]));
-        window.dispatchEvent(new Event('astitva_partner_submitted'));
+        await saveEntryToMailbox(newMailboxEntry);
       } catch (e) {
         console.error('Failed to log to developer mailbox:', e);
       }
@@ -748,10 +759,16 @@ export const AequitasRegistrationPage: React.FC = () => {
 
           {/* Right Security & Sound Controls */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0D1427] border border-[#D4AF37]/25 text-emerald-400 font-mono text-[10.5px]">
+            <button
+              type="button"
+              onClick={() => setDevMailboxOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0D1427] border border-[#D4AF37]/25 text-emerald-400 font-mono text-[10.5px] hover:border-[#D4AF37] hover:text-[#D4AF37] transition-all cursor-pointer"
+              title="Click to open Secretariat / Developer Mailbox Desk"
+            >
               <Lock className="w-3 h-3 text-emerald-400" />
-              <span>256-Bit SSL Secured</span>
-            </div>
+              <span className="hidden sm:inline">256-Bit SSL Secured</span>
+              <span className="sm:hidden">Secured</span>
+            </button>
 
             <button
               onClick={handleSoundToggle}
@@ -1733,6 +1750,12 @@ export const AequitasRegistrationPage: React.FC = () => {
           Official Inquiries: <span className="text-[#D4AF37]">aastitva.alliance@gmail.com</span> • Jammu, J&amp;K
         </div>
       </footer>
+
+      {/* Developer Partner Mailbox Modal */}
+      <DeveloperMailboxModal
+        isOpen={devMailboxOpen}
+        onClose={() => setDevMailboxOpen(false)}
+      />
     </div>
   );
 };

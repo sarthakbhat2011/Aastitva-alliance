@@ -29,42 +29,22 @@ import {
   Trophy,
   Filter,
 } from 'lucide-react';
+import {
+  loadAllMailboxEntries,
+  getLocalMailboxEntries,
+  updateMailboxEntryStatus,
+  deleteMailboxEntry,
+  saveEntryToMailbox,
+  DEV_PASSCODE,
+  STORAGE_KEY,
+  AUTH_SESSION_KEY,
+  SAMPLE_PARTNER_MAILS,
+} from '../utils/mailboxApi';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
 }
-
-const DEV_PASSCODE = 'bhatsarthakunrivalledunion2011,2001';
-const STORAGE_KEY = 'astitva_partner_mailbox';
-const AUTH_SESSION_KEY = 'astitva_dev_partner_authorized';
-
-const SAMPLE_PARTNER_MAILS: PartnerMailEntry[] = [
-  {
-    id: 'partner-17861001',
-    timestamp: '2026-08-07 18:30',
-    schoolName: 'Heritage International School, Jammu',
-    contactPerson: 'Devansh Sharma (Academic Coordinator)',
-    email: 'academics@heritageschooljammu.in',
-    phone: '+91 94191 22334',
-    eventType: 'Model United Nations (MUN) Executive Board Allocation',
-    preferredDate: '2026-10-15',
-    message: 'Requesting full Executive Board allocation for 6 committees and Rules of Procedure delegate training workshop.',
-    status: 'In Review',
-  },
-  {
-    id: 'partner-17861002',
-    timestamp: '2026-08-07 20:15',
-    schoolName: 'Delhi Public School, Jammu',
-    contactPerson: 'Meenakshi Malhotra (Vice Principal)',
-    email: 'viceprincipal@dpsjammu.in',
-    phone: '+91 98765 11223',
-    eventType: 'Institutional Collaboration & Youth Parliament',
-    preferredDate: '2026-11-20',
-    message: 'Seeking institutional partner agreement for co-hosting the Jammu Youth Leadership Symposium 2026.',
-    status: 'New',
-  },
-];
 
 interface ParsedDelegateInfo {
   isDelegate: boolean;
@@ -204,22 +184,27 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
   // Editing Mail Entry State
   const [editingMail, setEditingMail] = useState<PartnerMailEntry | null>(null);
 
+  const [isSyncing, setIsSyncing] = useState(false);
+
   // Load Initial Mail Data & Check Auth Session
   useEffect(() => {
     const checkAuth = sessionStorage.getItem(AUTH_SESSION_KEY) === 'true';
     setIsAuthorized(checkAuth);
 
-    const loadMails = () => {
+    const loadMails = async () => {
+      // 1. Instantly display local cache so there's zero lag
+      const local = getLocalMailboxEntries();
+      setMails(local);
+
+      // 2. Fetch live persistent database from server on Render and merge
       try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-          setMails(JSON.parse(stored));
-        } else {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(SAMPLE_PARTNER_MAILS));
-          setMails(SAMPLE_PARTNER_MAILS);
-        }
+        setIsSyncing(true);
+        const liveMails = await loadAllMailboxEntries();
+        setMails(liveMails);
       } catch (err) {
-        setMails(SAMPLE_PARTNER_MAILS);
+        console.error('Mailbox sync error:', err);
+      } finally {
+        setIsSyncing(false);
       }
     };
 
@@ -263,27 +248,28 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
     setPasscodeError('');
   };
 
-  // Delete Individual Entry
-  const handleDeleteMail = (id: string) => {
+  // Delete Individual Entry (Syncs to server & local storage)
+  const handleDeleteMail = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this registration / mail entry?')) {
-      const updated = mails.filter((m) => m.id !== id);
-      saveMailsToStorage(updated);
+      const updated = await deleteMailboxEntry(id);
+      setMails(updated);
     }
   };
 
-  // Quick Update Status
-  const handleQuickStatusChange = (id: string, newStatus: PartnerMailEntry['status']) => {
-    const updated = mails.map((m) => (m.id === id ? { ...m, status: newStatus } : m));
-    saveMailsToStorage(updated);
+  // Quick Update Status (Syncs to server & local storage)
+  const handleQuickStatusChange = async (id: string, newStatus: PartnerMailEntry['status']) => {
+    const updated = await updateMailboxEntryStatus(id, newStatus);
+    setMails(updated);
   };
 
-  // Save Edit Entry
-  const handleSaveEdit = (e: React.FormEvent) => {
+  // Save Edit Entry (Syncs to server & local storage)
+  const handleSaveEdit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingMail) return;
 
+    await saveEntryToMailbox(editingMail);
     const updated = mails.map((m) => (m.id === editingMail.id ? editingMail : m));
-    saveMailsToStorage(updated);
+    setMails(updated);
     setEditingMail(null);
   };
 
@@ -497,14 +483,20 @@ Current Status: ${mail.status}`;
                       Showing: <strong className="text-white">{filteredMails.length}</strong> / {mails.length}
                     </span>
                     <button
-                      onClick={() => {
-                        const stored = localStorage.getItem(STORAGE_KEY);
-                        if (stored) setMails(JSON.parse(stored));
+                      onClick={async () => {
+                        setIsSyncing(true);
+                        try {
+                          const live = await loadAllMailboxEntries();
+                          setMails(live);
+                        } finally {
+                          setIsSyncing(false);
+                        }
                       }}
-                      className="p-2 rounded-xl bg-[#070A14] border border-[#243563] hover:text-[#D4AF37] transition-colors"
-                      title="Refresh Mailbox"
+                      className="px-3 py-1.5 rounded-xl bg-[#070A14] border border-[#243563] hover:text-[#D4AF37] hover:border-[#D4AF37]/40 transition-all flex items-center gap-1.5 cursor-pointer"
+                      title="Sync live records from server disk"
                     >
-                      <RefreshCw className="w-4 h-4" />
+                      <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin text-[#D4AF37]' : ''}`} />
+                      <span className="text-[11px] font-mono">{isSyncing ? 'Syncing...' : 'Sync Live'}</span>
                     </button>
                   </div>
                 </div>

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import confetti from 'canvas-confetti';
-import { Page, SummitConfig, CountdownTime, RegistrationFormData } from '../types';
+import { Page, SummitConfig, CountdownTime, RegistrationFormData, PartnerMailEntry } from '../types';
+import { saveEntryToMailbox } from '../utils/mailboxApi';
 import { COMMITTEES } from '../data';
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
 import { DiplomaticCommandConsole } from '../components/DiplomaticCommandConsole';
@@ -99,7 +100,7 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
   const GOOGLE_FORM_ACTION =
     'https://docs.google.com/forms/d/e/1FAIpQLScBGLm5S3STYlDHqXT8EojVv0F4o-wMOxWRW563YrE1B1x1DQ/formResponse';
 
-  const handleRegisterSubmit = (e: React.FormEvent) => {
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
@@ -124,12 +125,11 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
         body: body.toString(),
       }).catch((err) => console.log('Silent Google Form POST:', err));
 
-      // Save to Developer Mailbox
+      // Save to Developer Mailbox & Server Disk
       try {
-        const existingMailbox = JSON.parse(localStorage.getItem('astitva_partner_mailbox') || '[]');
         const nowTime = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
         const trackingId = `AEQ-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-        const newEntry = {
+        const newEntry: PartnerMailEntry = {
           id: trackingId,
           timestamp: nowTime,
           schoolName: form.institution.trim(),
@@ -141,8 +141,7 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
           message: `[SUMMIT PAGE DELEGATE REGISTRATION]\n1st Choice: ${form.firstChoiceCommittee} [${form.firstChoicePortfolio}]\n2nd Choice: ${form.secondChoiceCommittee} [${form.secondChoicePortfolio}]\nDivision: ${form.grade}\nExperience: ${form.priorExperience}`,
           status: 'New',
         };
-        localStorage.setItem('astitva_partner_mailbox', JSON.stringify([newEntry, ...existingMailbox]));
-        window.dispatchEvent(new Event('astitva_partner_submitted'));
+        await saveEntryToMailbox(newEntry);
       } catch (err) {
         console.error('Failed to log to developer mailbox:', err);
       }
