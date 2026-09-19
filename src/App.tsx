@@ -120,7 +120,15 @@ export default function App() {
   };
 
   // Lock body & document scroll when in OS Mode to prevent background web app from leaking on mobile scroll
+  // (Only active on main website, strictly bypassed on standalone registration portal)
   useEffect(() => {
+    if (isStandaloneRegister) {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.touchAction = '';
+      return;
+    }
+
     if (osMode) {
       document.body.style.overflow = 'hidden';
       document.documentElement.style.overflow = 'hidden';
@@ -136,7 +144,7 @@ export default function App() {
       document.documentElement.style.overflow = '';
       document.body.style.touchAction = '';
     };
-  }, [osMode]);
+  }, [osMode, isStandaloneRegister]);
 
   // Deep link & route listener for standalone registration portal
   useEffect(() => {

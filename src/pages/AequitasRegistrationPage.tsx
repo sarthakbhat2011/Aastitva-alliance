@@ -30,10 +30,16 @@ import {
   Radio,
   Clock,
   Layers,
-  CheckCheck
+  CheckCheck,
+  Download,
 } from 'lucide-react';
 import { COMMITTEES, INITIAL_SUMMIT_CONFIG } from '../data';
 import { sounds } from '../utils/soundEffects';
+import {
+  generateDelegatePassDataUrl,
+  downloadDelegatePassPng,
+  DelegatePassData,
+} from '../utils/generateDelegatePass';
 
 interface FormState {
   fullName: string;
@@ -113,6 +119,7 @@ export const AequitasRegistrationPage: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [applicationId, setApplicationId] = useState('');
   const [submissionTime, setSubmissionTime] = useState('');
+  const [passDataUrl, setPassDataUrl] = useState<string>('');
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
   const [form, setForm] = useState<FormState>({
@@ -130,6 +137,18 @@ export const AequitasRegistrationPage: React.FC = () => {
     secondChoicePortfolio: '',
     agreedToTerms: false,
   });
+
+  // Ensure document-level scrolling is fully unlocked on the registration portal
+  useEffect(() => {
+    document.body.style.overflow = 'auto';
+    document.documentElement.style.overflow = 'auto';
+    document.body.style.touchAction = 'auto';
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.touchAction = '';
+    };
+  }, []);
 
   // Scroll to top on step change
   useEffect(() => {
@@ -301,6 +320,19 @@ export const AequitasRegistrationPage: React.FC = () => {
       setApplicationId(trackingId);
       setSubmissionTime(nowTime);
 
+      // Generate the official high-resolution Delegate Pass PNG
+      try {
+        const passUrl = generateDelegatePassDataUrl({
+          fullName: form.fullName.trim(),
+          institution: form.institution.trim(),
+          grade: form.grade,
+          trackingId,
+        });
+        setPassDataUrl(passUrl);
+      } catch (err) {
+        console.error('Failed to generate pass PNG:', err);
+      }
+
       confetti({
         particleCount: 180,
         spread: 100,
@@ -312,6 +344,7 @@ export const AequitasRegistrationPage: React.FC = () => {
 
   const handleResetForm = () => {
     sounds.playTap();
+    setPassDataUrl('');
     setForm({
       fullName: '',
       email: '',
@@ -1188,6 +1221,50 @@ export const AequitasRegistrationPage: React.FC = () => {
               </div>
             </div>
 
+            {/* OFFICIAL DELEGATE PASS PNG PREVIEW & DOWNLOAD CARD */}
+            {passDataUrl && (
+              <div className="p-4 sm:p-6 rounded-2xl bg-[#070A14] border-2 border-[#D4AF37]/60 text-left space-y-4 shadow-2xl">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-[#D4AF37] animate-pulse" />
+                    <span className="font-playfair font-bold text-sm sm:text-base text-white">
+                      Official Delegate Pass Credential (PNG)
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37]">
+                    High-Res 1200×720 PNG
+                  </span>
+                </div>
+
+                {/* Live Canvas PNG Image Preview */}
+                <div className="rounded-xl overflow-hidden border border-[#D4AF37]/40 shadow-xl bg-black/60">
+                  <img
+                    src={passDataUrl}
+                    alt={`Delegate Pass for ${form.fullName}`}
+                    className="w-full h-auto object-cover block"
+                  />
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1">
+                  <p className="text-[11px] text-[#C4BBA3] font-mono leading-relaxed">
+                    Personalized with your legal name, institution, academic division, and the Conclave Covenant of Excellence.
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      sounds.playChime();
+                      downloadDelegatePassPng(passDataUrl, form.fullName);
+                    }}
+                    className="w-full sm:w-auto shrink-0 px-6 py-3 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E8A53E] to-[#D4AF37] text-[#070A14] font-extrabold text-xs shadow-[0_0_20px_rgba(212,175,55,0.5)] hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <Download className="w-4 h-4 stroke-[2.5]" />
+                    <span>Download Delegate Pass (PNG)</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Next Steps Roadmap */}
             <div className="p-4 rounded-xl bg-[#0D1427]/80 border border-[#D4AF37]/20 text-left space-y-2.5">
               <span className="text-[11px] font-mono text-[#D4AF37] font-bold uppercase tracking-wider block">
@@ -1209,6 +1286,20 @@ export const AequitasRegistrationPage: React.FC = () => {
 
             {/* Action Buttons (Strictly no home redirect, printing and repeat registration supported) */}
             <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              {passDataUrl && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    sounds.playChime();
+                    downloadDelegatePassPng(passDataUrl, form.fullName);
+                  }}
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#E8A53E] text-[#070A14] font-extrabold text-xs flex items-center gap-2 shadow-md hover:brightness-110 active:scale-95 transition-all cursor-pointer font-mono"
+                >
+                  <Download className="w-4 h-4 stroke-[2.5]" />
+                  <span>Download Pass (.PNG)</span>
+                </button>
+              )}
+
               <button
                 type="button"
                 onClick={() => window.print()}
