@@ -54,6 +54,8 @@ interface FormState {
   firstChoicePortfolio: string;
   secondChoiceCommittee: string;
   secondChoicePortfolio: string;
+  thirdChoiceCommittee: string;
+  thirdChoicePortfolio: string;
   agreedToTerms: boolean;
 }
 
@@ -135,6 +137,8 @@ export const AequitasRegistrationPage: React.FC = () => {
     firstChoicePortfolio: '',
     secondChoiceCommittee: 'UNHRC - United Nations Human Rights Council',
     secondChoicePortfolio: '',
+    thirdChoiceCommittee: 'Lok Sabha - Lok Sabha (House of the People)',
+    thirdChoicePortfolio: '',
     agreedToTerms: false,
   });
 
@@ -220,6 +224,12 @@ export const AequitasRegistrationPage: React.FC = () => {
       if (!form.secondChoicePortfolio.trim()) {
         errors.secondChoicePortfolio = 'Please specify your 2nd choice portfolio / country preference.';
       }
+      if (!form.thirdChoiceCommittee) {
+        errors.thirdChoiceCommittee = 'Please select your 3rd Choice Committee.';
+      }
+      if (!form.thirdChoicePortfolio.trim()) {
+        errors.thirdChoicePortfolio = 'Please specify your 3rd choice portfolio / country preference.';
+      }
     }
 
     if (step === 4) {
@@ -288,6 +298,9 @@ export const AequitasRegistrationPage: React.FC = () => {
       body.append('entry.1770614625', form.firstChoicePortfolio.trim());
       body.append('entry.1136480282', form.secondChoiceCommittee);
       body.append('entry.546561131', form.secondChoicePortfolio.trim());
+      // Tertiary choice preferences for custom Google Form mapping
+      body.append('entry.thirdChoiceCommittee', form.thirdChoiceCommittee);
+      body.append('entry.thirdChoicePortfolio', form.thirdChoicePortfolio.trim());
 
       fetch(GOOGLE_FORM_ACTION, {
         method: 'POST',
@@ -319,7 +332,7 @@ export const AequitasRegistrationPage: React.FC = () => {
           phone: form.phone.trim(),
           eventType: `Aequitas 2026 Delegate: ${form.firstChoiceCommittee} [${form.firstChoicePortfolio.trim()}]`,
           preferredDate: '2026-10-24',
-          message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.institution.trim()}\nAcademic Division: ${form.grade}\nPrior MUN Experience: ${form.priorExperience}\nHonors / Accolades: ${form.priorAccolades.trim() || 'None'}\n1st Choice Committee: ${form.firstChoiceCommittee} (Preferred: ${form.firstChoicePortfolio.trim()})\n2nd Choice Committee: ${form.secondChoiceCommittee} (Preferred: ${form.secondChoicePortfolio.trim()})\nStatement of Purpose:\n${form.statement.trim()}`,
+          message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.institution.trim()}\nAcademic Division: ${form.grade}\nPrior MUN Experience: ${form.priorExperience}\nHonors / Accolades: ${form.priorAccolades.trim() || 'None'}\n1st Choice Committee: ${form.firstChoiceCommittee} (Preferred: ${form.firstChoicePortfolio.trim()})\n2nd Choice Committee: ${form.secondChoiceCommittee} (Preferred: ${form.secondChoicePortfolio.trim()})\n3rd Choice Committee: ${form.thirdChoiceCommittee} (Preferred: ${form.thirdChoicePortfolio.trim()})\nStatement of Purpose:\n${form.statement.trim()}`,
           status: 'New',
         };
         localStorage.setItem('astitva_partner_mailbox', JSON.stringify([newMailboxEntry, ...existingMailbox]));
@@ -375,6 +388,8 @@ export const AequitasRegistrationPage: React.FC = () => {
       firstChoicePortfolio: '',
       secondChoiceCommittee: 'UNHRC - United Nations Human Rights Council',
       secondChoicePortfolio: '',
+      thirdChoiceCommittee: 'Lok Sabha - Lok Sabha (House of the People)',
+      thirdChoicePortfolio: '',
       agreedToTerms: false,
     });
     setIsSubmitted(false);
@@ -853,7 +868,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                         Committee & Portfolio Preferences
                       </h2>
                       <p className="text-xs sm:text-sm text-[#C4BBA3] mt-1">
-                        Select your primary and secondary committee preferences. Portfolios are allocated on a rolling, merit-assessed basis.
+                        Select your primary, secondary, and tertiary committee preferences. Portfolios are allocated on a rolling, merit-assessed basis.
                       </p>
                     </div>
 
@@ -866,6 +881,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                         {COMMITTEES.map((comm) => {
                           const isFirst = form.firstChoiceCommittee.includes(comm.code);
                           const isSecond = form.secondChoiceCommittee.includes(comm.code);
+                          const isThird = form.thirdChoiceCommittee.includes(comm.code);
                           return (
                             <div
                               key={comm.id}
@@ -878,6 +894,8 @@ export const AequitasRegistrationPage: React.FC = () => {
                                   ? 'bg-[#16203B] border-[#D4AF37] ring-1 ring-[#D4AF37]'
                                   : isSecond
                                   ? 'bg-[#0D1427] border-sky-400/40'
+                                  : isThird
+                                  ? 'bg-[#1A0B2E] border-purple-400/40'
                                   : 'bg-[#070A14]/70 border-[#D4AF37]/20 hover:border-[#D4AF37]/60'
                               }`}
                             >
@@ -893,6 +911,11 @@ export const AequitasRegistrationPage: React.FC = () => {
                               {isSecond && !isFirst && (
                                 <span className="mt-1.5 inline-block text-[9px] font-mono text-sky-400 font-bold">
                                   ✓ 2nd Choice
+                                </span>
+                              )}
+                              {isThird && !isFirst && !isSecond && (
+                                <span className="mt-1.5 inline-block text-[9px] font-mono text-purple-400 font-bold">
+                                  ✓ 3rd Choice
                                 </span>
                               )}
                             </div>
@@ -1006,6 +1029,59 @@ export const AequitasRegistrationPage: React.FC = () => {
                         </div>
                       </div>
                     </div>
+
+                    {/* Preference 3 */}
+                    <div className="p-4 sm:p-5 rounded-2xl bg-[#070A14]/90 border border-[#D4AF37]/30 space-y-4">
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-lg bg-[#2E1065] border border-purple-500/40 text-purple-300 font-bold text-xs flex items-center justify-center">
+                          3
+                        </span>
+                        <h3 className="font-bold text-sm text-white">Third Choice Preference (Tertiary / Contingency)</h3>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <div>
+                          <label className="block text-xs text-[#FAF5EF] mb-1 font-medium">
+                            Select Committee *
+                          </label>
+                          <select
+                            value={form.thirdChoiceCommittee}
+                            onChange={(e) => setForm({ ...form, thirdChoiceCommittee: e.target.value })}
+                            className="w-full px-3 py-2.5 rounded-xl bg-[#050811] border border-[#D4AF37]/35 text-white text-xs focus:border-[#D4AF37] focus:outline-none cursor-pointer"
+                          >
+                            {COMMITTEES.map((comm) => (
+                              <option key={comm.id} value={`${comm.code} - ${comm.name}`}>
+                                {comm.code} - {comm.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs text-[#FAF5EF] mb-1 font-medium">
+                            Preferred Portfolio / Country / Ministry *
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. United Kingdom / Delegate"
+                            value={form.thirdChoicePortfolio}
+                            onChange={(e) => setForm({ ...form, thirdChoicePortfolio: e.target.value })}
+                            className={`w-full px-3 py-2.5 rounded-xl bg-[#050811] border text-white text-xs focus:outline-none transition-colors ${
+                              validationErrors.thirdChoicePortfolio
+                                ? 'border-rose-500 focus:border-rose-400'
+                                : 'border-[#D4AF37]/35 focus:border-[#D4AF37]'
+                            }`}
+                          />
+                          {validationErrors.thirdChoicePortfolio && (
+                            <p className="text-rose-400 text-[11px] mt-1 flex items-center gap-1 font-mono">
+                              <AlertCircle className="w-3 h-3" />
+                              <span>{validationErrors.thirdChoicePortfolio}</span>
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                   </motion.div>
                 )}
 
@@ -1089,6 +1165,11 @@ export const AequitasRegistrationPage: React.FC = () => {
                             <span className="text-[#8FB3DE] font-bold">2nd Choice:</span>{' '}
                             {form.secondChoiceCommittee} —{' '}
                             <span className="underline decoration-[#8FB3DE]">{form.secondChoicePortfolio}</span>
+                          </div>
+                          <div className="text-xs text-[#C4BBA3] mt-0.5">
+                            <span className="text-[#C084FC] font-bold">3rd Choice:</span>{' '}
+                            {form.thirdChoiceCommittee} —{' '}
+                            <span className="underline decoration-[#C084FC]">{form.thirdChoicePortfolio}</span>
                           </div>
                         </div>
                         <button

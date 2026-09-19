@@ -80,6 +80,8 @@ interface ParsedDelegateInfo {
   firstChoicePortfolio?: string;
   secondChoiceCommittee?: string;
   secondChoicePortfolio?: string;
+  thirdChoiceCommittee?: string;
+  thirdChoicePortfolio?: string;
   statementOfPurpose?: string;
 }
 
@@ -148,6 +150,20 @@ function parseDelegateMessage(mail: PartnerMailEntry): ParsedDelegateInfo {
     }
   }
 
+  let thirdChoiceCommittee = '';
+  let thirdChoicePortfolio = '';
+  const thirdChoiceMatch = msg.match(/3rd Choice(?: Committee)?:\s*([^\n\r]+)/i);
+  if (thirdChoiceMatch) {
+    const rawThird = thirdChoiceMatch[1].trim();
+    const prefMatch = rawThird.match(/(.*?)(?:\(Preferred:\s*([^)]+)\)|\[([^\]]+)\])/i);
+    if (prefMatch) {
+      thirdChoiceCommittee = prefMatch[1].trim();
+      thirdChoicePortfolio = (prefMatch[2] || prefMatch[3] || '').trim();
+    } else {
+      thirdChoiceCommittee = rawThird;
+    }
+  }
+
   let statementOfPurpose = '';
   const sopIndex = msg.indexOf('Statement of Purpose:');
   if (sopIndex !== -1) {
@@ -168,6 +184,8 @@ function parseDelegateMessage(mail: PartnerMailEntry): ParsedDelegateInfo {
     firstChoicePortfolio,
     secondChoiceCommittee,
     secondChoicePortfolio,
+    thirdChoiceCommittee,
+    thirdChoicePortfolio,
     statementOfPurpose,
   };
 }
@@ -283,6 +301,7 @@ Email: ${mail.email}
 Phone: ${mail.phone}
 1st Choice Committee: ${parsed.firstChoiceCommittee || 'N/A'} (Preferred Portfolio: ${parsed.firstChoicePortfolio || 'Open Allocation'})
 2nd Choice Committee: ${parsed.secondChoiceCommittee || 'N/A'} (Preferred Portfolio: ${parsed.secondChoicePortfolio || 'Open Allocation'})
+3rd Choice Committee: ${parsed.thirdChoiceCommittee || 'N/A'} (Preferred Portfolio: ${parsed.thirdChoicePortfolio || 'Open Allocation'})
 ${parsed.accolades ? `Honors / Accolades: ${parsed.accolades}\n` : ''}${parsed.statementOfPurpose ? `Statement of Purpose:\n"${parsed.statementOfPurpose}"\n` : ''}Registration Timestamp: ${mail.timestamp}
 Current Status: ${mail.status}`;
     } else {
@@ -683,14 +702,14 @@ Current Status: ${mail.status}`;
                               </div>
                             </div>
 
-                            {/* COMMITTEE ALLOCATIONS & PREFERENCES (Dual Column Grid) */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                            {/* COMMITTEE ALLOCATIONS & PREFERENCES (Triple Column Grid) */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
                               {/* 1st Choice */}
                               <div className="p-3.5 rounded-xl bg-[#16203B]/60 border border-[#D4AF37]/45 space-y-1.5 relative overflow-hidden">
                                 <div className="flex items-center justify-between">
                                   <span className="text-[10px] font-mono uppercase font-bold text-[#D4AF37] tracking-wider flex items-center gap-1">
                                     <Award className="w-3 h-3 text-[#D4AF37]" />
-                                    1st Committee Preference (Primary)
+                                    1st Preference (Primary)
                                   </span>
                                   <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#D4AF37]/20 text-[#D4AF37]">
                                     Top Choice
@@ -700,7 +719,7 @@ Current Status: ${mail.status}`;
                                   {parsed.firstChoiceCommittee || 'Not specified'}
                                 </p>
                                 <p className="text-[11px] text-[#C4BBA3]">
-                                  <span className="text-[#A39B88]">Preferred Portfolio: </span>
+                                  <span className="text-[#A39B88]">Portfolio: </span>
                                   <strong className="text-amber-200">
                                     {parsed.firstChoicePortfolio || 'Open Allocation'}
                                   </strong>
@@ -712,7 +731,7 @@ Current Status: ${mail.status}`;
                                 <div className="flex items-center justify-between">
                                   <span className="text-[10px] font-mono uppercase font-bold text-[#A39B88] tracking-wider flex items-center gap-1">
                                     <Compass className="w-3 h-3 text-[#A39B88]" />
-                                    2nd Committee Preference (Alternate)
+                                    2nd Preference (Alternate)
                                   </span>
                                   <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#243563]/60 text-[#C4BBA3]">
                                     Alternate
@@ -722,9 +741,31 @@ Current Status: ${mail.status}`;
                                   {parsed.secondChoiceCommittee || 'None specified'}
                                 </p>
                                 <p className="text-[11px] text-[#C4BBA3]">
-                                  <span className="text-[#A39B88]">Preferred Portfolio: </span>
+                                  <span className="text-[#A39B88]">Portfolio: </span>
                                   <strong className="text-sky-200">
                                     {parsed.secondChoicePortfolio || 'Open Allocation'}
+                                  </strong>
+                                </p>
+                              </div>
+
+                              {/* 3rd Choice */}
+                              <div className="p-3.5 rounded-xl bg-[#1A0B2E]/60 border border-purple-500/35 space-y-1.5 relative overflow-hidden">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-[10px] font-mono uppercase font-bold text-purple-300 tracking-wider flex items-center gap-1">
+                                    <CheckCircle2 className="w-3 h-3 text-purple-400" />
+                                    3rd Preference (Tertiary)
+                                  </span>
+                                  <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-purple-500/20 text-purple-300">
+                                    Contingency
+                                  </span>
+                                </div>
+                                <p className="text-xs font-bold text-purple-200 leading-snug">
+                                  {parsed.thirdChoiceCommittee || 'None specified'}
+                                </p>
+                                <p className="text-[11px] text-[#C4BBA3]">
+                                  <span className="text-[#A39B88]">Portfolio: </span>
+                                  <strong className="text-purple-300">
+                                    {parsed.thirdChoicePortfolio || 'Open Allocation'}
                                   </strong>
                                 </p>
                               </div>
