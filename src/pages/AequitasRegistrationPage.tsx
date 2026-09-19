@@ -214,14 +214,14 @@ export const AequitasRegistrationPage: React.FC = () => {
 
     const starColors = ['#D4AF37', '#FAF5EF', '#38BDF8', '#C084FC', '#FDE047'];
 
-    for (let i = 0; i < 110; i++) {
+    for (let i = 0; i < 120; i++) {
       stars.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        radius: Math.random() * 1.6 + 0.35,
+        radius: Math.random() * 1.6 + 0.4,
         alpha: Math.random() * 0.8 + 0.2,
         pulseSpeed: Math.random() * 0.02 + 0.005,
-        speed: Math.random() * 0.25 + 0.05,
+        speed: Math.random() * 0.3 + 0.05,
         color: starColors[Math.floor(Math.random() * starColors.length)],
       });
     }
@@ -240,7 +240,7 @@ export const AequitasRegistrationPage: React.FC = () => {
 
     const shootingStars: ShootingStar[] = [];
     const spawnShootingStar = () => {
-      if (Math.random() < 0.4 && shootingStars.filter((s) => s.active).length < 3) {
+      if (Math.random() < 0.45 && shootingStars.filter((s) => s.active).length < 4) {
         const palettes = [
           'rgba(212, 175, 55, ',   // Imperial Gold
           'rgba(255, 255, 255, ',   // Pure Starlight White
@@ -249,10 +249,10 @@ export const AequitasRegistrationPage: React.FC = () => {
         ];
         shootingStars.push({
           x: Math.random() * (width * 1.2) - width * 0.1,
-          y: Math.random() * (height * 0.45),
-          length: Math.random() * 110 + 60,
-          speed: Math.random() * 8 + 4.5,
-          angle: Math.PI / 4 + (Math.random() - 0.5) * 0.2,
+          y: Math.random() * (height * 0.5),
+          length: Math.random() * 120 + 70,
+          speed: Math.random() * 9 + 5,
+          angle: Math.PI / 4 + (Math.random() - 0.5) * 0.25,
           alpha: 1.0,
           color: palettes[Math.floor(Math.random() * palettes.length)],
           active: true,
@@ -266,153 +266,157 @@ export const AequitasRegistrationPage: React.FC = () => {
       ctx.clearRect(0, 0, width, height);
 
       // Smooth mouse / touch parallax easing
-      mouseX += (targetMouseX - mouseX) * 0.035;
-      mouseY += (targetMouseY - mouseY) * 0.035;
-      planetRotation += 0.0022;
+      mouseX += (targetMouseX - mouseX) * 0.05;
+      mouseY += (targetMouseY - mouseY) * 0.05;
+      planetRotation += 0.003;
 
       // A. Deep Cosmic Nebula Gradients
       const nebula1 = ctx.createRadialGradient(
-        width * 0.5 + (mouseX - width / 2) * 0.03,
-        height * 0.35 + (mouseY - height / 2) * 0.03,
+        width * 0.5 + (mouseX - width / 2) * 0.04,
+        height * 0.35 + (mouseY - height / 2) * 0.04,
         0,
         width * 0.5,
         height * 0.35,
         Math.max(width, height) * 0.65
       );
-      nebula1.addColorStop(0, 'rgba(88, 28, 135, 0.24)'); // Deep royal purple
-      nebula1.addColorStop(0.4, 'rgba(30, 27, 75, 0.30)'); // Navy violet
-      nebula1.addColorStop(0.75, 'rgba(15, 23, 42, 0.48)');
+      nebula1.addColorStop(0, 'rgba(88, 28, 135, 0.28)'); // Deep royal purple
+      nebula1.addColorStop(0.4, 'rgba(30, 27, 75, 0.35)'); // Navy violet
+      nebula1.addColorStop(0.75, 'rgba(15, 23, 42, 0.55)');
       nebula1.addColorStop(1, 'rgba(5, 8, 17, 0.95)');
       ctx.fillStyle = nebula1;
       ctx.fillRect(0, 0, width, height);
 
-      // B. Warm Golden Starlight Center Glow
+      // B. Warm Golden Starlight Horizon Glow
       const goldNebula = ctx.createRadialGradient(
         width * 0.5,
-        height * 0.42,
+        height * 0.45,
         0,
         width * 0.5,
-        height * 0.42,
-        width * 0.42
+        height * 0.45,
+        width * 0.4
       );
-      goldNebula.addColorStop(0, 'rgba(212, 175, 55, 0.11)');
-      goldNebula.addColorStop(0.6, 'rgba(212, 175, 55, 0.025)');
+      goldNebula.addColorStop(0, 'rgba(212, 175, 55, 0.12)');
+      goldNebula.addColorStop(0.6, 'rgba(212, 175, 55, 0.03)');
       goldNebula.addColorStop(1, 'rgba(0, 0, 0, 0)');
       ctx.fillStyle = goldNebula;
       ctx.fillRect(0, 0, width, height);
 
-      // C. Celestial Planetary Orbital Geometry (Concentric Rings & Satellites)
-      const centerX = width * 0.5 + (mouseX - width / 2) * 0.02;
-      const centerY = height * 0.42 + (mouseY - height / 2) * 0.02;
-
+      // C. Celestial Planetary Background Rings & Latitude Bands
       ctx.save();
-      ctx.translate(centerX, centerY);
+      const planetCenterX = width * 0.5 + (mouseX - width / 2) * 0.02;
+      const planetCenterY = height * 0.48 + (mouseY - height / 2) * 0.02;
+      ctx.translate(planetCenterX, planetCenterY);
 
-      // Orbit 1: Inner Gold Ellipse
-      ctx.save();
-      ctx.rotate(planetRotation * 0.8);
+      // Giant outer orbital planetary ring
       ctx.beginPath();
-      ctx.ellipse(0, 0, Math.min(width, height) * 0.40, Math.min(width, height) * 0.15, Math.PI / 6, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(212, 175, 55, 0.18)';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([6, 14]);
+      ctx.ellipse(0, 0, Math.min(width, height) * 0.46, Math.min(width, height) * 0.16, -Math.PI / 10 + Math.sin(planetRotation * 0.5) * 0.04, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.16)';
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([8, 12]);
       ctx.stroke();
+      ctx.setLineDash([]);
 
       // Satellite node on ring 1
-      const s1X = Math.cos(planetRotation * 2) * (Math.min(width, height) * 0.40);
-      const s1Y = Math.sin(planetRotation * 2) * (Math.min(width, height) * 0.15);
+      const s1X = Math.cos(planetRotation * 2) * (Math.min(width, height) * 0.46);
+      const s1Y = Math.sin(planetRotation * 2) * (Math.min(width, height) * 0.16);
       ctx.beginPath();
-      ctx.arc(s1X, s1Y, 3, 0, Math.PI * 2);
+      ctx.arc(s1X, s1Y, 3.2, 0, Math.PI * 2);
       ctx.fillStyle = '#D4AF37';
       ctx.shadowColor = '#D4AF37';
       ctx.shadowBlur = 12;
       ctx.fill();
-      ctx.restore();
+      ctx.shadowBlur = 0;
 
-      // Orbit 2: Outer Cyan / Sky Ellipse
-      ctx.save();
-      ctx.rotate(-planetRotation * 0.6);
+      // Secondary inclined orbital ring
       ctx.beginPath();
-      ctx.ellipse(0, 0, Math.min(width, height) * 0.56, Math.min(width, height) * 0.22, -Math.PI / 5, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(56, 189, 248, 0.13)';
+      ctx.ellipse(0, 0, Math.min(width, height) * 0.56, Math.min(width, height) * 0.2, Math.PI / 8 - Math.cos(planetRotation * 0.4) * 0.03, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(168, 85, 247, 0.12)';
       ctx.lineWidth = 1;
-      ctx.setLineDash([4, 18]);
+      ctx.setLineDash([4, 10]);
       ctx.stroke();
+      ctx.setLineDash([]);
 
       // Satellite node on ring 2
       const s2X = Math.cos(-planetRotation * 1.5) * (Math.min(width, height) * 0.56);
-      const s2Y = Math.sin(-planetRotation * 1.5) * (Math.min(width, height) * 0.22);
+      const s2Y = Math.sin(-planetRotation * 1.5) * (Math.min(width, height) * 0.2);
       ctx.beginPath();
-      ctx.arc(s2X, s2Y, 2.5, 0, Math.PI * 2);
+      ctx.arc(s2X, s2Y, 2.6, 0, Math.PI * 2);
       ctx.fillStyle = '#38BDF8';
       ctx.shadowColor = '#38BDF8';
       ctx.shadowBlur = 9;
       ctx.fill();
-      ctx.restore();
+      ctx.shadowBlur = 0;
 
-      // Orbit 3: Royal Violet Outer Bounds
-      ctx.save();
-      ctx.rotate(planetRotation * 0.4);
+      // Tertiary faint wide perimeter ring
       ctx.beginPath();
-      ctx.ellipse(0, 0, Math.min(width, height) * 0.72, Math.min(width, height) * 0.28, Math.PI / 4, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(192, 132, 252, 0.10)';
-      ctx.lineWidth = 1;
-      ctx.setLineDash([8, 24]);
+      ctx.ellipse(0, 0, Math.min(width, height) * 0.68, Math.min(width, height) * 0.24, -Math.PI / 6, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.08)';
+      ctx.lineWidth = 0.8;
+      ctx.setLineDash([2, 14]);
       ctx.stroke();
-      ctx.restore();
+      ctx.setLineDash([]);
 
       ctx.restore();
 
-      // D. Draw & Update Twinkling Stars
+      // D. Draw & Twinkle Drifting Stars
       stars.forEach((star) => {
-        star.alpha += Math.sin(planetRotation * 8 + star.pulseSpeed * 100) * 0.008;
-        const clampedAlpha = Math.max(0.15, Math.min(1.0, star.alpha));
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = star.color;
+
+        // Twinkle
+        star.alpha += Math.sin(planetRotation * 10 + star.x) * star.pulseSpeed;
+        star.alpha = Math.max(0.15, Math.min(0.95, star.alpha));
+
+        ctx.globalAlpha = star.alpha;
+        ctx.shadowColor = star.color;
+        ctx.shadowBlur = star.radius * 3.5;
+        ctx.fill();
+        ctx.restore();
+
         star.y -= star.speed;
         if (star.y < 0) {
           star.y = height;
           star.x = Math.random() * width;
         }
-
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        ctx.fillStyle = star.color;
-        ctx.globalAlpha = clampedAlpha;
-        ctx.shadowColor = star.color;
-        ctx.shadowBlur = star.radius > 1.2 ? 6 : 0;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-        ctx.globalAlpha = 1.0;
       });
 
-      // E. Spawn & Update Radiant Shooting Stars
+      // E. Update & Draw Shooting Stars (Meteors with radiant multi-color trails)
       spawnShootingStar();
-      shootingStars.forEach((star) => {
-        if (!star.active) return;
-        const headX = star.x;
-        const headY = star.y;
-        const tailX = star.x - Math.cos(star.angle) * star.length;
-        const tailY = star.y - Math.sin(star.angle) * star.length;
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        const star = shootingStars[i];
+        if (!star.active) continue;
 
-        const grad = ctx.createLinearGradient(tailX, tailY, headX, headY);
-        grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
-        grad.addColorStop(0.7, `${star.color}${star.alpha * 0.45})`);
-        grad.addColorStop(1, `${star.color}${star.alpha})`);
+        const endX = star.x + Math.cos(star.angle) * star.length;
+        const endY = star.y + Math.sin(star.angle) * star.length;
 
+        const starGrad = ctx.createLinearGradient(star.x, star.y, endX, endY);
+        starGrad.addColorStop(0, `${star.color}${star.alpha})`);
+        starGrad.addColorStop(0.4, `${star.color}${star.alpha * 0.7})`);
+        starGrad.addColorStop(1, `${star.color}0)`);
+
+        ctx.save();
         ctx.beginPath();
-        ctx.moveTo(tailX, tailY);
-        ctx.lineTo(headX, headY);
-        ctx.strokeStyle = grad;
-        ctx.lineWidth = 1.8;
+        ctx.moveTo(star.x, star.y);
+        ctx.lineTo(endX, endY);
+        ctx.strokeStyle = starGrad;
+        ctx.lineWidth = 2.2;
+        ctx.lineCap = 'round';
+        ctx.shadowColor = '#FAF5EF';
+        ctx.shadowBlur = 6;
         ctx.stroke();
+        ctx.restore();
 
         star.x += Math.cos(star.angle) * star.speed;
         star.y += Math.sin(star.angle) * star.speed;
-        star.alpha -= 0.014;
+        star.alpha -= 0.012;
 
         if (star.alpha <= 0 || star.x > width + 100 || star.y > height + 100) {
           star.active = false;
+          shootingStars.splice(i, 1);
         }
-      });
+      }
 
       animationFrameId = requestAnimationFrame(render);
     };
@@ -713,11 +717,11 @@ export const AequitasRegistrationPage: React.FC = () => {
       {/* Galactic Living Starfield, Shooting Stars & Cosmic Planetary Geometry Canvas */}
       <canvas
         ref={canvasRef}
-        className="fixed inset-0 w-full h-full pointer-events-none -z-10"
+        className="fixed inset-0 w-full h-full pointer-events-none z-0"
       />
 
-      {/* Atmospheric Cosmic Center Glow */}
-      <div className="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] sm:w-[1000px] h-[450px] bg-gradient-to-b from-[#7C3AED]/15 via-[#D4AF37]/10 to-transparent blur-[140px] pointer-events-none -z-10" />
+      {/* Radiant Atmospheric Center Spotlight */}
+      <div className="fixed top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] sm:w-[1100px] h-[500px] bg-gradient-to-b from-[#7C3AED]/15 via-[#D4AF37]/15 to-transparent blur-[160px] pointer-events-none z-0" />
 
       {/* Dedicated Portal Topbar (Autonomous: strictly NO home redirection) */}
       <header className="sticky top-0 z-40 bg-[#070A14]/95 border-b border-[#D4AF37]/30 backdrop-blur-xl px-3 sm:px-8 py-2.5 sm:py-3.5 select-none shadow-xl">
@@ -766,7 +770,7 @@ export const AequitasRegistrationPage: React.FC = () => {
       </header>
 
       {/* Main Interactive Slide-by-Slide Container */}
-      <main className="flex-1 max-w-4xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-8 flex flex-col justify-center">
+      <main className="relative z-10 flex-1 max-w-4xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-8 flex flex-col justify-center">
         {!isSubmitted ? (
           <div className="space-y-4 sm:space-y-6">
             {/* Slide Progress Stepper Header */}
@@ -1721,7 +1725,7 @@ export const AequitasRegistrationPage: React.FC = () => {
       </main>
 
       {/* Autonomous Dedicated Portal Footer (Strictly NO home links) */}
-      <footer className="bg-[#070A14]/95 border-t border-[#D4AF37]/20 py-4 px-4 sm:px-8 text-center select-none text-[11px] font-mono text-[#C4BBA3] space-y-1">
+      <footer className="relative z-10 bg-[#070A14]/95 border-t border-[#D4AF37]/20 py-4 px-4 sm:px-8 text-center select-none text-[11px] font-mono text-[#C4BBA3] space-y-1">
         <div>
           Aequitas Model United Nations Summit 2026 • Executive Secretariat Delegate Allocation Gate
         </div>
