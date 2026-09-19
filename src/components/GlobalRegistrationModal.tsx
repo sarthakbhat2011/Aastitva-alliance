@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import confetti from 'canvas-confetti';
-import { X, CheckCircle2, Sparkles, ShieldCheck, Send, Globe, Award, Calendar, MapPin } from 'lucide-react';
+import { X, CheckCircle2, Sparkles, ShieldCheck, Send, Globe, Award, Calendar, MapPin, ArrowUpRight } from 'lucide-react';
 import { COMMITTEES, INITIAL_SUMMIT_CONFIG } from '../data';
 import { RegistrationFormData } from '../types';
 
@@ -98,16 +98,18 @@ export const GlobalRegistrationModal: React.FC<Props> = ({
 
   return createPortal(
     <div
-      onClick={onClose}
-      className="fixed inset-0 z-[999999] bg-black/85 backdrop-blur-xl flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-page-enter"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-xl animate-fade-in"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="registration-title"
     >
       <div
-        onClick={(e) => e.stopPropagation()}
-        className="relative max-w-[94vw] sm:max-w-2xl w-full rounded-2xl sm:rounded-3xl bg-gradient-to-b from-[#0D1427] via-[#070A14] to-[#0D1427] border-2 border-[#D4AF37]/60 shadow-[0_25px_80px_rgba(0,0,0,0.95)] overflow-hidden my-auto font-jakarta text-left"
-      >
-        {/* Futuristic Top Glowing HUD Bar */}
-        <div className="h-1.5 bg-gradient-to-r from-[#D4AF37] via-[#FFF5DC] to-[#52459E] shadow-[0_0_15px_rgba(212,175,55,0.8)]" />
+        className="fixed inset-0"
+        onClick={onClose}
+        aria-hidden="true"
+      />
 
+      <div className="relative w-full max-w-2xl bg-[#0B1224] border-2 border-[#D4AF37]/50 rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.9)] overflow-hidden font-jakarta text-left z-10 animate-scale-up">
         {/* Modal Header */}
         <div className="p-4 sm:p-8 pb-3 sm:pb-4 flex items-start justify-between gap-3 sm:gap-4 border-b border-[#D4AF37]/20 relative">
           <div className="space-y-1 sm:space-y-1.5">
@@ -120,12 +122,25 @@ export const GlobalRegistrationModal: React.FC<Props> = ({
                 Registration Active
               </span>
             </div>
-            <h2 className="text-xl sm:text-3xl font-cormorant font-bold gold-gradient-text">
+            <h2 id="registration-title" className="text-xl sm:text-3xl font-cormorant font-bold gold-gradient-text">
               Reserve Delegate Seat
             </h2>
             <p className="text-[11px] sm:text-xs text-[#C4BBA3]">
               Official registration for <strong>{INITIAL_SUMMIT_CONFIG.name}</strong> • Academic Event Management + Network Organisation
             </p>
+            <div className="pt-1">
+              <a
+                href="/register"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={onClose}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#070A14] transition-all text-[11px] sm:text-xs font-mono font-bold shadow-sm cursor-pointer"
+              >
+                <Sparkles className="w-3 h-3" />
+                <span>Open in Dedicated Slide-by-Slide Window</span>
+                <ArrowUpRight className="w-3 h-3" />
+              </a>
+            </div>
           </div>
 
           <button

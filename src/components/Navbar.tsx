@@ -150,6 +150,22 @@ export const Navbar: React.FC<Props> = ({
               </a>
             </MagneticElement>
 
+            {/* Direct Link to Standalone Registration Portal (New Tab) */}
+            <MagneticElement strength={0.25}>
+              <a
+                href="/register"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => sounds.playTap()}
+                className="flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/50 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#070A14] transition-all font-mono font-bold text-[10px] sm:text-[11px] shadow-sm cursor-pointer"
+                title="Open Interactive Aequitas Summit Registration Portal in New Tab"
+              >
+                <Sparkles className="w-2.5 h-2.5 animate-pulse" />
+                <span>Register for Summit</span>
+                <ArrowUpRight className="w-2.5 h-2.5" />
+              </a>
+            </MagneticElement>
+
             {/* Sound FX Synthesizer Toggle */}
             <MagneticElement strength={0.3}>
               <button
@@ -357,6 +373,21 @@ export const Navbar: React.FC<Props> = ({
                   </button>
                 )}
 
+                <a
+                  href="/register"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => {
+                    sounds.playTap();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E8A53E] to-[#D4AF37] text-[#070A14] font-extrabold text-center text-xs shadow-lg min-h-[44px] flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Sparkles className="w-3.5 h-3.5 fill-current" />
+                  <span>Register for Summit 2026 (New Tab)</span>
+                  <ArrowUpRight className="w-4 h-4" />
+                </a>
+
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);
@@ -369,7 +400,7 @@ export const Navbar: React.FC<Props> = ({
                   className="w-full py-2.5 rounded-xl shimmer-btn text-[#070A14] font-bold text-center text-xs shadow-lg min-h-[44px] flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Sparkles className="w-3.5 h-3.5 fill-current" />
-                  <span>Partner With Us / Reserve Seat</span>
+                  <span>Partner With Us / Institutional Desk</span>
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>

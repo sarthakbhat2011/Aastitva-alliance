@@ -455,8 +455,21 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
                   Secure Your Delegate Seat
                 </h2>
                 <p className="text-xs sm:text-sm text-[#DDD6FE]">
-                  Submit the online registration form below or launch the full-screen interactive allocation modal.
+                  Submit the online registration form below or launch the dedicated interactive allocation portal in a new tab.
                 </p>
+                <div className="pt-2">
+                  <a
+                    href="/register"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => sounds.playTap()}
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#E8A53E] to-[#D4AF37] text-[#070A14] font-extrabold text-xs sm:text-sm shadow-[0_0_25px_rgba(212,175,55,0.4)] hover:brightness-110 active:scale-95 transition-all cursor-pointer"
+                  >
+                    <Sparkles className="w-4 h-4 fill-current" />
+                    <span>Launch Interactive Slide-by-Slide Portal (New Tab)</span>
+                    <ExternalLink className="w-4 h-4" />
+                  </a>
+                </div>
               </div>
 
               {submitted ? (

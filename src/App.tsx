@@ -24,8 +24,28 @@ import { HowItWorksPage } from './pages/HowItWorksPage';
 import { SummitPage } from './pages/SummitPage';
 import { SponsorsPage } from './pages/SponsorsPage';
 import { FAQPage } from './pages/FAQPage';
+import { AequitasRegistrationPage } from './pages/AequitasRegistrationPage';
+
+const isRegistrationUrl = () => {
+  if (typeof window === 'undefined') return false;
+  const path = window.location.pathname.toLowerCase();
+  const search = window.location.search.toLowerCase();
+  const hash = window.location.hash.toLowerCase();
+
+  return (
+    path.startsWith('/register') ||
+    path.startsWith('/registration') ||
+    search.includes('mode=register') ||
+    search.includes('tab=register') ||
+    search.includes('page=register') ||
+    search.includes('form=register') ||
+    hash === '#register' ||
+    hash === '#registration'
+  );
+};
 
 export default function App() {
+  const [isStandaloneRegister, setIsStandaloneRegister] = useState(isRegistrationUrl);
   const [osMode, setOsMode] = useState(true); // Boots into Astitva OS initially
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [summitConfig, setSummitConfig] = useState<SummitConfig>(INITIAL_SUMMIT_CONFIG);
@@ -118,6 +138,32 @@ export default function App() {
     };
   }, [osMode]);
 
+  // Deep link & route listener for standalone registration portal
+  useEffect(() => {
+    const handleLocationChange = () => {
+      setIsStandaloneRegister(isRegistrationUrl());
+    };
+    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
+    };
+  }, []);
+
+  const handleOpenRegisterPortal = () => {
+    window.open('/register', '_blank', 'noopener,noreferrer');
+  };
+
+  // Dedicated Autonomous Registration Portal (Zero Home Redirection, Full Slide-by-Slide Interaction)
+  if (isStandaloneRegister) {
+    return (
+      <ThemeProvider>
+        <AequitasRegistrationPage />
+      </ThemeProvider>
+    );
+  }
+
   const handleEnterSiteFromOS = (targetPage: Page = 'home') => {
     setOsMode(false);
     setCurrentPage(targetPage);
@@ -136,7 +182,7 @@ export default function App() {
             onNavigate={handleNavigate}
             summitConfig={summitConfig}
             countdown={countdown}
-            onOpenRegister={() => setGlobalRegisterOpen(true)}
+            onOpenRegister={handleOpenRegisterPortal}
           />
         );
       case 'about':
@@ -147,14 +193,14 @@ export default function App() {
         return (
           <OfferingsPage
             onNavigate={handleNavigate}
-            onOpenRegister={() => setGlobalRegisterOpen(true)}
+            onOpenRegister={handleOpenRegisterPortal}
           />
         );
       case 'how-it-works':
         return (
           <HowItWorksPage
             onNavigate={handleNavigate}
-            onOpenRegister={() => setGlobalRegisterOpen(true)}
+            onOpenRegister={handleOpenRegisterPortal}
           />
         );
       case 'summit':
@@ -169,7 +215,7 @@ export default function App() {
         return (
           <SponsorsPage
             onNavigate={handleNavigate}
-            onOpenRegister={() => setGlobalRegisterOpen(true)}
+            onOpenRegister={handleOpenRegisterPortal}
           />
         );
       case 'faq':
@@ -180,7 +226,7 @@ export default function App() {
             onNavigate={handleNavigate}
             summitConfig={summitConfig}
             countdown={countdown}
-            onOpenRegister={() => setGlobalRegisterOpen(true)}
+            onOpenRegister={handleOpenRegisterPortal}
           />
         );
     }
@@ -193,7 +239,7 @@ export default function App() {
         {osMode && (
           <AstitvaOSLoader
             onEnterSite={handleEnterSiteFromOS}
-            onOpenRegister={() => setGlobalRegisterOpen(true)}
+            onOpenRegister={handleOpenRegisterPortal}
           />
         )}
 
@@ -209,7 +255,7 @@ export default function App() {
         {/* Floating 3D Celestial Planet Core Quick Portal Widget */}
         {!osMode && (
           <CelestialOrbWidget
-            onOpenRegister={() => setGlobalRegisterOpen(true)}
+            onOpenRegister={handleOpenRegisterPortal}
             onOpenOS={() => setOsMode(true)}
           />
         )}
@@ -223,7 +269,7 @@ export default function App() {
             onOpenAudit={() => setAuditOpen(true)}
             onOpenAdmin={() => setAdminOpen(true)}
             onOpenOS={() => setOsMode(true)}
-            onOpenRegister={() => setGlobalRegisterOpen(true)}
+            onOpenRegister={handleOpenRegisterPortal}
           />
         )}
 
@@ -248,7 +294,7 @@ export default function App() {
           <Footer 
             onNavigate={handleNavigate} 
             onOpenDevMailbox={() => setDevMailboxOpen(true)}
-            onOpenRegister={() => setGlobalRegisterOpen(true)}
+            onOpenRegister={handleOpenRegisterPortal}
           />
         )}
 
