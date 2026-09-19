@@ -25,6 +25,22 @@ import { SummitPage } from './pages/SummitPage';
 import { SponsorsPage } from './pages/SponsorsPage';
 import { FAQPage } from './pages/FAQPage';
 import { AequitasRegistrationPage } from './pages/AequitasRegistrationPage';
+import { ComingSoonScreen } from './components/ComingSoonScreen';
+
+const checkSiteUnlocked = () => {
+  if (typeof window === 'undefined') return false;
+  const search = window.location.search.toLowerCase();
+  if (
+    search.includes('dev=bhatsarthakunrivalledunion2011,2001') ||
+    search.includes('dev=true') ||
+    search.includes('dev=preview') ||
+    search.includes('unlock=true')
+  ) {
+    sessionStorage.setItem('astitva_site_unlocked', 'true');
+    return true;
+  }
+  return sessionStorage.getItem('astitva_site_unlocked') === 'true';
+};
 
 const isRegistrationUrl = () => {
   if (typeof window === 'undefined') return false;
@@ -45,6 +61,7 @@ const isRegistrationUrl = () => {
 };
 
 export default function App() {
+  const [isSiteUnlocked, setIsSiteUnlocked] = useState<boolean>(checkSiteUnlocked);
   const [isStandaloneRegister, setIsStandaloneRegister] = useState(isRegistrationUrl);
   const [osMode, setOsMode] = useState(true); // Boots into Astitva OS initially
   const [currentPage, setCurrentPage] = useState<Page>('home');
@@ -163,11 +180,34 @@ export default function App() {
     window.open('/register', '_blank', 'noopener,noreferrer');
   };
 
-  // Dedicated Autonomous Registration Portal (Zero Home Redirection, Full Slide-by-Slide Interaction)
+  // Listen for site re-lock command
+  useEffect(() => {
+    const handleLock = () => {
+      sessionStorage.removeItem('astitva_site_unlocked');
+      setIsSiteUnlocked(false);
+    };
+    window.addEventListener('astitva_lock_site', handleLock);
+    return () => window.removeEventListener('astitva_lock_site', handleLock);
+  }, []);
+
+  // Dedicated Autonomous Registration Portal (Exception: never blocked by Coming Soon)
   if (isStandaloneRegister) {
     return (
       <ThemeProvider>
         <AequitasRegistrationPage />
+      </ThemeProvider>
+    );
+  }
+
+  // Pre-Launch Gate Screen (Coming Soon with buzz, quotes, countdown, and hidden developer gate)
+  if (!isSiteUnlocked) {
+    return (
+      <ThemeProvider>
+        <ComingSoonScreen
+          onUnlock={() => setIsSiteUnlocked(true)}
+          onOpenRegister={handleOpenRegisterPortal}
+          countdown={countdown}
+        />
       </ThemeProvider>
     );
   }

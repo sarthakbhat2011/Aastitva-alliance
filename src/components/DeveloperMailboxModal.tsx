@@ -365,14 +365,28 @@ Current Status: ${mail.status}`;
 
           <div className="flex items-center gap-2 sm:gap-3">
             {isAuthorized && (
-              <button
-                onClick={handleRevokeCredentials}
-                className="px-3 py-1.5 rounded-xl bg-rose-500/15 text-rose-300 border border-rose-500/40 text-xs font-bold hover:bg-rose-500/25 transition-all flex items-center gap-1.5"
-                title="Lock Mailbox and require developer code again"
-              >
-                <LogOut className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Lock Desk</span>
-              </button>
+              <>
+                <button
+                  onClick={() => {
+                    sessionStorage.removeItem('astitva_site_unlocked');
+                    window.dispatchEvent(new Event('astitva_lock_site'));
+                    onClose();
+                  }}
+                  className="px-3 py-1.5 rounded-xl bg-[#070A14] text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-bold hover:bg-[#16203B] transition-all flex items-center gap-1.5 cursor-pointer"
+                  title="Lock main website back into Coming Soon mode for visitors"
+                >
+                  <Lock className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Lock to Coming Soon</span>
+                </button>
+                <button
+                  onClick={handleRevokeCredentials}
+                  className="px-3 py-1.5 rounded-xl bg-rose-500/15 text-rose-300 border border-rose-500/40 text-xs font-bold hover:bg-rose-500/25 transition-all flex items-center gap-1.5 cursor-pointer"
+                  title="Lock Mailbox and require developer code again"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Lock Desk</span>
+                </button>
+              </>
             )}
             <button
               onClick={onClose}
