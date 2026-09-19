@@ -75,7 +75,7 @@ const EXPERIENCE_TIERS = [
     label: 'First-Timer / Novice (0 MUNs)',
     badge: 'Bootcamp Provided',
     badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
-    desc: 'New to Model United Nations. Will receive dedicated procedural training and delegate starter dossier.',
+    desc: 'New to Model United Nations. Dedicated procedural training and delegate preparation.',
     icon: Sparkles,
   },
   {
@@ -1685,22 +1685,13 @@ export const AequitasRegistrationPage: React.FC = () => {
             )}
 
             {/* Next Steps Roadmap */}
-            <div className="p-4 rounded-xl bg-[#0D1427]/80 border border-[#D4AF37]/20 text-left space-y-2.5">
+            <div className="p-4 rounded-xl bg-[#0D1427]/80 border border-[#D4AF37]/20 text-left space-y-2">
               <span className="text-[11px] font-mono text-[#D4AF37] font-bold uppercase tracking-wider block">
                 Next Steps on the Diplomatic Circuit:
               </span>
-              <ul className="text-xs text-[#C4BBA3] space-y-1.5 list-disc list-inside">
-                <li>
-                  <strong>Portfolio Review:</strong> The Executive Board evaluates preferences within 48–72 hours.
-                </li>
-                <li>
-                  <strong>Background Guides:</strong> Comprehensive dossier sent to your registered email (
-                  <span className="text-[#FAF5EF]">{form.email}</span>).
-                </li>
-                <li>
-                  <strong>Pre-Conclave Briefing:</strong> Live delegate briefing session announced prior to conference dates.
-                </li>
-              </ul>
+              <p className="text-xs text-[#C4BBA3] leading-relaxed">
+                <strong className="text-[#FAF5EF]">Portfolio Review:</strong> The Executive Board evaluates committee and portfolio preferences within 48–72 hours.
+              </p>
             </div>
 
             {/* Action Buttons (Strictly no home redirect, printing and repeat registration supported) */}
