@@ -27,7 +27,7 @@ export const PartnershipMatrixConsole: React.FC<Props> = ({ onPartnerClick }) =>
       id: 2,
       title: 'Council & Committee Sponsor',
       badge: 'Deliberation Tier II',
-      reach: '6 Official Councils (CCC, UNHRC, Lok Sabha...)',
+      reach: '6 Official Councils (CC, UNHRC, Lok Sabha...)',
       highlights: [
         'Dedicated Committee Room Naming Rights',
         'Logo Integration on Background Study Guides',

@@ -59,7 +59,7 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
     phone: '',
     institution: '',
     grade: 'High School (11-12)',
-    firstChoiceCommittee: 'CCC - Continuous Crisis Committee',
+    firstChoiceCommittee: "CC - Citizens' Council",
     firstChoicePortfolio: '',
     secondChoiceCommittee: 'UNHRC - United Nations Human Rights Council',
     secondChoicePortfolio: '',

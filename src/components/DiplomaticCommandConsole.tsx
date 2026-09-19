@@ -9,13 +9,14 @@ interface Props {
 }
 
 export const DiplomaticCommandConsole: React.FC<Props> = ({ onOpenRegister }) => {
-  const [activeCommId, setActiveCommId] = useState<string>(COMMITTEES[0]?.id || 'ccc');
+  const [activeCommId, setActiveCommId] = useState<string>(COMMITTEES[0]?.id || 'cc');
 
   const activeComm = COMMITTEES.find((c) => c.id === activeCommId) || COMMITTEES[0];
 
   const getCouncilIcon = (id: string) => {
     switch (id) {
-      case 'ccc': return Flame;
+      case 'cc':
+      case 'ccc': return Users;
       case 'unhrc': return Shield;
       case 'jkla': return Building;
       case 'un-women': return HeartHandshake;

@@ -22,7 +22,7 @@ export const GlobalRegistrationModal: React.FC<Props> = ({
     phone: '',
     institution: '',
     grade: 'High School (11-12)',
-    firstChoiceCommittee: preselectedCommittee || 'CCC - Continuous Crisis Committee',
+    firstChoiceCommittee: preselectedCommittee || "CC - Citizens' Council",
     firstChoicePortfolio: '',
     secondChoiceCommittee: 'UNHRC - United Nations Human Rights Council',
     secondChoicePortfolio: '',

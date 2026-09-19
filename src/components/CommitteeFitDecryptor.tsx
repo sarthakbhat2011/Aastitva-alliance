@@ -15,6 +15,7 @@ import {
   HeartHandshake,
   TrendingUp,
   Award,
+  Users,
 } from 'lucide-react';
 import { COMMITTEES } from '../data';
 import { sounds } from '../utils/soundEffects';
@@ -33,12 +34,12 @@ export const CommitteeFitDecryptor: React.FC<Props> = ({ onSelectCommittee }) =>
   // 6 Authentic Pillars matching the 6 Real Summit Committees in data.ts
   const interests = [
     {
-      id: 'crisis',
-      title: 'Fast-Paced Emergency Crisis & Directives',
-      desc: 'Real-time breaking updates, secret directives, satirical movements, and rapid covert actions.',
-      icon: Flame,
-      primaryComm: 'ccc',
-      badge: 'Continuous Crisis',
+      id: 'citizens-council',
+      title: 'Civil Society, Democratic Accountability & Public Movements',
+      desc: 'Deliberation on the role of satirical movements, public protests and civil society campaigns in shaping democratic accountability.',
+      icon: Users,
+      primaryComm: 'cc',
+      badge: "Citizens' Council",
     },
     {
       id: 'human-rights',
@@ -99,7 +100,7 @@ export const CommitteeFitDecryptor: React.FC<Props> = ({ onSelectCommittee }) =>
       id: 'veteran',
       label: 'Circuit Veteran / Gavel Seeker (5+ MUNs)',
       desc: 'Thrives in unpredictable midnight crisis updates, high-stakes parliamentary cross-examination, and bidding wars.',
-      preferredComms: ['ccc', 'jkla', 'ipl', 'lok-sabha'],
+      preferredComms: ['cc', 'jkla', 'ipl', 'lok-sabha'],
     },
   ];
 
@@ -112,10 +113,10 @@ export const CommitteeFitDecryptor: React.FC<Props> = ({ onSelectCommittee }) =>
     let score = 98;
 
     // Nuanced adjustments based on experience level
-    if (expId === 'novice' && targetId === 'ccc') {
-      // If novice picks crisis, recommend UNHRC or Lok Sabha as beginner-friendly alternatives or maintain CCC with tailored score
-      score = 92;
-    } else if (expId === 'veteran' && (targetId === 'ccc' || targetId === 'jkla' || targetId === 'ipl')) {
+    if (expId === 'novice' && (targetId === 'cc' || targetId === 'ccc')) {
+      // If novice picks Citizens' Council, recommend tailored score or foundational guidance
+      score = 94;
+    } else if (expId === 'veteran' && (targetId === 'cc' || targetId === 'ccc' || targetId === 'jkla' || targetId === 'ipl')) {
       score = 99;
     } else if (expId === 'intermediate') {
       score = 96;
