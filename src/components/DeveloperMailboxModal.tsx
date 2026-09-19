@@ -62,6 +62,8 @@ interface ParsedDelegateInfo {
   secondChoicePortfolio?: string;
   thirdChoiceCommittee?: string;
   thirdChoicePortfolio?: string;
+  feeStatus?: string;
+  transactionId?: string;
   statementOfPurpose?: string;
 }
 
@@ -144,6 +146,9 @@ function parseDelegateMessage(mail: PartnerMailEntry): ParsedDelegateInfo {
     }
   }
 
+  const feeStatus = getField(/Fee Status:\s*([^\n\r]+)/i) || (mail.message?.includes('1999') || mail.message?.includes('1,999') ? '₹1,999 (Recorded)' : undefined);
+  const transactionId = getField(/(?:Transaction \/ UTR ID|Transaction ID|UTR ID|UTR):\s*([^\n\r]+)/i);
+
   let statementOfPurpose = '';
   const sopIndex = msg.indexOf('Statement of Purpose:');
   if (sopIndex !== -1) {
@@ -166,6 +171,8 @@ function parseDelegateMessage(mail: PartnerMailEntry): ParsedDelegateInfo {
     secondChoicePortfolio,
     thirdChoiceCommittee,
     thirdChoicePortfolio,
+    feeStatus,
+    transactionId,
     statementOfPurpose,
   };
 }
@@ -283,6 +290,8 @@ Delegate Name: ${parsed.delegateName}
 Institution: ${parsed.institution}
 Academic Division: ${parsed.division || 'N/A'}
 Experience Level: ${parsed.priorExperience || 'N/A'}
+Fee Remittance: ${parsed.feeStatus || '₹1,999'}
+Transaction / UTR ID: ${parsed.transactionId || 'N/A'}
 Email: ${mail.email}
 Phone: ${mail.phone}
 1st Choice Committee: ${parsed.firstChoiceCommittee || 'N/A'} (Preferred Portfolio: ${parsed.firstChoicePortfolio || 'Open Allocation'})
@@ -692,6 +701,49 @@ Current Status: ${mail.status}`;
                                   <span>{mail.phone}</span>
                                 </a>
                               </div>
+                            </div>
+
+                            {/* Delegate Payment & Transaction UTR Status Banner */}
+                            <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-xl bg-[#070A14] border border-[#D4AF37]/35 text-xs font-mono">
+                              <div className="flex items-center flex-wrap gap-2.5">
+                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/35 text-[11px] font-bold">
+                                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                                  <span>{parsed.feeStatus || '₹1,999 Fee Recorded'}</span>
+                                </span>
+                                {parsed.transactionId ? (
+                                  <div className="flex items-center gap-1.5 text-[#C4BBA3]">
+                                    <span className="text-[10.5px] uppercase tracking-wider text-[#A39B88]">UTR / Ref:</span>
+                                    <span className="text-amber-300 font-bold select-all font-mono">{parsed.transactionId}</span>
+                                  </div>
+                                ) : (
+                                  <span className="text-[11px] text-[#A39B88] italic">No UTR recorded</span>
+                                )}
+                              </div>
+
+                              {parsed.transactionId && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(parsed.transactionId!);
+                                    setCopiedId(`utr-${mail.id}`);
+                                    setTimeout(() => setCopiedId(null), 2000);
+                                  }}
+                                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#16203B] hover:bg-[#D4AF37] hover:text-[#070A14] text-[#D4AF37] border border-[#D4AF37]/35 text-[11px] font-sans font-semibold transition-all cursor-pointer"
+                                  title="Copy UTR / Transaction ID"
+                                >
+                                  {copiedId === `utr-${mail.id}` ? (
+                                    <>
+                                      <Check className="w-3 h-3 text-emerald-400" />
+                                      <span>Copied UTR!</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Copy className="w-3 h-3" />
+                                      <span>Copy UTR</span>
+                                    </>
+                                  )}
+                                </button>
+                              )}
                             </div>
 
                             {/* COMMITTEE ALLOCATIONS & PREFERENCES (Triple Column Grid) */}

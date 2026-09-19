@@ -32,6 +32,13 @@ import {
   Layers,
   CheckCheck,
   Download,
+  QrCode,
+  CreditCard,
+  Copy,
+  PhoneCall,
+  MessageSquare,
+  ExternalLink,
+  Landmark,
 } from 'lucide-react';
 import { COMMITTEES, INITIAL_SUMMIT_CONFIG } from '../data';
 import { sounds } from '../utils/soundEffects';
@@ -43,6 +50,22 @@ import {
 import { PartnerMailEntry } from '../types';
 import { saveEntryToMailbox } from '../utils/mailboxApi';
 import { DeveloperMailboxModal } from '../components/DeveloperMailboxModal';
+
+export const PAYMENT_CONFIG = {
+  amount: '1999',
+  formattedAmount: '₹1,999',
+  accountNumber: '0116040100017669',
+  ifscCode: 'JAKA0GNGYAL',
+  bankName: 'Jammu & Kashmir Bank (J&K Bank)',
+  branch: 'Gangyal, Jammu',
+  beneficiaryName: 'Aequitas Conclave / Aastitva Alliance',
+  qrCodeUrl: '/payment-qr.jpg',
+  queryContacts: [
+    { number: '+91 88993 46704', raw: '918899346704', label: 'Primary Secretariat Support' },
+    { number: '+91 95963 72727', raw: '919596372727', label: 'Finance & Remittance Desk' },
+    { number: '+91 95484 99951', raw: '919548499951', label: 'Delegate Affairs Helpline' },
+  ],
+};
 
 interface FormState {
   fullName: string;
@@ -59,6 +82,7 @@ interface FormState {
   secondChoicePortfolio: string;
   thirdChoiceCommittee: string;
   thirdChoicePortfolio: string;
+  transactionId: string;
   agreedToTerms: boolean;
 }
 
@@ -127,6 +151,16 @@ export const AequitasRegistrationPage: React.FC = () => {
   const [passDataUrl, setPassDataUrl] = useState<string>('');
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [devMailboxOpen, setDevMailboxOpen] = useState(false);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+
+  const handleCopy = (text: string, fieldId: string) => {
+    sounds.playTap();
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      setCopiedField(fieldId);
+      setTimeout(() => setCopiedField(null), 2000);
+    }
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -152,6 +186,7 @@ export const AequitasRegistrationPage: React.FC = () => {
     secondChoicePortfolio: '',
     thirdChoiceCommittee: 'Lok Sabha - Lok Sabha (House of the People)',
     thirdChoicePortfolio: '',
+    transactionId: '',
     agreedToTerms: false,
   });
 
@@ -513,8 +548,20 @@ export const AequitasRegistrationPage: React.FC = () => {
     }
 
     if (step === 4) {
+      if (!validateStep(1) || !validateStep(2) || !validateStep(3)) {
+        errors.general = 'Please verify that all previous required sections are complete.';
+      }
+    }
+
+    if (step === 5) {
+      if (!form.transactionId.trim()) {
+        errors.transactionId = 'Please enter your 12-digit UTR / UPI Reference Number / Transaction ID.';
+      } else if (form.transactionId.trim().length < 5) {
+        errors.transactionId = 'Please enter a valid Transaction / UTR reference number (at least 5 characters).';
+      }
+
       if (!form.agreedToTerms) {
-        errors.agreedToTerms = 'You must agree to the academic integrity declaration to submit.';
+        errors.agreedToTerms = 'You must confirm the remittance declaration and agree to the academic integrity code to complete registration.';
       }
     }
 
@@ -526,7 +573,7 @@ export const AequitasRegistrationPage: React.FC = () => {
     if (validateStep(currentStep)) {
       sounds.playTap();
       setDirection('forward');
-      setCurrentStep((prev) => Math.min(prev + 1, 4));
+      setCurrentStep((prev) => Math.min(prev + 1, 5));
     } else {
       sounds.playHover();
     }
@@ -550,7 +597,7 @@ export const AequitasRegistrationPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validateStep(4)) return;
+    if (!validateStep(5)) return;
 
     setIsSubmitting(true);
     sounds.playChime();
@@ -637,6 +684,8 @@ export const AequitasRegistrationPage: React.FC = () => {
         stored.push({
           trackingId,
           timestamp: nowTime,
+          feePaid: '₹1,999',
+          transactionId: form.transactionId.trim(),
           ...form,
         });
         localStorage.setItem('aequitas_delegate_applications', JSON.stringify(stored));
@@ -651,7 +700,7 @@ export const AequitasRegistrationPage: React.FC = () => {
           phone: form.phone.trim(),
           eventType: `Aequitas 2026 Delegate: ${form.firstChoiceCommittee} [${form.firstChoicePortfolio.trim()}]`,
           preferredDate: '2026-10-29',
-          message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.institution.trim()}\nAcademic Division: ${form.grade}\nPrior MUN Experience: ${form.priorExperience}\nHonors / Accolades: ${form.priorAccolades.trim() || 'None'}\n1st Choice Committee: ${form.firstChoiceCommittee} (Preferred: ${form.firstChoicePortfolio.trim()})\n2nd Choice Committee: ${form.secondChoiceCommittee} (Preferred: ${form.secondChoicePortfolio.trim()})\n3rd Choice Committee: ${form.thirdChoiceCommittee} (Preferred: ${form.thirdChoicePortfolio.trim()})\nStatement of Purpose:\n${form.statement.trim()}`,
+          message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.institution.trim()}\nAcademic Division: ${form.grade}\nPrior MUN Experience: ${form.priorExperience}\nHonors / Accolades: ${form.priorAccolades.trim() || 'None'}\n1st Choice Committee: ${form.firstChoiceCommittee} (Preferred: ${form.firstChoicePortfolio.trim()})\n2nd Choice Committee: ${form.secondChoiceCommittee} (Preferred: ${form.secondChoicePortfolio.trim()})\n3rd Choice Committee: ${form.thirdChoiceCommittee} (Preferred: ${form.thirdChoicePortfolio.trim()})\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: ${form.transactionId.trim()}\nStatement of Purpose:\n${form.statement.trim()}`,
           status: 'New',
         };
         await saveEntryToMailbox(newMailboxEntry);
@@ -708,6 +757,7 @@ export const AequitasRegistrationPage: React.FC = () => {
       secondChoicePortfolio: '',
       thirdChoiceCommittee: 'Lok Sabha - Lok Sabha (House of the People)',
       thirdChoicePortfolio: '',
+      transactionId: '',
       agreedToTerms: false,
     });
     setIsSubmitted(false);
@@ -796,14 +846,15 @@ export const AequitasRegistrationPage: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-ping" />
                   <span className="text-[#D4AF37] font-bold text-xs tracking-wider uppercase">
-                    Slide {currentStep} of 4
+                    Slide {currentStep} of 5
                   </span>
                 </div>
                 <div className="text-[#C4BBA3] text-[10.5px] sm:text-[11px] truncate">
                   {currentStep === 1 && 'Personal & Institutional Data'}
                   {currentStep === 2 && 'Experience Tier & Profile'}
                   {currentStep === 3 && 'Council & Portfolio Allocation'}
-                  {currentStep === 4 && 'Verification & Sovereign Submission'}
+                  {currentStep === 4 && 'Complete Registration Dossier Review'}
+                  {currentStep === 5 && 'Delegate Fee Remittance (₹1,999)'}
                 </div>
               </div>
 
@@ -811,19 +862,20 @@ export const AequitasRegistrationPage: React.FC = () => {
               <div className="w-full h-1.5 sm:h-2 rounded-full bg-[#0D1427] border border-[#D4AF37]/20 overflow-hidden relative">
                 <motion.div
                   className="h-full bg-gradient-to-r from-[#D4AF37] via-[#F3E5AB] to-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.6)]"
-                  initial={{ width: '25%' }}
-                  animate={{ width: `${currentStep * 25}%` }}
+                  initial={{ width: '20%' }}
+                  animate={{ width: `${currentStep * 20}%` }}
                   transition={{ duration: 0.4, ease: 'easeInOut' }}
                 />
               </div>
 
               {/* Clickable Step Pills */}
-              <div className="grid grid-cols-4 gap-1 sm:gap-2 pt-0.5">
+              <div className="grid grid-cols-5 gap-1 sm:gap-2 pt-0.5">
                 {[
                   { step: 1, label: 'Identity', icon: User },
                   { step: 2, label: 'Division', icon: Award },
                   { step: 3, label: 'Committees', icon: Layers },
-                  { step: 4, label: 'Review', icon: CheckCheck },
+                  { step: 4, label: 'Review', icon: FileText },
+                  { step: 5, label: 'Payment', icon: QrCode },
                 ].map((item) => {
                   const IconComp = item.icon;
                   const isCurrent = currentStep === item.step;
@@ -1409,7 +1461,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                   </motion.div>
                 )}
 
-                {/* SLIDE 4: REVIEW & SOVEREIGN SUBMISSION */}
+                {/* SLIDE 4: COMPLETE REGISTRATION DOSSIER REVIEW */}
                 {currentStep === 4 && (
                   <motion.div
                     key="step-4"
@@ -1421,18 +1473,18 @@ export const AequitasRegistrationPage: React.FC = () => {
                   >
                     <div>
                       <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/35 text-xs font-mono font-semibold mb-2">
-                        <CheckCheck className="w-3 h-3" />
-                        <span>Step 04 // Application Dossier Review</span>
+                        <FileText className="w-3 h-3" />
+                        <span>Step 04 // Complete Registration Dossier Review</span>
                       </div>
                       <h2 className="text-xl sm:text-2xl md:text-3xl font-playfair font-bold text-white">
-                        Confirm & Dispatch Application
+                        Review Your Application Dossier
                       </h2>
                       <p className="text-xs sm:text-sm text-[#C4BBA3] mt-1">
-                        Please review your application parameters before dispatching to the Aequitas Executive Secretariat.
+                        Please inspect all registered parameters before proceeding to fee remittance and seat allocation.
                       </p>
                     </div>
 
-                    {/* Summary Review Dossier Box */}
+                    {/* Comprehensive Dossier Review Box */}
                     <div className="rounded-2xl bg-[#070A14]/95 border-2 border-[#D4AF37]/40 p-4 sm:p-6 space-y-4 shadow-xl">
                       {/* Section 1: Identity */}
                       <div className="flex items-center justify-between pb-3 border-b border-[#D4AF37]/20">
@@ -1464,6 +1516,11 @@ export const AequitasRegistrationPage: React.FC = () => {
                           <div className="text-xs text-[#C4BBA3] font-mono">
                             {form.grade} • {form.priorExperience}
                           </div>
+                          {form.priorAccolades && (
+                            <div className="text-xs text-amber-300 font-mono mt-0.5">
+                              Honors: {form.priorAccolades}
+                            </div>
+                          )}
                         </div>
                         <button
                           type="button"
@@ -1505,6 +1562,18 @@ export const AequitasRegistrationPage: React.FC = () => {
                         </button>
                       </div>
 
+                      {/* Section 4: Statement of Purpose */}
+                      {form.statement && (
+                        <div className="p-3.5 rounded-xl bg-[#050811] border border-[#D4AF37]/20 text-xs">
+                          <span className="text-[#D4AF37] font-mono uppercase font-bold tracking-wider block mb-1">
+                            Statement of Purpose
+                          </span>
+                          <p className="text-[#FAF5EF]/90 italic leading-relaxed whitespace-pre-wrap">
+                            "{form.statement}"
+                          </p>
+                        </div>
+                      )}
+
                       {/* Summit Snapshot Details */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono text-[#C4BBA3] bg-[#050811] p-3 rounded-xl border border-[#D4AF37]/20">
                         <div className="flex items-center gap-2">
@@ -1516,26 +1585,340 @@ export const AequitasRegistrationPage: React.FC = () => {
                           <span>{INITIAL_SUMMIT_CONFIG.address}</span>
                         </div>
                       </div>
+
+                      {/* Delegate Fee Summary Card */}
+                      <div className="p-4 rounded-xl bg-gradient-to-r from-[#D4AF37]/15 via-[#E8A53E]/10 to-transparent border border-[#D4AF37]/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                          <span className="text-[10px] font-mono uppercase tracking-wider text-[#D4AF37] font-bold block">
+                            Standard Delegate Fee
+                          </span>
+                          <div className="text-xl sm:text-2xl font-bold font-playfair text-white mt-0.5">
+                            ₹1,999 <span className="text-xs font-mono text-[#C4BBA3] font-normal">/ Delegate</span>
+                          </div>
+                          <p className="text-[11px] text-[#C4BBA3] mt-0.5">
+                            All-inclusive: 2-day Summit Entry, Committee Allocation, Delegate Kit, High-Res Official Pass, Lunch & High Tea.
+                          </p>
+                        </div>
+                        <div className="sm:text-right shrink-0">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-xs font-mono font-bold">
+                            <Check className="w-3 h-3 text-emerald-400" />
+                            Ready for Remittance
+                          </span>
+                        </div>
+                      </div>
                     </div>
 
-                    {/* Declaration Checkbox */}
-                    <div className="p-4 rounded-xl bg-[#070A14]/80 border border-[#D4AF37]/25 space-y-2">
+                    <div className="p-3.5 rounded-xl bg-[#0D1427]/70 border border-[#D4AF37]/20 text-xs text-[#C4BBA3] flex items-center gap-2.5">
+                      <Sparkles className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                      <span>
+                        All details verified? Click <strong>Proceed to Fee Payment</strong> below to complete remittance via QR code or direct bank transfer.
+                      </span>
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* SLIDE 5: DELEGATE FEE REMITTANCE & VERIFICATION */}
+                {currentStep === 5 && (
+                  <motion.div
+                    key="step-5"
+                    initial={{ opacity: 0, x: direction === 'forward' ? 24 : -24 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: direction === 'forward' ? -24 : 24 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    className="space-y-6"
+                  >
+                    <div>
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/35 text-xs font-mono font-semibold mb-2">
+                        <QrCode className="w-3 h-3" />
+                        <span>Step 05 // Delegate Fee Remittance & Verification</span>
+                      </div>
+                      <h2 className="text-xl sm:text-2xl md:text-3xl font-playfair font-bold text-white">
+                        Delegate Fee Remittance
+                      </h2>
+                      <p className="text-xs sm:text-sm text-[#C4BBA3] mt-1">
+                        Secure payment of ₹1,999 to finalize your registration and generate your official delegate pass.
+                      </p>
+                    </div>
+
+                    {/* Prominent Amount Header Banner */}
+                    <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#16203B] via-[#0D1427] to-[#16203B] border-2 border-[#D4AF37]/50 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div>
+                        <span className="text-[10.5px] font-mono uppercase tracking-widest text-[#D4AF37] font-bold block">
+                          Total Amount Payable
+                        </span>
+                        <div className="text-2xl sm:text-3xl font-playfair font-extrabold text-white flex items-baseline gap-2 mt-0.5">
+                          <span>₹1,999</span>
+                          <span className="text-xs font-mono font-normal text-emerald-400">
+                            (Delegate All-Inclusive Fee)
+                          </span>
+                        </div>
+                        <p className="text-xs text-[#C4BBA3] mt-1">
+                          Covers 29 & 30 October 2026 Summit entry, official kit, lunch, high tea & pass credentials.
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="px-3 py-1.5 rounded-xl bg-[#070A14] border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-mono font-bold flex items-center gap-1.5">
+                          <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                          Verified Gateway
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Dual Payment Channels Grid (QR Code + Direct Bank Transfer) */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Channel 1: Scan & Pay via UPI QR */}
+                      <div className="rounded-2xl bg-[#070A14]/95 border-2 border-[#D4AF37]/40 p-4 sm:p-5 flex flex-col items-center text-center space-y-3.5 shadow-lg">
+                        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] text-[11px] font-mono font-bold uppercase tracking-wider">
+                          <QrCode className="w-3.5 h-3.5" />
+                          <span>Option 1: Scan & Pay</span>
+                        </div>
+                        <p className="text-xs text-[#C4BBA3]">
+                          Open <strong>PhonePe, Google Pay, Paytm, BHIM</strong>, or any UPI app and scan the QR code below:
+                        </p>
+
+                        {/* QR Image Box */}
+                        <div className="relative p-2.5 rounded-2xl bg-white border-2 border-[#D4AF37] shadow-[0_0_25px_rgba(212,175,55,0.25)] max-w-[210px] w-full aspect-square flex items-center justify-center overflow-hidden">
+                          <img
+                            src={PAYMENT_CONFIG.qrCodeUrl}
+                            alt="Aequitas Payment QR Code"
+                            className="w-full h-full object-contain rounded-xl"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <div className="text-xs font-bold text-white font-mono">
+                            Amount: ₹1,999
+                          </div>
+                          <div className="text-[11px] text-[#C4BBA3] font-mono">
+                            Scan via PhonePe, GPay, Paytm, BHIM, Cred
+                          </div>
+                        </div>
+
+                        <a
+                          href={PAYMENT_CONFIG.qrCodeUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 text-xs text-[#D4AF37] hover:underline font-mono"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                          <span>Open Full Size QR Code</span>
+                        </a>
+                      </div>
+
+                      {/* Channel 2: Direct Bank Transfer (NEFT / IMPS / RTGS) */}
+                      <div className="rounded-2xl bg-[#070A14]/95 border-2 border-[#D4AF37]/40 p-4 sm:p-5 flex flex-col justify-between space-y-4 shadow-lg">
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] text-[11px] font-mono font-bold uppercase tracking-wider">
+                              <Landmark className="w-3.5 h-3.5" />
+                              <span>Option 2: Direct Bank Transfer</span>
+                            </div>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#16203B] text-emerald-400 border border-emerald-500/30">
+                              IMPS / NEFT / RTGS
+                            </span>
+                          </div>
+
+                          <p className="text-xs text-[#C4BBA3]">
+                            Transfer ₹1,999 directly to the official Aequitas Conclave bank account using net banking or mobile banking:
+                          </p>
+
+                          {/* Bank Details Table */}
+                          <div className="space-y-2.5 font-mono text-xs">
+                            {/* Account Number */}
+                            <div className="p-2.5 rounded-xl bg-[#0D1427] border border-[#D4AF37]/30 flex items-center justify-between gap-2">
+                              <div className="min-w-0">
+                                <span className="text-[10px] uppercase text-[#A39B88] block">Account Number</span>
+                                <span className="text-white font-bold text-sm tracking-wider select-all truncate block">
+                                  {PAYMENT_CONFIG.accountNumber}
+                                </span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handleCopy(PAYMENT_CONFIG.accountNumber, 'acc')}
+                                className="shrink-0 px-2.5 py-1.5 rounded-lg bg-[#16203B] hover:bg-[#D4AF37] hover:text-[#070A14] text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-sans font-semibold transition-all flex items-center gap-1 cursor-pointer"
+                              >
+                                {copiedField === 'acc' ? (
+                                  <>
+                                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                    <span>Copied!</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Copy className="w-3.5 h-3.5" />
+                                    <span>Copy</span>
+                                  </>
+                                )}
+                              </button>
+                            </div>
+
+                            {/* IFSC Code */}
+                            <div className="p-2.5 rounded-xl bg-[#0D1427] border border-[#D4AF37]/30 flex items-center justify-between gap-2">
+                              <div className="min-w-0">
+                                <span className="text-[10px] uppercase text-[#A39B88] block">IFSC Code</span>
+                                <span className="text-white font-bold text-sm tracking-wider select-all truncate block">
+                                  {PAYMENT_CONFIG.ifscCode}
+                                </span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handleCopy(PAYMENT_CONFIG.ifscCode, 'ifsc')}
+                                className="shrink-0 px-2.5 py-1.5 rounded-lg bg-[#16203B] hover:bg-[#D4AF37] hover:text-[#070A14] text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-sans font-semibold transition-all flex items-center gap-1 cursor-pointer"
+                              >
+                                {copiedField === 'ifsc' ? (
+                                  <>
+                                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                    <span>Copied!</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Copy className="w-3.5 h-3.5" />
+                                    <span>Copy</span>
+                                  </>
+                                )}
+                              </button>
+                            </div>
+
+                            {/* Bank & Branch Details */}
+                            <div className="p-2.5 rounded-xl bg-[#0D1427]/60 border border-[#243563] space-y-1 text-[11px]">
+                              <div>
+                                <span className="text-[#A39B88]">Bank: </span>
+                                <strong className="text-[#FAF5EF]">{PAYMENT_CONFIG.bankName}</strong>
+                              </div>
+                              <div>
+                                <span className="text-[#A39B88]">Branch: </span>
+                                <strong className="text-[#FAF5EF]">{PAYMENT_CONFIG.branch}</strong>
+                              </div>
+                              <div>
+                                <span className="text-[#A39B88]">Account Name: </span>
+                                <strong className="text-[#FAF5EF]">{PAYMENT_CONFIG.beneficiaryName}</strong>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="text-[11px] text-amber-300 font-mono bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/25 flex items-center gap-2">
+                          <ShieldCheck className="w-4 h-4 shrink-0 text-[#D4AF37]" />
+                          <span>Confidential Account Credentials • Verified for Aequitas 2026.</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Transaction Reference / UTR Number Input */}
+                    <div className="rounded-2xl bg-[#070A14]/95 border-2 border-[#D4AF37]/50 p-4 sm:p-6 space-y-3 shadow-xl">
+                      <label className="block text-xs sm:text-sm font-semibold text-[#FAF5EF]">
+                        12-Digit Transaction Reference (UTR / UPI Ref Number / Transaction ID) *
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. 426812345678 or Bank UTR Number"
+                          value={form.transactionId}
+                          onChange={(e) => {
+                            setForm({ ...form, transactionId: e.target.value });
+                            if (validationErrors.transactionId) {
+                              setValidationErrors({ ...validationErrors, transactionId: '' });
+                            }
+                          }}
+                          className={`w-full px-4 py-3 rounded-xl bg-[#050811] border text-white font-mono text-sm tracking-wider focus:outline-none transition-colors ${
+                            validationErrors.transactionId
+                              ? 'border-rose-500 focus:border-rose-400'
+                              : 'border-[#D4AF37]/45 focus:border-[#D4AF37]'
+                          }`}
+                        />
+                      </div>
+                      <p className="text-[11px] text-[#C4BBA3] font-mono leading-relaxed">
+                        You can find your 12-digit UTR or UPI Reference Number in your payment receipt on PhonePe, Google Pay, Paytm, or your bank's transfer confirmation.
+                      </p>
+                      {validationErrors.transactionId && (
+                        <p className="text-rose-400 text-xs mt-1 flex items-center gap-1 font-mono">
+                          <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                          <span>{validationErrors.transactionId}</span>
+                        </p>
+                      )}
+                    </div>
+
+                    {/* DEDICATED HELPLINE FOR INQUIRIES */}
+                    <div className="rounded-2xl bg-gradient-to-br from-[#0D1427] via-[#070A14] to-[#16203B] border-2 border-[#D4AF37]/45 p-4 sm:p-6 space-y-3.5 shadow-xl">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pb-2 border-b border-[#D4AF37]/25">
+                        <div className="flex items-center gap-2">
+                          <PhoneCall className="w-4 h-4 text-[#D4AF37]" />
+                          <h3 className="text-sm sm:text-base font-bold text-white font-playfair tracking-wide">
+                            For Any Inquiries &amp; Remittance Support
+                          </h3>
+                        </div>
+                        <span className="text-[10.5px] font-mono text-amber-300 bg-[#D4AF37]/15 px-2 py-0.5 rounded-full border border-[#D4AF37]/30">
+                          Official Secretariat Helplines
+                        </span>
+                      </div>
+
+                      <p className="text-xs text-[#C4BBA3] leading-relaxed">
+                        For any questions regarding registration, committee allocations, payment verification, or group delegations, reach out directly to our coordinating officers:
+                      </p>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+                        {PAYMENT_CONFIG.queryContacts.map((contact, idx) => (
+                          <div
+                            key={idx}
+                            className="p-3 rounded-xl bg-[#070A14] border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all space-y-2 flex flex-col justify-between"
+                          >
+                            <div>
+                              <span className="text-[10px] font-mono uppercase text-[#A39B88] block">
+                                {contact.label}
+                              </span>
+                              <span className="text-xs sm:text-sm font-mono font-bold text-white block mt-0.5">
+                                {contact.number}
+                              </span>
+                            </div>
+
+                            <div className="flex items-center gap-1.5 pt-1">
+                              <a
+                                href={`tel:${contact.raw}`}
+                                className="flex-1 py-1.5 px-2 rounded-lg bg-[#16203B] hover:bg-[#D4AF37] hover:text-[#070A14] text-xs font-mono font-semibold text-white transition-all flex items-center justify-center gap-1"
+                                title={`Call ${contact.number}`}
+                              >
+                                <Phone className="w-3 h-3 text-emerald-400" />
+                                <span>Call</span>
+                              </a>
+                              <a
+                                href={`https://wa.me/${contact.raw}?text=${encodeURIComponent(
+                                  `Hello Aequitas Secretariat, I have an inquiry regarding delegate registration (Fee: ₹1,999) for ${form.fullName || 'a delegate'}.`
+                                )}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1 py-1.5 px-2 rounded-lg bg-[#0E3A2F] hover:bg-emerald-500 hover:text-white text-xs font-mono font-semibold text-emerald-300 transition-all flex items-center justify-center gap-1"
+                                title={`WhatsApp ${contact.number}`}
+                              >
+                                <MessageSquare className="w-3 h-3 text-emerald-400" />
+                                <span>WhatsApp</span>
+                              </a>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Remittance Declaration Checkbox */}
+                    <div className="p-4 rounded-xl bg-[#070A14]/80 border border-[#D4AF37]/35 space-y-2">
                       <label className="flex items-start gap-3 cursor-pointer select-none">
                         <input
                           type="checkbox"
                           checked={form.agreedToTerms}
-                          onChange={(e) => setForm({ ...form, agreedToTerms: e.target.checked })}
+                          onChange={(e) => {
+                            setForm({ ...form, agreedToTerms: e.target.checked });
+                            if (validationErrors.agreedToTerms) {
+                              setValidationErrors({ ...validationErrors, agreedToTerms: '' });
+                            }
+                          }}
                           className="mt-1 w-4 h-4 rounded border-[#D4AF37]/40 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer"
                         />
                         <span className="text-xs text-[#C4BBA3] leading-relaxed">
-                          I hereby confirm that all submitted details are authentic, and I agree to abide by the
-                          official Rules of Procedure, diplomatic decorum, and zero-bias code of conduct established
-                          by the Aequitas Summit 2026 Executive Board.
+                          I confirm that I have remitted <strong>₹1,999</strong> towards the delegate registration fee and that the Transaction / UTR ID entered above is genuine. I agree to abide by the official Rules of Procedure, diplomatic decorum, and zero-bias code of conduct established by the Aequitas Summit 2026 Executive Board.
                         </span>
                       </label>
                       {validationErrors.agreedToTerms && (
                         <p className="text-rose-400 text-xs mt-1 flex items-center gap-1 font-mono">
-                          <AlertCircle className="w-3 h-3" />
+                          <AlertCircle className="w-3.5 h-3.5 shrink-0" />
                           <span>{validationErrors.agreedToTerms}</span>
                         </p>
                       )}
@@ -1568,6 +1951,16 @@ export const AequitasRegistrationPage: React.FC = () => {
                     <span>Next: Step {currentStep + 1}</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
+                ) : currentStep === 4 ? (
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    className="px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E8A53E] to-[#D4AF37] text-[#070A14] font-extrabold text-xs sm:text-sm shadow-[0_0_25px_rgba(212,175,55,0.5)] hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 cursor-pointer ml-auto min-h-[44px]"
+                  >
+                    <CreditCard className="w-4 h-4" />
+                    <span>Proceed to Fee Payment (₹1,999)</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
                 ) : (
                   <button
                     type="button"
@@ -1580,12 +1973,12 @@ export const AequitasRegistrationPage: React.FC = () => {
                     {isSubmitting ? (
                       <>
                         <RefreshCw className="w-4 h-4 animate-spin" />
-                        <span>Transmitting...</span>
+                        <span>Transmitting &amp; Verifying...</span>
                       </>
                     ) : (
                       <>
-                        <Send className="w-4 h-4" />
-                        <span>Submit Application</span>
+                        <ShieldCheck className="w-4 h-4" />
+                        <span>Confirm Payment &amp; Complete Registration</span>
                       </>
                     )}
                   </button>
@@ -1627,6 +2020,14 @@ export const AequitasRegistrationPage: React.FC = () => {
               <div className="flex items-center justify-between pb-2 border-b border-[#D4AF37]/20">
                 <span className="text-[#C4BBA3]">Timestamp:</span>
                 <span className="text-white">{submissionTime}</span>
+              </div>
+              <div className="flex items-center justify-between pb-2 border-b border-[#D4AF37]/20">
+                <span className="text-[#C4BBA3]">Fee Remittance:</span>
+                <span className="text-emerald-400 font-bold">₹1,999 (Recorded)</span>
+              </div>
+              <div className="flex items-center justify-between pb-2 border-b border-[#D4AF37]/20">
+                <span className="text-[#C4BBA3]">Transaction UTR:</span>
+                <span className="text-amber-300 font-bold select-all">{form.transactionId || 'Recorded'}</span>
               </div>
               <div className="flex items-center justify-between pb-2 border-b border-[#D4AF37]/20">
                 <span className="text-[#C4BBA3]">Assigned Institution:</span>
@@ -1692,6 +2093,29 @@ export const AequitasRegistrationPage: React.FC = () => {
               <p className="text-xs text-[#C4BBA3] leading-relaxed">
                 <strong className="text-[#FAF5EF]">Portfolio Review:</strong> The Executive Board evaluates committee and portfolio preferences within 48–72 hours.
               </p>
+            </div>
+
+            {/* Inquiries & Remittance Support Helpline */}
+            <div className="p-3.5 rounded-xl bg-[#070A14] border border-[#D4AF37]/30 text-left space-y-2 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[#D4AF37] font-bold uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+                  <PhoneCall className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  For Any Inquiries:
+                </span>
+                <span className="text-[10px] text-[#A39B88] font-mono">Secretariat Support</span>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 pt-1 font-mono text-xs">
+                {PAYMENT_CONFIG.queryContacts.map((c, i) => (
+                  <a
+                    key={i}
+                    href={`tel:${c.raw}`}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#16203B] hover:bg-[#D4AF37] hover:text-[#070A14] text-white border border-[#D4AF37]/30 transition-colors"
+                  >
+                    <Phone className="w-3 h-3 text-emerald-400" />
+                    <span>{c.number}</span>
+                  </a>
+                ))}
+              </div>
             </div>
 
             {/* Action Buttons (Strictly no home redirect, printing and repeat registration supported) */}
