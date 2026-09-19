@@ -517,39 +517,97 @@ export const ComingSoonScreen: React.FC<Props> = ({
           </div>
         </motion.div>
 
-        {/* CONCLAVE ROADMAP & PREVIEW CARDS */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-4xl text-left">
-          <div className="p-5 rounded-2xl bg-[#0D1427]/60 border border-[#243563] backdrop-blur-md space-y-2">
-            <div className="flex items-center gap-2 text-[#D4AF37] font-mono text-xs font-bold uppercase">
-              <Compass className="w-4 h-4" />
-              <span>Inaugural Conclave</span>
-            </div>
-            <h4 className="text-base font-serif font-bold text-white">October 24–25, 2026</h4>
-            <p className="text-xs text-[#C4BBA3] leading-relaxed">
-              Two days of high-stakes parliamentary deliberation, international crisis simulations, and keynote diplomatic addresses in Jammu, J&K.
-            </p>
+        {/* CORE OPERATING POLICIES & SOVEREIGN COVENANT */}
+        <div className="w-full max-w-4xl space-y-4 text-left">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[11px] font-mono text-[#D4AF37] uppercase tracking-widest font-bold flex items-center gap-2">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#D4AF37]" />
+              FOUNDING COVENANT & OPERATIONAL POLICIES
+            </span>
+            <span className="text-[10px] font-mono text-[#768074]">
+              AASTITVA ALLIANCE CHARTER
+            </span>
           </div>
 
-          <div className="p-5 rounded-2xl bg-[#0D1427]/60 border border-[#243563] backdrop-blur-md space-y-2">
-            <div className="flex items-center gap-2 text-sky-400 font-mono text-xs font-bold uppercase">
-              <ShieldCheck className="w-4 h-4" />
-              <span>Executive Quality</span>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* Policy 1: Academic Impartiality */}
+            <div className="p-5 rounded-2xl bg-[#0D1427]/70 border border-[#243563] backdrop-blur-md space-y-2.5 hover:border-[#D4AF37]/50 transition-all group">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-[#D4AF37] font-mono text-xs font-bold uppercase">
+                  <ShieldCheck className="w-4 h-4 text-[#D4AF37]" />
+                  <span>Integrity Policy</span>
+                </div>
+                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-[#D4AF37]/15 text-[#D4AF37]">
+                  Pillar 01
+                </span>
+              </div>
+              <h4 className="text-base font-serif font-bold text-white group-hover:text-[#D4AF37] transition-colors">
+                Academic Impartiality & Merit
+              </h4>
+              <p className="text-xs text-[#C4BBA3] leading-relaxed">
+                Zero institutional bias. Standardized blind evaluation rubrics, accredited non-partisan executive board moderation, and strictly merit-based delegate recognitions.
+              </p>
             </div>
-            <h4 className="text-base font-serif font-bold text-white">Zero Compromise Standard</h4>
-            <p className="text-xs text-[#C4BBA3] leading-relaxed">
-              Certified executive board chairs, standardized evaluation matrices, and complete logistical operational architecture.
-            </p>
+
+            {/* Policy 2: Direct Stewardship */}
+            <div className="p-5 rounded-2xl bg-[#0D1427]/70 border border-[#243563] backdrop-blur-md space-y-2.5 hover:border-sky-400/50 transition-all group">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-sky-400 font-mono text-xs font-bold uppercase">
+                  <Compass className="w-4 h-4" />
+                  <span>Stewardship Policy</span>
+                </div>
+                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-sky-500/15 text-sky-300">
+                  Pillar 02
+                </span>
+              </div>
+              <h4 className="text-base font-serif font-bold text-white group-hover:text-sky-300 transition-colors">
+                Zero Middlemen & Accountability
+              </h4>
+              <p className="text-xs text-[#C4BBA3] leading-relaxed">
+                We operate without corporate opacity or bureaucratic overhead. Every summit is anchored by direct, on-ground personal responsibility and transparent institution agreements.
+              </p>
+            </div>
+
+            {/* Policy 3: Grassroots Access */}
+            <div className="p-5 rounded-2xl bg-[#0D1427]/70 border border-[#243563] backdrop-blur-md space-y-2.5 hover:border-purple-400/50 transition-all group">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-purple-400 font-mono text-xs font-bold uppercase">
+                  <Sparkles className="w-4 h-4" />
+                  <span>Access Policy</span>
+                </div>
+                <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-purple-500/15 text-purple-300">
+                  Pillar 03
+                </span>
+              </div>
+              <h4 className="text-base font-serif font-bold text-white group-hover:text-purple-300 transition-colors">
+                Democratized Youth Access
+              </h4>
+              <p className="text-xs text-[#C4BBA3] leading-relaxed">
+                Active subsidies and dedicated procedural training workshops to ensure high-caliber diplomatic exposure extends to underprivileged students and regional grassroots schools.
+              </p>
+            </div>
           </div>
 
-          <div className="p-5 rounded-2xl bg-[#0D1427]/60 border border-[#243563] backdrop-blur-md space-y-2">
-            <div className="flex items-center gap-2 text-purple-400 font-mono text-xs font-bold uppercase">
-              <Sparkles className="w-4 h-4" />
-              <span>Delegate Accreditation</span>
+          {/* Operating Covenant Banner with 5 Core Values */}
+          <div className="p-5 sm:p-6 rounded-2xl bg-[#070A14]/90 border border-[#D4AF37]/35 flex flex-col md:flex-row items-center justify-between gap-4 backdrop-blur-lg">
+            <div className="space-y-1">
+              <span className="text-[10px] font-mono text-[#D4AF37] font-bold uppercase tracking-widest block">
+                THE FOUNDER'S COVENANT
+              </span>
+              <p className="text-xs sm:text-sm text-[#FAF5EF] font-serif italic leading-relaxed">
+                "To simplify the complexity of running academic events, so every idea gets the chance to fully exist."
+              </p>
             </div>
-            <h4 className="text-base font-serif font-bold text-white">High-Resolution Pass</h4>
-            <p className="text-xs text-[#C4BBA3] leading-relaxed">
-              Instant verifiable credentials with personalized Delegate Pass PNG download upon registration completion.
-            </p>
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              {['Purpose', 'Integrity', 'Access', 'Presence', 'Transparency'].map((val) => (
+                <span
+                  key={val}
+                  className="px-3 py-1 rounded-xl bg-[#16203B] border border-[#243563] text-[11px] font-mono text-[#D4AF37] font-bold shadow-sm"
+                >
+                  {val}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
 
