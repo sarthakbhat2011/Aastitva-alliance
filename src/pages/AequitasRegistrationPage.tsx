@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import confetti from 'canvas-confetti';
 import {
@@ -162,6 +162,269 @@ export const AequitasRegistrationPage: React.FC = () => {
   // Set document title
   useEffect(() => {
     document.title = 'Aequitas Summit 2026 • Official Delegate Allocation Portal';
+  }, []);
+
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // Dynamic Galactic Starfield, Shooting Stars & Cosmic Planetary Geometry Canvas
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    let mouseX = width / 2;
+    let mouseY = height / 2;
+    let targetMouseX = mouseX;
+    let targetMouseY = mouseY;
+
+    const handlePointerMove = (e: MouseEvent | TouchEvent) => {
+      if ('touches' in e && e.touches[0]) {
+        targetMouseX = e.touches[0].clientX;
+        targetMouseY = e.touches[0].clientY;
+      } else if ('clientX' in e) {
+        targetMouseX = (e as MouseEvent).clientX;
+        targetMouseY = (e as MouseEvent).clientY;
+      }
+    };
+    window.addEventListener('mousemove', handlePointerMove, { passive: true });
+    window.addEventListener('touchmove', handlePointerMove, { passive: true });
+
+    const handleResize = () => {
+      if (!canvas) return;
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    };
+    window.addEventListener('resize', handleResize);
+
+    // 1. Galactic Starfield (120 pulsating celestial stars)
+    const stars: {
+      x: number;
+      y: number;
+      radius: number;
+      alpha: number;
+      pulseSpeed: number;
+      speed: number;
+      color: string;
+    }[] = [];
+
+    const starColors = ['#D4AF37', '#FAF5EF', '#38BDF8', '#C084FC', '#FDE047'];
+
+    for (let i = 0; i < 110; i++) {
+      stars.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 1.6 + 0.35,
+        alpha: Math.random() * 0.8 + 0.2,
+        pulseSpeed: Math.random() * 0.02 + 0.005,
+        speed: Math.random() * 0.25 + 0.05,
+        color: starColors[Math.floor(Math.random() * starColors.length)],
+      });
+    }
+
+    // 2. Shooting Stars System (Golden, White & Violet Meteorites)
+    interface ShootingStar {
+      x: number;
+      y: number;
+      length: number;
+      speed: number;
+      angle: number;
+      alpha: number;
+      color: string;
+      active: boolean;
+    }
+
+    const shootingStars: ShootingStar[] = [];
+    const spawnShootingStar = () => {
+      if (Math.random() < 0.4 && shootingStars.filter((s) => s.active).length < 3) {
+        const palettes = [
+          'rgba(212, 175, 55, ',   // Imperial Gold
+          'rgba(255, 255, 255, ',   // Pure Starlight White
+          'rgba(192, 132, 252, ',   // Royal Violet
+          'rgba(56, 189, 248, ',    // Electric Cyan
+        ];
+        shootingStars.push({
+          x: Math.random() * (width * 1.2) - width * 0.1,
+          y: Math.random() * (height * 0.45),
+          length: Math.random() * 110 + 60,
+          speed: Math.random() * 8 + 4.5,
+          angle: Math.PI / 4 + (Math.random() - 0.5) * 0.2,
+          alpha: 1.0,
+          color: palettes[Math.floor(Math.random() * palettes.length)],
+          active: true,
+        });
+      }
+    };
+
+    let planetRotation = 0;
+
+    const render = () => {
+      ctx.clearRect(0, 0, width, height);
+
+      // Smooth mouse / touch parallax easing
+      mouseX += (targetMouseX - mouseX) * 0.035;
+      mouseY += (targetMouseY - mouseY) * 0.035;
+      planetRotation += 0.0022;
+
+      // A. Deep Cosmic Nebula Gradients
+      const nebula1 = ctx.createRadialGradient(
+        width * 0.5 + (mouseX - width / 2) * 0.03,
+        height * 0.35 + (mouseY - height / 2) * 0.03,
+        0,
+        width * 0.5,
+        height * 0.35,
+        Math.max(width, height) * 0.65
+      );
+      nebula1.addColorStop(0, 'rgba(88, 28, 135, 0.24)'); // Deep royal purple
+      nebula1.addColorStop(0.4, 'rgba(30, 27, 75, 0.30)'); // Navy violet
+      nebula1.addColorStop(0.75, 'rgba(15, 23, 42, 0.48)');
+      nebula1.addColorStop(1, 'rgba(5, 8, 17, 0.95)');
+      ctx.fillStyle = nebula1;
+      ctx.fillRect(0, 0, width, height);
+
+      // B. Warm Golden Starlight Center Glow
+      const goldNebula = ctx.createRadialGradient(
+        width * 0.5,
+        height * 0.42,
+        0,
+        width * 0.5,
+        height * 0.42,
+        width * 0.42
+      );
+      goldNebula.addColorStop(0, 'rgba(212, 175, 55, 0.11)');
+      goldNebula.addColorStop(0.6, 'rgba(212, 175, 55, 0.025)');
+      goldNebula.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = goldNebula;
+      ctx.fillRect(0, 0, width, height);
+
+      // C. Celestial Planetary Orbital Geometry (Concentric Rings & Satellites)
+      const centerX = width * 0.5 + (mouseX - width / 2) * 0.02;
+      const centerY = height * 0.42 + (mouseY - height / 2) * 0.02;
+
+      ctx.save();
+      ctx.translate(centerX, centerY);
+
+      // Orbit 1: Inner Gold Ellipse
+      ctx.save();
+      ctx.rotate(planetRotation * 0.8);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, Math.min(width, height) * 0.40, Math.min(width, height) * 0.15, Math.PI / 6, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.18)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([6, 14]);
+      ctx.stroke();
+
+      // Satellite node on ring 1
+      const s1X = Math.cos(planetRotation * 2) * (Math.min(width, height) * 0.40);
+      const s1Y = Math.sin(planetRotation * 2) * (Math.min(width, height) * 0.15);
+      ctx.beginPath();
+      ctx.arc(s1X, s1Y, 3, 0, Math.PI * 2);
+      ctx.fillStyle = '#D4AF37';
+      ctx.shadowColor = '#D4AF37';
+      ctx.shadowBlur = 12;
+      ctx.fill();
+      ctx.restore();
+
+      // Orbit 2: Outer Cyan / Sky Ellipse
+      ctx.save();
+      ctx.rotate(-planetRotation * 0.6);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, Math.min(width, height) * 0.56, Math.min(width, height) * 0.22, -Math.PI / 5, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.13)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 18]);
+      ctx.stroke();
+
+      // Satellite node on ring 2
+      const s2X = Math.cos(-planetRotation * 1.5) * (Math.min(width, height) * 0.56);
+      const s2Y = Math.sin(-planetRotation * 1.5) * (Math.min(width, height) * 0.22);
+      ctx.beginPath();
+      ctx.arc(s2X, s2Y, 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#38BDF8';
+      ctx.shadowColor = '#38BDF8';
+      ctx.shadowBlur = 9;
+      ctx.fill();
+      ctx.restore();
+
+      // Orbit 3: Royal Violet Outer Bounds
+      ctx.save();
+      ctx.rotate(planetRotation * 0.4);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, Math.min(width, height) * 0.72, Math.min(width, height) * 0.28, Math.PI / 4, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(192, 132, 252, 0.10)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([8, 24]);
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.restore();
+
+      // D. Draw & Update Twinkling Stars
+      stars.forEach((star) => {
+        star.alpha += Math.sin(planetRotation * 8 + star.pulseSpeed * 100) * 0.008;
+        const clampedAlpha = Math.max(0.15, Math.min(1.0, star.alpha));
+        star.y -= star.speed;
+        if (star.y < 0) {
+          star.y = height;
+          star.x = Math.random() * width;
+        }
+
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = star.color;
+        ctx.globalAlpha = clampedAlpha;
+        ctx.shadowColor = star.color;
+        ctx.shadowBlur = star.radius > 1.2 ? 6 : 0;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 1.0;
+      });
+
+      // E. Spawn & Update Radiant Shooting Stars
+      spawnShootingStar();
+      shootingStars.forEach((star) => {
+        if (!star.active) return;
+        const headX = star.x;
+        const headY = star.y;
+        const tailX = star.x - Math.cos(star.angle) * star.length;
+        const tailY = star.y - Math.sin(star.angle) * star.length;
+
+        const grad = ctx.createLinearGradient(tailX, tailY, headX, headY);
+        grad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+        grad.addColorStop(0.7, `${star.color}${star.alpha * 0.45})`);
+        grad.addColorStop(1, `${star.color}${star.alpha})`);
+
+        ctx.beginPath();
+        ctx.moveTo(tailX, tailY);
+        ctx.lineTo(headX, headY);
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 1.8;
+        ctx.stroke();
+
+        star.x += Math.cos(star.angle) * star.speed;
+        star.y += Math.sin(star.angle) * star.speed;
+        star.alpha -= 0.014;
+
+        if (star.alpha <= 0 || star.x > width + 100 || star.y > height + 100) {
+          star.active = false;
+        }
+      });
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('mousemove', handlePointerMove);
+      window.removeEventListener('touchmove', handlePointerMove);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   const handleSoundToggle = () => {
@@ -371,7 +634,7 @@ export const AequitasRegistrationPage: React.FC = () => {
           email: form.email.trim(),
           phone: form.phone.trim(),
           eventType: `Aequitas 2026 Delegate: ${form.firstChoiceCommittee} [${form.firstChoicePortfolio.trim()}]`,
-          preferredDate: '2026-10-24',
+          preferredDate: '2026-10-29',
           message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.institution.trim()}\nAcademic Division: ${form.grade}\nPrior MUN Experience: ${form.priorExperience}\nHonors / Accolades: ${form.priorAccolades.trim() || 'None'}\n1st Choice Committee: ${form.firstChoiceCommittee} (Preferred: ${form.firstChoicePortfolio.trim()})\n2nd Choice Committee: ${form.secondChoiceCommittee} (Preferred: ${form.secondChoicePortfolio.trim()})\n3rd Choice Committee: ${form.thirdChoiceCommittee} (Preferred: ${form.thirdChoicePortfolio.trim()})\nStatement of Purpose:\n${form.statement.trim()}`,
           status: 'New',
         };
@@ -447,47 +710,48 @@ export const AequitasRegistrationPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#050811] text-[#FAF5EF] font-sans relative overflow-x-hidden selection:bg-[#D4AF37] selection:text-[#070A14] flex flex-col justify-between">
-      {/* Dynamic Background Spatial Glows */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-        <div className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full bg-[#D4AF37]/8 blur-[140px]" />
-        <div className="absolute top-1/2 -right-40 w-[550px] h-[550px] rounded-full bg-[#16203B]/60 blur-[130px]" />
-        <div className="absolute -bottom-40 left-1/3 w-[500px] h-[500px] rounded-full bg-[#E8A53E]/5 blur-[150px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(#D4AF37_1px,transparent_1px)] [background-size:32px_32px] opacity-15" />
-      </div>
+      {/* Galactic Living Starfield, Shooting Stars & Cosmic Planetary Geometry Canvas */}
+      <canvas
+        ref={canvasRef}
+        className="fixed inset-0 w-full h-full pointer-events-none -z-10"
+      />
+
+      {/* Atmospheric Cosmic Center Glow */}
+      <div className="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] sm:w-[1000px] h-[450px] bg-gradient-to-b from-[#7C3AED]/15 via-[#D4AF37]/10 to-transparent blur-[140px] pointer-events-none -z-10" />
 
       {/* Dedicated Portal Topbar (Autonomous: strictly NO home redirection) */}
-      <header className="sticky top-0 z-40 bg-[#070A14]/95 border-b border-[#D4AF37]/30 backdrop-blur-xl px-4 sm:px-8 py-3.5 select-none shadow-xl">
-        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-40 bg-[#070A14]/95 border-b border-[#D4AF37]/30 backdrop-blur-xl px-3 sm:px-8 py-2.5 sm:py-3.5 select-none shadow-xl">
+        <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
           {/* Official Emblem & Portal Designation */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#D4AF37]/25 to-[#16203B] border border-[#D4AF37]/50 flex items-center justify-center text-[#D4AF37] shadow-lg shrink-0">
-              <Sparkles className="w-5 h-5 fill-current animate-pulse" />
+          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-[#D4AF37]/25 to-[#16203B] border border-[#D4AF37]/50 flex items-center justify-center text-[#D4AF37] shadow-lg shrink-0">
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 fill-current animate-pulse" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-playfair font-extrabold text-sm sm:text-base text-[#FAF5EF] tracking-wide">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                <span className="font-playfair font-extrabold text-xs sm:text-base text-[#FAF5EF] tracking-wide truncate">
                   Aequitas Summit 2026
                 </span>
-                <span className="px-2 py-0.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] font-mono font-bold text-[9px] uppercase tracking-wider hidden xs:inline">
-                  Official Portal
+                <span className="px-1.5 sm:px-2 py-0.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] font-mono font-bold text-[8px] sm:text-[9px] uppercase tracking-wider shrink-0">
+                  Oct 29–30, 2026
                 </span>
               </div>
-              <p className="text-[11px] text-[#C4BBA3] font-mono truncate">
-                Delegate Allocation & Verification Gateway
+              <p className="text-[10px] sm:text-[11px] text-[#C4BBA3] font-mono truncate">
+                Official Delegate Allocation & Verification Gateway
               </p>
             </div>
           </div>
 
           {/* Right Security & Sound Controls */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            <div className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0D1427] border border-[#D4AF37]/25 text-emerald-400 font-mono text-[10.5px]">
+            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0D1427] border border-[#D4AF37]/25 text-emerald-400 font-mono text-[10.5px]">
               <Lock className="w-3 h-3 text-emerald-400" />
               <span>256-Bit SSL Secured</span>
             </div>
 
             <button
               onClick={handleSoundToggle}
-              className={`p-2 rounded-xl border transition-all cursor-pointer ${
+              className={`p-2 sm:p-2.5 rounded-xl border transition-all cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center ${
                 soundEnabled
                   ? 'bg-[#D4AF37] text-[#070A14] border-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.4)]'
                   : 'bg-[#16203B] text-[#C4BBA3] border-[#D4AF37]/30 hover:text-[#FAF5EF]'
@@ -502,28 +766,28 @@ export const AequitasRegistrationPage: React.FC = () => {
       </header>
 
       {/* Main Interactive Slide-by-Slide Container */}
-      <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-10 flex flex-col justify-center">
+      <main className="flex-1 max-w-4xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-8 flex flex-col justify-center">
         {!isSubmitted ? (
-          <div className="space-y-6 sm:space-y-8">
+          <div className="space-y-4 sm:space-y-6">
             {/* Slide Progress Stepper Header */}
-            <div className="bg-[#070A14]/85 border border-[#D4AF37]/30 rounded-2xl p-4 sm:p-5 backdrop-blur-md shadow-lg space-y-4">
-              <div className="flex items-center justify-between flex-wrap gap-2 text-xs font-mono">
+            <div className="bg-[#070A14]/90 border border-[#D4AF37]/30 rounded-2xl p-3.5 sm:p-5 backdrop-blur-md shadow-lg space-y-3 sm:space-y-4">
+              <div className="flex items-center justify-between flex-wrap gap-1.5 text-xs font-mono">
                 <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#D4AF37] animate-ping" />
-                  <span className="text-[#D4AF37] font-bold tracking-wider uppercase">
-                    Registration Slide {currentStep} of 4
+                  <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-ping" />
+                  <span className="text-[#D4AF37] font-bold text-xs tracking-wider uppercase">
+                    Slide {currentStep} of 4
                   </span>
                 </div>
-                <div className="text-[#C4BBA3] text-[11px]">
+                <div className="text-[#C4BBA3] text-[10.5px] sm:text-[11px] truncate">
                   {currentStep === 1 && 'Personal & Institutional Data'}
                   {currentStep === 2 && 'Experience Tier & Profile'}
-                  {currentStep === 3 && 'Committee & Portfolio Allocation'}
+                  {currentStep === 3 && 'Council & Portfolio Allocation'}
                   {currentStep === 4 && 'Verification & Sovereign Submission'}
                 </div>
               </div>
 
               {/* Linear Progress Bar */}
-              <div className="w-full h-2 rounded-full bg-[#0D1427] border border-[#D4AF37]/20 overflow-hidden relative">
+              <div className="w-full h-1.5 sm:h-2 rounded-full bg-[#0D1427] border border-[#D4AF37]/20 overflow-hidden relative">
                 <motion.div
                   className="h-full bg-gradient-to-r from-[#D4AF37] via-[#F3E5AB] to-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.6)]"
                   initial={{ width: '25%' }}
@@ -533,10 +797,10 @@ export const AequitasRegistrationPage: React.FC = () => {
               </div>
 
               {/* Clickable Step Pills */}
-              <div className="grid grid-cols-4 gap-1.5 sm:gap-2 pt-1">
+              <div className="grid grid-cols-4 gap-1 sm:gap-2 pt-0.5">
                 {[
                   { step: 1, label: 'Identity', icon: User },
-                  { step: 2, label: 'Experience', icon: Award },
+                  { step: 2, label: 'Division', icon: Award },
                   { step: 3, label: 'Committees', icon: Layers },
                   { step: 4, label: 'Review', icon: CheckCheck },
                 ].map((item) => {
@@ -549,12 +813,12 @@ export const AequitasRegistrationPage: React.FC = () => {
                       type="button"
                       onClick={() => handleJumpToStep(item.step)}
                       disabled={item.step > currentStep}
-                      className={`flex items-center justify-center gap-1.5 py-1.5 sm:py-2 px-1 sm:px-2 rounded-xl text-[10.5px] sm:text-xs font-medium transition-all ${
+                      className={`flex items-center justify-center gap-1 sm:gap-1.5 py-2 px-1 rounded-xl text-[10px] sm:text-xs font-medium font-mono transition-all min-h-[36px] ${
                         isCurrent
-                          ? 'bg-[#D4AF37] text-[#070A14] font-bold border border-[#FAF5EF] shadow-md'
+                          ? 'bg-[#D4AF37] text-[#070A14] font-bold shadow-[0_0_12px_rgba(212,175,55,0.45)]'
                           : isDone
                           ? 'bg-[#0D1427] text-emerald-400 border border-emerald-500/30 cursor-pointer hover:border-emerald-400'
-                          : 'bg-[#070A14]/50 text-[#C4BBA3]/40 border border-transparent cursor-not-allowed'
+                          : 'bg-[#070A14]/50 text-[#C4BBA3]/40 border border-[#243563]/30 cursor-not-allowed'
                       }`}
                     >
                       {isDone ? (
@@ -562,8 +826,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                       ) : (
                         <IconComp className="w-3 h-3 shrink-0" />
                       )}
-                      <span className="truncate hidden xs:inline">{item.label}</span>
-                      <span className="xs:hidden">{item.step}</span>
+                      <span className="truncate">{item.label}</span>
                     </button>
                   );
                 })}
@@ -571,7 +834,7 @@ export const AequitasRegistrationPage: React.FC = () => {
             </div>
 
             {/* Slide Body Card with Animated Transitions */}
-            <div className="bg-[#0B1224]/90 border border-[#D4AF37]/35 rounded-3xl p-5 sm:p-8 md:p-10 backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.85)] relative overflow-hidden">
+            <div className="bg-[#0B1224]/90 border border-[#D4AF37]/35 rounded-2xl sm:rounded-3xl p-4 sm:p-8 md:p-10 backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.85)] relative overflow-hidden">
               <AnimatePresence mode="wait">
                 {/* SLIDE 1: IDENTIFICATION & INSTITUTION */}
                 {currentStep === 1 && (
@@ -917,7 +1180,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                       <span className="text-xs font-mono text-[#D4AF37] block">
                         Summit 2026 Council Roster (Click to set as 1st Choice):
                       </span>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-2.5">
                         {COMMITTEES.map((comm) => {
                           const isFirst = form.firstChoiceCommittee.includes(comm.code);
                           const isSecond = form.secondChoiceCommittee.includes(comm.code);
@@ -1261,12 +1524,12 @@ export const AequitasRegistrationPage: React.FC = () => {
               </AnimatePresence>
 
               {/* Navigation Button Controls */}
-              <div className="flex items-center justify-between gap-3 pt-6 mt-6 border-t border-[#D4AF37]/20">
+              <div className="flex items-center justify-between gap-2.5 pt-4 sm:pt-6 mt-4 sm:mt-6 border-t border-[#D4AF37]/20">
                 {currentStep > 1 ? (
                   <button
                     type="button"
                     onClick={handleBack}
-                    className="px-5 py-3 rounded-xl bg-[#070A14] text-[#C4BBA3] border border-[#D4AF37]/30 hover:text-white hover:border-[#D4AF37] transition-all flex items-center gap-2 text-xs sm:text-sm font-semibold cursor-pointer"
+                    className="px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl bg-[#070A14] text-[#C4BBA3] border border-[#D4AF37]/30 hover:text-white hover:border-[#D4AF37] transition-all flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold cursor-pointer min-h-[44px]"
                   >
                     <ArrowLeft className="w-4 h-4" />
                     <span>Previous</span>
@@ -1279,9 +1542,9 @@ export const AequitasRegistrationPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleNext}
-                    className="px-7 py-3 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E8A53E] to-[#D4AF37] text-[#070A14] font-extrabold text-xs sm:text-sm shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 cursor-pointer ml-auto"
+                    className="px-5 sm:px-7 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E8A53E] to-[#D4AF37] text-[#070A14] font-extrabold text-xs sm:text-sm shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center gap-1.5 sm:gap-2 cursor-pointer ml-auto min-h-[44px]"
                   >
-                    <span>Continue to Step {currentStep + 1}</span>
+                    <span>Next: Step {currentStep + 1}</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 ) : (
@@ -1289,19 +1552,19 @@ export const AequitasRegistrationPage: React.FC = () => {
                     type="button"
                     disabled={isSubmitting}
                     onClick={handleSubmit}
-                    className={`px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E8A53E] to-[#D4AF37] text-[#070A14] font-extrabold text-xs sm:text-sm shadow-[0_0_25px_rgba(212,175,55,0.5)] hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 cursor-pointer ml-auto ${
+                    className={`px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E8A53E] to-[#D4AF37] text-[#070A14] font-extrabold text-xs sm:text-sm shadow-[0_0_25px_rgba(212,175,55,0.5)] hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 cursor-pointer ml-auto min-h-[44px] ${
                       isSubmitting ? 'opacity-70 cursor-not-allowed' : ''
                     }`}
                   >
                     {isSubmitting ? (
                       <>
                         <RefreshCw className="w-4 h-4 animate-spin" />
-                        <span>Transmitting Application...</span>
+                        <span>Transmitting...</span>
                       </>
                     ) : (
                       <>
                         <Send className="w-4 h-4" />
-                        <span>Submit Official Application</span>
+                        <span>Submit Application</span>
                       </>
                     )}
                   </button>

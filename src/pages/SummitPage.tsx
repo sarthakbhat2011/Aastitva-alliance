@@ -137,7 +137,7 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
           email: form.email.trim(),
           phone: form.phone.trim(),
           eventType: `Summit Page Registration: ${form.firstChoiceCommittee}`,
-          preferredDate: '2026-10-24',
+          preferredDate: '2026-10-29',
           message: `[SUMMIT PAGE DELEGATE REGISTRATION]\n1st Choice: ${form.firstChoiceCommittee} [${form.firstChoicePortfolio}]\n2nd Choice: ${form.secondChoiceCommittee} [${form.secondChoicePortfolio}]\nDivision: ${form.grade}\nExperience: ${form.priorExperience}`,
           status: 'New',
         };
@@ -227,7 +227,7 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
                       <div className="flex items-center gap-2 text-[10px] text-[#D4AF37] font-mono uppercase font-bold">
                         <Calendar className="w-3.5 h-3.5" /> Date & Venue
                       </div>
-                      <p className="text-xs font-bold text-[#FAF5EF] mt-1 font-jakarta">{summitConfig.dates || 'October 24-25, 2026'}</p>
+                      <p className="text-xs font-bold text-[#FAF5EF] mt-1 font-jakarta">{summitConfig.dates || 'October 29-30, 2026'}</p>
                     </div>
                   </SpatialFloatingElement>
 

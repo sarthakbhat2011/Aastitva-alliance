@@ -57,6 +57,7 @@ const QUOTES = [
 export const ComingSoonScreen: React.FC<Props> = ({
   onUnlock,
   onOpenRegister,
+  countdown,
 }) => {
   const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -442,6 +443,64 @@ export const ComingSoonScreen: React.FC<Props> = ({
             Architecting the future of youth diplomacy, parliamentary discourse, and institutional academic event coordination across Jammu & Kashmir.
           </motion.p>
         </div>
+
+        {/* OFFICIAL SUMMIT COUNTDOWN MODULE (October 29–30, 2026) */}
+        {countdown && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.22 }}
+            className="w-full max-w-2xl mx-auto p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#16203B]/80 via-[#070A14]/90 to-[#16203B]/80 border border-[#D4AF37]/45 backdrop-blur-md shadow-[0_0_35px_rgba(212,175,55,0.2)] space-y-3"
+          >
+            <div className="flex items-center justify-between border-b border-[#D4AF37]/20 pb-2 flex-wrap gap-2">
+              <span className="text-[11px] font-mono text-[#D4AF37] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+                Official Summit Opening Countdown
+              </span>
+              <span className="text-[10px] font-mono text-[#FAF5EF] bg-[#D4AF37]/20 border border-[#D4AF37]/40 px-2.5 py-0.5 rounded-full font-bold">
+                October 29–30, 2026 • Jammu
+              </span>
+            </div>
+            <div className="grid grid-cols-4 gap-2 sm:gap-3 text-center">
+              {/* Days */}
+              <div className="p-2.5 sm:p-3 rounded-xl bg-[#050811]/90 border border-[#243563]">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-white">
+                  {countdown.days.toString().padStart(2, '0')}
+                </div>
+                <div className="text-[9px] sm:text-[10px] font-mono text-[#A39B88] uppercase tracking-wider mt-0.5">
+                  Days
+                </div>
+              </div>
+              {/* Hours */}
+              <div className="p-2.5 sm:p-3 rounded-xl bg-[#050811]/90 border border-[#243563]">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-[#D4AF37]">
+                  {countdown.hours.toString().padStart(2, '0')}
+                </div>
+                <div className="text-[9px] sm:text-[10px] font-mono text-[#A39B88] uppercase tracking-wider mt-0.5">
+                  Hours
+                </div>
+              </div>
+              {/* Minutes */}
+              <div className="p-2.5 sm:p-3 rounded-xl bg-[#050811]/90 border border-[#243563]">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-[#38BDF8]">
+                  {countdown.minutes.toString().padStart(2, '0')}
+                </div>
+                <div className="text-[9px] sm:text-[10px] font-mono text-[#A39B88] uppercase tracking-wider mt-0.5">
+                  Minutes
+                </div>
+              </div>
+              {/* Seconds */}
+              <div className="p-2.5 sm:p-3 rounded-xl bg-[#050811]/90 border border-[#243563]">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-[#C084FC] animate-pulse">
+                  {countdown.seconds.toString().padStart(2, '0')}
+                </div>
+                <div className="text-[9px] sm:text-[10px] font-mono text-[#A39B88] uppercase tracking-wider mt-0.5">
+                  Seconds
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* 3D PLANETARY CORES & CELESTIAL SYSTEM VIEWPORT */}
         <motion.div

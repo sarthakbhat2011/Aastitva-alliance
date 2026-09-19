@@ -116,7 +116,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
         email: form.email.trim(),
         phone: form.phone.trim(),
         eventType: `Aequitas Quick Register: ${form.firstChoiceCommittee} / ${form.secondChoiceCommittee}`,
-        preferredDate: '2026-10-24',
+        preferredDate: '2026-10-29',
         message: `[QUICK REGISTRATION - ${trackingId}]\nDelegate: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.schoolName.trim()}\nGrade: ${form.grade}\n1st Choice: ${form.firstChoiceCommittee}\n2nd Choice: ${form.secondChoiceCommittee}\nExperience: ${form.experienceLevel}`,
         status: 'New',
       };

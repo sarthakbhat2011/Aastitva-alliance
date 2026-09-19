@@ -94,7 +94,7 @@ export const GlobalRegistrationModal: React.FC<Props> = ({
           email: form.email.trim(),
           phone: form.phone.trim(),
           eventType: `Summit Delegate Allocation: ${form.firstChoiceCommittee}`,
-          preferredDate: '2026-10-24',
+          preferredDate: '2026-10-29',
           message: `[MODAL DELEGATE REGISTRATION]\n1st Choice: ${form.firstChoiceCommittee} [${form.firstChoicePortfolio}]\n2nd Choice: ${form.secondChoiceCommittee} [${form.secondChoicePortfolio}]\nDivision: ${form.grade}\nExperience: ${form.priorExperience}`,
           status: 'New',
         };

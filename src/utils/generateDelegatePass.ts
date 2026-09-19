@@ -287,7 +287,7 @@ export function generateDelegatePassDataUrl(data: DelegatePassData): string {
   ctx.font = 'bold 13px "Cinzel", "Times New Roman", serif';
   ctx.fillStyle = '#FAF5EF';
   ctx.letterSpacing = '2px';
-  ctx.fillText('OCTOBER 24–25, 2026 • JAMMU, J&K', width / 2, footerY + 34);
+  ctx.fillText('OCTOBER 29–30, 2026 • JAMMU, J&K', width / 2, footerY + 34);
 
   ctx.font = '10px "Space Grotesk", sans-serif';
   ctx.fillStyle = '#C4BBA3';

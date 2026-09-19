@@ -11,8 +11,8 @@ import {
 export const INITIAL_SUMMIT_CONFIG: SummitConfig = {
   name: 'Aequitas Model United Nations Summit 2026',
   partnerSchool: 'ABC Alliance',
-  date: 'October 24-25, 2026',
-  targetTimestamp: new Date('2026-10-24T09:00:00+05:30').getTime(),
+  date: 'October 29-30, 2026',
+  targetTimestamp: new Date('2026-10-29T09:00:00+05:30').getTime(),
   venue: 'To Be Revealed Soon (Prestige Venue in Jammu)',
   address: 'Jammu, Jammu & Kashmir',
   tagline: 'Bridging Academic Diplomacy & Youth Leadership in Jammu',
