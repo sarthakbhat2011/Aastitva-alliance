@@ -1348,6 +1348,7 @@ Current Status: ${mail.status}`;
                       <option value="UN Women - United Nations Entity for Gender Equality">UN Women - United Nations Entity for Gender Equality</option>
                       <option value="Lok Sabha - Lok Sabha (House of the People)">Lok Sabha - Lok Sabha (House of the People)</option>
                       <option value="IPL - Indian Premier League Auction Council">IPL - Indian Premier League Auction Council</option>
+                      <option value="IPC - International Press Corps">IPC - International Press Corps</option>
                     </select>
                   </div>
                   <div>
@@ -1376,6 +1377,7 @@ Current Status: ${mail.status}`;
                       <option value="UN Women - United Nations Entity for Gender Equality">UN Women - United Nations Entity for Gender Equality</option>
                       <option value="Lok Sabha - Lok Sabha (House of the People)">Lok Sabha - Lok Sabha (House of the People)</option>
                       <option value="IPL - Indian Premier League Auction Council">IPL - Indian Premier League Auction Council</option>
+                      <option value="IPC - International Press Corps">IPC - International Press Corps</option>
                     </select>
                   </div>
                   <div>

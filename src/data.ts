@@ -70,6 +70,14 @@ export const COMMITTEES = [
     description: 'Dynamic sports management simulation testing analytical bidding, budget caps, squad synergy, and team strategy.',
     seats: 45,
   },
+  {
+    id: 'ipc',
+    code: 'IPC',
+    name: 'International Press Corps',
+    agenda: 'Investigative Journalism, Press Conferences, Live Crisis Reporting & Media Ethics in Modern Geopolitics.',
+    description: 'Dynamic press delegation simulating investigative reporting, press conferences, editorial drafting, and photojournalism across all committee proceedings.',
+    seats: 30,
+  },
 ];
 
 export const TEAM_MEMBERS: TeamMember[] = [];

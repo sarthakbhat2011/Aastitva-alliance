@@ -107,6 +107,7 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
     try {
       const mapCommittee = (val: string) => {
         if (!val) return '• CCC - Continuous Crisis Committee';
+        if (val.includes('IPC') || val.includes('Press') || val.includes('International Press')) return '• IPC - International Press Corps';
         if (val.includes('CCC') || val.includes('Crisis') || val.includes('CC')) return '• CCC - Continuous Crisis Committee';
         if (val.includes('UNHRC') || val.includes('Human Rights')) return '• UNHRC - United Nations Human Rights Council';
         if (val.includes('JKLA') || val.includes('Legislative')) return '• JKLA - Jammu & Kashmir Legislative Assembly';

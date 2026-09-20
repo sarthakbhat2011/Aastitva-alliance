@@ -81,6 +81,14 @@ export const CommitteeFitDecryptor: React.FC<Props> = ({ onSelectCommittee }) =>
       primaryComm: 'ipl',
       badge: 'IPL Mega Auction',
     },
+    {
+      id: 'journalism-media',
+      title: 'Investigative Journalism & Crisis Reporting',
+      desc: 'Live conference coverage, press conferences, investigative reporting, editorial drafting, and media ethics.',
+      icon: Camera,
+      primaryComm: 'ipc',
+      badge: 'International Press Corps',
+    },
   ];
 
   const experienceTiers = [
@@ -88,19 +96,19 @@ export const CommitteeFitDecryptor: React.FC<Props> = ({ onSelectCommittee }) =>
       id: 'novice',
       label: 'First-Timer / Novice (0-1 MUNs)',
       desc: 'Seeking structured procedural guidance, constructive chair feedback, and building public speaking courage.',
-      preferredComms: ['un-women', 'lok-sabha', 'unhrc'],
+      preferredComms: ['un-women', 'lok-sabha', 'unhrc', 'ipc'],
     },
     {
       id: 'intermediate',
       label: 'Intermediate Debater (2-4 MUNs)',
       desc: 'Comfortable with working papers, draft resolutions, intense moderated caucuses, and strategic lobbying.',
-      preferredComms: ['lok-sabha', 'jkla', 'unhrc', 'ipl'],
+      preferredComms: ['lok-sabha', 'jkla', 'unhrc', 'ipl', 'ipc'],
     },
     {
       id: 'veteran',
       label: 'Circuit Veteran / Gavel Seeker (5+ MUNs)',
       desc: 'Thrives in unpredictable midnight crisis updates, high-stakes parliamentary cross-examination, and bidding wars.',
-      preferredComms: ['ccc', 'jkla', 'ipl', 'lok-sabha'],
+      preferredComms: ['ccc', 'jkla', 'ipl', 'lok-sabha', 'ipc'],
     },
   ];
 
