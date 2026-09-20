@@ -193,7 +193,11 @@ export async function loadAllMailboxEntries(): Promise<PartnerMailEntry[]> {
 
       // For authenticated developer sessions, the server is the authoritative source of truth.
       // Overwrite local cache with authoritative server records so deleted/reset records stay deleted.
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(serverMails));
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(serverMails));
+      } catch (quotaErr) {
+        console.warn('LocalStorage quota reached; retaining full records in memory:', quotaErr);
+      }
       return serverMails;
     } else if (res.status === 401) {
       // Token expired or invalid
