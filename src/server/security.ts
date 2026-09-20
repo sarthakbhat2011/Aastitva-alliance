@@ -241,7 +241,7 @@ export function isValidPhone(phone: string): boolean {
 
 export function isValidSafeId(id: string): boolean {
   if (!id || typeof id !== 'string') return false;
-  return /^[A-Za-z0-9_-]{1,64}$/.test(id);
+  return /^[A-Za-z0-9_.:-]{1,128}$/.test(id);
 }
 
 export interface CleanRegistration {

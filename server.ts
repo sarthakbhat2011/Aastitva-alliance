@@ -344,19 +344,40 @@ async function startServer() {
       return res.status(400).json({ success: false, error: 'Invalid entry ID.' });
     }
 
-    const { status } = req.body || {};
-    if (!status || !['New', 'In Review', 'Approved', 'Contacted'].includes(status)) {
-      return res.status(400).json({ success: false, error: 'Valid status is required.' });
-    }
-
     const mails = readMailbox();
     const idx = mails.findIndex((m: any) => m.id === id);
     if (idx === -1) {
       return res.status(404).json({ success: false, error: 'Entry not found.' });
     }
 
-    mails[idx].status = status;
+    const body = req.body || {};
+    if (body.schoolName !== undefined) {
+      mails[idx].schoolName = sanitizeString(body.schoolName, 150);
+    }
+    if (body.contactPerson !== undefined) {
+      mails[idx].contactPerson = sanitizeString(body.contactPerson, 100);
+    }
+    if (body.email !== undefined) {
+      mails[idx].email = sanitizeString(body.email, 254);
+    }
+    if (body.phone !== undefined) {
+      mails[idx].phone = sanitizeString(body.phone, 30);
+    }
+    if (body.eventType !== undefined) {
+      mails[idx].eventType = sanitizeString(body.eventType, 120);
+    }
+    if (body.preferredDate !== undefined) {
+      mails[idx].preferredDate = sanitizeString(body.preferredDate, 60);
+    }
+    if (body.message !== undefined) {
+      mails[idx].message = sanitizeString(body.message, 4000);
+    }
+    if (body.status && ['New', 'In Review', 'Approved', 'Contacted'].includes(body.status)) {
+      mails[idx].status = body.status;
+    }
+
     writeMailboxAtomic(mails);
+    console.log(`[Mailbox API] Admin updated entry ${id} (${sanitizeForLog(mails[idx].contactPerson)})`);
 
     res.json({
       success: true,
@@ -380,9 +401,11 @@ async function startServer() {
     }
 
     writeMailboxAtomic(mails);
+    console.log(`[Mailbox API] Admin deleted entry ${sanitizeForLog(id)}`);
     res.json({
       success: true,
       count: mails.length,
+      mails,
     });
   });
 

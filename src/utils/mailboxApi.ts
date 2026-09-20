@@ -138,11 +138,17 @@ export async function saveEntryToMailbox(entry: PartnerMailEntry): Promise<void>
 
   // 2. Transmit to persistent backend Express server on Render
   try {
+    const token = getAdminToken();
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const response = await fetch('/api/mailbox', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify(entry),
     });
 
@@ -215,6 +221,52 @@ export async function loadAllMailboxEntries(): Promise<PartnerMailEntry[]> {
 }
 
 /**
+ * Update an entire mailbox entry (all editable fields) on both local storage and server.
+ * Requires admin authorization token for server persistence.
+ */
+export async function updateMailboxFullEntry(entry: PartnerMailEntry): Promise<PartnerMailEntry[]> {
+  const local = getLocalMailboxEntries();
+  const existingIndex = local.findIndex((m) => m.id === entry.id);
+  let updated: PartnerMailEntry[];
+  if (existingIndex >= 0) {
+    updated = [...local];
+    updated[existingIndex] = entry;
+  } else {
+    updated = [entry, ...local];
+  }
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  window.dispatchEvent(new Event('astitva_partner_submitted'));
+
+  const token = getAdminToken();
+  if (token) {
+    try {
+      const response = await fetch(`/api/mailbox/${encodeURIComponent(entry.id)}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(entry),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data && data.mail) {
+          const synced = updated.map((m) => (m.id === data.mail.id ? data.mail : m));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(synced));
+          window.dispatchEvent(new Event('astitva_partner_submitted'));
+          return synced;
+        }
+      }
+    } catch (err) {
+      console.warn('[Mailbox API] Failed to sync full update to server:', err);
+    }
+  }
+
+  return updated;
+}
+
+/**
  * Update the status of a mailbox entry on both local storage and server.
  */
 export async function updateMailboxEntryStatus(
@@ -257,12 +309,20 @@ export async function deleteMailboxEntry(id: string): Promise<PartnerMailEntry[]
   const token = getAdminToken();
   if (token) {
     try {
-      await fetch(`/api/mailbox/${encodeURIComponent(id)}`, {
+      const res = await fetch(`/api/mailbox/${encodeURIComponent(id)}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && Array.isArray(data.mails)) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(data.mails));
+          window.dispatchEvent(new Event('astitva_partner_submitted'));
+          return data.mails;
+        }
+      }
     } catch (err) {
       console.log('Server delete deferred:', err);
     }

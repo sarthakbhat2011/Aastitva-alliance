@@ -33,6 +33,7 @@ import {
   loadAllMailboxEntries,
   getLocalMailboxEntries,
   updateMailboxEntryStatus,
+  updateMailboxFullEntry,
   deleteMailboxEntry,
   saveEntryToMailbox,
   verifyPasscode,
@@ -304,8 +305,7 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
     e.preventDefault();
     if (!editingMail) return;
 
-    await saveEntryToMailbox(editingMail);
-    const updated = mails.map((m) => (m.id === editingMail.id ? editingMail : m));
+    const updated = await updateMailboxFullEntry(editingMail);
     setMails(updated);
     setEditingMail(null);
   };
