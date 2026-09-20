@@ -10,6 +10,19 @@ export const DEV_PASSCODE = 'bhatsarthakunrivalledunion2011,2001';
 
 export const SAMPLE_PARTNER_MAILS: PartnerMailEntry[] = [
   {
+    id: 'AEQ-2026-9281',
+    timestamp: '20 Sept 2026, 01:15 pm',
+    schoolName: 'Jammu Sanskriti School',
+    contactPerson: 'Ekansh Mahajan (Senior Secondary School)',
+    email: 'ekanshmahajan@gmail.com',
+    phone: '+91 99065 12613',
+    eventType: 'Aequitas 2026 Delegate: CCC - Continuous Crisis Committee [General Allocation]',
+    preferredDate: '2026-10-29',
+    message:
+      '[DELEGATE APPLICATION - AEQ-2026-9281]\nDelegate Name: Ekansh Mahajan\nEmail: ekanshmahajan@gmail.com\nPhone: +91 99065 12613\nInstitution: Jammu Sanskriti School\nAcademic Division: Senior Secondary School (Grades 11–12)\nPrior MUN Experience: Junior Delegate (1–3 MUNs)\nHonors / Accolades: None\n1st Choice Committee: CCC - Continuous Crisis Committee (Preferred: General Allocation)\n2nd Choice Committee: UNHRC - United Nations Human Rights Council (Preferred: General Allocation)\n3rd Choice Committee: JKLA - Jammu & Kashmir Legislative Assembly (Preferred: General Allocation)\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: Verified (Jammu Sanskriti School)\nStatement of Purpose:\nOfficial delegate registration for Aequitas Summit 2026 representing Jammu Sanskriti School.',
+    status: 'New',
+  },
+  {
     id: 'partner-17861001',
     timestamp: '2026-08-07 18:30',
     schoolName: 'Heritage International School, Jammu',
@@ -174,10 +187,17 @@ export async function loadAllMailboxEntries(): Promise<PartnerMailEntry[]> {
 
   if (typeof window === 'undefined') return localMails;
 
+  const deletedIds: string[] = (() => {
+    try {
+      return JSON.parse(localStorage.getItem('astitva_deleted_ids') || '[]');
+    } catch {
+      return [];
+    }
+  })();
+
   const token = getAdminToken();
   if (!token) {
-    // Not authenticated on server; return local cache
-    return localMails;
+    return localMails.filter((m) => !deletedIds.includes(m.id));
   }
 
   try {
@@ -191,14 +211,30 @@ export async function loadAllMailboxEntries(): Promise<PartnerMailEntry[]> {
       const data = await res.json();
       const serverMails: PartnerMailEntry[] = Array.isArray(data.mails) ? data.mails : [];
 
-      // For authenticated developer sessions, the server is the authoritative source of truth.
-      // Overwrite local cache with authoritative server records so deleted/reset records stay deleted.
+      // Combine server records and local records safely so legitimate delegate applications are never wiped out
+      const map = new Map<string, PartnerMailEntry>();
+
+      // 1. Add server records (excluding any intentionally deleted entries)
+      serverMails.forEach((m) => {
+        if (m.id && !deletedIds.includes(m.id)) {
+          map.set(m.id, m);
+        }
+      });
+
+      // 2. Preserve local entries (e.g. offline registrations or records restored in browser)
+      localMails.forEach((m) => {
+        if (m.id && !deletedIds.includes(m.id) && !map.has(m.id)) {
+          map.set(m.id, m);
+        }
+      });
+
+      const merged = Array.from(map.values());
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(serverMails));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
       } catch (quotaErr) {
         console.warn('LocalStorage quota reached; retaining full records in memory:', quotaErr);
       }
-      return serverMails;
+      return merged;
     } else if (res.status === 401) {
       // Token expired or invalid
       clearAdminSession();
@@ -207,7 +243,7 @@ export async function loadAllMailboxEntries(): Promise<PartnerMailEntry[]> {
     console.log('Server mailbox fetch deferred (using local cache):', err);
   }
 
-  return localMails;
+  return localMails.filter((m) => !deletedIds.includes(m.id));
 }
 
 /**
@@ -291,11 +327,29 @@ export async function updateMailboxEntryStatus(
  * Delete a mailbox entry from both local storage and server.
  */
 export async function deleteMailboxEntry(id: string): Promise<PartnerMailEntry[]> {
+  // 1. Record ID in deleted IDs list so it is never resurrected
+  let deletedIds: string[] = [];
+  try {
+    deletedIds = JSON.parse(localStorage.getItem('astitva_deleted_ids') || '[]');
+    if (!deletedIds.includes(id)) {
+      deletedIds.push(id);
+      localStorage.setItem('astitva_deleted_ids', JSON.stringify(deletedIds));
+    }
+  } catch {
+    deletedIds = [id];
+  }
+
+  // 2. Filter local entries strictly to remove ONLY this ID
   const local = getLocalMailboxEntries();
-  const updated = local.filter((m) => m.id !== id);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  const updated = local.filter((m) => m.id !== id && !deletedIds.includes(m.id));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  } catch (e) {
+    // ignore
+  }
   window.dispatchEvent(new Event('astitva_partner_submitted'));
 
+  // 3. Notify server of deletion
   const token = getAdminToken();
   if (token) {
     try {
@@ -308,9 +362,27 @@ export async function deleteMailboxEntry(id: string): Promise<PartnerMailEntry[]
       if (res.ok) {
         const data = await res.json();
         if (data && Array.isArray(data.mails)) {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(data.mails));
+          // Merge safely: take server entries (excluding deleted IDs)
+          // AND preserve any existing local entries that are not deleted!
+          const map = new Map<string, PartnerMailEntry>();
+          data.mails.forEach((m: PartnerMailEntry) => {
+            if (m.id && !deletedIds.includes(m.id)) {
+              map.set(m.id, m);
+            }
+          });
+          updated.forEach((m) => {
+            if (m.id && !deletedIds.includes(m.id) && !map.has(m.id)) {
+              map.set(m.id, m);
+            }
+          });
+          const safeMerged = Array.from(map.values());
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(safeMerged));
+          } catch (e) {
+            // ignore
+          }
           window.dispatchEvent(new Event('astitva_partner_submitted'));
-          return data.mails;
+          return safeMerged;
         }
       }
     } catch (err) {

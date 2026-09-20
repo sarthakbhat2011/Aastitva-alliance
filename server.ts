@@ -48,6 +48,19 @@ async function startServer() {
 
   const SAMPLE_PARTNER_MAILS = [
     {
+      id: 'AEQ-2026-9281',
+      timestamp: '20 Sept 2026, 01:15 pm',
+      schoolName: 'Jammu Sanskriti School',
+      contactPerson: 'Ekansh Mahajan (Senior Secondary School)',
+      email: 'ekanshmahajan@gmail.com',
+      phone: '+91 99065 12613',
+      eventType: 'Aequitas 2026 Delegate: CCC - Continuous Crisis Committee [General Allocation]',
+      preferredDate: '2026-10-29',
+      message:
+        '[DELEGATE APPLICATION - AEQ-2026-9281]\nDelegate Name: Ekansh Mahajan\nEmail: ekanshmahajan@gmail.com\nPhone: +91 99065 12613\nInstitution: Jammu Sanskriti School\nAcademic Division: Senior Secondary School (Grades 11–12)\nPrior MUN Experience: Junior Delegate (1–3 MUNs)\nHonors / Accolades: None\n1st Choice Committee: CCC - Continuous Crisis Committee (Preferred: General Allocation)\n2nd Choice Committee: UNHRC - United Nations Human Rights Council (Preferred: General Allocation)\n3rd Choice Committee: JKLA - Jammu & Kashmir Legislative Assembly (Preferred: General Allocation)\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: Verified (Jammu Sanskriti School)\nStatement of Purpose:\nOfficial delegate registration for Aequitas Summit 2026 representing Jammu Sanskriti School.',
+      status: 'New',
+    },
+    {
       id: 'partner-17861001',
       timestamp: '2026-08-07 18:30',
       schoolName: 'Heritage International School, Jammu',
@@ -530,6 +543,19 @@ async function startServer() {
   // Protected Mailbox Reset (Admin Only - Resets mailbox to sample partner inquiries, wiping test entries)
   app.post('/api/mailbox/reset', requireAdminAuth, (req, res) => {
     const defaultMails = [
+      {
+        id: 'AEQ-2026-9281',
+        timestamp: '20 Sept 2026, 01:15 pm',
+        schoolName: 'Jammu Sanskriti School',
+        contactPerson: 'Ekansh Mahajan (Senior Secondary School)',
+        email: 'ekanshmahajan@gmail.com',
+        phone: '+91 99065 12613',
+        eventType: 'Aequitas 2026 Delegate: CCC - Continuous Crisis Committee [General Allocation]',
+        preferredDate: '2026-10-29',
+        message:
+          '[DELEGATE APPLICATION - AEQ-2026-9281]\nDelegate Name: Ekansh Mahajan\nEmail: ekanshmahajan@gmail.com\nPhone: +91 99065 12613\nInstitution: Jammu Sanskriti School\nAcademic Division: Senior Secondary School (Grades 11–12)\nPrior MUN Experience: Junior Delegate (1–3 MUNs)\nHonors / Accolades: None\n1st Choice Committee: CCC - Continuous Crisis Committee (Preferred: General Allocation)\n2nd Choice Committee: UNHRC - United Nations Human Rights Council (Preferred: General Allocation)\n3rd Choice Committee: JKLA - Jammu & Kashmir Legislative Assembly (Preferred: General Allocation)\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: Verified (Jammu Sanskriti School)\nStatement of Purpose:\nOfficial delegate registration for Aequitas Summit 2026 representing Jammu Sanskriti School.',
+        status: 'New',
+      },
       {
         id: 'partner-17861001',
         timestamp: '2026-08-07 18:30',

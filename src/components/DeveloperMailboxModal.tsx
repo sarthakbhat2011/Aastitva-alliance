@@ -28,6 +28,7 @@ import {
   GraduationCap,
   Trophy,
   Filter,
+  UserPlus,
 } from 'lucide-react';
 import {
   loadAllMailboxEntries,
@@ -210,6 +211,26 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
   // Editing Mail Entry State
   const [editingMail, setEditingMail] = useState<PartnerMailEntry | null>(null);
 
+  // Adding / Restoring Delegate State
+  const [isAddingDelegate, setIsAddingDelegate] = useState(false);
+  const [newDelegate, setNewDelegate] = useState({
+    fullName: '',
+    institution: '',
+    grade: 'Senior Secondary School (Grades 11–12)',
+    phone: '',
+    email: '',
+    firstChoiceCommittee: 'CCC - Continuous Crisis Committee',
+    firstChoicePortfolio: 'General Allocation',
+    secondChoiceCommittee: 'UNHRC - United Nations Human Rights Council',
+    secondChoicePortfolio: 'General Allocation',
+    thirdChoiceCommittee: 'JKLA - Jammu & Kashmir Legislative Assembly',
+    thirdChoicePortfolio: 'General Allocation',
+    priorExperience: 'Junior Delegate (1–3 MUNs)',
+    feeStatus: '₹1,999 (Delegate Remittance Recorded)',
+    transactionId: 'Verified',
+    statement: '',
+  });
+
   const [isSyncing, setIsSyncing] = useState(false);
 
   // Load Initial Mail Data & Check Auth Session
@@ -295,22 +316,102 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
     }
   };
 
-  // Clear all testing data and restore clean state (Admin only)
-  const handleResetToCleanState = async () => {
+  // Clear ONLY test dummy entries (e.g. entries with 'fvervwevf', 'test', etc.)
+  const handleClearTestData = async () => {
+    const isTest = (m: PartnerMailEntry) => {
+      const text = `${m.contactPerson} ${m.schoolName} ${m.email} ${m.message} ${m.id}`.toLowerCase();
+      return (
+        text.includes('fvervwevf') ||
+        text.includes('vwefvwef') ||
+        text.includes('test') ||
+        text.includes('dummy') ||
+        text.includes('asdf') ||
+        text.includes('efvwef')
+      );
+    };
+
+    const testEntries = mails.filter(isTest);
+
+    if (testEntries.length === 0) {
+      alert('No test entries found in mailbox. Legitimate registrations (such as Ekansh Mahajan) are safe.');
+      return;
+    }
+
     if (
       window.confirm(
-        'Clear Developer Mailbox Test Data?\n\nThis will remove testing delegate submissions from the developer mailbox and restore default sample inquiries.\n\nNote: Your connected Google Form remains 100% active and untouched.'
+        `Found ${testEntries.length} testing entry(ies) (such as "${testEntries[0].contactPerson}").\n\nDelete test entries?\n\nLegitimate registrations (such as Ekansh Mahajan) and Google Forms will remain completely safe.`
       )
     ) {
       setIsSyncing(true);
       try {
-        const cleanMails = await resetMailboxToDefault();
-        setMails(cleanMails);
+        let currentMails = [...mails];
+        for (const testEntry of testEntries) {
+          currentMails = await deleteMailboxEntry(testEntry.id);
+        }
+        setMails(currentMails);
       } catch (err) {
-        console.error('Failed to reset mailbox test records:', err);
+        console.error('Failed to remove test entries:', err);
       } finally {
         setIsSyncing(false);
       }
+    }
+  };
+
+  // Add / Restore Delegate Directly into Mailbox
+  const handleSaveNewDelegate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newDelegate.fullName.trim() || !newDelegate.institution.trim()) {
+      alert('Please provide delegate name and institution.');
+      return;
+    }
+
+    const trackingId = `AEQ-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const nowTime = new Date().toLocaleString('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    });
+
+    const entry: PartnerMailEntry = {
+      id: trackingId,
+      timestamp: nowTime,
+      schoolName: newDelegate.institution.trim(),
+      contactPerson: `${newDelegate.fullName.trim()} (${newDelegate.grade})`,
+      email: newDelegate.email.trim() || 'delegate@astitva.org',
+      phone: newDelegate.phone.trim() || '+91 99065 12613',
+      eventType: `Aequitas 2026 Delegate: ${newDelegate.firstChoiceCommittee} [${newDelegate.firstChoicePortfolio.trim()}]`,
+      preferredDate: '2026-10-29',
+      message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${newDelegate.fullName.trim()}\nEmail: ${newDelegate.email.trim() || 'delegate@astitva.org'}\nPhone: ${newDelegate.phone.trim() || '+91 99065 12613'}\nInstitution: ${newDelegate.institution.trim()}\nAcademic Division: ${newDelegate.grade}\nPrior MUN Experience: ${newDelegate.priorExperience}\nHonors / Accolades: None\n1st Choice Committee: ${newDelegate.firstChoiceCommittee} (Preferred: ${newDelegate.firstChoicePortfolio.trim()})\n2nd Choice Committee: ${newDelegate.secondChoiceCommittee} (Preferred: ${newDelegate.secondChoicePortfolio.trim()})\n3rd Choice Committee: ${newDelegate.thirdChoiceCommittee} (Preferred: ${newDelegate.thirdChoicePortfolio.trim()})\nFee Status: ${newDelegate.feeStatus}\nTransaction / UTR ID: ${newDelegate.transactionId.trim()}\nStatement of Purpose:\n${newDelegate.statement.trim() || 'Official delegate application.'}`,
+      status: 'New',
+    };
+
+    setIsSyncing(true);
+    try {
+      await saveEntryToMailbox(entry);
+      const updated = [entry, ...mails.filter((m) => m.id !== trackingId)];
+      setMails(updated);
+      setIsAddingDelegate(false);
+      setNewDelegate({
+        fullName: '',
+        institution: '',
+        grade: 'Senior Secondary School (Grades 11–12)',
+        phone: '',
+        email: '',
+        firstChoiceCommittee: 'CCC - Continuous Crisis Committee',
+        firstChoicePortfolio: 'General Allocation',
+        secondChoiceCommittee: 'UNHRC - United Nations Human Rights Council',
+        secondChoicePortfolio: 'General Allocation',
+        thirdChoiceCommittee: 'JKLA - Jammu & Kashmir Legislative Assembly',
+        thirdChoicePortfolio: 'General Allocation',
+        priorExperience: 'Junior Delegate (1–3 MUNs)',
+        feeStatus: '₹1,999 (Delegate Remittance Recorded)',
+        transactionId: 'Verified',
+        statement: '',
+      });
+    } catch (err) {
+      console.error('Failed to add delegate to mailbox:', err);
+    } finally {
+      setIsSyncing(false);
     }
   };
 
@@ -558,12 +659,20 @@ Current Status: ${mail.status}`;
                       <span className="text-[11px] font-mono">{isSyncing ? 'Syncing...' : 'Sync Live'}</span>
                     </button>
                     <button
-                      onClick={handleResetToCleanState}
+                      onClick={() => setIsAddingDelegate(true)}
+                      className="px-3 py-1.5 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] hover:bg-[#D4AF37]/25 transition-all flex items-center gap-1.5 cursor-pointer"
+                      title="Add or restore a delegate application into the mailbox"
+                    >
+                      <UserPlus className="w-3.5 h-3.5 text-[#D4AF37]" />
+                      <span className="text-[11px] font-mono font-bold">+ Add / Restore Delegate</span>
+                    </button>
+                    <button
+                      onClick={handleClearTestData}
                       className="px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 hover:bg-amber-500/20 hover:border-amber-500/50 transition-all flex items-center gap-1.5 cursor-pointer"
-                      title="Clear testing data from Developer Mailbox without affecting Google Forms"
+                      title="Clear testing dummy data without affecting legitimate delegates or Google Forms"
                     >
                       <Trash2 className="w-3.5 h-3.5 text-amber-400" />
-                      <span className="text-[11px] font-mono">Clear Test Records</span>
+                      <span className="text-[11px] font-mono">Clear Test Entries</span>
                     </button>
                   </div>
                 </div>
@@ -1129,6 +1238,196 @@ Current Status: ${mail.status}`;
                 >
                   <Save className="w-4 h-4" />
                   <span>Save Entry</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ADD / RESTORE DELEGATE MODAL SUB-VIEW */}
+      {isAddingDelegate && (
+        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-[#070A14]/95 backdrop-blur-md">
+          <div className="w-full max-w-xl bg-[#0D1427] border border-[#D4AF37]/50 rounded-3xl p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div className="flex items-center justify-between pb-3 border-b border-[#243563]">
+              <div>
+                <h3 className="text-lg font-serif font-bold text-[#FAF5EF] flex items-center gap-2">
+                  <UserPlus className="w-4 h-4 text-[#D4AF37]" /> Add / Restore Delegate Application
+                </h3>
+                <p className="text-[11px] text-[#C4BBA3]">
+                  Directly record or restore a delegate application into the Developer Mailbox.
+                </p>
+              </div>
+              <button
+                onClick={() => setIsAddingDelegate(false)}
+                className="text-[#C4BBA3] hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveNewDelegate} className="space-y-3.5 text-xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[#D4AF37] font-semibold mb-1">Delegate Full Name *</label>
+                  <input
+                    type="text"
+                    value={newDelegate.fullName}
+                    onChange={(e) => setNewDelegate({ ...newDelegate, fullName: e.target.value })}
+                    placeholder="e.g. Ekansh Mahajan"
+                    className="w-full px-3 py-2 rounded-xl bg-[#070A14] border border-[#243563] text-white focus:outline-none focus:border-[#D4AF37]"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-[#D4AF37] font-semibold mb-1">School / Institution Name *</label>
+                  <input
+                    type="text"
+                    value={newDelegate.institution}
+                    onChange={(e) => setNewDelegate({ ...newDelegate, institution: e.target.value })}
+                    placeholder="e.g. Jammu Sanskriti School"
+                    className="w-full px-3 py-2 rounded-xl bg-[#070A14] border border-[#243563] text-white focus:outline-none focus:border-[#D4AF37]"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block text-[#D4AF37] font-semibold mb-1">Academic Division</label>
+                  <select
+                    value={newDelegate.grade}
+                    onChange={(e) => setNewDelegate({ ...newDelegate, grade: e.target.value })}
+                    className="w-full px-2.5 py-2 rounded-xl bg-[#070A14] border border-[#243563] text-white focus:outline-none focus:border-[#D4AF37]"
+                  >
+                    <option value="Middle School (Grades 6–8)">Middle School (Grades 6–8)</option>
+                    <option value="Secondary School (Grades 9–10)">Secondary School (Grades 9–10)</option>
+                    <option value="Senior Secondary School (Grades 11–12)">Senior Secondary School (Grades 11–12)</option>
+                    <option value="Undergraduate / College">Undergraduate / College</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[#D4AF37] font-semibold mb-1">Contact Phone</label>
+                  <input
+                    type="text"
+                    value={newDelegate.phone}
+                    onChange={(e) => setNewDelegate({ ...newDelegate, phone: e.target.value })}
+                    placeholder="+91 99065 12613"
+                    className="w-full px-3 py-2 rounded-xl bg-[#070A14] border border-[#243563] text-white focus:outline-none focus:border-[#D4AF37]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[#D4AF37] font-semibold mb-1">Email Address</label>
+                  <input
+                    type="email"
+                    value={newDelegate.email}
+                    onChange={(e) => setNewDelegate({ ...newDelegate, email: e.target.value })}
+                    placeholder="delegate@example.com"
+                    className="w-full px-3 py-2 rounded-xl bg-[#070A14] border border-[#243563] text-white focus:outline-none focus:border-[#D4AF37]"
+                  />
+                </div>
+              </div>
+
+              {/* Committee Preferences */}
+              <div className="p-3 rounded-xl bg-[#070A14] border border-[#243563] space-y-2.5">
+                <span className="text-[10px] font-mono uppercase font-bold text-[#D4AF37] tracking-wider block">
+                  Committee & Portfolio Allocations
+                </span>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-[#C4BBA3] text-[11px] mb-0.5">1st Choice Committee</label>
+                    <select
+                      value={newDelegate.firstChoiceCommittee}
+                      onChange={(e) => setNewDelegate({ ...newDelegate, firstChoiceCommittee: e.target.value })}
+                      className="w-full px-2.5 py-1.5 rounded-lg bg-[#16203B] border border-[#243563] text-white focus:outline-none focus:border-[#D4AF37]"
+                    >
+                      <option value="CCC - Continuous Crisis Committee">CCC - Continuous Crisis Committee</option>
+                      <option value="UNHRC - United Nations Human Rights Council">UNHRC - United Nations Human Rights Council</option>
+                      <option value="JKLA - Jammu & Kashmir Legislative Assembly">JKLA - Jammu & Kashmir Legislative Assembly</option>
+                      <option value="UN Women - United Nations Entity for Gender Equality">UN Women - United Nations Entity for Gender Equality</option>
+                      <option value="Lok Sabha - Lok Sabha (House of the People)">Lok Sabha - Lok Sabha (House of the People)</option>
+                      <option value="IPL - Indian Premier League Auction Council">IPL - Indian Premier League Auction Council</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[#C4BBA3] text-[11px] mb-0.5">1st Choice Portfolio</label>
+                    <input
+                      type="text"
+                      value={newDelegate.firstChoicePortfolio}
+                      onChange={(e) => setNewDelegate({ ...newDelegate, firstChoicePortfolio: e.target.value })}
+                      placeholder="e.g. General Allocation"
+                      className="w-full px-2.5 py-1.5 rounded-lg bg-[#16203B] border border-[#243563] text-white focus:outline-none focus:border-[#D4AF37]"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-[#C4BBA3] text-[11px] mb-0.5">2nd Choice Committee</label>
+                    <select
+                      value={newDelegate.secondChoiceCommittee}
+                      onChange={(e) => setNewDelegate({ ...newDelegate, secondChoiceCommittee: e.target.value })}
+                      className="w-full px-2.5 py-1.5 rounded-lg bg-[#16203B] border border-[#243563] text-white focus:outline-none focus:border-[#D4AF37]"
+                    >
+                      <option value="UNHRC - United Nations Human Rights Council">UNHRC - United Nations Human Rights Council</option>
+                      <option value="CCC - Continuous Crisis Committee">CCC - Continuous Crisis Committee</option>
+                      <option value="JKLA - Jammu & Kashmir Legislative Assembly">JKLA - Jammu & Kashmir Legislative Assembly</option>
+                      <option value="UN Women - United Nations Entity for Gender Equality">UN Women - United Nations Entity for Gender Equality</option>
+                      <option value="Lok Sabha - Lok Sabha (House of the People)">Lok Sabha - Lok Sabha (House of the People)</option>
+                      <option value="IPL - Indian Premier League Auction Council">IPL - Indian Premier League Auction Council</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-[#C4BBA3] text-[11px] mb-0.5">2nd Choice Portfolio</label>
+                    <input
+                      type="text"
+                      value={newDelegate.secondChoicePortfolio}
+                      onChange={(e) => setNewDelegate({ ...newDelegate, secondChoicePortfolio: e.target.value })}
+                      placeholder="e.g. General Allocation"
+                      className="w-full px-2.5 py-1.5 rounded-lg bg-[#16203B] border border-[#243563] text-white focus:outline-none focus:border-[#D4AF37]"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Fee & UTR */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[#D4AF37] font-semibold mb-1">Fee Status</label>
+                  <input
+                    type="text"
+                    value={newDelegate.feeStatus}
+                    onChange={(e) => setNewDelegate({ ...newDelegate, feeStatus: e.target.value })}
+                    className="w-full px-3 py-2 rounded-xl bg-[#070A14] border border-[#243563] text-white focus:outline-none focus:border-[#D4AF37]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[#D4AF37] font-semibold mb-1">Transaction / UTR ID</label>
+                  <input
+                    type="text"
+                    value={newDelegate.transactionId}
+                    onChange={(e) => setNewDelegate({ ...newDelegate, transactionId: e.target.value })}
+                    placeholder="e.g. Verified / UTR-123456"
+                    className="w-full px-3 py-2 rounded-xl bg-[#070A14] border border-[#243563] text-white focus:outline-none focus:border-[#D4AF37]"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-2 flex items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setIsAddingDelegate(false)}
+                  className="px-4 py-2 rounded-xl bg-[#16203B] text-white font-semibold cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl shimmer-btn text-[#070A14] font-bold flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Check className="w-4 h-4" />
+                  <span>Restore Delegate to Mailbox</span>
                 </button>
               </div>
             </form>
