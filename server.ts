@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
+import https from 'https';
 import { createServer as createViteServer } from 'vite';
 import {
   DEV_PASSCODE,
@@ -158,6 +159,82 @@ async function startServer() {
     });
   });
 
+  // Google Form Synchronization Engine (Guaranteed delivery bypassing browser ad blockers/CORS)
+  function syncToGoogleForm(clean: any) {
+    try {
+      const mapCommittee = (val: string) => {
+        if (!val) return '• CCC - Continuous Crisis Committee';
+        if (val.includes('CCC') || val.includes('Crisis') || val.includes('CC')) return '• CCC - Continuous Crisis Committee';
+        if (val.includes('UNHRC') || val.includes('Human Rights')) return '• UNHRC - United Nations Human Rights Council';
+        if (val.includes('JKLA') || val.includes('Legislative')) return '• JKLA - Jammu & Kashmir Legislative Assembly';
+        if (val.includes('Women')) return '• UN Women - United Nations Entity for Gender Equality';
+        if (val.includes('Lok Sabha') || val.includes('House')) return '• Lok Sabha - Lok Sabha (House of the People)';
+        if (val.includes('IPL') || val.includes('Premier')) return '• IPL - Indian Premier League Auction Council';
+        return '• CCC - Continuous Crisis Committee';
+      };
+
+      const mapGrade = (val: string) => {
+        if (!val) return '•Senior Secondary School (Grades 11–12)';
+        if (val.includes('Middle') || val.includes('6-8') || val.includes('6–8')) return '• Middle School (Grades 6–8)';
+        if (val.includes('Secondary') && !val.includes('Senior') && !val.includes('11-12') && !val.includes('11–12')) return '• Secondary School (Grades 9–10)';
+        if (val.includes('Senior') || val.includes('11-12') || val.includes('11–12') || val.includes('High School')) return '•Senior Secondary School (Grades 11–12)';
+        if (val.includes('College') || val.includes('Undergraduate')) return '• Undergraduate / College';
+        return '•Senior Secondary School (Grades 11–12)';
+      };
+
+      const mapExperience = (val: string) => {
+        if (!val) return '• Junior Delegate (1–3 MUNs)';
+        if (val.includes('First-Timer') || val.includes('Novice') || val.includes('0 MUNs')) return '• First-Timer / Novice (0 MUNs)';
+        if (val.includes('Junior') || val.includes('1-3') || val.includes('1–3')) return '• Junior Delegate (1–3 MUNs)';
+        if (val.includes('Seasoned') || val.includes('4-7') || val.includes('4–7')) return '• Seasoned Delegate (4–7 MUNs)';
+        if (val.includes('Veteran') || val.includes('8+')) return '• Veteran Delegate (8+ MUNs)';
+        return '• Junior Delegate (1–3 MUNs)';
+      };
+
+      const formData = new URLSearchParams({
+        'entry.780764261': clean.fullName || '',
+        'entry.830016473': clean.email || '',
+        'entry.86288026': clean.phone || '',
+        'entry.1083196564': clean.institution || '',
+        'entry.278555826': mapGrade(clean.grade),
+        'entry.898367359': mapExperience(clean.priorExperience),
+        'entry.291987551': clean.priorAccolades || 'None',
+        'entry.977018072': mapCommittee(clean.firstChoiceCommittee),
+        'entry.299951131': clean.firstChoicePortfolio || 'General Allocation',
+        'entry.580509636': mapCommittee(clean.secondChoiceCommittee || 'UNHRC - United Nations Human Rights Council'),
+        'entry.777137221': clean.secondChoicePortfolio || 'General Allocation',
+        'entry.635888889': mapCommittee(clean.thirdChoiceCommittee || 'JKLA - Jammu & Kashmir Legislative Assembly'),
+        'entry.794534023': clean.thirdChoicePortfolio || 'General Allocation',
+        'entry.156711483': clean.statement || 'Registered via Aequitas Delegate Portal.',
+      }).toString();
+
+      const req = https.request(
+        {
+          hostname: 'docs.google.com',
+          port: 443,
+          path: '/forms/d/e/1FAIpQLSdgVhSI5tgSKD4vk_m8YWI0q6zFuJFytzer4R7-DSbzu7G8rg/formResponse',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Length': Buffer.byteLength(formData),
+          },
+        },
+        (res) => {
+          console.log(`[Google Forms Sync] Server synced application to Google Form (Status: ${res.statusCode})`);
+        }
+      );
+
+      req.on('error', (err) => {
+        console.warn('[Google Forms Sync] Dispatch warning:', err.message);
+      });
+
+      req.write(formData);
+      req.end();
+    } catch (err: any) {
+      console.warn('[Google Forms Sync] Exception during dispatch:', err?.message);
+    }
+  }
+
   // 8. HARDENING: Dedicated Secure Delegate Registration Endpoint (OWASP ASVS 5.1)
   app.post('/api/register', registrationRateLimiter, (req, res) => {
     const validation = validateRegistrationPayload(req.body);
@@ -197,6 +274,9 @@ async function startServer() {
     console.log(
       `[Delegate Registration] Securely stored delegate application ${trackingId} for ${sanitizeForLog(clean.fullName)} (${sanitizeForLog(clean.institution)})`
     );
+
+    // Sync directly to connected Google Form from server side
+    syncToGoogleForm(clean);
 
     // Minimal safe response: Never expose other records or internal database layout
     res.status(201).json({

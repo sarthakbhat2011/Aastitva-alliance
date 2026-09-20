@@ -84,16 +84,43 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
 
     try {
       const GOOGLE_FORM_ACTION =
-        'https://docs.google.com/forms/d/e/1FAIpQLScBGLm5S3STYlDHqXT8EojVv0F4o-wMOxWRW563YrE1B1x1DQ/formResponse';
+        'https://docs.google.com/forms/d/e/1FAIpQLSdgVhSI5tgSKD4vk_m8YWI0q6zFuJFytzer4R7-DSbzu7G8rg/formResponse';
+
+      const mapCommittee = (val: string) => {
+        if (!val) return '• CCC - Continuous Crisis Committee';
+        if (val.includes('CCC') || val.includes('Crisis') || val.includes('CC')) return '• CCC - Continuous Crisis Committee';
+        if (val.includes('UNHRC') || val.includes('Human Rights')) return '• UNHRC - United Nations Human Rights Council';
+        if (val.includes('JKLA') || val.includes('Legislative')) return '• JKLA - Jammu & Kashmir Legislative Assembly';
+        if (val.includes('Women')) return '• UN Women - United Nations Entity for Gender Equality';
+        if (val.includes('Lok Sabha') || val.includes('House')) return '• Lok Sabha - Lok Sabha (House of the People)';
+        if (val.includes('IPL') || val.includes('Premier')) return '• IPL - Indian Premier League Auction Council';
+        return '• CCC - Continuous Crisis Committee';
+      };
+
+      const mapGrade = (val: string) => {
+        if (!val) return '•Senior Secondary School (Grades 11–12)';
+        if (val.includes('Middle') || val.includes('6-8') || val.includes('6–8')) return '• Middle School (Grades 6–8)';
+        if (val.includes('Secondary') && !val.includes('Senior') && !val.includes('11-12') && !val.includes('11–12')) return '• Secondary School (Grades 9–10)';
+        if (val.includes('Senior') || val.includes('11-12') || val.includes('11–12') || val.includes('High School')) return '•Senior Secondary School (Grades 11–12)';
+        if (val.includes('College') || val.includes('Undergraduate')) return '• Undergraduate / College';
+        return '•Senior Secondary School (Grades 11–12)';
+      };
 
       const body = new URLSearchParams();
-      body.append('entry.780764261', form.fullName);
-      body.append('entry.830016473', form.email);
-      body.append('entry.86288026', form.phone);
-      body.append('entry.1083196564', form.schoolName);
-      body.append('entry.278555826', form.grade);
-      body.append('entry.977018072', form.firstChoiceCommittee);
-      body.append('entry.1843230671', form.secondChoiceCommittee);
+      body.append('entry.780764261', form.fullName.trim());
+      body.append('entry.830016473', form.email.trim());
+      body.append('entry.86288026', form.phone.trim());
+      body.append('entry.1083196564', form.schoolName.trim());
+      body.append('entry.278555826', mapGrade(form.grade));
+      body.append('entry.898367359', '• Junior Delegate (1–3 MUNs)');
+      body.append('entry.291987551', 'None');
+      body.append('entry.977018072', mapCommittee(form.firstChoiceCommittee));
+      body.append('entry.299951131', 'General Allocation');
+      body.append('entry.580509636', mapCommittee(form.secondChoiceCommittee || 'UNHRC - United Nations Human Rights Council'));
+      body.append('entry.777137221', 'General Allocation');
+      body.append('entry.635888889', '• JKLA - Jammu & Kashmir Legislative Assembly');
+      body.append('entry.794534023', 'General Allocation');
+      body.append('entry.156711483', 'Registered via Home Page Express Portal.');
 
       fetch(GOOGLE_FORM_ACTION, {
         method: 'POST',

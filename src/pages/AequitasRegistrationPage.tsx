@@ -623,31 +623,34 @@ export const AequitasRegistrationPage: React.FC = () => {
     try {
       // Map academic division to exact Google Form dropdown string
       const mapGradeToGoogleOption = (val: string) => {
-        if (val.includes('Middle')) return '• Middle School (Grades 6–8)';
-        if (val.includes('Senior')) return '•Senior Secondary School (Grades 11–12)';
-        if (val.includes('Secondary')) return '• Secondary School (Grades 9–10)';
+        if (!val) return '•Senior Secondary School (Grades 11–12)';
+        if (val.includes('Middle') || val.includes('6-8') || val.includes('6–8')) return '• Middle School (Grades 6–8)';
+        if (val.includes('Secondary') && !val.includes('Senior') && !val.includes('11-12') && !val.includes('11–12')) return '• Secondary School (Grades 9–10)';
+        if (val.includes('Senior') || val.includes('11-12') || val.includes('11–12') || val.includes('High School')) return '•Senior Secondary School (Grades 11–12)';
         if (val.includes('College') || val.includes('Undergraduate')) return '• Undergraduate / College';
-        return val;
+        return '•Senior Secondary School (Grades 11–12)';
       };
 
       // Map experience tier to exact Google Form dropdown string
       const mapExperienceToGoogleOption = (val: string) => {
-        if (val.includes('First-Timer') || val.includes('Novice')) return '• First-Timer / Novice (0 MUNs)';
-        if (val.includes('Junior')) return '• Junior Delegate (1–3 MUNs)';
-        if (val.includes('Seasoned')) return '• Seasoned Delegate (4–7 MUNs)';
-        if (val.includes('Veteran')) return '• Veteran Delegate (8+ MUNs)';
-        return val;
+        if (!val) return '• Junior Delegate (1–3 MUNs)';
+        if (val.includes('First-Timer') || val.includes('Novice') || val.includes('0 MUNs')) return '• First-Timer / Novice (0 MUNs)';
+        if (val.includes('Junior') || val.includes('1-3') || val.includes('1–3')) return '• Junior Delegate (1–3 MUNs)';
+        if (val.includes('Seasoned') || val.includes('4-7') || val.includes('4–7')) return '• Seasoned Delegate (4–7 MUNs)';
+        if (val.includes('Veteran') || val.includes('8+')) return '• Veteran Delegate (8+ MUNs)';
+        return '• Junior Delegate (1–3 MUNs)';
       };
 
       // Map committee to exact Google Form dropdown string
       const mapCommitteeToGoogleOption = (val: string) => {
-        if (val.includes('CCC') || val.includes('Crisis') || val.includes('CC') || val.includes("Citizens")) return "• CC - Citizens' Council";
-        if (val.includes('UNHRC')) return '• UNHRC - United Nations Human Rights Council';
-        if (val.includes('JKLA')) return '• JKLA - Jammu & Kashmir Legislative Assembly';
-        if (val.includes('UN Women')) return '• UN Women - United Nations Entity for Gender Equality';
-        if (val.includes('Lok Sabha')) return '• Lok Sabha - Lok Sabha (House of the People)';
-        if (val.includes('IPL')) return '• IPL - Indian Premier League Auction Council';
-        return val;
+        if (!val) return '• CCC - Continuous Crisis Committee';
+        if (val.includes('CCC') || val.includes('Crisis') || val.includes('CC')) return '• CCC - Continuous Crisis Committee';
+        if (val.includes('UNHRC') || val.includes('Human Rights')) return '• UNHRC - United Nations Human Rights Council';
+        if (val.includes('JKLA') || val.includes('Legislative')) return '• JKLA - Jammu & Kashmir Legislative Assembly';
+        if (val.includes('Women')) return '• UN Women - United Nations Entity for Gender Equality';
+        if (val.includes('Lok Sabha') || val.includes('House')) return '• Lok Sabha - Lok Sabha (House of the People)';
+        if (val.includes('IPL') || val.includes('Premier')) return '• IPL - Indian Premier League Auction Council';
+        return '• CCC - Continuous Crisis Committee';
       };
 
       const body = new URLSearchParams();
@@ -664,21 +667,21 @@ export const AequitasRegistrationPage: React.FC = () => {
       // 6. Prior MUN Experience Level
       body.append('entry.898367359', mapExperienceToGoogleOption(form.priorExperience));
       // 7. Prior MUN Honors / Accolades
-      body.append('entry.291987551', form.priorAccolades.trim() || 'N/A');
+      body.append('entry.291987551', form.priorAccolades.trim() || 'None');
       // 8. 1st Choice Committee (Primary)
       body.append('entry.977018072', mapCommitteeToGoogleOption(form.firstChoiceCommittee));
       // 9. 1st Choice Portfolio / Country Preference
-      body.append('entry.299951131', form.firstChoicePortfolio.trim());
+      body.append('entry.299951131', form.firstChoicePortfolio.trim() || 'General Allocation');
       // 10. 2nd Choice Committee (Alternate)
-      body.append('entry.580509636', mapCommitteeToGoogleOption(form.secondChoiceCommittee));
+      body.append('entry.580509636', mapCommitteeToGoogleOption(form.secondChoiceCommittee || 'UNHRC - United Nations Human Rights Council'));
       // 11. 2nd Choice Portfolio / Country Preference
-      body.append('entry.777137221', form.secondChoicePortfolio.trim());
+      body.append('entry.777137221', form.secondChoicePortfolio.trim() || 'General Allocation');
       // 12. 3rd Choice Committee (Tertiary / Contingency)
-      body.append('entry.635888889', mapCommitteeToGoogleOption(form.thirdChoiceCommittee));
+      body.append('entry.635888889', mapCommitteeToGoogleOption(form.thirdChoiceCommittee || 'JKLA - Jammu & Kashmir Legislative Assembly'));
       // 13. 3rd Choice Portfolio / Country Preference
-      body.append('entry.794534023', form.thirdChoicePortfolio.trim());
+      body.append('entry.794534023', form.thirdChoicePortfolio.trim() || 'General Allocation');
       // 14. Statement of Purpose & Motivation
-      body.append('entry.156711483', form.statement.trim());
+      body.append('entry.156711483', form.statement.trim() || 'Registered via Aequitas Delegate Portal.');
 
       fetch(GOOGLE_FORM_ACTION, {
         method: 'POST',

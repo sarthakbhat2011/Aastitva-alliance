@@ -98,23 +98,57 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
   ];
 
   const GOOGLE_FORM_ACTION =
-    'https://docs.google.com/forms/d/e/1FAIpQLScBGLm5S3STYlDHqXT8EojVv0F4o-wMOxWRW563YrE1B1x1DQ/formResponse';
+    'https://docs.google.com/forms/d/e/1FAIpQLSdgVhSI5tgSKD4vk_m8YWI0q6zFuJFytzer4R7-DSbzu7G8rg/formResponse';
 
   const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
+      const mapCommittee = (val: string) => {
+        if (!val) return '• CCC - Continuous Crisis Committee';
+        if (val.includes('CCC') || val.includes('Crisis') || val.includes('CC')) return '• CCC - Continuous Crisis Committee';
+        if (val.includes('UNHRC') || val.includes('Human Rights')) return '• UNHRC - United Nations Human Rights Council';
+        if (val.includes('JKLA') || val.includes('Legislative')) return '• JKLA - Jammu & Kashmir Legislative Assembly';
+        if (val.includes('Women')) return '• UN Women - United Nations Entity for Gender Equality';
+        if (val.includes('Lok Sabha') || val.includes('House')) return '• Lok Sabha - Lok Sabha (House of the People)';
+        if (val.includes('IPL') || val.includes('Premier')) return '• IPL - Indian Premier League Auction Council';
+        return '• CCC - Continuous Crisis Committee';
+      };
+
+      const mapGrade = (val: string) => {
+        if (!val) return '•Senior Secondary School (Grades 11–12)';
+        if (val.includes('Middle') || val.includes('6-8') || val.includes('6–8')) return '• Middle School (Grades 6–8)';
+        if (val.includes('Secondary') && !val.includes('Senior') && !val.includes('11-12') && !val.includes('11–12')) return '• Secondary School (Grades 9–10)';
+        if (val.includes('Senior') || val.includes('11-12') || val.includes('11–12') || val.includes('High School')) return '•Senior Secondary School (Grades 11–12)';
+        if (val.includes('College') || val.includes('Undergraduate')) return '• Undergraduate / College';
+        return '•Senior Secondary School (Grades 11–12)';
+      };
+
+      const mapExperience = (val: string) => {
+        if (!val) return '• Junior Delegate (1–3 MUNs)';
+        if (val.includes('First-Timer') || val.includes('Novice') || val.includes('0 MUNs')) return '• First-Timer / Novice (0 MUNs)';
+        if (val.includes('Junior') || val.includes('1-3') || val.includes('1–3')) return '• Junior Delegate (1–3 MUNs)';
+        if (val.includes('Seasoned') || val.includes('4-7') || val.includes('4–7')) return '• Seasoned Delegate (4–7 MUNs)';
+        if (val.includes('Veteran') || val.includes('8+')) return '• Veteran Delegate (8+ MUNs)';
+        return '• Junior Delegate (1–3 MUNs)';
+      };
+
       const body = new URLSearchParams();
-      body.append('entry.183535783', form.fullName);
-      body.append('entry.1640058535', form.email);
-      body.append('entry.1465756153', form.phone);
-      body.append('entry.386438479', form.institution);
-      body.append('entry.177448804', `${form.grade} (${form.priorExperience})`);
-      body.append('entry.1860013780', form.firstChoiceCommittee);
-      body.append('entry.1770614625', form.firstChoicePortfolio);
-      body.append('entry.1136480282', form.secondChoiceCommittee);
-      body.append('entry.546561131', form.secondChoicePortfolio);
+      body.append('entry.780764261', form.fullName.trim());
+      body.append('entry.830016473', form.email.trim());
+      body.append('entry.86288026', form.phone.trim());
+      body.append('entry.1083196564', form.institution.trim());
+      body.append('entry.278555826', mapGrade(form.grade));
+      body.append('entry.898367359', mapExperience(form.priorExperience));
+      body.append('entry.291987551', 'None');
+      body.append('entry.977018072', mapCommittee(form.firstChoiceCommittee));
+      body.append('entry.299951131', form.firstChoicePortfolio.trim() || 'General Allocation');
+      body.append('entry.580509636', mapCommittee(form.secondChoiceCommittee || 'UNHRC - United Nations Human Rights Council'));
+      body.append('entry.777137221', form.secondChoicePortfolio.trim() || 'General Allocation');
+      body.append('entry.635888889', '• JKLA - Jammu & Kashmir Legislative Assembly');
+      body.append('entry.794534023', 'General Allocation');
+      body.append('entry.156711483', 'Registered via Summit Page Portal.');
 
       fetch(GOOGLE_FORM_ACTION, {
         method: 'POST',
