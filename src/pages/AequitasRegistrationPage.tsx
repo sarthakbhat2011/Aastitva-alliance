@@ -180,7 +180,7 @@ export const AequitasRegistrationPage: React.FC = () => {
     priorExperience: 'Junior Delegate (1–3 MUNs)',
     priorAccolades: '',
     statement: '',
-    firstChoiceCommittee: "CC - Citizens' Council",
+    firstChoiceCommittee: 'CCC - Continuous Crisis Committee',
     firstChoicePortfolio: '',
     secondChoiceCommittee: 'UNHRC - United Nations Human Rights Council',
     secondChoicePortfolio: '',
@@ -630,7 +630,7 @@ export const AequitasRegistrationPage: React.FC = () => {
 
       // Map committee to exact Google Form dropdown string
       const mapCommitteeToGoogleOption = (val: string) => {
-        if (val.includes('CC') || val.includes("Citizens")) return "• CC - Citizens' Council";
+        if (val.includes('CCC') || val.includes('Crisis') || val.includes('CC') || val.includes("Citizens")) return "• CC - Citizens' Council";
         if (val.includes('UNHRC')) return '• UNHRC - United Nations Human Rights Council';
         if (val.includes('JKLA')) return '• JKLA - Jammu & Kashmir Legislative Assembly';
         if (val.includes('UN Women')) return '• UN Women - United Nations Entity for Gender Equality';
@@ -751,7 +751,7 @@ export const AequitasRegistrationPage: React.FC = () => {
       priorExperience: 'Junior Delegate (1–3 MUNs)',
       priorAccolades: '',
       statement: '',
-      firstChoiceCommittee: "CC - Citizens' Council",
+      firstChoiceCommittee: 'CCC - Continuous Crisis Committee',
       firstChoicePortfolio: '',
       secondChoiceCommittee: 'UNHRC - United Nations Human Rights Council',
       secondChoicePortfolio: '',
@@ -787,22 +787,42 @@ export const AequitasRegistrationPage: React.FC = () => {
       {/* Dedicated Portal Topbar (Autonomous: strictly NO home redirection) */}
       <header className="sticky top-0 z-40 bg-[#070A14]/95 border-b border-[#D4AF37]/30 backdrop-blur-xl px-3 sm:px-8 py-2.5 sm:py-3.5 select-none shadow-xl">
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
-          {/* Official Emblem & Portal Designation */}
-          <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-[#D4AF37]/25 to-[#16203B] border border-[#D4AF37]/50 flex items-center justify-center text-[#D4AF37] shadow-lg shrink-0">
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 fill-current animate-pulse" />
+          {/* Official Alliance Dual Logos & Portal Designation */}
+          <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
+            {/* Dual Logos as an Alliance */}
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+              <div className="relative">
+                <img
+                  src="/aequitas-logo.png"
+                  alt="Aequitas Summit"
+                  className="w-8 h-8 sm:w-11 sm:h-11 rounded-full object-cover border-2 border-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.4)] block bg-black"
+                />
+              </div>
+
+              <span className="font-playfair font-bold text-xs sm:text-sm text-[#D4AF37] opacity-80 px-0.5 select-none">
+                ×
+              </span>
+
+              <div className="relative">
+                <img
+                  src="/astitva-logo.png"
+                  alt="Aastitva Alliance"
+                  className="w-8 h-8 sm:w-11 sm:h-11 rounded-full object-cover border-2 border-[#D4AF37]/70 shadow-[0_0_12px_rgba(168,85,247,0.3)] block bg-[#1e1442]"
+                />
+              </div>
             </div>
+
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                <span className="font-playfair font-extrabold text-xs sm:text-base text-[#FAF5EF] tracking-wide truncate">
-                  Aequitas Summit 2026
+                <span className="font-playfair font-extrabold text-xs sm:text-base md:text-lg text-[#FAF5EF] tracking-wide truncate">
+                  Aequitas Summit x Aastitva Alliance
                 </span>
                 <span className="px-1.5 sm:px-2 py-0.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] font-mono font-bold text-[8px] sm:text-[9px] uppercase tracking-wider shrink-0">
                   Oct 29–30, 2026
                 </span>
               </div>
               <p className="text-[10px] sm:text-[11px] text-[#C4BBA3] font-mono truncate">
-                Official Delegate Allocation & Verification Gateway
+                Official Delegate Allocation &amp; Verification Gateway
               </p>
             </div>
           </div>

@@ -34,12 +34,12 @@ export const CommitteeFitDecryptor: React.FC<Props> = ({ onSelectCommittee }) =>
   // 6 Authentic Pillars matching the 6 Real Summit Committees in data.ts
   const interests = [
     {
-      id: 'citizens-council',
-      title: 'Civil Society, Democratic Accountability & Public Movements',
-      desc: 'Deliberation on the role of satirical movements, public protests and civil society campaigns in shaping democratic accountability.',
+      id: 'continuous-crisis-committee',
+      title: 'High-Stakes Emergency Directives & Crisis Governance',
+      desc: 'Deliberation on high-stakes emergency directives, geopolitical flashpoints, and rapid-response crisis governance.',
       icon: Users,
-      primaryComm: 'cc',
-      badge: "Citizens' Council",
+      primaryComm: 'ccc',
+      badge: 'Continuous Crisis Committee',
     },
     {
       id: 'human-rights',
@@ -100,7 +100,7 @@ export const CommitteeFitDecryptor: React.FC<Props> = ({ onSelectCommittee }) =>
       id: 'veteran',
       label: 'Circuit Veteran / Gavel Seeker (5+ MUNs)',
       desc: 'Thrives in unpredictable midnight crisis updates, high-stakes parliamentary cross-examination, and bidding wars.',
-      preferredComms: ['cc', 'jkla', 'ipl', 'lok-sabha'],
+      preferredComms: ['ccc', 'jkla', 'ipl', 'lok-sabha'],
     },
   ];
 
@@ -114,7 +114,7 @@ export const CommitteeFitDecryptor: React.FC<Props> = ({ onSelectCommittee }) =>
 
     // Nuanced adjustments based on experience level
     if (expId === 'novice' && (targetId === 'cc' || targetId === 'ccc')) {
-      // If novice picks Citizens' Council, recommend tailored score or foundational guidance
+      // If novice picks Continuous Crisis Committee, recommend tailored score or foundational guidance
       score = 94;
     } else if (expId === 'veteran' && (targetId === 'cc' || targetId === 'ccc' || targetId === 'jkla' || targetId === 'ipl')) {
       score = 99;

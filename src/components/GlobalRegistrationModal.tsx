@@ -23,7 +23,7 @@ export const GlobalRegistrationModal: React.FC<Props> = ({
     phone: '',
     institution: '',
     grade: 'High School (11-12)',
-    firstChoiceCommittee: preselectedCommittee || "CC - Citizens' Council",
+    firstChoiceCommittee: preselectedCommittee || 'CCC - Continuous Crisis Committee',
     firstChoicePortfolio: '',
     secondChoiceCommittee: 'UNHRC - United Nations Human Rights Council',
     secondChoicePortfolio: '',
@@ -134,7 +134,27 @@ export const GlobalRegistrationModal: React.FC<Props> = ({
       <div className="relative w-full max-w-2xl bg-[#0B1224] border-2 border-[#D4AF37]/50 rounded-3xl shadow-[0_25px_80px_rgba(0,0,0,0.9)] overflow-hidden font-jakarta text-left z-10 animate-scale-up">
         {/* Modal Header */}
         <div className="p-4 sm:p-8 pb-3 sm:pb-4 flex items-start justify-between gap-3 sm:gap-4 border-b border-[#D4AF37]/20 relative">
-          <div className="space-y-1 sm:space-y-1.5">
+          <div className="space-y-1 sm:space-y-1.5 min-w-0">
+            {/* Alliance Branding Ribbon */}
+            <div className="flex items-center gap-2 pb-1">
+              <div className="flex items-center gap-1.5 shrink-0">
+                <img
+                  src="/aequitas-logo.png"
+                  alt="Aequitas Summit"
+                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-[#D4AF37] shadow-sm bg-black"
+                />
+                <span className="font-playfair font-bold text-xs text-[#D4AF37]">×</span>
+                <img
+                  src="/astitva-logo.png"
+                  alt="Aastitva Alliance"
+                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-[#D4AF37]/70 shadow-sm bg-[#1e1442]"
+                />
+              </div>
+              <span className="font-playfair font-bold text-xs sm:text-sm text-[#FAF5EF] tracking-wide">
+                Aequitas Summit x Aastitva Alliance
+              </span>
+            </div>
+
             <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
               <span className="px-2.5 sm:px-3 py-0.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-[10px] sm:text-[11px] font-bold uppercase tracking-wider flex items-center gap-1">
                 <Sparkles className="w-3 h-3 text-[#D4AF37]" />

@@ -23,11 +23,11 @@ export const INITIAL_SUMMIT_CONFIG: SummitConfig = {
 
 export const COMMITTEES = [
   {
-    id: 'cc',
-    code: 'CC',
-    name: "Citizens' Council",
-    agenda: 'Deliberation on the role of satirical movements, public protests and civil society campaigns in shaping democratic accountability, while balancing public order and national security.',
-    description: 'Deliberation on the role of satirical movements, public protests and civil society campaigns in shaping democratic accountability, while balancing public order and national security.',
+    id: 'ccc',
+    code: 'CCC',
+    name: 'Continuous Crisis Committee',
+    agenda: 'Deliberation on high-stakes emergency directives, geopolitical flashpoints, and rapid-response crisis governance.',
+    description: 'High-tempo crisis simulation requiring rapid dynamic directives, breaking crisis updates, and decisive diplomatic negotiation.',
     seats: 40,
   },
   {
