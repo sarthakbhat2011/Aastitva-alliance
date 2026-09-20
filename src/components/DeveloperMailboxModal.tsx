@@ -38,6 +38,7 @@ import {
   saveEntryToMailbox,
   verifyPasscode,
   clearAdminSession,
+  resetMailboxToDefault,
   STORAGE_KEY,
   AUTH_SESSION_KEY,
   SAMPLE_PARTNER_MAILS,
@@ -294,6 +295,25 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
     }
   };
 
+  // Clear all testing data and restore clean state (Admin only)
+  const handleResetToCleanState = async () => {
+    if (
+      window.confirm(
+        'Clear Developer Mailbox Test Data?\n\nThis will remove testing delegate submissions from the developer mailbox and restore default sample inquiries.\n\nNote: Your connected Google Form remains 100% active and untouched.'
+      )
+    ) {
+      setIsSyncing(true);
+      try {
+        const cleanMails = await resetMailboxToDefault();
+        setMails(cleanMails);
+      } catch (err) {
+        console.error('Failed to reset mailbox test records:', err);
+      } finally {
+        setIsSyncing(false);
+      }
+    }
+  };
+
   // Quick Update Status (Syncs to server & local storage)
   const handleQuickStatusChange = async (id: string, newStatus: PartnerMailEntry['status']) => {
     const updated = await updateMailboxEntryStatus(id, newStatus);
@@ -536,6 +556,14 @@ Current Status: ${mail.status}`;
                     >
                       <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin text-[#D4AF37]' : ''}`} />
                       <span className="text-[11px] font-mono">{isSyncing ? 'Syncing...' : 'Sync Live'}</span>
+                    </button>
+                    <button
+                      onClick={handleResetToCleanState}
+                      className="px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 hover:bg-amber-500/20 hover:border-amber-500/50 transition-all flex items-center gap-1.5 cursor-pointer"
+                      title="Clear testing data from Developer Mailbox without affecting Google Forms"
+                    >
+                      <Trash2 className="w-3.5 h-3.5 text-amber-400" />
+                      <span className="text-[11px] font-mono">Clear Test Records</span>
                     </button>
                   </div>
                 </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Page, SummitConfig, CountdownTime, RegistrationFormData, PartnerMailEntry } from '../types';
-import { saveEntryToMailbox } from '../utils/mailboxApi';
+import { saveEntryToMailbox, submitRegistrationToServer } from '../utils/mailboxApi';
 import { ConclaveKernelHUD } from '../components/ConclaveKernelHUD';
 import { ConsultationModal } from '../components/ConsultationModal';
 import { ScrollIndicator } from '../components/ScrollIndicator';
@@ -122,33 +122,72 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
       body.append('entry.794534023', 'General Allocation');
       body.append('entry.156711483', 'Registered via Home Page Express Portal.');
 
-      fetch(GOOGLE_FORM_ACTION, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: body.toString(),
-      }).catch((err) => console.log('Silent Google Form POST:', err));
-
-      // Persist to Developer Mailbox & Server Disk
+      // SINGLE-ENTRY PIPELINE:
+      // Authoritatively submit to server endpoint.
+      // Server validates, records in mailbox once, and dispatches to Google Forms once via secure HTTPS.
+      let submissionSuccessful = false;
       const trackingId = `AEQ-QUICK-${Math.floor(1000 + Math.random() * 9000)}`;
       const nowTime = new Date().toLocaleString('en-IN', {
         timeZone: 'Asia/Kolkata',
         dateStyle: 'medium',
         timeStyle: 'short',
       });
-      const newMailboxEntry: PartnerMailEntry = {
-        id: trackingId,
-        timestamp: nowTime,
-        schoolName: form.schoolName.trim() || 'Not Specified',
-        contactPerson: `${form.fullName.trim()} (${form.grade || 'N/A'})`,
-        email: form.email.trim(),
-        phone: form.phone.trim(),
-        eventType: `Aequitas Quick Register: ${form.firstChoiceCommittee} / ${form.secondChoiceCommittee}`,
-        preferredDate: '2026-10-29',
-        message: `[QUICK REGISTRATION - ${trackingId}]\nDelegate: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.schoolName.trim()}\nGrade: ${form.grade}\n1st Choice: ${form.firstChoiceCommittee}\n2nd Choice: ${form.secondChoiceCommittee}\nExperience: ${form.experienceLevel}`,
-        status: 'New',
-      };
-      await saveEntryToMailbox(newMailboxEntry);
+      let finalTrackingId = trackingId;
+
+      try {
+        const serverResult = await submitRegistrationToServer({
+          fullName: form.fullName.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          institution: form.schoolName.trim() || 'Not Specified',
+          grade: form.grade || 'Senior Secondary',
+          firstChoiceCommittee: form.firstChoiceCommittee,
+          firstChoicePortfolio: 'General Allocation',
+          secondChoiceCommittee: form.secondChoiceCommittee,
+          secondChoicePortfolio: 'General Allocation',
+          priorExperience: form.experienceLevel,
+        });
+
+        if (serverResult.success) {
+          submissionSuccessful = true;
+          if (serverResult.trackingId) {
+            finalTrackingId = serverResult.trackingId;
+          }
+        }
+      } catch (err) {
+        console.warn('Server registration call failed, switching to fallback:', err);
+      }
+
+      // CLIENT FALLBACK (Offline / Static Host Mode ONLY):
+      // Only execute client Google Form POST and saveEntryToMailbox if the server was unavailable.
+      if (!submissionSuccessful) {
+        try {
+          fetch(GOOGLE_FORM_ACTION, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: body.toString(),
+          }).catch((err) => console.log('Silent Google Form POST fallback:', err));
+
+          const newMailboxEntry: PartnerMailEntry = {
+            id: finalTrackingId,
+            timestamp: nowTime,
+            schoolName: form.schoolName.trim() || 'Not Specified',
+            contactPerson: `${form.fullName.trim()} (${form.grade || 'N/A'})`,
+            email: form.email.trim(),
+            phone: form.phone.trim(),
+            eventType: `Aequitas Quick Register: ${form.firstChoiceCommittee} / ${form.secondChoiceCommittee}`,
+            preferredDate: '2026-10-29',
+            message: `[QUICK REGISTRATION - ${finalTrackingId}]\nDelegate: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.schoolName.trim()}\nGrade: ${form.grade}\n1st Choice: ${form.firstChoiceCommittee}\n2nd Choice: ${form.secondChoiceCommittee}\nExperience: ${form.experienceLevel}`,
+            status: 'New',
+          };
+          await saveEntryToMailbox(newMailboxEntry);
+        } catch (fallbackErr) {
+          console.error('Failed to log to fallback mailbox:', fallbackErr);
+        }
+      } else {
+        window.dispatchEvent(new Event('astitva_partner_submitted'));
+      }
     } catch (err) {
       console.log('Background submit:', err);
     }

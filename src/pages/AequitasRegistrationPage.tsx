@@ -608,6 +608,7 @@ export const AequitasRegistrationPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     if (!validateStep(5)) return;
 
     setIsSubmitting(true);
@@ -619,6 +620,8 @@ export const AequitasRegistrationPage: React.FC = () => {
       dateStyle: 'medium',
       timeStyle: 'short',
     });
+
+    let finalTrackingId = trackingId;
 
     try {
       // Map academic division to exact Google Form dropdown string
@@ -683,44 +686,13 @@ export const AequitasRegistrationPage: React.FC = () => {
       // 14. Statement of Purpose & Motivation
       body.append('entry.156711483', form.statement.trim() || 'Registered via Aequitas Delegate Portal.');
 
-      fetch(GOOGLE_FORM_ACTION, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: body.toString(),
-      }).catch((err) => console.log('Silent Google Form response:', err));
+      // SINGLE-ENTRY PIPELINE:
+      // Submit directly to authoritative backend endpoint /api/register.
+      // The server saves the entry to persistent storage and dispatches directly to Google Forms via secure HTTPS.
+      let submissionSuccessful = false;
 
-      // Also persist to local application storage and Developer Mailbox
       try {
-        const stored = JSON.parse(localStorage.getItem('aequitas_delegate_applications') || '[]');
-        stored.push({
-          trackingId,
-          timestamp: nowTime,
-          feePaid: '₹1,999',
-          transactionId: form.transactionId.trim(),
-          ...form,
-        });
-        localStorage.setItem('aequitas_delegate_applications', JSON.stringify(stored));
-
-        // Persist directly to Developer Mailbox & server disk
-        const newMailboxEntry: PartnerMailEntry = {
-          id: trackingId,
-          timestamp: nowTime,
-          schoolName: form.institution.trim(),
-          contactPerson: `${form.fullName.trim()} (${form.grade})`,
-          email: form.email.trim(),
-          phone: form.phone.trim(),
-          eventType: `Aequitas 2026 Delegate: ${form.firstChoiceCommittee} [${form.firstChoicePortfolio.trim()}]`,
-          preferredDate: '2026-10-29',
-          message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.institution.trim()}\nAcademic Division: ${form.grade}\nPrior MUN Experience: ${form.priorExperience}\nHonors / Accolades: ${form.priorAccolades.trim() || 'None'}\n1st Choice Committee: ${form.firstChoiceCommittee} (Preferred: ${form.firstChoicePortfolio.trim()})\n2nd Choice Committee: ${form.secondChoiceCommittee} (Preferred: ${form.secondChoicePortfolio.trim()})\n3rd Choice Committee: ${form.thirdChoiceCommittee} (Preferred: ${form.thirdChoicePortfolio.trim()})\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: ${form.transactionId.trim()}\nStatement of Purpose:\n${form.statement.trim()}`,
-          status: 'New',
-        };
-        await saveEntryToMailbox(newMailboxEntry);
-
-        // Also submit to dedicated hardened registration endpoint
-        await submitRegistrationToServer({
+        const serverResult = await submitRegistrationToServer({
           fullName: form.fullName.trim(),
           email: form.email.trim(),
           phone: form.phone.trim(),
@@ -737,8 +709,62 @@ export const AequitasRegistrationPage: React.FC = () => {
           statement: form.statement.trim(),
           transactionId: form.transactionId.trim(),
         });
+
+        if (serverResult.success) {
+          submissionSuccessful = true;
+          if (serverResult.trackingId) {
+            finalTrackingId = serverResult.trackingId;
+          }
+        }
       } catch (e) {
-        console.error('Failed to log to developer mailbox / registration API:', e);
+        console.warn('Server registration call failed, switching to fallback:', e);
+      }
+
+      // CLIENT FALLBACK (Offline / Static Host Mode ONLY):
+      // Only execute client Google Form POST and saveEntryToMailbox if the server was unavailable.
+      if (!submissionSuccessful) {
+        try {
+          fetch(GOOGLE_FORM_ACTION, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: body.toString(),
+          }).catch((err) => console.log('Silent Google Form fallback response:', err));
+
+          const fallbackMailboxEntry: PartnerMailEntry = {
+            id: finalTrackingId,
+            timestamp: nowTime,
+            schoolName: form.institution.trim(),
+            contactPerson: `${form.fullName.trim()} (${form.grade})`,
+            email: form.email.trim(),
+            phone: form.phone.trim(),
+            eventType: `Aequitas 2026 Delegate: ${form.firstChoiceCommittee} [${form.firstChoicePortfolio.trim()}]`,
+            preferredDate: '2026-10-29',
+            message: `[DELEGATE APPLICATION - ${finalTrackingId}]\nDelegate Name: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.institution.trim()}\nAcademic Division: ${form.grade}\nPrior MUN Experience: ${form.priorExperience}\nHonors / Accolades: ${form.priorAccolades.trim() || 'None'}\n1st Choice Committee: ${form.firstChoiceCommittee} (Preferred: ${form.firstChoicePortfolio.trim()})\n2nd Choice Committee: ${form.secondChoiceCommittee} (Preferred: ${form.secondChoicePortfolio.trim()})\n3rd Choice Committee: ${form.thirdChoiceCommittee} (Preferred: ${form.thirdChoicePortfolio.trim()})\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: ${form.transactionId.trim()}\nStatement of Purpose:\n${form.statement.trim()}`,
+            status: 'New',
+          };
+          await saveEntryToMailbox(fallbackMailboxEntry);
+        } catch (fallbackErr) {
+          console.error('Fallback logging failed:', fallbackErr);
+        }
+      }
+
+      // Persist the application locally so the user's receipt and pass render immediately
+      try {
+        const stored = JSON.parse(localStorage.getItem('aequitas_delegate_applications') || '[]');
+        stored.push({
+          trackingId: finalTrackingId,
+          timestamp: nowTime,
+          feePaid: '₹1,999',
+          transactionId: form.transactionId.trim(),
+          ...form,
+        });
+        localStorage.setItem('aequitas_delegate_applications', JSON.stringify(stored));
+        window.dispatchEvent(new Event('astitva_partner_submitted'));
+      } catch (storeErr) {
+        console.warn('Failed to store receipt locally:', storeErr);
       }
     } catch (err) {
       console.log('Submission dispatch error:', err);
@@ -747,7 +773,7 @@ export const AequitasRegistrationPage: React.FC = () => {
     setTimeout(() => {
       setIsSubmitting(false);
       setIsSubmitted(true);
-      setApplicationId(trackingId);
+      setApplicationId(finalTrackingId);
       setSubmissionTime(nowTime);
 
       // Generate the official high-resolution Delegate Pass PNG
@@ -756,7 +782,7 @@ export const AequitasRegistrationPage: React.FC = () => {
           fullName: form.fullName.trim(),
           institution: form.institution.trim(),
           grade: form.grade,
-          trackingId,
+          trackingId: finalTrackingId,
         });
         setPassDataUrl(passUrl);
       } catch (err) {

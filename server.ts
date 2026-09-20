@@ -247,6 +247,45 @@ async function startServer() {
     }
 
     const clean = validation.data;
+    const mails = readMailbox();
+
+    // IDEMPOTENCY / DEDUPLICATION DEFENSE:
+    // Prevent duplicate entries if the user double-clicks submit or client resubmits rapidly
+    const isDuplicate = mails.find((m: any) => {
+      if (
+        clean.transactionId &&
+        clean.transactionId.length > 4 &&
+        clean.transactionId !== 'Pending Verification' &&
+        m.message &&
+        m.message.includes(`Transaction / UTR ID: ${clean.transactionId}`)
+      ) {
+        return true;
+      }
+      if (
+        m.email &&
+        m.email.toLowerCase() === clean.email.toLowerCase() &&
+        m.phone === clean.phone &&
+        m.eventType &&
+        m.eventType.includes(clean.firstChoiceCommittee)
+      ) {
+        return true;
+      }
+      return false;
+    });
+
+    if (isDuplicate) {
+      console.log(
+        `[Delegate Registration] Deduplicated rapid resubmission for ${sanitizeForLog(clean.fullName)} (${isDuplicate.id})`
+      );
+      return res.status(200).json({
+        success: true,
+        trackingId: isDuplicate.id,
+        timestamp: isDuplicate.timestamp,
+        duplicate: true,
+        message: 'Registration already recorded successfully.',
+      });
+    }
+
     const trackingId = `AEQ-2026-${Math.floor(1000 + Math.random() * 9000)}`;
     const nowTime = new Date().toLocaleString('en-IN', {
       timeZone: 'Asia/Kolkata',
@@ -267,7 +306,6 @@ async function startServer() {
       status: 'New',
     };
 
-    const mails = readMailbox();
     mails.unshift(newMailboxEntry);
     writeMailboxAtomic(mails);
 
@@ -275,7 +313,7 @@ async function startServer() {
       `[Delegate Registration] Securely stored delegate application ${trackingId} for ${sanitizeForLog(clean.fullName)} (${sanitizeForLog(clean.institution)})`
     );
 
-    // Sync directly to connected Google Form from server side
+    // Sync directly to connected Google Form from server side (Single authoritative dispatch)
     syncToGoogleForm(clean);
 
     // Minimal safe response: Never expose other records or internal database layout
@@ -486,6 +524,45 @@ async function startServer() {
       success: true,
       count: mails.length,
       mails,
+    });
+  });
+
+  // Protected Mailbox Reset (Admin Only - Resets mailbox to sample partner inquiries, wiping test entries)
+  app.post('/api/mailbox/reset', requireAdminAuth, (req, res) => {
+    const defaultMails = [
+      {
+        id: 'partner-17861001',
+        timestamp: '2026-08-07 18:30',
+        schoolName: 'Heritage International School, Jammu',
+        contactPerson: 'Devansh Sharma (Academic Coordinator)',
+        email: 'academics@heritageschooljammu.in',
+        phone: '+91 94191 22334',
+        eventType: 'Model United Nations (MUN) Executive Board Allocation',
+        preferredDate: '2026-10-15',
+        message: 'Requesting full Executive Board allocation for 6 committees and Rules of Procedure delegate training workshop.',
+        status: 'In Review',
+      },
+      {
+        id: 'partner-17861002',
+        timestamp: '2026-08-07 20:15',
+        schoolName: 'Delhi Public School, Jammu',
+        contactPerson: 'Meenakshi Malhotra (Vice Principal)',
+        email: 'viceprincipal@dpsjammu.in',
+        phone: '+91 98765 11223',
+        eventType: 'Institutional Collaboration & Youth Parliament',
+        preferredDate: '2026-11-20',
+        message: 'Seeking institutional partner agreement for co-hosting the Jammu Youth Leadership Symposium 2026.',
+        status: 'New',
+      },
+    ];
+
+    writeMailboxAtomic(defaultMails);
+    console.log('[Mailbox API] Admin reset mailbox to default sample records.');
+    res.json({
+      success: true,
+      message: 'Mailbox reset successfully. Testing records cleared.',
+      count: defaultMails.length,
+      mails: defaultMails,
     });
   });
 

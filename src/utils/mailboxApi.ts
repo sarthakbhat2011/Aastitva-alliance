@@ -191,24 +191,10 @@ export async function loadAllMailboxEntries(): Promise<PartnerMailEntry[]> {
       const data = await res.json();
       const serverMails: PartnerMailEntry[] = Array.isArray(data.mails) ? data.mails : [];
 
-      // Combine server and local without duplicates (keyed by ID)
-      const map = new Map<string, PartnerMailEntry>();
-
-      // Put server entries first
-      serverMails.forEach((m) => {
-        if (m.id) map.set(m.id, m);
-      });
-
-      // Also ensure any local-only entries are preserved
-      localMails.forEach((m) => {
-        if (m.id && !map.has(m.id)) {
-          map.set(m.id, m);
-        }
-      });
-
-      const merged = Array.from(map.values());
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-      return merged;
+      // For authenticated developer sessions, the server is the authoritative source of truth.
+      // Overwrite local cache with authoritative server records so deleted/reset records stay deleted.
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(serverMails));
+      return serverMails;
     } else if (res.status === 401) {
       // Token expired or invalid
       clearAdminSession();
@@ -370,4 +356,42 @@ export async function submitRegistrationToServer(payload: {
     console.warn('[Registration API] Deferred to mailbox fallback:', err);
     return { success: false, error: 'Network unavailable' };
   }
+}
+
+/**
+ * Reset mailbox on server and locally to default sample partner inquiries (Admin Only).
+ * Removes all test registration data without affecting Google Form.
+ */
+export async function resetMailboxToDefault(): Promise<PartnerMailEntry[]> {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem('aequitas_delegate_applications');
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(SAMPLE_PARTNER_MAILS));
+    window.dispatchEvent(new Event('astitva_partner_submitted'));
+  }
+
+  const token = getAdminToken();
+  if (token) {
+    try {
+      const res = await fetch('/api/mailbox/reset', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && Array.isArray(data.mails)) {
+          if (typeof window !== 'undefined') {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data.mails));
+            window.dispatchEvent(new Event('astitva_partner_submitted'));
+          }
+          return data.mails;
+        }
+      }
+    } catch (err) {
+      console.log('Server reset deferred:', err);
+    }
+  }
+
+  return SAMPLE_PARTNER_MAILS;
 }
