@@ -48,7 +48,7 @@ import {
   DelegatePassData,
 } from '../utils/generateDelegatePass';
 import { PartnerMailEntry } from '../types';
-import { saveEntryToMailbox } from '../utils/mailboxApi';
+import { saveEntryToMailbox, submitRegistrationToServer } from '../utils/mailboxApi';
 import { DeveloperMailboxModal } from '../components/DeveloperMailboxModal';
 
 export const PAYMENT_CONFIG = {
@@ -715,8 +715,27 @@ export const AequitasRegistrationPage: React.FC = () => {
           status: 'New',
         };
         await saveEntryToMailbox(newMailboxEntry);
+
+        // Also submit to dedicated hardened registration endpoint
+        await submitRegistrationToServer({
+          fullName: form.fullName.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          institution: form.institution.trim(),
+          grade: form.grade,
+          firstChoiceCommittee: form.firstChoiceCommittee,
+          firstChoicePortfolio: form.firstChoicePortfolio.trim(),
+          secondChoiceCommittee: form.secondChoiceCommittee,
+          secondChoicePortfolio: form.secondChoicePortfolio.trim(),
+          thirdChoiceCommittee: form.thirdChoiceCommittee,
+          thirdChoicePortfolio: form.thirdChoicePortfolio.trim(),
+          priorExperience: form.priorExperience,
+          priorAccolades: form.priorAccolades.trim(),
+          statement: form.statement.trim(),
+          transactionId: form.transactionId.trim(),
+        });
       } catch (e) {
-        console.error('Failed to log to developer mailbox:', e);
+        console.error('Failed to log to developer mailbox / registration API:', e);
       }
     } catch (err) {
       console.log('Submission dispatch error:', err);
@@ -2274,15 +2293,6 @@ export const AequitasRegistrationPage: React.FC = () => {
         )}
       </main>
 
-      {/* Autonomous Dedicated Portal Footer (Strictly NO home links) */}
-      <footer className="relative z-10 bg-[#070A14]/95 border-t border-[#D4AF37]/20 py-4 px-4 sm:px-8 text-center select-none text-[11px] font-mono text-[#C4BBA3] space-y-1">
-        <div>
-          Aequitas Model United Nations Summit 2026 • Executive Secretariat Delegate Allocation Gate
-        </div>
-        <div>
-          Official Inquiries: <span className="text-[#D4AF37]">aastitva.alliance@gmail.com</span> • Jammu, J&amp;K
-        </div>
-      </footer>
 
       {/* Developer Partner Mailbox Modal */}
       <DeveloperMailboxModal

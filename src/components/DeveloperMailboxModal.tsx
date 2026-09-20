@@ -35,7 +35,8 @@ import {
   updateMailboxEntryStatus,
   deleteMailboxEntry,
   saveEntryToMailbox,
-  DEV_PASSCODE,
+  verifyPasscode,
+  clearAdminSession,
   STORAGE_KEY,
   AUTH_SESSION_KEY,
   SAMPLE_PARTNER_MAILS,
@@ -44,6 +45,22 @@ import {
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+}
+
+function safeMailto(email: string): string {
+  const sanitized = (email || '').trim();
+  if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(sanitized)) {
+    return `mailto:${encodeURIComponent(sanitized)}`;
+  }
+  return '#';
+}
+
+function safeTel(phone: string): string {
+  const sanitized = (phone || '').replace(/[^\d+]/g, '');
+  if (sanitized.length >= 7) {
+    return `tel:${sanitized}`;
+  }
+  return '#';
 }
 
 interface ParsedDelegateInfo {
@@ -235,13 +252,26 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
   };
 
   // Handle Passcode Login
-  const handleAuthorize = (e: React.FormEvent) => {
+  const handleAuthorize = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (passcode === DEV_PASSCODE) {
+    if (!passcode.trim()) {
+      setPasscodeError('Please enter your security key.');
+      return;
+    }
+    const res = await verifyPasscode(passcode.trim(), 'admin');
+    if (res.success) {
       setIsAuthorized(true);
-      sessionStorage.setItem(AUTH_SESSION_KEY, 'true');
       setPasscodeError('');
       setPasscode('');
+      try {
+        setIsSyncing(true);
+        const liveMails = await loadAllMailboxEntries();
+        setMails(liveMails);
+      } catch (err) {
+        console.error('Mailbox sync error after login:', err);
+      } finally {
+        setIsSyncing(false);
+      }
     } else {
       setPasscodeError('Invalid Developer Authorization Code. Access Denied.');
     }
@@ -250,7 +280,7 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
   // Revoke Credentials (Lock Mailbox)
   const handleRevokeCredentials = () => {
     setIsAuthorized(false);
-    sessionStorage.removeItem(AUTH_SESSION_KEY);
+    clearAdminSession();
     setPasscode('');
     setPasscodeError('');
   };
@@ -685,7 +715,7 @@ Current Status: ${mail.status}`;
                               {/* Clickable Quick Contact Pills */}
                               <div className="flex items-center flex-wrap gap-2 mt-2 sm:mt-0">
                                 <a
-                                  href={`mailto:${mail.email}`}
+                                  href={safeMailto(mail.email)}
                                   className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#070A14] border border-[#243563] hover:border-[#D4AF37] text-xs text-[#DDD6FE] transition-colors"
                                   title="Send Email to Delegate"
                                 >
@@ -693,7 +723,7 @@ Current Status: ${mail.status}`;
                                   <span>{mail.email}</span>
                                 </a>
                                 <a
-                                  href={`tel:${mail.phone}`}
+                                  href={safeTel(mail.phone)}
                                   className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#070A14] border border-[#243563] hover:border-emerald-500/60 text-xs text-emerald-300 transition-colors"
                                   title="Call or WhatsApp Delegate"
                                 >
@@ -857,14 +887,14 @@ Current Status: ${mail.status}`;
 
                               <div className="flex items-center flex-wrap gap-2 mt-2 sm:mt-0">
                                 <a
-                                  href={`mailto:${mail.email}`}
+                                  href={safeMailto(mail.email)}
                                   className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#070A14] border border-[#243563] hover:border-[#D4AF37] text-xs text-[#DDD6FE] transition-colors"
                                 >
                                   <Mail className="w-3.5 h-3.5 text-[#D4AF37]" />
                                   <span>{mail.email}</span>
                                 </a>
                                 <a
-                                  href={`tel:${mail.phone}`}
+                                  href={safeTel(mail.phone)}
                                   className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-[#070A14] border border-[#243563] hover:border-emerald-500/60 text-xs text-emerald-300 transition-colors"
                                 >
                                   <Phone className="w-3.5 h-3.5 text-emerald-400" />

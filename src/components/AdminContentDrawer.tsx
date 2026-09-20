@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Settings, Save, Lock, KeyRound, ShieldCheck, Calendar, MapPin, Building, Users, LogOut } from 'lucide-react';
 import { SummitConfig } from '../types';
+import { verifyPasscode } from '../utils/mailboxApi';
 
 interface Props {
   isOpen: boolean;
@@ -21,15 +22,25 @@ export const AdminContentDrawer: React.FC<Props> = ({
   const [formData, setFormData] = useState<SummitConfig>({ ...config });
   const [saved, setSaved] = useState(false);
 
+  const [isVerifying, setIsVerifying] = useState(false);
+
   if (!isOpen) return null;
 
-  const handleAuthenticate = (e: React.FormEvent) => {
+  const handleAuthenticate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (passcode.trim() === 'astitva2026insansadxaequitas') {
+    if (!passcode.trim()) {
+      setErrorMsg('Please enter the security passcode.');
+      return;
+    }
+    setIsVerifying(true);
+    setErrorMsg('');
+    const res = await verifyPasscode(passcode.trim(), 'drawer');
+    setIsVerifying(false);
+    if (res.success) {
       setIsAuthenticated(true);
       setErrorMsg('');
     } else {
-      setErrorMsg('Invalid Security Key. Access Restricted.');
+      setErrorMsg(res.error || 'Invalid Security Key. Access Restricted.');
     }
   };
 

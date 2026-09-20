@@ -774,7 +774,7 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister, 
 
         {/* Center: Running Task Tabs */}
         <div className="hidden md:flex items-center gap-2 overflow-x-auto">
-          {Object.values(windows).map((win) => {
+          {(Object.values(windows) as OSWindow[]).map((win) => {
             const IconComp = win.icon;
             if (!win.isOpen) return null;
 

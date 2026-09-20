@@ -4,7 +4,7 @@ import confetti from 'canvas-confetti';
 import { X, CheckCircle2, Sparkles, ShieldCheck, Send, Globe, Award, Calendar, MapPin, ArrowUpRight } from 'lucide-react';
 import { COMMITTEES, INITIAL_SUMMIT_CONFIG } from '../data';
 import { RegistrationFormData, PartnerMailEntry } from '../types';
-import { saveEntryToMailbox } from '../utils/mailboxApi';
+import { saveEntryToMailbox, submitRegistrationToServer } from '../utils/mailboxApi';
 
 interface Props {
   isOpen: boolean;
@@ -99,8 +99,22 @@ export const GlobalRegistrationModal: React.FC<Props> = ({
           status: 'New',
         };
         await saveEntryToMailbox(newEntry);
+
+        // Also submit to dedicated hardened registration endpoint
+        await submitRegistrationToServer({
+          fullName: form.fullName.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          institution: form.institution.trim(),
+          grade: form.grade,
+          firstChoiceCommittee: form.firstChoiceCommittee,
+          firstChoicePortfolio: form.firstChoicePortfolio.trim(),
+          secondChoiceCommittee: form.secondChoiceCommittee,
+          secondChoicePortfolio: form.secondChoicePortfolio.trim(),
+          priorExperience: form.priorExperience,
+        });
       } catch (err) {
-        console.error('Failed to log to developer mailbox:', err);
+        console.error('Failed to log to developer mailbox / registration API:', err);
       }
     } catch (err) {
       console.log('Background submit:', err);

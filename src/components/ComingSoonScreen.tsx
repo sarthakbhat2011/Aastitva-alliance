@@ -23,6 +23,7 @@ import { CountdownTime } from '../types';
 import { sounds } from '../utils/soundEffects';
 import { Astitva3DCanvas } from './Astitva3DCanvas';
 import { COMMITTEES } from '../data';
+import { verifyPasscode } from '../utils/mailboxApi';
 
 interface Props {
   onUnlock: () => void;
@@ -30,8 +31,6 @@ interface Props {
   countdown?: CountdownTime;
   onOpenDevMailbox?: () => void;
 }
-
-const DEV_PASSCODE = 'bhatsarthakunrivalledunion2011,2001';
 
 const QUOTES = [
   {
@@ -328,11 +327,13 @@ export const ComingSoonScreen: React.FC<Props> = ({
     };
   }, []);
 
-  const handleAuthorize = (action: 'unlock' | 'mailbox' = 'unlock', e?: React.FormEvent) => {
+  const handleAuthorize = async (action: 'unlock' | 'mailbox' = 'unlock', e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setIsVerifying(true);
 
-    if (passcode.trim() === DEV_PASSCODE) {
+    const result = await verifyPasscode(passcode.trim(), 'admin');
+
+    if (result.success) {
       sounds.playChime();
       confetti({
         particleCount: 90,
@@ -359,7 +360,7 @@ export const ComingSoonScreen: React.FC<Props> = ({
     } else {
       sounds.playHover();
       setIsVerifying(false);
-      setPasscodeError('Invalid Developer Authorization Code. Access Denied.');
+      setPasscodeError(result.error || 'Invalid Developer Authorization Code. Access Denied.');
     }
   };
 

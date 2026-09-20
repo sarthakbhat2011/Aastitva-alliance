@@ -2,6 +2,10 @@ import { PartnerMailEntry } from '../types';
 
 export const STORAGE_KEY = 'astitva_partner_mailbox';
 export const AUTH_SESSION_KEY = 'astitva_dev_partner_authorized';
+export const AUTH_TOKEN_KEY = 'astitva_admin_token';
+
+// Deprecated: Passcode verification now happens exclusively on the server.
+// Kept only as a temporary fallback constant to prevent compile breakages until rotated.
 export const DEV_PASSCODE = 'bhatsarthakunrivalledunion2011,2001';
 
 export const SAMPLE_PARTNER_MAILS: PartnerMailEntry[] = [
@@ -14,7 +18,8 @@ export const SAMPLE_PARTNER_MAILS: PartnerMailEntry[] = [
     phone: '+91 94191 22334',
     eventType: 'Model United Nations (MUN) Executive Board Allocation',
     preferredDate: '2026-10-15',
-    message: 'Requesting full Executive Board allocation for 6 committees and Rules of Procedure delegate training workshop.',
+    message:
+      'Requesting full Executive Board allocation for 6 committees and Rules of Procedure delegate training workshop.',
     status: 'In Review',
   },
   {
@@ -26,10 +31,68 @@ export const SAMPLE_PARTNER_MAILS: PartnerMailEntry[] = [
     phone: '+91 98765 11223',
     eventType: 'Institutional Collaboration & Youth Parliament',
     preferredDate: '2026-11-20',
-    message: 'Seeking institutional partner agreement for co-hosting the Jammu Youth Leadership Symposium 2026.',
+    message:
+      'Seeking institutional partner agreement for co-hosting the Jammu Youth Leadership Symposium 2026.',
     status: 'New',
   },
 ];
+
+/**
+ * Server-Side Passcode Verification.
+ * Authenticates against /api/auth/verify-passcode using constant-time comparison
+ * and obtains a cryptographically signed session token.
+ */
+export async function verifyPasscode(
+  passcode: string,
+  purpose: 'admin' | 'drawer' = 'admin'
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const res = await fetch('/api/auth/verify-passcode', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ passcode, purpose }),
+    });
+
+    const data = await res.json();
+    if (res.ok && data.success && data.token) {
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem(AUTH_SESSION_KEY, 'true');
+        sessionStorage.setItem(AUTH_TOKEN_KEY, data.token);
+      }
+      return { success: true };
+    }
+
+    return {
+      success: false,
+      error: data.error || 'Invalid security passcode. Access restricted.',
+    };
+  } catch (err) {
+    console.error('[Auth Error] Failed to verify passcode with server:', err);
+    return {
+      success: false,
+      error: 'Network error communicating with authentication service.',
+    };
+  }
+}
+
+/**
+ * Clear current admin session.
+ */
+export function clearAdminSession(): void {
+  if (typeof window === 'undefined') return;
+  sessionStorage.removeItem(AUTH_SESSION_KEY);
+  sessionStorage.removeItem(AUTH_TOKEN_KEY);
+}
+
+/**
+ * Get current session token.
+ */
+export function getAdminToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  return sessionStorage.getItem(AUTH_TOKEN_KEY);
+}
 
 /**
  * Get all mailbox entries currently cached in browser localStorage.
@@ -98,14 +161,26 @@ export async function saveEntryToMailbox(entry: PartnerMailEntry): Promise<void>
 
 /**
  * Load all mailbox entries from both local storage and server, merging them seamlessly.
+ * Requires admin authorization token for server access.
  */
 export async function loadAllMailboxEntries(): Promise<PartnerMailEntry[]> {
   const localMails = getLocalMailboxEntries();
 
   if (typeof window === 'undefined') return localMails;
 
+  const token = getAdminToken();
+  if (!token) {
+    // Not authenticated on server; return local cache
+    return localMails;
+  }
+
   try {
-    const res = await fetch('/api/mailbox');
+    const res = await fetch('/api/mailbox', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
     if (res.ok) {
       const data = await res.json();
       const serverMails: PartnerMailEntry[] = Array.isArray(data.mails) ? data.mails : [];
@@ -119,27 +194,18 @@ export async function loadAllMailboxEntries(): Promise<PartnerMailEntry[]> {
       });
 
       // Also ensure any local-only entries are preserved
-      const unsyncedEntries: PartnerMailEntry[] = [];
       localMails.forEach((m) => {
         if (m.id && !map.has(m.id)) {
           map.set(m.id, m);
-          unsyncedEntries.push(m);
         }
       });
 
       const merged = Array.from(map.values());
       localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-
-      // If there are unsynced local entries, sync them up to the server in background
-      if (unsyncedEntries.length > 0) {
-        fetch('/api/mailbox/batch', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ entries: unsyncedEntries }),
-        }).catch((err) => console.log('Batch sync background notice:', err));
-      }
-
       return merged;
+    } else if (res.status === 401) {
+      // Token expired or invalid
+      clearAdminSession();
     }
   } catch (err) {
     console.log('Server mailbox fetch deferred (using local cache):', err);
@@ -160,14 +226,20 @@ export async function updateMailboxEntryStatus(
   localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
   window.dispatchEvent(new Event('astitva_partner_submitted'));
 
-  try {
-    await fetch(`/api/mailbox/${encodeURIComponent(id)}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: newStatus }),
-    });
-  } catch (err) {
-    console.log('Server status update deferred:', err);
+  const token = getAdminToken();
+  if (token) {
+    try {
+      await fetch(`/api/mailbox/${encodeURIComponent(id)}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+    } catch (err) {
+      console.log('Server status update deferred:', err);
+    }
   }
 
   return updated;
@@ -182,13 +254,60 @@ export async function deleteMailboxEntry(id: string): Promise<PartnerMailEntry[]
   localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
   window.dispatchEvent(new Event('astitva_partner_submitted'));
 
-  try {
-    await fetch(`/api/mailbox/${encodeURIComponent(id)}`, {
-      method: 'DELETE',
-    });
-  } catch (err) {
-    console.log('Server delete deferred:', err);
+  const token = getAdminToken();
+  if (token) {
+    try {
+      await fetch(`/api/mailbox/${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    } catch (err) {
+      console.log('Server delete deferred:', err);
+    }
   }
 
   return updated;
+}
+
+/**
+ * Submit delegate registration directly to the hardened /api/register server endpoint.
+ */
+export async function submitRegistrationToServer(payload: {
+  fullName: string;
+  email: string;
+  phone: string;
+  institution: string;
+  grade: string;
+  firstChoiceCommittee: string;
+  firstChoicePortfolio: string;
+  secondChoiceCommittee?: string;
+  secondChoicePortfolio?: string;
+  thirdChoiceCommittee?: string;
+  thirdChoicePortfolio?: string;
+  priorExperience?: string;
+  priorAccolades?: string;
+  statement?: string;
+  transactionId?: string;
+}): Promise<{ success: boolean; trackingId?: string; error?: string }> {
+  try {
+    const res = await fetch('/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+    return {
+      success: res.ok && !!data.success,
+      trackingId: data.trackingId,
+      error: data.error,
+    };
+  } catch (err) {
+    console.warn('[Registration API] Deferred to mailbox fallback:', err);
+    return { success: false, error: 'Network unavailable' };
+  }
 }

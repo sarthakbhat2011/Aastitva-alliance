@@ -58,7 +58,7 @@ export interface FAQItem {
   id: string;
   question: string;
   answer: string;
-  category: 'General' | 'Executive Board' | 'Training' | 'Sponsorship';
+  category: string;
 }
 
 export interface BlogPost {
