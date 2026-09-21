@@ -673,6 +673,10 @@ export async function syncMailboxWithGoogleSheet(sheetUrlOrId: string): Promise<
 
     const data = await res.json();
     if (res.ok && data.success) {
+      // Save sheet URL locally for persistent continuous auto-sync
+      if (typeof window !== 'undefined' && sheetUrlOrId) {
+        localStorage.setItem('astitva_linked_sheet_url', sheetUrlOrId.trim());
+      }
       if (Array.isArray(data.mails)) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data.mails));
         window.dispatchEvent(new Event('astitva_partner_submitted'));
@@ -697,5 +701,88 @@ export async function syncMailboxWithGoogleSheet(sheetUrlOrId: string): Promise<
       error: err?.message || 'Network error syncing with Google Sheet',
     };
   }
+}
+
+/**
+ * Retrieve the saved Google Sheet URL/ID from local storage.
+ */
+export function getLinkedSheetUrl(): string {
+  if (typeof window === 'undefined') return '';
+  return localStorage.getItem('astitva_linked_sheet_url') || '';
+}
+
+/**
+ * Save Google Sheet URL/ID locally.
+ */
+export function saveLinkedSheetUrlLocally(url: string): void {
+  if (typeof window === 'undefined') return;
+  if (url && url.trim()) {
+    localStorage.setItem('astitva_linked_sheet_url', url.trim());
+  } else {
+    localStorage.removeItem('astitva_linked_sheet_url');
+  }
+}
+
+/**
+ * Persist linked Google Sheet URL/ID to both local storage and server configuration.
+ */
+export async function saveLinkedSheetConfig(sheetUrlOrId: string): Promise<{
+  success: boolean;
+  sheetUrlOrId: string;
+  importedCount?: number;
+  mails?: PartnerMailEntry[];
+  error?: string;
+}> {
+  saveLinkedSheetUrlLocally(sheetUrlOrId);
+  const token = getAdminToken();
+  if (!token) {
+    return { success: true, sheetUrlOrId };
+  }
+
+  try {
+    const res = await fetch('/api/mailbox/sheet-config', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ sheetUrlOrId: sheetUrlOrId.trim() }),
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      if (Array.isArray(data.mails)) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data.mails));
+        window.dispatchEvent(new Event('astitva_partner_submitted'));
+      }
+      return data;
+    }
+    return { success: false, sheetUrlOrId, error: data.error };
+  } catch (err: any) {
+    return { success: false, sheetUrlOrId, error: err?.message };
+  }
+}
+
+/**
+ * Retrieve linked Google Sheet URL/ID from server config and sync local storage.
+ */
+export async function fetchServerSheetConfig(): Promise<string> {
+  const token = getAdminToken();
+  if (!token) return getLinkedSheetUrl();
+
+  try {
+    const res = await fetch('/api/mailbox/sheet-config', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.sheetUrlOrId) {
+        saveLinkedSheetUrlLocally(data.sheetUrlOrId);
+        return data.sheetUrlOrId;
+      }
+    }
+  } catch (err) {
+    console.warn('Could not fetch server sheet config:', err);
+  }
+  return getLinkedSheetUrl();
 }
 

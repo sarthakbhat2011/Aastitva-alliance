@@ -122,6 +122,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
       body.append('entry.635888889', '• JKLA - Jammu & Kashmir Legislative Assembly');
       body.append('entry.794534023', 'General Allocation');
       body.append('entry.156711483', 'Registered via Home Page Express Portal.');
+      body.append('entry.1604443743', 'Verified Remittance');
 
       // SINGLE-ENTRY PIPELINE:
       // Authoritatively submit to server endpoint.

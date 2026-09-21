@@ -45,6 +45,9 @@ import {
   recoverLocalCachedApplications,
   batchSyncMailboxToServer,
   syncMailboxWithGoogleSheet,
+  getLinkedSheetUrl,
+  saveLinkedSheetConfig,
+  fetchServerSheetConfig,
   STORAGE_KEY,
   AUTH_SESSION_KEY,
   SAMPLE_PARTNER_MAILS,
@@ -240,9 +243,11 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const [isImportingSheet, setIsImportingSheet] = useState(false);
   const [sheetPasteText, setSheetPasteText] = useState('');
   const [sheetUrlInput, setSheetUrlInput] = useState('');
+  const [linkedSheetUrl, setLinkedSheetUrl] = useState<string>('');
   const [isFetchingSheet, setIsFetchingSheet] = useState(false);
   const [importStatusMessage, setImportStatusMessage] = useState<string | null>(null);
   const [cacheNotification, setCacheNotification] = useState<string | null>(null);
+  const [copiedWebhook, setCopiedWebhook] = useState(false);
 
   const [isSyncing, setIsSyncing] = useState(false);
 
@@ -254,21 +259,21 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
     setIsFetchingSheet(true);
     setImportStatusMessage(null);
     try {
-      const res = await syncMailboxWithGoogleSheet(sheetUrlInput.trim());
+      const res = await saveLinkedSheetConfig(sheetUrlInput.trim());
+      setLinkedSheetUrl(sheetUrlInput.trim());
       if (res.success) {
         if (res.mails) {
           setMails(res.mails);
         }
         setImportStatusMessage(
-          `✓ Successfully synced ${res.importedCount} delegate(s) directly from live Google Sheet!`
+          `✓ Linked & Synced ${res.importedCount ?? 0} delegate(s) directly from live Google Sheet! Continuous sync is now active.`
         );
         setTimeout(() => {
           setIsImportingSheet(false);
-          setSheetUrlInput('');
           setImportStatusMessage(null);
         }, 3000);
       } else {
-        setImportStatusMessage(`Sync notice: ${res.error}`);
+        setImportStatusMessage(`Sync notice: ${res.error || 'Check that sheet is shared as Viewable with link'}`);
       }
     } catch (err: any) {
       setImportStatusMessage(`Error: ${err?.message || 'Failed to sync with Google Sheet'}`);
@@ -363,6 +368,7 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
         let comm3 = cols[offset + 11] || 'JKLA - Jammu & Kashmir Legislative Assembly';
         const port3 = cols[offset + 12] || 'General Allocation';
         const statement = cols[offset + 13] || 'Imported from Google Form Responses';
+        const utrCode = cols[offset + 14] ? cols[offset + 14].trim() : '';
 
         // Clean bullets if present
         comm1 = comm1.replace(/^•\s*/, '');
@@ -392,7 +398,7 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
           phone: phone || '+91 99065 12613',
           eventType: `Aequitas 2026 Delegate: ${comm1} [${port1}]`,
           preferredDate: '2026-10-29',
-          message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nInstitution: ${institution}\nAcademic Division: ${grade}\nPrior MUN Experience: ${experience}\nHonors / Accolades: ${accolades}\n1st Choice Committee: ${comm1} (Preferred: ${port1})\n2nd Choice Committee: ${comm2} (Preferred: ${port2})\n3rd Choice Committee: ${comm3} (Preferred: ${port3})\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: Verified (Google Forms Sync)\nStatement of Purpose:\n${statement}`,
+          message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nInstitution: ${institution}\nAcademic Division: ${grade}\nPrior MUN Experience: ${experience}\nHonors / Accolades: ${accolades}\n1st Choice Committee: ${comm1} (Preferred: ${port1})\n2nd Choice Committee: ${comm2} (Preferred: ${port2})\n3rd Choice Committee: ${comm3} (Preferred: ${port3})\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: ${utrCode || 'Verified (Google Forms Sync)'}\nStatement of Purpose:\n${statement}`,
           status: 'New',
         };
 
@@ -445,8 +451,34 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
     const local = getLocalMailboxEntries();
     setMails(local);
 
-    // 2. Fetch live persistent database quietly in background once
+    // 2. Load linked Google Sheet configuration and trigger auto-sync
+    const savedSheetUrl = getLinkedSheetUrl();
+    if (savedSheetUrl) {
+      setLinkedSheetUrl(savedSheetUrl);
+      setSheetUrlInput(savedSheetUrl);
+    }
+
     let isMounted = true;
+
+    // Fetch server sheet config and live mailbox entries
+    fetchServerSheetConfig().then((serverSheetUrl) => {
+      if (!isMounted) return;
+      const activeSheet = serverSheetUrl || savedSheetUrl;
+      if (activeSheet) {
+        setLinkedSheetUrl(activeSheet);
+        setSheetUrlInput(activeSheet);
+        // Automatic background sync with Google Sheet
+        syncMailboxWithGoogleSheet(activeSheet)
+          .then((sheetRes) => {
+            if (isMounted && sheetRes.success && sheetRes.mails) {
+              setMails(sheetRes.mails);
+            }
+          })
+          .catch((err) => console.warn('Auto sheet sync notice:', err));
+      }
+    });
+
+    // 3. Fetch live persistent database quietly in background once
     loadAllMailboxEntries()
       .then((liveMails) => {
         if (!isMounted || !Array.isArray(liveMails) || liveMails.length === 0) return;
@@ -876,10 +908,12 @@ Current Status: ${mail.status}`;
                     <button
                       onClick={() => setIsImportingSheet(true)}
                       className="px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/25 transition-all flex items-center gap-1.5 cursor-pointer"
-                      title="Import and sync all delegates from Google Sheet responses"
+                      title="Manage Google Form & Sheet auto-synchronization"
                     >
                       <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" />
-                      <span className="text-[11px] font-mono font-bold">Import from Google Sheet</span>
+                      <span className="text-[11px] font-mono font-bold">
+                        {linkedSheetUrl ? '🟢 Auto-Synced (Google Sheet)' : 'Connect Google Sheet'}
+                      </span>
                     </button>
                     <button
                       onClick={() => setIsAddingDelegate(true)}
@@ -1805,6 +1839,40 @@ Current Status: ${mail.status}`;
                 </button>
               </div>
             </form>
+
+            {/* DIVIDER */}
+            <div className="flex items-center gap-3 py-1">
+              <div className="flex-1 h-px bg-[#243563]" />
+              <span className="text-[10.5px] font-mono uppercase text-[#A39B88]">OR</span>
+              <div className="flex-1 h-px bg-[#243563]" />
+            </div>
+
+            {/* METHOD 3: REAL-TIME INSTANT WEBHOOK SCRIPT */}
+            <div className="p-4 rounded-2xl bg-[#070A14] border border-cyan-500/30 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-bold text-cyan-300 flex items-center gap-1.5 uppercase tracking-wider">
+                  <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                  Method 3: Live Instant Webhook (Zero Manual Work)
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const code = `function onFormSubmit(e) {\n  var payload = e ? e.namedValues : {};\n  UrlFetchApp.fetch("https://astitva-alliance-1.onrender.com/api/webhook/google-forms", {\n    method: "post",\n    contentType: "application/json",\n    payload: JSON.stringify(payload)\n  });\n}`;
+                    navigator.clipboard.writeText(code);
+                    setCopiedWebhook(true);
+                    setTimeout(() => setCopiedWebhook(false), 2500);
+                  }}
+                  className="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 text-[10px] font-mono font-bold flex items-center gap-1 cursor-pointer transition-all"
+                >
+                  {copiedWebhook ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                  <span>{copiedWebhook ? 'Copied to Clipboard!' : 'Copy Webhook Code'}</span>
+                </button>
+              </div>
+              <p className="text-[11px] text-[#C4BBA3] leading-relaxed">
+                Want new registrations to arrive in the Developer Mailbox the <em>exact instant</em> a delegate submits on Google Forms?
+                In your Google Sheet, click <strong className="text-white">Extensions &gt; Apps Script</strong>, paste this 5-line script, and add trigger for <code className="text-cyan-300 bg-[#16203B] px-1 rounded">On form submit</code>.
+              </p>
+            </div>
           </div>
         </div>
       )}

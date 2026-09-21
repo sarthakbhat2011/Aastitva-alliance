@@ -45,6 +45,7 @@ async function startServer() {
 
   const DATA_DIR = path.join(process.cwd(), 'data');
   const MAILBOX_FILE = path.join(DATA_DIR, 'mailbox.json');
+  const SHEET_CONFIG_FILE = path.join(DATA_DIR, 'sheet_config.json');
 
   const SAMPLE_PARTNER_MAILS = [
     {
@@ -117,6 +118,32 @@ async function startServer() {
       fs.renameSync(tempPath, MAILBOX_FILE);
     } catch (err) {
       console.error('[Storage Error] Failed atomic write to mailbox file:', sanitizeForLog((err as any)?.message));
+    }
+  }
+
+  function readSheetConfig(): { sheetUrlOrId: string } {
+    try {
+      if (fs.existsSync(SHEET_CONFIG_FILE)) {
+        const raw = fs.readFileSync(SHEET_CONFIG_FILE, 'utf-8');
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed.sheetUrlOrId === 'string') {
+          return parsed;
+        }
+      }
+    } catch (err) {
+      console.warn('[Sheet Config] Failed to read config safely:', (err as any)?.message);
+    }
+    return { sheetUrlOrId: process.env.GOOGLE_SHEET_URL || '' };
+  }
+
+  function writeSheetConfig(cfg: { sheetUrlOrId: string }) {
+    try {
+      if (!fs.existsSync(DATA_DIR)) {
+        fs.mkdirSync(DATA_DIR, { recursive: true });
+      }
+      fs.writeFileSync(SHEET_CONFIG_FILE, JSON.stringify(cfg, null, 2), 'utf-8');
+    } catch (err) {
+      console.warn('[Sheet Config] Failed to write config safely:', (err as any)?.message);
     }
   }
 
@@ -220,6 +247,7 @@ async function startServer() {
         'entry.635888889': mapCommittee(clean.thirdChoiceCommittee || 'JKLA - Jammu & Kashmir Legislative Assembly'),
         'entry.794534023': clean.thirdChoicePortfolio || 'General Allocation',
         'entry.156711483': clean.statement || 'Registered via Aequitas Delegate Portal.',
+        'entry.1604443743': clean.transactionId || 'Verified Remittance',
       }).toString();
 
       const req = https.request(
@@ -359,7 +387,16 @@ async function startServer() {
   });
 
   // 9. HARDENING: Protected Mailbox API (Authorized Admin Access Only)
-  app.get('/api/mailbox', requireAdminAuth, (req, res) => {
+  app.get('/api/mailbox', requireAdminAuth, async (req, res) => {
+    // Attempt automated background sync with configured Google Sheet if due
+    const cfg = readSheetConfig();
+    if (cfg.sheetUrlOrId && Date.now() - lastSheetSyncTime > 15000) {
+      try {
+        await syncFromGoogleSheet(cfg.sheetUrlOrId);
+      } catch (err: any) {
+        console.warn('[Auto Sheet Sync Notice]:', err?.message);
+      }
+    }
     const mails = readMailbox();
     res.json({
       success: true,
@@ -410,8 +447,12 @@ async function startServer() {
     const existingIndex = mails.findIndex((m: any) => m.id === entryId);
     if (existingIndex >= 0) {
       if (!isAdmin) {
-        // Unauthenticated users cannot overwrite existing records (Anti-IDOR/Tampering)
-        return res.status(403).json({ success: false, error: 'Cannot modify existing entries.' });
+        // If the entry already exists (e.g. recorded by /api/register), confirm receipt cleanly
+        return res.status(200).json({
+          success: true,
+          mail: { id: mails[existingIndex].id, timestamp: mails[existingIndex].timestamp, status: mails[existingIndex].status },
+          message: 'Registration confirmed in mailbox.',
+        });
       }
       mails[existingIndex] = sanitized;
     } else {
@@ -528,6 +569,123 @@ async function startServer() {
     });
   }
 
+  let lastSheetSyncTime = 0;
+
+  // Authoritative Google Sheet & Form Responses Synchronizer
+  async function syncFromGoogleSheet(sheetUrlOrId: string): Promise<{ importedCount: number; totalCount: number }> {
+    const match = sheetUrlOrId.match(/([a-zA-Z0-9-_]{20,})/);
+    const sheetId = match ? match[1] : sheetUrlOrId.trim();
+    if (!sheetId || sheetId.length < 20) {
+      throw new Error('Could not extract valid Google Sheet ID from input.');
+    }
+
+    const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
+    const csvText = await fetchGoogleSheetCsv(csvUrl);
+    const lines = csvText.trim().split(/\r?\n/);
+    if (lines.length < 2) {
+      return { importedCount: 0, totalCount: readMailbox().length };
+    }
+
+    const mails = readMailbox();
+    const existingEmails = new Set(mails.map((m: any) => (m.email || '').toLowerCase()));
+    const existingNames = new Set(mails.map((m: any) => (m.contactPerson || '').toLowerCase()));
+    const existingTxns = new Set(
+      mails
+        .map((m: any) => {
+          const match = m.message && m.message.match(/Transaction \/ UTR ID: ([^\n\r]+)/);
+          return match ? match[1].trim().toLowerCase() : '';
+        })
+        .filter((t: string) => t && t.length > 5 && !t.includes('verified') && !t.includes('google forms'))
+    );
+
+    let importedCount = 0;
+
+    lines.slice(1).forEach((line) => {
+      const trimmed = line.trim();
+      if (!trimmed) return;
+
+      // Split CSV row handling quotes
+      const cols = trimmed
+        .split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
+        .map((c) => c.trim().replace(/^["']|["']$/g, ''));
+      if (cols.length < 3) return;
+
+      const hasTimestampCol = /\d{1,4}[-/.]\d{1,2}[-/.]\d{1,4}|\d{1,2}:\d{2}/.test(cols[0]);
+      const offset = hasTimestampCol ? 1 : 0;
+      const timestamp =
+        hasTimestampCol && cols[0]
+          ? cols[0]
+          : new Date().toLocaleString('en-IN', {
+              timeZone: 'Asia/Kolkata',
+              dateStyle: 'medium',
+              timeStyle: 'short',
+            });
+
+      const fullName = sanitizeString(cols[offset] || '', 100);
+      const email = sanitizeString(cols[offset + 1] || '', 254);
+      const phone = sanitizeString(cols[offset + 2] || '', 60);
+      const institution = sanitizeString(cols[offset + 3] || 'Institutional Delegate', 150);
+      let grade = sanitizeString(cols[offset + 4] || 'Senior Secondary School (Grades 11–12)', 100);
+      let experience = sanitizeString(cols[offset + 5] || 'Junior Delegate (1–3 MUNs)', 100);
+      const accolades = sanitizeString(cols[offset + 6] || 'None', 500);
+      let comm1 = sanitizeString(cols[offset + 7] || 'CCC - Continuous Crisis Committee', 120);
+      const port1 = sanitizeString(cols[offset + 8] || 'General Allocation', 120);
+      let comm2 = sanitizeString(cols[offset + 9] || 'UNHRC - United Nations Human Rights Council', 120);
+      const port2 = sanitizeString(cols[offset + 10] || 'General Allocation', 120);
+      let comm3 = sanitizeString(cols[offset + 11] || 'JKLA - Jammu & Kashmir Legislative Assembly', 120);
+      const port3 = sanitizeString(cols[offset + 12] || 'General Allocation', 120);
+      const statement = sanitizeString(cols[offset + 13] || 'Imported from Google Form Responses', 3000);
+      const utrCode = sanitizeString(cols[offset + 14] || '', 100);
+
+      comm1 = comm1.replace(/^•\s*/, '');
+      comm2 = comm2.replace(/^•\s*/, '');
+      comm3 = comm3.replace(/^•\s*/, '');
+      grade = grade.replace(/^•\s*/, '');
+      experience = experience.replace(/^•\s*/, '');
+
+      if (!fullName || fullName.length < 2) return;
+      if (email && existingEmails.has(email.toLowerCase())) return;
+      if (
+        existingNames.has(fullName.toLowerCase()) ||
+        existingNames.has(`${fullName} (${grade})`.toLowerCase())
+      ) {
+        return;
+      }
+      if (utrCode && utrCode.length > 5 && existingTxns.has(utrCode.toLowerCase())) {
+        return;
+      }
+
+      const trackingId = `AEQ-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+      const entry = {
+        id: trackingId,
+        timestamp,
+        schoolName: institution,
+        contactPerson: `${fullName} (${grade})`,
+        email: email || 'delegate@aequitas.org',
+        phone: phone || '+91 99065 12613',
+        eventType: `Aequitas 2026 Delegate: ${comm1} [${port1}]`,
+        preferredDate: '2026-10-29',
+        message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nInstitution: ${institution}\nAcademic Division: ${grade}\nPrior MUN Experience: ${experience}\nHonors / Accolades: ${accolades}\n1st Choice Committee: ${comm1} (Preferred: ${port1})\n2nd Choice Committee: ${comm2} (Preferred: ${port2})\n3rd Choice Committee: ${comm3} (Preferred: ${port3})\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: ${utrCode || 'Verified (Google Forms Sync)'}\nStatement of Purpose:\n${statement}`,
+        status: 'New',
+      };
+
+      mails.unshift(entry);
+      if (email) existingEmails.add(email.toLowerCase());
+      existingNames.add(fullName.toLowerCase());
+      existingNames.add(`${fullName} (${grade})`.toLowerCase());
+      if (utrCode && utrCode.length > 5) existingTxns.add(utrCode.toLowerCase());
+      importedCount++;
+    });
+
+    if (importedCount > 0) {
+      writeMailboxAtomic(mails);
+      console.log(`[Google Sheet Sync] Successfully synced ${importedCount} new delegate(s) from sheet ID ${sheetId}`);
+    }
+
+    lastSheetSyncTime = Date.now();
+    return { importedCount, totalCount: mails.length };
+  }
+
   // 11. HARDENING: Live Server-Side Sync from Google Sheet Responses (Admin Only)
   app.post('/api/mailbox/sync-sheet', requireAdminAuth, async (req, res) => {
     const { sheetUrlOrId } = req.body || {};
@@ -535,110 +693,16 @@ async function startServer() {
       return res.status(400).json({ success: false, error: 'Valid Google Sheet URL or ID is required.' });
     }
 
-    // Extract Sheet ID from URL or bare ID
-    const match = sheetUrlOrId.match(/([a-zA-Z0-9-_]{20,})/);
-    const sheetId = match ? match[1] : sheetUrlOrId.trim();
-    if (!sheetId || sheetId.length < 20) {
-      return res.status(400).json({ success: false, error: 'Could not extract valid Google Sheet ID from input.' });
-    }
-
-    const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
-
     try {
-      const csvText = await fetchGoogleSheetCsv(csvUrl);
-      const lines = csvText.trim().split(/\r?\n/);
-      if (lines.length < 2) {
-        return res.json({ success: true, count: 0, importedCount: 0, message: 'Google Sheet contains no data rows.' });
-      }
-
+      const result = await syncFromGoogleSheet(sheetUrlOrId.trim());
+      // Also persist configured sheet URL if successful
+      writeSheetConfig({ sheetUrlOrId: sheetUrlOrId.trim() });
       const mails = readMailbox();
-      const existingEmails = new Set(mails.map((m: any) => (m.email || '').toLowerCase()));
-      const existingNames = new Set(mails.map((m: any) => (m.contactPerson || '').toLowerCase()));
-
-      let importedCount = 0;
-
-      lines.slice(1).forEach((line) => {
-        const trimmed = line.trim();
-        if (!trimmed) return;
-
-        // Split CSV row handling quotes
-        const cols = trimmed
-          .split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
-          .map((c) => c.trim().replace(/^["']|["']$/g, ''));
-        if (cols.length < 3) return;
-
-        const hasTimestampCol = /\d{1,4}[-/.]\d{1,2}[-/.]\d{1,4}|\d{1,2}:\d{2}/.test(cols[0]);
-        const offset = hasTimestampCol ? 1 : 0;
-        const timestamp =
-          hasTimestampCol && cols[0]
-            ? cols[0]
-            : new Date().toLocaleString('en-IN', {
-                timeZone: 'Asia/Kolkata',
-                dateStyle: 'medium',
-                timeStyle: 'short',
-              });
-
-        const fullName = sanitizeString(cols[offset] || '', 100);
-        const email = sanitizeString(cols[offset + 1] || '', 254);
-        const phone = sanitizeString(cols[offset + 2] || '', 60);
-        const institution = sanitizeString(cols[offset + 3] || 'Institutional Delegate', 150);
-        let grade = sanitizeString(cols[offset + 4] || 'Senior Secondary School (Grades 11–12)', 100);
-        let experience = sanitizeString(cols[offset + 5] || 'Junior Delegate (1–3 MUNs)', 100);
-        const accolades = sanitizeString(cols[offset + 6] || 'None', 500);
-        let comm1 = sanitizeString(cols[offset + 7] || 'CCC - Continuous Crisis Committee', 120);
-        const port1 = sanitizeString(cols[offset + 8] || 'General Allocation', 120);
-        let comm2 = sanitizeString(cols[offset + 9] || 'UNHRC - United Nations Human Rights Council', 120);
-        const port2 = sanitizeString(cols[offset + 10] || 'General Allocation', 120);
-        let comm3 = sanitizeString(cols[offset + 11] || 'JKLA - Jammu & Kashmir Legislative Assembly', 120);
-        const port3 = sanitizeString(cols[offset + 12] || 'General Allocation', 120);
-        const statement = sanitizeString(cols[offset + 13] || 'Imported from Google Form Responses', 3000);
-
-        comm1 = comm1.replace(/^•\s*/, '');
-        comm2 = comm2.replace(/^•\s*/, '');
-        comm3 = comm3.replace(/^•\s*/, '');
-        grade = grade.replace(/^•\s*/, '');
-        experience = experience.replace(/^•\s*/, '');
-
-        if (!fullName || fullName.length < 2) return;
-        if (email && existingEmails.has(email.toLowerCase())) return;
-        if (
-          existingNames.has(fullName.toLowerCase()) ||
-          existingNames.has(`${fullName} (${grade})`.toLowerCase())
-        ) {
-          return;
-        }
-
-        const trackingId = `AEQ-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-        const entry = {
-          id: trackingId,
-          timestamp,
-          schoolName: institution,
-          contactPerson: `${fullName} (${grade})`,
-          email: email || 'delegate@aequitas.org',
-          phone: phone || '+91 99065 12613',
-          eventType: `Aequitas 2026 Delegate: ${comm1} [${port1}]`,
-          preferredDate: '2026-10-29',
-          message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nInstitution: ${institution}\nAcademic Division: ${grade}\nPrior MUN Experience: ${experience}\nHonors / Accolades: ${accolades}\n1st Choice Committee: ${comm1} (Preferred: ${port1})\n2nd Choice Committee: ${comm2} (Preferred: ${port2})\n3rd Choice Committee: ${comm3} (Preferred: ${port3})\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: Verified (Google Forms Sync)\nStatement of Purpose:\n${statement}`,
-          status: 'New',
-        };
-
-        mails.unshift(entry);
-        if (email) existingEmails.add(email.toLowerCase());
-        existingNames.add(fullName.toLowerCase());
-        existingNames.add(`${fullName} (${grade})`.toLowerCase());
-        importedCount++;
-      });
-
-      if (importedCount > 0) {
-        writeMailboxAtomic(mails);
-      }
-
-      console.log(`[Google Sheet Sync] Admin synced ${importedCount} new delegate(s) from sheet ID ${sheetId}`);
       res.json({
         success: true,
         count: mails.length,
-        importedCount,
-        message: `Successfully synchronized ${importedCount} delegate(s) from Google Sheet!`,
+        importedCount: result.importedCount,
+        message: `Successfully synchronized ${result.importedCount} delegate(s) from Google Sheet!`,
         mails,
       });
     } catch (err: any) {
@@ -647,6 +711,168 @@ async function startServer() {
         success: false,
         error: err?.message || 'Failed to sync with Google Sheet. Ensure the sheet is accessible with the link.',
       });
+    }
+  });
+
+  // 12. Persistent Linked Sheet Configuration Endpoints (Admin Only)
+  app.get('/api/mailbox/sheet-config', requireAdminAuth, (req, res) => {
+    const cfg = readSheetConfig();
+    res.json({
+      success: true,
+      sheetUrlOrId: cfg.sheetUrlOrId || '',
+    });
+  });
+
+  app.post('/api/mailbox/sheet-config', requireAdminAuth, async (req, res) => {
+    const { sheetUrlOrId } = req.body || {};
+    if (typeof sheetUrlOrId !== 'string') {
+      return res.status(400).json({ success: false, error: 'Expected sheetUrlOrId string.' });
+    }
+
+    const trimmed = sheetUrlOrId.trim();
+    writeSheetConfig({ sheetUrlOrId: trimmed });
+
+    let importedCount = 0;
+    if (trimmed) {
+      try {
+        const result = await syncFromGoogleSheet(trimmed);
+        importedCount = result.importedCount;
+      } catch (err: any) {
+        console.warn('[Sheet Config Sync Notice]:', err?.message);
+      }
+    }
+
+    const mails = readMailbox();
+    res.json({
+      success: true,
+      sheetUrlOrId: trimmed,
+      importedCount,
+      count: mails.length,
+      mails,
+    });
+  });
+
+  // 13. Dedicated Google Forms Apps Script Webhook Endpoint (Direct Instant Push)
+  app.post('/api/webhook/google-forms', (req, res) => {
+    try {
+      const body = req.body || {};
+
+      // Extracts field by examining either direct JSON keys or Google Apps Script e.namedValues
+      const getVal = (fieldNames: string[]): string => {
+        for (const fn of fieldNames) {
+          if (body[fn] !== undefined && body[fn] !== null) {
+            if (Array.isArray(body[fn]) && body[fn].length > 0) return String(body[fn][0]).trim();
+            return String(body[fn]).trim();
+          }
+          if (body.namedValues && body.namedValues[fn] !== undefined && body.namedValues[fn] !== null) {
+            const arr = body.namedValues[fn];
+            if (Array.isArray(arr) && arr.length > 0) return String(arr[0]).trim();
+            return String(arr).trim();
+          }
+        }
+        return '';
+      };
+
+      const fullName = sanitizeString(getVal(['fullName', 'Full Legal Name', 'name', 'Name']), 100);
+      const email = sanitizeString(getVal(['email', 'Official Email Address', 'Email', 'Email Address']), 254);
+      const phone = sanitizeString(getVal(['phone', 'WhatsApp / Contact Number', 'Phone', 'Contact Number']), 60);
+      const institution =
+        sanitizeString(getVal(['institution', 'School / Institution / University Name', 'schoolName', 'Institution', 'School']), 150) ||
+        'Institutional Delegate';
+      let grade =
+        sanitizeString(getVal(['grade', 'Academic Division / Grade', 'Grade']), 100) ||
+        'Senior Secondary School (Grades 11–12)';
+      let experience =
+        sanitizeString(getVal(['priorExperience', 'Prior MUN Experience Level', 'experience']), 100) ||
+        'Junior Delegate (1–3 MUNs)';
+      const accolades =
+        sanitizeString(getVal(['priorAccolades', 'Prior MUN Honors / Accolades', 'accolades']), 500) || 'None';
+      let comm1 =
+        sanitizeString(getVal(['firstChoiceCommittee', '1st Choice Committee (Primary)', 'comm1']), 120) ||
+        'CCC - Continuous Crisis Committee';
+      const port1 =
+        sanitizeString(getVal(['firstChoicePortfolio', '1st Choice Portfolio / Country Preference', 'port1']), 120) ||
+        'General Allocation';
+      let comm2 =
+        sanitizeString(getVal(['secondChoiceCommittee', '2nd Choice Committee (Alternate)', 'comm2']), 120) ||
+        'UNHRC - United Nations Human Rights Council';
+      const port2 =
+        sanitizeString(getVal(['secondChoicePortfolio', '2nd Choice Portfolio / Country Preference', 'port2']), 120) ||
+        'General Allocation';
+      let comm3 =
+        sanitizeString(getVal(['thirdChoiceCommittee', '3rd Choice Committee (Tertiary / Contingency)', 'comm3']), 120) ||
+        'JKLA - Jammu & Kashmir Legislative Assembly';
+      const port3 =
+        sanitizeString(getVal(['thirdChoicePortfolio', '3rd Choice Portfolio / Country Preference', 'port3']), 120) ||
+        'General Allocation';
+      const statement =
+        sanitizeString(
+          getVal(['statement', 'Statement of Purpose & Motivation', 'Statement of Purpose \u0026 Motivation']),
+          3000
+        ) || 'Registered via Google Form.';
+      const utrCode = sanitizeString(
+        getVal(['transactionId', 'UTR number or UPI ref code ', 'UTR number or UPI ref code', 'utr', 'upi']),
+        100
+      );
+
+      comm1 = comm1.replace(/^•\s*/, '');
+      comm2 = comm2.replace(/^•\s*/, '');
+      comm3 = comm3.replace(/^•\s*/, '');
+      grade = grade.replace(/^•\s*/, '');
+      experience = experience.replace(/^•\s*/, '');
+
+      if (!fullName || fullName.length < 2) {
+        return res.status(400).json({ success: false, error: 'Full Name is required.' });
+      }
+
+      const mails = readMailbox();
+      const existing = mails.find((m: any) => {
+        if (email && m.email && m.email.toLowerCase() === email.toLowerCase()) return true;
+        if (m.contactPerson && m.contactPerson.toLowerCase().includes(fullName.toLowerCase())) return true;
+        if (utrCode && utrCode.length > 5 && m.message && m.message.includes(`Transaction / UTR ID: ${utrCode}`)) return true;
+        return false;
+      });
+
+      if (existing) {
+        return res.status(200).json({
+          success: true,
+          trackingId: existing.id,
+          message: 'Delegate already recorded in Developer Mailbox.',
+        });
+      }
+
+      const trackingId = `AEQ-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+      const nowTime = new Date().toLocaleString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        dateStyle: 'medium',
+        timeStyle: 'short',
+      });
+
+      const entry = {
+        id: trackingId,
+        timestamp: nowTime,
+        schoolName: institution,
+        contactPerson: `${fullName} (${grade})`,
+        email: email || 'delegate@aequitas.org',
+        phone: phone || '+91 99065 12613',
+        eventType: `Aequitas 2026 Delegate: ${comm1} [${port1}]`,
+        preferredDate: '2026-10-29',
+        message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nInstitution: ${institution}\nAcademic Division: ${grade}\nPrior MUN Experience: ${experience}\nHonors / Accolades: ${accolades}\n1st Choice Committee: ${comm1} (Preferred: ${port1})\n2nd Choice Committee: ${comm2} (Preferred: ${port2})\n3rd Choice Committee: ${comm3} (Preferred: ${port3})\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: ${utrCode || 'Verified (Google Forms Webhook)'}\nStatement of Purpose:\n${statement}`,
+        status: 'New',
+      };
+
+      mails.unshift(entry);
+      writeMailboxAtomic(mails);
+      console.log(`[Google Forms Webhook] Recorded live delegate application ${trackingId} for ${fullName}`);
+
+      res.status(201).json({
+        success: true,
+        trackingId,
+        message: 'Application recorded in Developer Mailbox via Google Forms Webhook.',
+      });
+    } catch (err: any) {
+      console.error('[Google Forms Webhook Error]:', err?.message);
+      res.status(500).json({ success: false, error: 'Internal webhook error.' });
     }
   });
 
@@ -867,6 +1093,13 @@ async function startServer() {
     console.log(
       `Aastitva Alliance server running at http://localhost:${PORT} and http://127.0.0.1:${PORT}`
     );
+    // Initial startup Google Sheet sync (if configured)
+    const initCfg = readSheetConfig();
+    if (initCfg.sheetUrlOrId) {
+      syncFromGoogleSheet(initCfg.sheetUrlOrId)
+        .then((res) => console.log(`[Startup Sync] Synchronized ${res.importedCount} delegate(s) from linked Google Sheet.`))
+        .catch((err) => console.warn('[Startup Sync Notice]:', err?.message));
+    }
   });
 }
 

@@ -150,6 +150,7 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
       body.append('entry.635888889', '• JKLA - Jammu & Kashmir Legislative Assembly');
       body.append('entry.794534023', 'General Allocation');
       body.append('entry.156711483', 'Registered via Summit Page Portal.');
+      body.append('entry.1604443743', 'Verified Remittance');
 
       // SINGLE-ENTRY PIPELINE:
       // Authoritatively submit to server endpoint.

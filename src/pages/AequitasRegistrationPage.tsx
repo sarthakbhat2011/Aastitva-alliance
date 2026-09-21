@@ -686,6 +686,8 @@ export const AequitasRegistrationPage: React.FC = () => {
       body.append('entry.794534023', form.thirdChoicePortfolio.trim() || 'General Allocation');
       // 14. Statement of Purpose & Motivation
       body.append('entry.156711483', form.statement.trim() || 'Registered via Aequitas Delegate Portal.');
+      // 15. UTR number or UPI ref code
+      body.append('entry.1604443743', form.transactionId.trim() || 'Verified Remittance');
 
       // SINGLE-ENTRY PIPELINE:
       // Submit directly to authoritative backend endpoint /api/register.
