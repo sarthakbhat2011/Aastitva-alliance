@@ -231,6 +231,11 @@ async function startServer() {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Content-Length': Buffer.byteLength(formData),
+            'User-Agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+            'Referer':
+              'https://docs.google.com/forms/d/e/1FAIpQLSdgVhSI5tgSKD4vk_m8YWI0q6zFuJFytzer4R7-DSbzu7G8rg/viewform',
+            'Origin': 'https://docs.google.com',
           },
         },
         (res) => {
@@ -481,6 +486,168 @@ async function startServer() {
       added: addedCount,
       mails,
     });
+  });
+
+  // Helper: Fetch Google Sheet CSV following HTTP redirects
+  function fetchGoogleSheetCsv(url: string, redirectsRemaining = 5): Promise<string> {
+    return new Promise((resolve, reject) => {
+      if (redirectsRemaining <= 0) {
+        return reject(new Error('Too many redirects while accessing Google Sheet.'));
+      }
+      https
+        .get(
+          url,
+          {
+            headers: {
+              'User-Agent':
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+            },
+          },
+          (res) => {
+            if (
+              res.statusCode &&
+              res.statusCode >= 300 &&
+              res.statusCode < 400 &&
+              res.headers.location
+            ) {
+              return resolve(fetchGoogleSheetCsv(res.headers.location, redirectsRemaining - 1));
+            }
+            if (res.statusCode !== 200) {
+              return reject(
+                new Error(
+                  `Google Sheet returned HTTP status ${res.statusCode}. Please ensure the sheet link is shared as 'Anyone with the link can view'.`
+                )
+              );
+            }
+            let data = '';
+            res.on('data', (chunk) => (data += chunk));
+            res.on('end', () => resolve(data));
+          }
+        )
+        .on('error', reject);
+    });
+  }
+
+  // 11. HARDENING: Live Server-Side Sync from Google Sheet Responses (Admin Only)
+  app.post('/api/mailbox/sync-sheet', requireAdminAuth, async (req, res) => {
+    const { sheetUrlOrId } = req.body || {};
+    if (!sheetUrlOrId || typeof sheetUrlOrId !== 'string') {
+      return res.status(400).json({ success: false, error: 'Valid Google Sheet URL or ID is required.' });
+    }
+
+    // Extract Sheet ID from URL or bare ID
+    const match = sheetUrlOrId.match(/([a-zA-Z0-9-_]{20,})/);
+    const sheetId = match ? match[1] : sheetUrlOrId.trim();
+    if (!sheetId || sheetId.length < 20) {
+      return res.status(400).json({ success: false, error: 'Could not extract valid Google Sheet ID from input.' });
+    }
+
+    const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
+
+    try {
+      const csvText = await fetchGoogleSheetCsv(csvUrl);
+      const lines = csvText.trim().split(/\r?\n/);
+      if (lines.length < 2) {
+        return res.json({ success: true, count: 0, importedCount: 0, message: 'Google Sheet contains no data rows.' });
+      }
+
+      const mails = readMailbox();
+      const existingEmails = new Set(mails.map((m: any) => (m.email || '').toLowerCase()));
+      const existingNames = new Set(mails.map((m: any) => (m.contactPerson || '').toLowerCase()));
+
+      let importedCount = 0;
+
+      lines.slice(1).forEach((line) => {
+        const trimmed = line.trim();
+        if (!trimmed) return;
+
+        // Split CSV row handling quotes
+        const cols = trimmed
+          .split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
+          .map((c) => c.trim().replace(/^["']|["']$/g, ''));
+        if (cols.length < 3) return;
+
+        const hasTimestampCol = /\d{1,4}[-/.]\d{1,2}[-/.]\d{1,4}|\d{1,2}:\d{2}/.test(cols[0]);
+        const offset = hasTimestampCol ? 1 : 0;
+        const timestamp =
+          hasTimestampCol && cols[0]
+            ? cols[0]
+            : new Date().toLocaleString('en-IN', {
+                timeZone: 'Asia/Kolkata',
+                dateStyle: 'medium',
+                timeStyle: 'short',
+              });
+
+        const fullName = sanitizeString(cols[offset] || '', 100);
+        const email = sanitizeString(cols[offset + 1] || '', 254);
+        const phone = sanitizeString(cols[offset + 2] || '', 60);
+        const institution = sanitizeString(cols[offset + 3] || 'Institutional Delegate', 150);
+        let grade = sanitizeString(cols[offset + 4] || 'Senior Secondary School (Grades 11–12)', 100);
+        let experience = sanitizeString(cols[offset + 5] || 'Junior Delegate (1–3 MUNs)', 100);
+        const accolades = sanitizeString(cols[offset + 6] || 'None', 500);
+        let comm1 = sanitizeString(cols[offset + 7] || 'CCC - Continuous Crisis Committee', 120);
+        const port1 = sanitizeString(cols[offset + 8] || 'General Allocation', 120);
+        let comm2 = sanitizeString(cols[offset + 9] || 'UNHRC - United Nations Human Rights Council', 120);
+        const port2 = sanitizeString(cols[offset + 10] || 'General Allocation', 120);
+        let comm3 = sanitizeString(cols[offset + 11] || 'JKLA - Jammu & Kashmir Legislative Assembly', 120);
+        const port3 = sanitizeString(cols[offset + 12] || 'General Allocation', 120);
+        const statement = sanitizeString(cols[offset + 13] || 'Imported from Google Form Responses', 3000);
+
+        comm1 = comm1.replace(/^•\s*/, '');
+        comm2 = comm2.replace(/^•\s*/, '');
+        comm3 = comm3.replace(/^•\s*/, '');
+        grade = grade.replace(/^•\s*/, '');
+        experience = experience.replace(/^•\s*/, '');
+
+        if (!fullName || fullName.length < 2) return;
+        if (email && existingEmails.has(email.toLowerCase())) return;
+        if (
+          existingNames.has(fullName.toLowerCase()) ||
+          existingNames.has(`${fullName} (${grade})`.toLowerCase())
+        ) {
+          return;
+        }
+
+        const trackingId = `AEQ-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+        const entry = {
+          id: trackingId,
+          timestamp,
+          schoolName: institution,
+          contactPerson: `${fullName} (${grade})`,
+          email: email || 'delegate@aequitas.org',
+          phone: phone || '+91 99065 12613',
+          eventType: `Aequitas 2026 Delegate: ${comm1} [${port1}]`,
+          preferredDate: '2026-10-29',
+          message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nInstitution: ${institution}\nAcademic Division: ${grade}\nPrior MUN Experience: ${experience}\nHonors / Accolades: ${accolades}\n1st Choice Committee: ${comm1} (Preferred: ${port1})\n2nd Choice Committee: ${comm2} (Preferred: ${port2})\n3rd Choice Committee: ${comm3} (Preferred: ${port3})\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: Verified (Google Forms Sync)\nStatement of Purpose:\n${statement}`,
+          status: 'New',
+        };
+
+        mails.unshift(entry);
+        if (email) existingEmails.add(email.toLowerCase());
+        existingNames.add(fullName.toLowerCase());
+        existingNames.add(`${fullName} (${grade})`.toLowerCase());
+        importedCount++;
+      });
+
+      if (importedCount > 0) {
+        writeMailboxAtomic(mails);
+      }
+
+      console.log(`[Google Sheet Sync] Admin synced ${importedCount} new delegate(s) from sheet ID ${sheetId}`);
+      res.json({
+        success: true,
+        count: mails.length,
+        importedCount,
+        message: `Successfully synchronized ${importedCount} delegate(s) from Google Sheet!`,
+        mails,
+      });
+    } catch (err: any) {
+      console.error('[Google Sheet Sync Error]:', err?.message);
+      res.status(500).json({
+        success: false,
+        error: err?.message || 'Failed to sync with Google Sheet. Ensure the sheet is accessible with the link.',
+      });
+    }
   });
 
   // Protected Entry Update (Admin Only + Strict Field Allowlist)

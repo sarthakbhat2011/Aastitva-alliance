@@ -675,3 +675,56 @@ export async function resetMailboxToDefault(): Promise<PartnerMailEntry[]> {
 
   return SAMPLE_PARTNER_MAILS;
 }
+
+/**
+ * Auto-fetch and sync all delegates from a live Google Sheet directly into the mailbox.
+ */
+export async function syncMailboxWithGoogleSheet(sheetUrlOrId: string): Promise<{
+  success: boolean;
+  importedCount: number;
+  message?: string;
+  error?: string;
+  mails?: PartnerMailEntry[];
+}> {
+  if (typeof window === 'undefined') return { success: false, importedCount: 0, error: 'Window not available' };
+  const token = getAdminToken();
+  if (!token) return { success: false, importedCount: 0, error: 'Admin authorization required.' };
+
+  try {
+    const res = await fetch('/api/mailbox/sync-sheet', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ sheetUrlOrId }),
+    });
+
+    const data = await res.json();
+    if (res.ok && data.success) {
+      if (Array.isArray(data.mails)) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data.mails));
+        window.dispatchEvent(new Event('astitva_partner_submitted'));
+      }
+      return {
+        success: true,
+        importedCount: data.importedCount || 0,
+        message: data.message,
+        mails: data.mails,
+      };
+    } else {
+      return {
+        success: false,
+        importedCount: 0,
+        error: data.error || 'Failed to sync with Google Sheet',
+      };
+    }
+  } catch (err: any) {
+    return {
+      success: false,
+      importedCount: 0,
+      error: err?.message || 'Network error syncing with Google Sheet',
+    };
+  }
+}
+

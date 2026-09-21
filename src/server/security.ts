@@ -156,6 +156,15 @@ export function createRateLimiter(options: {
   }, 60000).unref();
 
   return (req: Request, res: Response, next: NextFunction) => {
+    // Exclude authorized admin operations from rate limits
+    const authHeader = req.headers['authorization'] || req.headers['x-admin-token'];
+    if (authHeader) {
+      const token = String(authHeader).replace(/^Bearer\s+/i, '').trim();
+      if (verifyAdminToken(token).valid) {
+        return next();
+      }
+    }
+
     // Get client IP safely
     const forwarded = req.headers['x-forwarded-for'];
     const ip =

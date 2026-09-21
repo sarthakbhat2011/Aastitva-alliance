@@ -159,8 +159,23 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
         console.warn('Server registration call failed, switching to fallback:', err);
       }
 
+      // ALWAYS save application to local mailbox immediately so it is never lost
+      const newMailboxEntry: PartnerMailEntry = {
+        id: finalTrackingId,
+        timestamp: nowTime,
+        schoolName: form.schoolName.trim() || 'Not Specified',
+        contactPerson: `${form.fullName.trim()} (${form.grade || 'N/A'})`,
+        email: form.email.trim(),
+        phone: form.phone.trim(),
+        eventType: `Aequitas Quick Register: ${form.firstChoiceCommittee} / ${form.secondChoiceCommittee}`,
+        preferredDate: '2026-10-29',
+        message: `[QUICK REGISTRATION - ${finalTrackingId}]\nDelegate: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.schoolName.trim()}\nGrade: ${form.grade}\n1st Choice: ${form.firstChoiceCommittee}\n2nd Choice: ${form.secondChoiceCommittee}\nExperience: ${form.experienceLevel}`,
+        status: 'New',
+      };
+      await saveEntryToMailbox(newMailboxEntry);
+
       // CLIENT FALLBACK (Offline / Static Host Mode ONLY):
-      // Only execute client Google Form POST and saveEntryToMailbox if the server was unavailable.
+      // Only execute client Google Form POST if the server was unavailable.
       if (!submissionSuccessful) {
         try {
           fetch(GOOGLE_FORM_ACTION, {
@@ -169,25 +184,9 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: body.toString(),
           }).catch((err) => console.log('Silent Google Form POST fallback:', err));
-
-          const newMailboxEntry: PartnerMailEntry = {
-            id: finalTrackingId,
-            timestamp: nowTime,
-            schoolName: form.schoolName.trim() || 'Not Specified',
-            contactPerson: `${form.fullName.trim()} (${form.grade || 'N/A'})`,
-            email: form.email.trim(),
-            phone: form.phone.trim(),
-            eventType: `Aequitas Quick Register: ${form.firstChoiceCommittee} / ${form.secondChoiceCommittee}`,
-            preferredDate: '2026-10-29',
-            message: `[QUICK REGISTRATION - ${finalTrackingId}]\nDelegate: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.schoolName.trim()}\nGrade: ${form.grade}\n1st Choice: ${form.firstChoiceCommittee}\n2nd Choice: ${form.secondChoiceCommittee}\nExperience: ${form.experienceLevel}`,
-            status: 'New',
-          };
-          await saveEntryToMailbox(newMailboxEntry);
         } catch (fallbackErr) {
-          console.error('Failed to log to fallback mailbox:', fallbackErr);
+          console.error('Failed to dispatch Google Form fallback:', fallbackErr);
         }
-      } else {
-        window.dispatchEvent(new Event('astitva_partner_submitted'));
       }
     } catch (err) {
       console.log('Background submit:', err);

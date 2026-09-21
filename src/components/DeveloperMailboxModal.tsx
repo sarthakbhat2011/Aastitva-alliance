@@ -44,6 +44,7 @@ import {
   resetMailboxToDefault,
   recoverLocalCachedApplications,
   batchSyncMailboxToServer,
+  syncMailboxWithGoogleSheet,
   STORAGE_KEY,
   AUTH_SESSION_KEY,
   SAMPLE_PARTNER_MAILS,
@@ -238,10 +239,43 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
   // Google Sheet Import State
   const [isImportingSheet, setIsImportingSheet] = useState(false);
   const [sheetPasteText, setSheetPasteText] = useState('');
+  const [sheetUrlInput, setSheetUrlInput] = useState('');
+  const [isFetchingSheet, setIsFetchingSheet] = useState(false);
   const [importStatusMessage, setImportStatusMessage] = useState<string | null>(null);
   const [cacheNotification, setCacheNotification] = useState<string | null>(null);
 
   const [isSyncing, setIsSyncing] = useState(false);
+
+  // Live Auto-Sync via Google Sheet URL / ID
+  const handleFetchAndSyncGoogleSheet = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!sheetUrlInput.trim()) return;
+
+    setIsFetchingSheet(true);
+    setImportStatusMessage(null);
+    try {
+      const res = await syncMailboxWithGoogleSheet(sheetUrlInput.trim());
+      if (res.success) {
+        if (res.mails) {
+          setMails(res.mails);
+        }
+        setImportStatusMessage(
+          `✓ Successfully synced ${res.importedCount} delegate(s) directly from live Google Sheet!`
+        );
+        setTimeout(() => {
+          setIsImportingSheet(false);
+          setSheetUrlInput('');
+          setImportStatusMessage(null);
+        }, 3000);
+      } else {
+        setImportStatusMessage(`Sync notice: ${res.error}`);
+      }
+    } catch (err: any) {
+      setImportStatusMessage(`Error: ${err?.message || 'Failed to sync with Google Sheet'}`);
+    } finally {
+      setIsFetchingSheet(false);
+    }
+  };
 
   // Manual Trigger to Scan & Recover Browser Cache
   const handleRecoverCache = async () => {
@@ -1657,14 +1691,55 @@ Current Status: ${mail.status}`;
               </button>
             </div>
 
+            {/* OPTION 1: 1-CLICK LIVE SYNC VIA GOOGLE SHEET LINK */}
+            <div className="p-4 rounded-2xl bg-[#16203B]/60 border border-emerald-500/40 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-mono font-bold text-emerald-300 flex items-center gap-1.5 uppercase tracking-wider">
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                  Method 1: 1-Click Auto-Sync via Google Sheet Link
+                </span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
+                  Instant
+                </span>
+              </div>
+              <p className="text-[11px] text-[#C4BBA3] leading-relaxed">
+                Paste your linked Google Sheet's URL or ID (ensure sheet sharing is set to{' '}
+                <em className="text-white">"Anyone with the link can view"</em>). All missing delegates will be automatically imported.
+              </p>
+              <form onSubmit={handleFetchAndSyncGoogleSheet} className="flex gap-2">
+                <input
+                  type="text"
+                  value={sheetUrlInput}
+                  onChange={(e) => setSheetUrlInput(e.target.value)}
+                  placeholder="https://docs.google.com/spreadsheets/d/... or Sheet ID"
+                  className="flex-1 px-3.5 py-2 rounded-xl bg-[#070A14] border border-[#243563] text-white font-mono text-xs focus:outline-none focus:border-emerald-500"
+                />
+                <button
+                  type="submit"
+                  disabled={isFetchingSheet || !sheetUrlInput.trim()}
+                  className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 text-[#070A14] font-bold text-xs flex items-center gap-2 cursor-pointer transition-all shrink-0"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isFetchingSheet ? 'animate-spin' : ''}`} />
+                  <span>{isFetchingSheet ? 'Syncing...' : 'Auto-Sync Now'}</span>
+                </button>
+              </form>
+            </div>
+
+            {/* DIVIDER */}
+            <div className="flex items-center gap-3 py-1">
+              <div className="flex-1 h-px bg-[#243563]" />
+              <span className="text-[10.5px] font-mono uppercase text-[#A39B88]">OR</span>
+              <div className="flex-1 h-px bg-[#243563]" />
+            </div>
+
+            {/* OPTION 2: PASTE ROWS DIRECTLY */}
             <div className="p-3.5 rounded-2xl bg-[#070A14] border border-[#243563] text-xs text-[#C4BBA3] space-y-2">
               <span className="text-[#D4AF37] font-semibold block font-mono text-[11px]">
-                HOW TO IMPORT IN 3 SECONDS:
+                Method 2: Paste Copied Google Sheet Rows (Works for all sheets):
               </span>
               <ol className="list-decimal pl-4 space-y-1 text-[11px] leading-relaxed">
-                <li>Open your Google Form's linked Google Sheet (where responses are stored).</li>
-                <li>Select the response rows (e.g. Tanmay Kandal, Ekansh Mahajan, etc.) and press <strong className="text-white">Ctrl+C</strong> to copy.</li>
-                <li>Paste (<strong className="text-white">Ctrl+V</strong>) the copied rows into the box below and click <strong className="text-emerald-300">Parse & Import into Mailbox</strong>.</li>
+                <li>Open your Google Sheet, select the response rows (e.g. Tanmay Kandal, Ekansh Mahajan, etc.) and press <strong className="text-white">Ctrl+C</strong>.</li>
+                <li>Paste (<strong className="text-white">Ctrl+V</strong>) below and click <strong className="text-emerald-300">Parse & Import into Mailbox</strong>.</li>
               </ol>
             </div>
 
@@ -1674,7 +1749,7 @@ Current Status: ${mail.status}`;
                   Paste Google Sheet Rows / CSV Data:
                 </label>
                 <textarea
-                  rows={8}
+                  rows={6}
                   value={sheetPasteText}
                   onChange={(e) => setSheetPasteText(e.target.value)}
                   placeholder="Paste copied Google Sheet rows here (tab-separated or comma-separated)..."

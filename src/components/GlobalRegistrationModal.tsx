@@ -141,8 +141,23 @@ export const GlobalRegistrationModal: React.FC<Props> = ({
         console.warn('Server registration call failed, switching to fallback:', err);
       }
 
+      // ALWAYS save application to local mailbox immediately so it is never lost
+      const newEntry: PartnerMailEntry = {
+        id: finalTrackingId,
+        timestamp: nowTime,
+        schoolName: form.institution.trim(),
+        contactPerson: `${form.fullName.trim()} (${form.grade})`,
+        email: form.email.trim(),
+        phone: form.phone.trim(),
+        eventType: `Summit Delegate Allocation: ${form.firstChoiceCommittee}`,
+        preferredDate: '2026-10-29',
+        message: `[MODAL DELEGATE REGISTRATION - ${finalTrackingId}]\n1st Choice: ${form.firstChoiceCommittee} [${form.firstChoicePortfolio}]\n2nd Choice: ${form.secondChoiceCommittee} [${form.secondChoicePortfolio}]\nDivision: ${form.grade}\nExperience: ${form.priorExperience}`,
+        status: 'New',
+      };
+      await saveEntryToMailbox(newEntry);
+
       // CLIENT FALLBACK (Offline / Static Host Mode ONLY):
-      // Only execute client Google Form POST and saveEntryToMailbox if the server was unavailable.
+      // Only execute client Google Form POST if the server was unavailable.
       if (!submissionSuccessful) {
         try {
           fetch(GOOGLE_FORM_ACTION, {
@@ -153,25 +168,9 @@ export const GlobalRegistrationModal: React.FC<Props> = ({
             },
             body: body.toString(),
           }).catch((err) => console.log('Silent Google Form fallback submit:', err));
-
-          const newEntry: PartnerMailEntry = {
-            id: finalTrackingId,
-            timestamp: nowTime,
-            schoolName: form.institution.trim(),
-            contactPerson: `${form.fullName.trim()} (${form.grade})`,
-            email: form.email.trim(),
-            phone: form.phone.trim(),
-            eventType: `Summit Delegate Allocation: ${form.firstChoiceCommittee}`,
-            preferredDate: '2026-10-29',
-            message: `[MODAL DELEGATE REGISTRATION - ${finalTrackingId}]\n1st Choice: ${form.firstChoiceCommittee} [${form.firstChoicePortfolio}]\n2nd Choice: ${form.secondChoiceCommittee} [${form.secondChoicePortfolio}]\nDivision: ${form.grade}\nExperience: ${form.priorExperience}`,
-            status: 'New',
-          };
-          await saveEntryToMailbox(newEntry);
         } catch (fallbackErr) {
           console.error('Fallback logging failed:', fallbackErr);
         }
-      } else {
-        window.dispatchEvent(new Event('astitva_partner_submitted'));
       }
     } catch (err) {
       console.log('Background submit:', err);
