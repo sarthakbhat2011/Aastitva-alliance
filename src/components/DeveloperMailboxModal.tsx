@@ -432,37 +432,43 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
   // Load Initial Mail Data & Check Auth Session
   useEffect(() => {
+    if (!isOpen) return;
+
+    // Isolate document body scrolling so background does not scroll or jerk while viewing mailbox
+    const prevBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
     const checkAuth = sessionStorage.getItem(AUTH_SESSION_KEY) === 'true';
     setIsAuthorized(checkAuth);
 
-    const loadMails = async () => {
-      // 1. Instantly display local cache so there's zero lag
-      const local = getLocalMailboxEntries();
-      setMails(local);
+    // 1. Instantly display local cache with zero delay
+    const local = getLocalMailboxEntries();
+    setMails(local);
 
-      // 2. Fetch live persistent database from server on Render and merge
-      try {
-        setIsSyncing(true);
-        const liveMails = await loadAllMailboxEntries();
-        setMails(liveMails);
-      } catch (err) {
-        console.error('Mailbox sync error:', err);
-      } finally {
-        setIsSyncing(false);
-      }
-    };
-
-    if (isOpen) {
-      loadMails();
-    }
-
-    const handleCustomSubmit = () => loadMails();
-    window.addEventListener('astitva_partner_submitted', handleCustomSubmit);
-    window.addEventListener('storage', loadMails);
+    // 2. Fetch live persistent database quietly in background once
+    let isMounted = true;
+    loadAllMailboxEntries()
+      .then((liveMails) => {
+        if (!isMounted || !Array.isArray(liveMails) || liveMails.length === 0) return;
+        setMails((prev) => {
+          // Guard: Avoid DOM re-render if data is identical to keep scrollbar rock-steady
+          if (
+            prev.length === liveMails.length &&
+            prev[0]?.id === liveMails[0]?.id &&
+            prev[prev.length - 1]?.id === liveMails[liveMails.length - 1]?.id
+          ) {
+            return prev;
+          }
+          return liveMails;
+        });
+      })
+      .catch((err) => {
+        console.warn('Background mailbox sync notice:', err);
+      });
 
     return () => {
-      window.removeEventListener('astitva_partner_submitted', handleCustomSubmit);
-      window.removeEventListener('storage', loadMails);
+      isMounted = false;
+      document.body.style.overflow = prevBodyOverflow;
     };
   }, [isOpen]);
 
@@ -760,7 +766,11 @@ Current Status: ${mail.status}`;
         </div>
 
         {/* Modal Body */}
-        <div className="p-4 sm:p-6 overflow-y-auto flex-1 space-y-5">
+        <div
+          id="developer-mailbox-scroll-container"
+          className="p-4 sm:p-6 overflow-y-auto flex-1 space-y-5 custom-scrollbar"
+          style={{ overscrollBehavior: 'contain', WebkitOverflowScrolling: 'touch' }}
+        >
           {!isAuthorized ? (
             /* STEP 1: AUTHORIZATION GATE SCREEN */
             <div className="max-w-md mx-auto py-12 px-6 text-center space-y-6 bg-[#16203B]/40 rounded-2xl border border-[#243563]">
@@ -979,12 +989,12 @@ Current Status: ${mail.status}`;
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {filteredMails.map((mail) => {
+                  {filteredMails.map((mail, idx) => {
                     const parsed = parseDelegateMessage(mail);
 
                     return (
                       <div
-                        key={mail.id}
+                        key={`${mail.id || 'mail'}-${idx}`}
                         className={`rounded-2xl p-5 sm:p-6 transition-all space-y-4 border ${
                           parsed.isDelegate
                             ? 'bg-gradient-to-br from-[#0D1427]/95 via-[#070A14]/95 to-[#0A0F1D]/95 border-[#D4AF37]/35 hover:border-[#D4AF37]/70 shadow-lg'

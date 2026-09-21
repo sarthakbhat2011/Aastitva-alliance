@@ -252,47 +252,18 @@ export function recoverLocalCachedApplications(): PartnerMailEntry[] {
 export function getLocalMailboxEntries(): PartnerMailEntry[] {
   if (typeof window === 'undefined') return SAMPLE_PARTNER_MAILS;
   try {
-    let localMails: PartnerMailEntry[] = [];
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       try {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          localMails = parsed;
+          return parsed;
         }
       } catch (e) {
         // Parse error, fallback to default
       }
     }
-    if (localMails.length === 0) {
-      localMails = [...SAMPLE_PARTNER_MAILS];
-    }
-
-    // Auto-reconcile with cached applications in browser
-    const recovered = recoverLocalCachedApplications();
-    if (recovered.length > 0) {
-      const map = new Map<string, PartnerMailEntry>();
-      localMails.forEach((m) => {
-        if (m.id) map.set(m.id, m);
-      });
-      let hasNew = false;
-      recovered.forEach((rec) => {
-        if (rec.id && !map.has(rec.id)) {
-          map.set(rec.id, rec);
-          hasNew = true;
-        }
-      });
-      if (hasNew) {
-        localMails = Array.from(map.values());
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(localMails));
-        } catch (quotaErr) {
-          console.warn('LocalStorage quota limit reached:', quotaErr);
-        }
-      }
-    }
-
-    return localMails;
+    return [...SAMPLE_PARTNER_MAILS];
   } catch (err) {
     console.error('Error reading local mailbox entries:', err);
     return SAMPLE_PARTNER_MAILS;
