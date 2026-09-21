@@ -236,7 +236,7 @@ export function isValidEmail(email: string): boolean {
 export function isValidPhone(phone: string): boolean {
   if (!phone) return false;
   const cleaned = phone.replace(/[^\d]/g, '');
-  return cleaned.length >= 10 && cleaned.length <= 15 && phone.length <= 25;
+  return cleaned.length >= 10 && phone.length <= 60;
 }
 
 export function isValidSafeId(id: string): boolean {
@@ -284,7 +284,7 @@ export function validateRegistrationPayload(body: any): {
     errors.email = 'A valid email address is required.';
   }
 
-  const phone = sanitizeString(body.phone, 25);
+  const phone = sanitizeString(body.phone, 60);
   if (!isValidPhone(phone)) {
     errors.phone = 'A valid phone number with at least 10 digits is required.';
   }

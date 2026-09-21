@@ -265,11 +265,23 @@ async function startServer() {
 
     // IDEMPOTENCY / DEDUPLICATION DEFENSE:
     // Prevent duplicate entries if the user double-clicks submit or client resubmits rapidly
+    const isGenericTxn = (txn?: string) => {
+      if (!txn) return true;
+      const lower = txn.trim().toLowerCase();
+      const genericWords = [
+        'pending', 'pending verification', 'cash', 'paid', 'online', 'upi',
+        'gpay', 'paytm', 'phonepe', 'done', 'verified', 'school', 'none',
+        'na', 'n/a', 'cheque', 'draft', 'transfer', 'direct', 'free', 'exempt',
+        'test', 'testing', 'sample', 'yes', 'no'
+      ];
+      return genericWords.some((w) => lower === w || lower.startsWith(w));
+    };
+
     const isDuplicate = mails.find((m: any) => {
       if (
         clean.transactionId &&
-        clean.transactionId.length > 4 &&
-        clean.transactionId !== 'Pending Verification' &&
+        clean.transactionId.length > 5 &&
+        !isGenericTxn(clean.transactionId) &&
         m.message &&
         m.message.includes(`Transaction / UTR ID: ${clean.transactionId}`)
       ) {
@@ -277,8 +289,10 @@ async function startServer() {
       }
       if (
         m.email &&
+        clean.email &&
         m.email.toLowerCase() === clean.email.toLowerCase() &&
-        m.phone === clean.phone &&
+        m.contactPerson &&
+        m.contactPerson.toLowerCase().includes(clean.fullName.toLowerCase()) &&
         m.eventType &&
         m.eventType.includes(clean.firstChoiceCommittee)
       ) {
