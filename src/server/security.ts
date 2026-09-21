@@ -197,7 +197,7 @@ export const authRateLimiter = createRateLimiter({
 
 export const registrationRateLimiter = createRateLimiter({
   windowMs: 15 * 60 * 1000, // 15 mins
-  maxRequests: 20,
+  maxRequests: 100, // Accommodates school computer labs and shared institutional IP delegations
   message: 'Registration rate limit exceeded. Please wait a few minutes before submitting again.',
 });
 

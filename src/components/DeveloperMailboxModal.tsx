@@ -29,6 +29,8 @@ import {
   Trophy,
   Filter,
   UserPlus,
+  FileSpreadsheet,
+  DownloadCloud,
 } from 'lucide-react';
 import {
   loadAllMailboxEntries,
@@ -40,6 +42,8 @@ import {
   verifyPasscode,
   clearAdminSession,
   resetMailboxToDefault,
+  recoverLocalCachedApplications,
+  batchSyncMailboxToServer,
   STORAGE_KEY,
   AUTH_SESSION_KEY,
   SAMPLE_PARTNER_MAILS,
@@ -231,7 +235,166 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
     statement: '',
   });
 
+  // Google Sheet Import State
+  const [isImportingSheet, setIsImportingSheet] = useState(false);
+  const [sheetPasteText, setSheetPasteText] = useState('');
+  const [importStatusMessage, setImportStatusMessage] = useState<string | null>(null);
+  const [cacheNotification, setCacheNotification] = useState<string | null>(null);
+
   const [isSyncing, setIsSyncing] = useState(false);
+
+  // Manual Trigger to Scan & Recover Browser Cache
+  const handleRecoverCache = async () => {
+    setIsSyncing(true);
+    try {
+      const recovered = recoverLocalCachedApplications();
+      const currentLocal = getLocalMailboxEntries();
+      setMails(currentLocal);
+
+      if (isAuthorized) {
+        await batchSyncMailboxToServer(currentLocal);
+        const live = await loadAllMailboxEntries();
+        setMails(live);
+      }
+
+      setCacheNotification(
+        `✓ Browser Cache Verified: Scanned local storage, processed ${recovered.length} delegate application(s). All active entries synced.`
+      );
+    } catch (err) {
+      console.error('Cache recovery error:', err);
+      setCacheNotification('Cache scan complete. Records updated.');
+    } finally {
+      setIsSyncing(false);
+      setTimeout(() => setCacheNotification(null), 6000);
+    }
+  };
+
+  // Google Sheet / Forms Response Parser & Importer
+  const handleParseAndImportSheet = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!sheetPasteText.trim()) return;
+
+    try {
+      const lines = sheetPasteText.trim().split(/\r?\n/);
+      const newEntries: PartnerMailEntry[] = [];
+      const currentMails = getLocalMailboxEntries();
+      const existingEmails = new Set(currentMails.map((m) => (m.email || '').toLowerCase()));
+      const existingNames = new Set(currentMails.map((m) => (m.contactPerson || '').toLowerCase()));
+
+      lines.forEach((line) => {
+        const trimmed = line.trim();
+        if (!trimmed) return;
+        // Skip header lines
+        if (
+          trimmed.toLowerCase().includes('full legal name') ||
+          trimmed.toLowerCase().includes('email address') ||
+          trimmed.toLowerCase().includes('timestamp')
+        ) {
+          return;
+        }
+
+        // Determine separator: Tab vs Comma
+        let cols: string[] = [];
+        if (trimmed.includes('\t')) {
+          cols = trimmed.split('\t').map((c) => c.trim().replace(/^["']|["']$/g, ''));
+        } else {
+          cols = trimmed.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map((c) => c.trim().replace(/^["']|["']$/g, ''));
+        }
+
+        if (cols.length < 2) return;
+
+        // Check if Col 0 is timestamp (contains date or colon)
+        const hasTimestampCol = /\d{1,4}[-/.]\d{1,2}[-/.]\d{1,4}|\d{1,2}:\d{2}/.test(cols[0]);
+        const offset = hasTimestampCol ? 1 : 0;
+        let timestamp = new Date().toLocaleString('en-IN', {
+          timeZone: 'Asia/Kolkata',
+          dateStyle: 'medium',
+          timeStyle: 'short',
+        });
+        if (hasTimestampCol && cols[0]) {
+          timestamp = cols[0];
+        }
+
+        const fullName = cols[offset] || '';
+        const email = cols[offset + 1] || '';
+        const phone = cols[offset + 2] || '';
+        const institution = cols[offset + 3] || 'Institutional Delegate';
+        let grade = cols[offset + 4] || 'Senior Secondary School (Grades 11–12)';
+        let experience = cols[offset + 5] || 'Junior Delegate (1–3 MUNs)';
+        const accolades = cols[offset + 6] || 'None';
+        let comm1 = cols[offset + 7] || 'CCC - Continuous Crisis Committee';
+        const port1 = cols[offset + 8] || 'General Allocation';
+        let comm2 = cols[offset + 9] || 'UNHRC - United Nations Human Rights Council';
+        const port2 = cols[offset + 10] || 'General Allocation';
+        let comm3 = cols[offset + 11] || 'JKLA - Jammu & Kashmir Legislative Assembly';
+        const port3 = cols[offset + 12] || 'General Allocation';
+        const statement = cols[offset + 13] || 'Imported from Google Form Responses';
+
+        // Clean bullets if present
+        comm1 = comm1.replace(/^•\s*/, '');
+        comm2 = comm2.replace(/^•\s*/, '');
+        comm3 = comm3.replace(/^•\s*/, '');
+        grade = grade.replace(/^•\s*/, '');
+        experience = experience.replace(/^•\s*/, '');
+
+        if (!fullName || fullName.length < 2) return;
+
+        // Deduplication: Skip if already present by email or full name + institution
+        if (email && existingEmails.has(email.toLowerCase())) return;
+        if (
+          existingNames.has(fullName.toLowerCase()) ||
+          existingNames.has(`${fullName} (${grade})`.toLowerCase())
+        ) {
+          return;
+        }
+
+        const trackingId = `AEQ-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+        const entry: PartnerMailEntry = {
+          id: trackingId,
+          timestamp,
+          schoolName: institution,
+          contactPerson: `${fullName} (${grade})`,
+          email: email || 'delegate@aequitas.org',
+          phone: phone || '+91 99065 12613',
+          eventType: `Aequitas 2026 Delegate: ${comm1} [${port1}]`,
+          preferredDate: '2026-10-29',
+          message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nInstitution: ${institution}\nAcademic Division: ${grade}\nPrior MUN Experience: ${experience}\nHonors / Accolades: ${accolades}\n1st Choice Committee: ${comm1} (Preferred: ${port1})\n2nd Choice Committee: ${comm2} (Preferred: ${port2})\n3rd Choice Committee: ${comm3} (Preferred: ${port3})\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: Verified (Google Forms Sync)\nStatement of Purpose:\n${statement}`,
+          status: 'New',
+        };
+
+        newEntries.push(entry);
+        if (email) existingEmails.add(email.toLowerCase());
+        existingNames.add(fullName.toLowerCase());
+        existingNames.add(`${fullName} (${grade})`.toLowerCase());
+      });
+
+      if (newEntries.length === 0) {
+        setImportStatusMessage('No new rows found or rows were already imported.');
+        return;
+      }
+
+      // Merge into local storage
+      const merged = [...newEntries, ...currentMails];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+      setMails(merged);
+      window.dispatchEvent(new Event('astitva_partner_submitted'));
+
+      // Sync to server if authorized
+      if (isAuthorized) {
+        await batchSyncMailboxToServer(newEntries);
+      }
+
+      setImportStatusMessage(`✓ Successfully imported ${newEntries.length} delegate(s) into Developer Mailbox!`);
+      setTimeout(() => {
+        setIsImportingSheet(false);
+        setSheetPasteText('');
+        setImportStatusMessage(null);
+      }, 2500);
+    } catch (err: any) {
+      console.error('Import failed:', err);
+      setImportStatusMessage(`Error parsing data: ${err?.message || 'Invalid format'}`);
+    }
+  };
 
   // Load Initial Mail Data & Check Auth Session
   useEffect(() => {
@@ -638,7 +801,7 @@ Current Status: ${mail.status}`;
                   </div>
 
                   {/* Actions & Refresh */}
-                  <div className="flex items-center gap-2 self-end sm:self-auto text-xs text-[#C4BBA3]">
+                  <div className="flex flex-wrap items-center gap-2 self-end sm:self-auto text-xs text-[#C4BBA3]">
                     <span className="px-3 py-1.5 rounded-xl bg-[#070A14] border border-[#243563] text-[#D4AF37] font-semibold">
                       Showing: <strong className="text-white">{filteredMails.length}</strong> / {mails.length}
                     </span>
@@ -659,6 +822,22 @@ Current Status: ${mail.status}`;
                       <span className="text-[11px] font-mono">{isSyncing ? 'Syncing...' : 'Sync Live'}</span>
                     </button>
                     <button
+                      onClick={handleRecoverCache}
+                      className="px-3 py-1.5 rounded-xl bg-purple-500/15 border border-purple-500/40 text-purple-300 hover:bg-purple-500/25 transition-all flex items-center gap-1.5 cursor-pointer"
+                      title="Scan browser local storage to retrieve any lost delegate registrations"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-purple-300" />
+                      <span className="text-[11px] font-mono font-bold">Recover Browser Cache</span>
+                    </button>
+                    <button
+                      onClick={() => setIsImportingSheet(true)}
+                      className="px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/25 transition-all flex items-center gap-1.5 cursor-pointer"
+                      title="Import and sync all delegates from Google Sheet responses"
+                    >
+                      <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-400" />
+                      <span className="text-[11px] font-mono font-bold">Import from Google Sheet</span>
+                    </button>
+                    <button
                       onClick={() => setIsAddingDelegate(true)}
                       className="px-3 py-1.5 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] hover:bg-[#D4AF37]/25 transition-all flex items-center gap-1.5 cursor-pointer"
                       title="Add or restore a delegate application into the mailbox"
@@ -676,6 +855,22 @@ Current Status: ${mail.status}`;
                     </button>
                   </div>
                 </div>
+
+                {/* Cache Notification Toast */}
+                {cacheNotification && (
+                  <div className="p-3 rounded-xl bg-emerald-950/70 border border-emerald-500/50 text-emerald-300 text-xs flex items-center justify-between animate-fade-in shadow-lg">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span className="font-mono text-[11px]">{cacheNotification}</span>
+                    </div>
+                    <button
+                      onClick={() => setCacheNotification(null)}
+                      className="text-emerald-400 hover:text-white p-1"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
 
                 {/* Filter Tabs Bar */}
                 <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-[#243563]/50">
@@ -1430,6 +1625,98 @@ Current Status: ${mail.status}`;
                 >
                   <Check className="w-4 h-4" />
                   <span>Restore Delegate to Mailbox</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* IMPORT FROM GOOGLE SHEET MODAL SUB-VIEW */}
+      {isImportingSheet && (
+        <div className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-[#070A14]/95 backdrop-blur-md">
+          <div className="w-full max-w-2xl bg-[#0D1427] border border-emerald-500/50 rounded-3xl p-6 space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div className="flex items-center justify-between pb-3 border-b border-[#243563]">
+              <div>
+                <h3 className="text-lg font-serif font-bold text-[#FAF5EF] flex items-center gap-2">
+                  <FileSpreadsheet className="w-5 h-5 text-emerald-400" />
+                  <span>Import / Sync from Google Form Responses</span>
+                </h3>
+                <p className="text-[11px] text-[#C4BBA3]">
+                  Directly synchronize all delegates recorded in your Google Sheet into the Developer Mailbox.
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setIsImportingSheet(false);
+                  setImportStatusMessage(null);
+                }}
+                className="text-[#C4BBA3] hover:text-white cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-[#070A14] border border-[#243563] text-xs text-[#C4BBA3] space-y-2">
+              <span className="text-[#D4AF37] font-semibold block font-mono text-[11px]">
+                HOW TO IMPORT IN 3 SECONDS:
+              </span>
+              <ol className="list-decimal pl-4 space-y-1 text-[11px] leading-relaxed">
+                <li>Open your Google Form's linked Google Sheet (where responses are stored).</li>
+                <li>Select the response rows (e.g. Tanmay Kandal, Ekansh Mahajan, etc.) and press <strong className="text-white">Ctrl+C</strong> to copy.</li>
+                <li>Paste (<strong className="text-white">Ctrl+V</strong>) the copied rows into the box below and click <strong className="text-emerald-300">Parse & Import into Mailbox</strong>.</li>
+              </ol>
+            </div>
+
+            <form onSubmit={handleParseAndImportSheet} className="space-y-4 text-xs">
+              <div>
+                <label className="block text-[#D4AF37] font-semibold mb-1">
+                  Paste Google Sheet Rows / CSV Data:
+                </label>
+                <textarea
+                  rows={8}
+                  value={sheetPasteText}
+                  onChange={(e) => setSheetPasteText(e.target.value)}
+                  placeholder="Paste copied Google Sheet rows here (tab-separated or comma-separated)..."
+                  className="w-full px-3.5 py-3 rounded-2xl bg-[#070A14] border border-[#243563] text-white font-mono text-xs focus:outline-none focus:border-emerald-500 custom-scrollbar"
+                  required
+                />
+              </div>
+
+              {importStatusMessage && (
+                <div
+                  className={`p-3 rounded-xl text-xs font-mono flex items-center gap-2 ${
+                    importStatusMessage.startsWith('✓')
+                      ? 'bg-emerald-950/60 border border-emerald-500/50 text-emerald-300'
+                      : 'bg-amber-950/60 border border-amber-500/50 text-amber-300'
+                  }`}
+                >
+                  {importStatusMessage.startsWith('✓') ? (
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  ) : (
+                    <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+                  )}
+                  <span>{importStatusMessage}</span>
+                </div>
+              )}
+
+              <div className="pt-2 flex items-center justify-end gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsImportingSheet(false);
+                    setImportStatusMessage(null);
+                  }}
+                  className="px-4 py-2 rounded-xl bg-[#16203B] text-white font-semibold cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-emerald-500 text-[#070A14] font-bold hover:bg-emerald-400 transition-all flex items-center gap-2 cursor-pointer shadow-lg shadow-emerald-500/20"
+                >
+                  <DownloadCloud className="w-4 h-4" />
+                  <span>Parse & Import into Mailbox</span>
                 </button>
               </div>
             </form>

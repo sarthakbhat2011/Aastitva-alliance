@@ -427,8 +427,8 @@ async function startServer() {
     }
 
     // Limit batch size to prevent payload exhaustion
-    if (entries.length > 100) {
-      return res.status(400).json({ success: false, error: 'Batch size exceeds maximum limit of 100.' });
+    if (entries.length > 500) {
+      return res.status(400).json({ success: false, error: 'Batch size exceeds maximum limit of 500.' });
     }
 
     const mails = readMailbox();

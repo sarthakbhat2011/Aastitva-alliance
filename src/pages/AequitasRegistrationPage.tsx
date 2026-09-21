@@ -721,8 +721,23 @@ export const AequitasRegistrationPage: React.FC = () => {
         console.warn('Server registration call failed, switching to fallback:', e);
       }
 
+      // ALWAYS save application to local mailbox immediately so it is never lost
+      const mailboxEntry: PartnerMailEntry = {
+        id: finalTrackingId,
+        timestamp: nowTime,
+        schoolName: form.institution.trim(),
+        contactPerson: `${form.fullName.trim()} (${form.grade})`,
+        email: form.email.trim(),
+        phone: form.phone.trim(),
+        eventType: `Aequitas 2026 Delegate: ${form.firstChoiceCommittee} [${form.firstChoicePortfolio.trim()}]`,
+        preferredDate: '2026-10-29',
+        message: `[DELEGATE APPLICATION - ${finalTrackingId}]\nDelegate Name: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.institution.trim()}\nAcademic Division: ${form.grade}\nPrior MUN Experience: ${form.priorExperience}\nHonors / Accolades: ${form.priorAccolades.trim() || 'None'}\n1st Choice Committee: ${form.firstChoiceCommittee} (Preferred: ${form.firstChoicePortfolio.trim()})\n2nd Choice Committee: ${form.secondChoiceCommittee} (Preferred: ${form.secondChoicePortfolio.trim()})\n3rd Choice Committee: ${form.thirdChoiceCommittee} (Preferred: ${form.thirdChoicePortfolio.trim()})\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: ${form.transactionId.trim()}\nStatement of Purpose:\n${form.statement.trim()}`,
+        status: 'New',
+      };
+      await saveEntryToMailbox(mailboxEntry);
+
       // CLIENT FALLBACK (Offline / Static Host Mode ONLY):
-      // Only execute client Google Form POST and saveEntryToMailbox if the server was unavailable.
+      // Only execute client Google Form POST if the server was unavailable.
       if (!submissionSuccessful) {
         try {
           fetch(GOOGLE_FORM_ACTION, {
@@ -733,20 +748,6 @@ export const AequitasRegistrationPage: React.FC = () => {
             },
             body: body.toString(),
           }).catch((err) => console.log('Silent Google Form fallback response:', err));
-
-          const fallbackMailboxEntry: PartnerMailEntry = {
-            id: finalTrackingId,
-            timestamp: nowTime,
-            schoolName: form.institution.trim(),
-            contactPerson: `${form.fullName.trim()} (${form.grade})`,
-            email: form.email.trim(),
-            phone: form.phone.trim(),
-            eventType: `Aequitas 2026 Delegate: ${form.firstChoiceCommittee} [${form.firstChoicePortfolio.trim()}]`,
-            preferredDate: '2026-10-29',
-            message: `[DELEGATE APPLICATION - ${finalTrackingId}]\nDelegate Name: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.institution.trim()}\nAcademic Division: ${form.grade}\nPrior MUN Experience: ${form.priorExperience}\nHonors / Accolades: ${form.priorAccolades.trim() || 'None'}\n1st Choice Committee: ${form.firstChoiceCommittee} (Preferred: ${form.firstChoicePortfolio.trim()})\n2nd Choice Committee: ${form.secondChoiceCommittee} (Preferred: ${form.secondChoicePortfolio.trim()})\n3rd Choice Committee: ${form.thirdChoiceCommittee} (Preferred: ${form.thirdChoicePortfolio.trim()})\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: ${form.transactionId.trim()}\nStatement of Purpose:\n${form.statement.trim()}`,
-            status: 'New',
-          };
-          await saveEntryToMailbox(fallbackMailboxEntry);
         } catch (fallbackErr) {
           console.error('Fallback logging failed:', fallbackErr);
         }

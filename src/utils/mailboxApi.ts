@@ -108,21 +108,218 @@ export function getAdminToken(): string | null {
 }
 
 /**
+ * Recover any delegate applications that were stored in other localStorage keys
+ * (such as 'aequitas_delegate_applications' or legacy receipt keys).
+ */
+export function recoverLocalCachedApplications(): PartnerMailEntry[] {
+  if (typeof window === 'undefined') return [];
+  const recovered: PartnerMailEntry[] = [];
+  const seenIds = new Set<string>();
+
+  try {
+    // 1. Scan primary delegate receipt store 'aequitas_delegate_applications'
+    const rawApps = localStorage.getItem('aequitas_delegate_applications');
+    if (rawApps) {
+      try {
+        const parsedApps = JSON.parse(rawApps);
+        if (Array.isArray(parsedApps)) {
+          parsedApps.forEach((app: any) => {
+            if (!app) return;
+            const trackingId = app.trackingId || app.id || `AEQ-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+            if (seenIds.has(trackingId)) return;
+            seenIds.add(trackingId);
+
+            const fullName = (app.fullName || app.name || 'Delegate').trim();
+            const email = (app.email || '').trim();
+            const phone = (app.phone || '').trim();
+            const institution = (app.institution || app.schoolName || 'Institutional Delegate').trim();
+            const grade = app.grade || 'Senior Secondary';
+            const committee = app.firstChoiceCommittee || 'General Allocation';
+            const portfolio = app.firstChoicePortfolio || 'General Allocation';
+            const timestamp =
+              app.timestamp ||
+              new Date().toLocaleString('en-IN', {
+                timeZone: 'Asia/Kolkata',
+                dateStyle: 'medium',
+                timeStyle: 'short',
+              });
+
+            const message =
+              app.message ||
+              `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nInstitution: ${institution}\nAcademic Division: ${grade}\nPrior MUN Experience: ${app.priorExperience || 'None'}\nHonors / Accolades: ${app.priorAccolades || 'None'}\n1st Choice Committee: ${committee} (Preferred: ${portfolio})\n2nd Choice Committee: ${app.secondChoiceCommittee || 'None'} (Preferred: ${app.secondChoicePortfolio || 'None'})\n3rd Choice Committee: ${app.thirdChoiceCommittee || 'None'} (Preferred: ${app.thirdChoicePortfolio || 'None'})\nFee Status: ${app.feePaid || '₹1,999 (Delegate Remittance Recorded)'}\nTransaction / UTR ID: ${app.transactionId || 'Verified'}\nStatement of Purpose:\n${app.statement || 'Official Delegate Application'}`;
+
+            recovered.push({
+              id: trackingId,
+              timestamp,
+              schoolName: institution,
+              contactPerson: `${fullName} (${grade})`,
+              email,
+              phone,
+              eventType: `Aequitas 2026 Delegate: ${committee} [${portfolio}]`,
+              preferredDate: '2026-10-29',
+              message,
+              status: 'New',
+            });
+          });
+        }
+      } catch (err) {
+        console.warn('Failed parsing aequitas_delegate_applications:', err);
+      }
+    }
+
+    // 2. Scan ANY other keys in localStorage for delegate objects (e.g. Tanmay Kandal or other cached records)
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (
+        !key ||
+        key === STORAGE_KEY ||
+        key === 'aequitas_delegate_applications' ||
+        key === 'astitva_deleted_ids' ||
+        key === 'astitva_admin_token'
+      ) {
+        continue;
+      }
+
+      try {
+        const val = localStorage.getItem(key);
+        if (
+          !val ||
+          (!val.includes('AEQ-') &&
+            !val.includes('fullName') &&
+            !val.includes('firstChoiceCommittee') &&
+            !val.toLowerCase().includes('kandal') &&
+            !val.toLowerCase().includes('tanmay'))
+        ) {
+          continue;
+        }
+
+        const parsed = JSON.parse(val);
+        const list = Array.isArray(parsed) ? parsed : [parsed];
+        list.forEach((item: any) => {
+          if (!item || typeof item !== 'object') return;
+          if (
+            item.fullName ||
+            item.contactPerson ||
+            item.email ||
+            (item.message && item.message.includes('DELEGATE APPLICATION'))
+          ) {
+            const id =
+              item.trackingId || item.id || `AEQ-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+            if (seenIds.has(id)) return;
+            seenIds.add(id);
+
+            const name = (item.fullName || item.contactPerson || 'Delegate').trim();
+            const inst = (item.institution || item.schoolName || 'Institutional Delegate').trim();
+            recovered.push({
+              id,
+              timestamp:
+                item.timestamp ||
+                new Date().toLocaleString('en-IN', {
+                  timeZone: 'Asia/Kolkata',
+                  dateStyle: 'medium',
+                  timeStyle: 'short',
+                }),
+              schoolName: inst,
+              contactPerson: name,
+              email: item.email || '',
+              phone: item.phone || '',
+              eventType:
+                item.eventType ||
+                `Aequitas 2026 Delegate: ${item.firstChoiceCommittee || 'General Allocation'}`,
+              preferredDate: '2026-10-29',
+              message:
+                item.message ||
+                `[DELEGATE APPLICATION - ${id}]\nDelegate Name: ${name}\nEmail: ${item.email || ''}\nPhone: ${item.phone || ''}\nInstitution: ${inst}`,
+              status: item.status || 'New',
+            });
+          }
+        });
+      } catch {
+        // Not JSON
+      }
+    }
+  } catch (err) {
+    console.error('Error recovering local cached applications:', err);
+  }
+
+  return recovered;
+}
+
+/**
  * Get all mailbox entries currently cached in browser localStorage.
+ * Automatically recovers and reconciles any applications cached in separate storage keys.
  */
 export function getLocalMailboxEntries(): PartnerMailEntry[] {
   if (typeof window === 'undefined') return SAMPLE_PARTNER_MAILS;
   try {
+    let localMails: PartnerMailEntry[] = [];
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(SAMPLE_PARTNER_MAILS));
-      return SAMPLE_PARTNER_MAILS;
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          localMails = parsed;
+        }
+      } catch (e) {
+        // Parse error, fallback to default
+      }
     }
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length > 0 ? parsed : SAMPLE_PARTNER_MAILS;
+    if (localMails.length === 0) {
+      localMails = [...SAMPLE_PARTNER_MAILS];
+    }
+
+    // Auto-reconcile with cached applications in browser
+    const recovered = recoverLocalCachedApplications();
+    if (recovered.length > 0) {
+      const map = new Map<string, PartnerMailEntry>();
+      localMails.forEach((m) => {
+        if (m.id) map.set(m.id, m);
+      });
+      let hasNew = false;
+      recovered.forEach((rec) => {
+        if (rec.id && !map.has(rec.id)) {
+          map.set(rec.id, rec);
+          hasNew = true;
+        }
+      });
+      if (hasNew) {
+        localMails = Array.from(map.values());
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(localMails));
+        } catch (quotaErr) {
+          console.warn('LocalStorage quota limit reached:', quotaErr);
+        }
+      }
+    }
+
+    return localMails;
   } catch (err) {
     console.error('Error reading local mailbox entries:', err);
     return SAMPLE_PARTNER_MAILS;
+  }
+}
+
+/**
+ * Batch sync entries from client to server (Admin only).
+ */
+export async function batchSyncMailboxToServer(entries: PartnerMailEntry[]): Promise<boolean> {
+  if (typeof window === 'undefined' || !entries.length) return false;
+  const token = getAdminToken();
+  if (!token) return false;
+
+  try {
+    const res = await fetch('/api/mailbox/batch', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ entries: entries.slice(0, 500) }),
+    });
+    return res.ok;
+  } catch (err) {
+    console.warn('Batch server sync deferred:', err);
+    return false;
   }
 }
 
@@ -221,12 +418,19 @@ export async function loadAllMailboxEntries(): Promise<PartnerMailEntry[]> {
         }
       });
 
-      // 2. Preserve local entries (e.g. offline registrations or records restored in browser)
+      // 2. Preserve local entries (e.g. offline registrations, recovered cache entries)
+      const localOnly: PartnerMailEntry[] = [];
       localMails.forEach((m) => {
         if (m.id && !deletedIds.includes(m.id) && !map.has(m.id)) {
           map.set(m.id, m);
+          localOnly.push(m);
         }
       });
+
+      // 3. If there are local applications not on the server, push them to server now!
+      if (localOnly.length > 0) {
+        batchSyncMailboxToServer(localOnly);
+      }
 
       const merged = Array.from(map.values());
       try {
