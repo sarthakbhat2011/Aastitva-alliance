@@ -145,7 +145,6 @@ const COMMON_INSTITUTIONS = [
   'KC Public School, Jammu',
   'Jodhpur Model School',
   'University of Jammu',
-  'Other Institution',
 ];
 
 const GOOGLE_FORM_ACTION =
