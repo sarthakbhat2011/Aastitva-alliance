@@ -22,7 +22,7 @@ import confetti from 'canvas-confetti';
 import { CountdownTime } from '../types';
 import { sounds } from '../utils/soundEffects';
 import { Astitva3DCanvas } from './Astitva3DCanvas';
-import { COMMITTEES } from '../data';
+import { COMMITTEES, INITIAL_SUMMIT_CONFIG, calculateCountdown } from '../data';
 import { verifyPasscode } from '../utils/mailboxApi';
 
 interface Props {
@@ -67,6 +67,24 @@ export const ComingSoonScreen: React.FC<Props> = ({
   const [passcodeError, setPasscodeError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
+
+  // Fallback and live stopwatch ticker targeting October 29, 2026 Opening Gavel
+  const [liveCountdown, setLiveCountdown] = useState<CountdownTime>(() => {
+    if (countdown && (countdown.days > 0 || countdown.hours > 0 || countdown.minutes > 0 || countdown.seconds > 0)) {
+      return countdown;
+    }
+    return calculateCountdown(INITIAL_SUMMIT_CONFIG.targetTimestamp);
+  });
+
+  useEffect(() => {
+    if (countdown && (countdown.days > 0 || countdown.hours > 0 || countdown.minutes > 0 || countdown.seconds > 0)) {
+      setLiveCountdown(countdown);
+    }
+    const timer = setInterval(() => {
+      setLiveCountdown(calculateCountdown(INITIAL_SUMMIT_CONFIG.targetTimestamp));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [countdown]);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -458,7 +476,7 @@ export const ComingSoonScreen: React.FC<Props> = ({
         </div>
 
         {/* OFFICIAL SUMMIT COUNTDOWN MODULE (October 29–30, 2026) */}
-        {countdown && (
+        {liveCountdown && (
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -478,7 +496,7 @@ export const ComingSoonScreen: React.FC<Props> = ({
               {/* Days */}
               <div className="p-2.5 sm:p-3 rounded-xl bg-[#050811]/90 border border-[#243563]">
                 <div className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-white">
-                  {countdown.days.toString().padStart(2, '0')}
+                  {liveCountdown.days.toString().padStart(2, '0')}
                 </div>
                 <div className="text-[9px] sm:text-[10px] font-mono text-[#A39B88] uppercase tracking-wider mt-0.5">
                   Days
@@ -487,7 +505,7 @@ export const ComingSoonScreen: React.FC<Props> = ({
               {/* Hours */}
               <div className="p-2.5 sm:p-3 rounded-xl bg-[#050811]/90 border border-[#243563]">
                 <div className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-[#D4AF37]">
-                  {countdown.hours.toString().padStart(2, '0')}
+                  {liveCountdown.hours.toString().padStart(2, '0')}
                 </div>
                 <div className="text-[9px] sm:text-[10px] font-mono text-[#A39B88] uppercase tracking-wider mt-0.5">
                   Hours
@@ -496,7 +514,7 @@ export const ComingSoonScreen: React.FC<Props> = ({
               {/* Minutes */}
               <div className="p-2.5 sm:p-3 rounded-xl bg-[#050811]/90 border border-[#243563]">
                 <div className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-[#38BDF8]">
-                  {countdown.minutes.toString().padStart(2, '0')}
+                  {liveCountdown.minutes.toString().padStart(2, '0')}
                 </div>
                 <div className="text-[9px] sm:text-[10px] font-mono text-[#A39B88] uppercase tracking-wider mt-0.5">
                   Minutes
@@ -505,7 +523,7 @@ export const ComingSoonScreen: React.FC<Props> = ({
               {/* Seconds */}
               <div className="p-2.5 sm:p-3 rounded-xl bg-[#050811]/90 border border-[#243563]">
                 <div className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-[#C084FC] animate-pulse">
-                  {countdown.seconds.toString().padStart(2, '0')}
+                  {liveCountdown.seconds.toString().padStart(2, '0')}
                 </div>
                 <div className="text-[9px] sm:text-[10px] font-mono text-[#A39B88] uppercase tracking-wider mt-0.5">
                   Seconds

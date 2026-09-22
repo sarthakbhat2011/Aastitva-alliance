@@ -6,6 +6,7 @@ import {
   FAQItem,
   BlogPost,
   SummitConfig,
+  CountdownTime,
 } from './types';
 
 export const INITIAL_SUMMIT_CONFIG: SummitConfig = {
@@ -19,6 +20,22 @@ export const INITIAL_SUMMIT_CONFIG: SummitConfig = {
   registrationOpen: true,
   totalSeats: 350,
   registeredCount: 218,
+};
+
+export const calculateCountdown = (
+  targetTimestamp: number = INITIAL_SUMMIT_CONFIG.targetTimestamp
+): CountdownTime => {
+  const now = Date.now();
+  const difference = targetTimestamp - now;
+
+  if (difference > 0) {
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+    return { days, hours, minutes, seconds };
+  }
+  return { days: 0, hours: 0, minutes: 0, seconds: 0 };
 };
 
 export const COMMITTEES = [

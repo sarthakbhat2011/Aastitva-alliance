@@ -4,6 +4,7 @@ import { Menu, X, Sparkles, ChevronRight, ArrowUpRight, ArrowRight, ShieldCheck,
 import { AstitvaLogo } from './AstitvaLogo';
 import { ThemeToggle } from './ThemeToggle';
 import { Page, SummitConfig, CountdownTime } from '../types';
+import { calculateCountdown } from '../data';
 import { sounds } from '../utils/soundEffects';
 import { MagneticElement } from './motion/MagneticElement';
 
@@ -29,7 +30,9 @@ export const Navbar: React.FC<Props> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [soundActive, setSoundActive] = useState(sounds.isEnabled());
-  const [countdown, setCountdown] = useState<CountdownTime>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [countdown, setCountdown] = useState<CountdownTime>(() =>
+    calculateCountdown(summitConfig.targetTimestamp)
+  );
   const [istTime, setIstTime] = useState<string>('');
 
   // Handle scroll threshold for sticky floating state
@@ -61,18 +64,7 @@ export const Navbar: React.FC<Props> = ({
   // Live countdown logic
   useEffect(() => {
     const updateCountdown = () => {
-      const now = new Date().getTime();
-      const difference = summitConfig.targetTimestamp - now;
-
-      if (difference > 0) {
-        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((difference % (1000 * 60)) / (1000 * 60));
-        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-        setCountdown({ days, hours, minutes, seconds });
-      } else {
-        setCountdown({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-      }
+      setCountdown(calculateCountdown(summitConfig.targetTimestamp));
     };
 
     updateCountdown();
