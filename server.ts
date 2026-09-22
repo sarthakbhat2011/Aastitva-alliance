@@ -1069,6 +1069,7 @@ async function startServer() {
         next(e);
       }
     });
+  } else {
     const distPath = path.join(process.cwd(), 'dist');
     app.use(
       express.static(distPath, {
