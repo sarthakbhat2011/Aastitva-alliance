@@ -68,23 +68,59 @@ export const ComingSoonScreen: React.FC<Props> = ({
   const [showPassword, setShowPassword] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
 
-  // Fallback and live stopwatch ticker targeting October 29, 2026 Opening Gavel
-  const [liveCountdown, setLiveCountdown] = useState<CountdownTime>(() => {
-    if (countdown && (countdown.days > 0 || countdown.hours > 0 || countdown.minutes > 0 || countdown.seconds > 0)) {
-      return countdown;
-    }
-    return calculateCountdown(INITIAL_SUMMIT_CONFIG.targetTimestamp);
+  // Real-world dynamic live clock state & high-precision countdown ticker
+  const [liveCurrentTime, setLiveCurrentTime] = useState<string>(() => {
+    const now = new Date();
+    return (
+      now.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      }) +
+      ' • ' +
+      now.toLocaleTimeString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+      }) +
+      ' IST'
+    );
   });
 
+  const [liveCountdown, setLiveCountdown] = useState<CountdownTime>(() =>
+    calculateCountdown(INITIAL_SUMMIT_CONFIG.targetTimestamp)
+  );
+
   useEffect(() => {
-    if (countdown && (countdown.days > 0 || countdown.hours > 0 || countdown.minutes > 0 || countdown.seconds > 0)) {
-      setLiveCountdown(countdown);
-    }
-    const timer = setInterval(() => {
+    const update = () => {
+      const now = new Date();
+      setLiveCurrentTime(
+        now.toLocaleDateString('en-US', {
+          weekday: 'short',
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+        }) +
+        ' • ' +
+        now.toLocaleTimeString('en-IN', {
+          timeZone: 'Asia/Kolkata',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true,
+        }) +
+        ' IST'
+      );
       setLiveCountdown(calculateCountdown(INITIAL_SUMMIT_CONFIG.targetTimestamp));
-    }, 1000);
+    };
+
+    update();
+    const timer = setInterval(update, 1000);
     return () => clearInterval(timer);
-  }, [countdown]);
+  }, []);
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -481,54 +517,78 @@ export const ComingSoonScreen: React.FC<Props> = ({
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.22 }}
-            className="w-full max-w-2xl mx-auto p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#16203B]/80 via-[#070A14]/90 to-[#16203B]/80 border border-[#D4AF37]/45 backdrop-blur-md shadow-[0_0_35px_rgba(212,175,55,0.2)] space-y-3"
+            className="w-full max-w-2xl mx-auto p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#16203B]/80 via-[#070A14]/90 to-[#16203B]/80 border border-[#D4AF37]/45 backdrop-blur-md shadow-[0_0_35px_rgba(212,175,55,0.2)] space-y-3.5"
           >
-            <div className="flex items-center justify-between border-b border-[#D4AF37]/20 pb-2 flex-wrap gap-2">
+            {/* Top Bar: Title & Target Date */}
+            <div className="flex items-center justify-between border-b border-[#D4AF37]/20 pb-2.5 flex-wrap gap-2">
               <span className="text-[11px] font-mono text-[#D4AF37] font-bold uppercase tracking-wider flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
                 Official Summit Opening Countdown
               </span>
               <span className="text-[10px] font-mono text-[#FAF5EF] bg-[#D4AF37]/20 border border-[#D4AF37]/40 px-2.5 py-0.5 rounded-full font-bold">
-                October 29–30, 2026 • Jammu
+                Target: Oct 29, 2026 • 09:00 AM IST
               </span>
             </div>
+
+            {/* Real-World Clock Sync Indicator */}
+            <div className="flex items-center justify-between bg-[#050811]/75 border border-[#243563]/70 rounded-xl px-3 py-1.5 text-[10px] font-mono text-[#C4BBA3] flex-wrap gap-2">
+              <div className="flex items-center gap-1.5">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+                </span>
+                <span className="text-[#FAF5EF] font-semibold">Live World Clock:</span>
+                <span className="text-emerald-400 font-bold">{liveCurrentTime}</span>
+              </div>
+              <span className="text-[#A39B88] text-[9px] sm:text-[9.5px]">
+                Decrements Live: Secs · Mins · Hours · Days
+              </span>
+            </div>
+
+            {/* 4-Box Stopwatch Display */}
             <div className="grid grid-cols-4 gap-2 sm:gap-3 text-center">
               {/* Days */}
-              <div className="p-2.5 sm:p-3 rounded-xl bg-[#050811]/90 border border-[#243563]">
-                <div className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-white">
+              <div className="p-2.5 sm:p-3 rounded-xl bg-[#050811]/90 border border-[#243563] shadow-inner">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-white tracking-tight">
                   {liveCountdown.days.toString().padStart(2, '0')}
                 </div>
-                <div className="text-[9px] sm:text-[10px] font-mono text-[#A39B88] uppercase tracking-wider mt-0.5">
+                <div className="text-[9px] sm:text-[10px] font-mono text-[#A39B88] uppercase tracking-wider mt-0.5 font-semibold">
                   Days
                 </div>
               </div>
               {/* Hours */}
-              <div className="p-2.5 sm:p-3 rounded-xl bg-[#050811]/90 border border-[#243563]">
-                <div className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-[#D4AF37]">
+              <div className="p-2.5 sm:p-3 rounded-xl bg-[#050811]/90 border border-[#243563] shadow-inner">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-[#D4AF37] tracking-tight">
                   {liveCountdown.hours.toString().padStart(2, '0')}
                 </div>
-                <div className="text-[9px] sm:text-[10px] font-mono text-[#A39B88] uppercase tracking-wider mt-0.5">
+                <div className="text-[9px] sm:text-[10px] font-mono text-[#A39B88] uppercase tracking-wider mt-0.5 font-semibold">
                   Hours
                 </div>
               </div>
               {/* Minutes */}
-              <div className="p-2.5 sm:p-3 rounded-xl bg-[#050811]/90 border border-[#243563]">
-                <div className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-[#38BDF8]">
+              <div className="p-2.5 sm:p-3 rounded-xl bg-[#050811]/90 border border-[#243563] shadow-inner">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-[#38BDF8] tracking-tight">
                   {liveCountdown.minutes.toString().padStart(2, '0')}
                 </div>
-                <div className="text-[9px] sm:text-[10px] font-mono text-[#A39B88] uppercase tracking-wider mt-0.5">
+                <div className="text-[9px] sm:text-[10px] font-mono text-[#A39B88] uppercase tracking-wider mt-0.5 font-semibold">
                   Minutes
                 </div>
               </div>
               {/* Seconds */}
-              <div className="p-2.5 sm:p-3 rounded-xl bg-[#050811]/90 border border-[#243563]">
-                <div className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-[#C084FC] animate-pulse">
+              <div className="p-2.5 sm:p-3 rounded-xl bg-[#050811]/90 border border-[#243563] shadow-inner">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-mono font-bold text-[#C084FC] tracking-tight animate-pulse">
                   {liveCountdown.seconds.toString().padStart(2, '0')}
                 </div>
-                <div className="text-[9px] sm:text-[10px] font-mono text-[#A39B88] uppercase tracking-wider mt-0.5">
+                <div className="text-[9px] sm:text-[10px] font-mono text-[#A39B88] uppercase tracking-wider mt-0.5 font-semibold">
                   Seconds
                 </div>
               </div>
+            </div>
+
+            {/* Bottom Clarification Pill */}
+            <div className="text-[9.5px] sm:text-[10.5px] font-mono text-[#A39B88] bg-[#070A14]/70 border border-[#D4AF37]/15 rounded-lg py-1 px-2.5 flex items-center justify-center gap-2">
+              <span className="text-[#D4AF37] font-semibold">Summit Opening Gavel:</span>
+              <span className="text-[#FAF5EF]">October 29, 2026 • 09:00:00 AM IST (Jammu, J&K)</span>
             </div>
           </motion.div>
         )}
