@@ -30,6 +30,7 @@ interface Props {
   onOpenRegister: () => void;
   countdown?: CountdownTime;
   onOpenDevMailbox?: () => void;
+  onOpenSponsors?: () => void;
 }
 
 const QUOTES = [
@@ -60,6 +61,7 @@ export const ComingSoonScreen: React.FC<Props> = ({
   onOpenRegister,
   countdown,
   onOpenDevMailbox,
+  onOpenSponsors,
 }) => {
   const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -455,18 +457,36 @@ export const ComingSoonScreen: React.FC<Props> = ({
           </div>
         </div>
 
-        {/* Top Direct Registration Button */}
-        <button
-          onClick={() => {
-            sounds.playTap();
-            onOpenRegister();
-          }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#D4AF37]/15 hover:bg-[#D4AF37] text-[#D4AF37] hover:text-[#070A14] border border-[#D4AF37]/50 transition-all duration-300 text-xs font-mono font-bold tracking-wider cursor-pointer shadow-lg hover:shadow-[0_0_25px_rgba(212,175,55,0.4)] active:scale-95"
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Delegate Registration Portal</span>
-          <ArrowRight className="w-3.5 h-3.5" />
-        </button>
+        {/* Top Direct Action Buttons */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          <button
+            onClick={() => {
+              sounds.playTap();
+              if (onOpenSponsors) {
+                onOpenSponsors();
+              } else {
+                window.location.href = '/offer-sponsorships';
+              }
+            }}
+            className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl bg-purple-500/15 hover:bg-purple-600/30 text-purple-200 hover:text-white border border-purple-400/40 transition-all duration-300 text-xs font-mono font-bold tracking-wider cursor-pointer shadow-lg active:scale-95"
+            title="View Official 16-Slide Sponsorship Proposal Deck"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+            <span>Offer Sponsorships</span>
+          </button>
+
+          <button
+            onClick={() => {
+              sounds.playTap();
+              onOpenRegister();
+            }}
+            className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl bg-[#D4AF37]/15 hover:bg-[#D4AF37] text-[#D4AF37] hover:text-[#070A14] border border-[#D4AF37]/50 transition-all duration-300 text-xs font-mono font-bold tracking-wider cursor-pointer shadow-lg hover:shadow-[0_0_25px_rgba(212,175,55,0.4)] active:scale-95"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span className="hidden xs:inline">Delegate</span> Registration
+            <ArrowRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </header>
 
       {/* MAIN SCROLLABLE CONTENT */}
@@ -651,17 +671,33 @@ export const ComingSoonScreen: React.FC<Props> = ({
             </div>
           </div>
 
-          {/* Primary Action Button */}
+          {/* Primary Action Buttons */}
           <div className="pt-4 border-t border-[#243563]/60 flex flex-col sm:flex-row items-center justify-center gap-3">
             <button
               onClick={() => {
                 sounds.playTap();
                 onOpenRegister();
               }}
-              className="w-full sm:w-auto px-8 py-3.5 rounded-xl shimmer-btn text-[#070A14] font-bold text-sm tracking-wide shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full sm:w-auto px-7 py-3.5 rounded-xl shimmer-btn text-[#070A14] font-bold text-sm tracking-wide shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <Sparkles className="w-4 h-4" />
               <span>Register for Aequitas Summit 2026 Portal</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+
+            <button
+              onClick={() => {
+                sounds.playTap();
+                if (onOpenSponsors) {
+                  onOpenSponsors();
+                } else {
+                  window.location.href = '/offer-sponsorships';
+                }
+              }}
+              className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-[#16203B]/90 hover:bg-[#243563] text-[#D4AF37] border border-[#D4AF37]/50 font-bold text-sm tracking-wide shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Sparkles className="w-4 h-4 text-purple-400" />
+              <span>Offer Sponsorships Deck</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

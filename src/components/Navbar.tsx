@@ -78,7 +78,8 @@ export const Navbar: React.FC<Props> = ({
     { id: 'about', label: 'About', badge: 'FOUNDER' },
     { id: 'offerings', label: 'Offerings' },
     { id: 'how-it-works', label: 'How It Works' },
-    { id: 'summit', label: 'Current Summit', badge: 'LIVE' },
+    { id: 'summit', label: 'Summit', badge: 'LIVE' },
+    { id: 'sponsors', label: 'Sponsorships' },
     { id: 'faq', label: 'FAQ' },
   ];
 
@@ -261,11 +262,7 @@ export const Navbar: React.FC<Props> = ({
                 <button
                   onClick={() => {
                     sounds.playTap();
-                    if (onOpenRegister) {
-                      onOpenRegister();
-                    } else {
-                      handleNavClick('summit');
-                    }
+                    handleNavClick('sponsors');
                   }}
                   className="inline-flex items-center gap-1.5 px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 rounded-xl shimmer-btn text-[#070A14] text-[11px] sm:text-xs lg:text-sm font-extrabold shadow-[0_4px_20px_rgba(212,175,55,0.35)] btn-sheen-sweep group whitespace-nowrap shrink-0 border border-[#FAF5EF]/30 cursor-pointer min-h-[36px] sm:min-h-[40px] lg:min-h-[42px]"
                 >
@@ -382,17 +379,12 @@ export const Navbar: React.FC<Props> = ({
 
                 <button
                   onClick={() => {
-                    setMobileMenuOpen(false);
-                    if (onOpenRegister) {
-                      onOpenRegister();
-                    } else {
-                      handleNavClick('summit');
-                    }
+                    handleNavClick('sponsors');
                   }}
                   className="w-full py-2.5 rounded-xl shimmer-btn text-[#070A14] font-bold text-center text-xs shadow-lg min-h-[44px] flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Sparkles className="w-3.5 h-3.5 fill-current" />
-                  <span>Partner With Us / Institutional Desk</span>
+                  <span>Partner With Us / Offer Sponsorships</span>
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>

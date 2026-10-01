@@ -224,6 +224,12 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister, 
       case 'home':
         onEnterSite('home');
         break;
+      case 'sponsors':
+      case 'sponsorship':
+      case 'sponsor':
+        onEnterSite('sponsors');
+        newHistory.push({ text: 'Launching Offer Sponsorships Corporate Proposal Deck...', type: 'resp' });
+        break;
       case 'clear':
         setTerminalHistory([]);
         setTerminalInput('');

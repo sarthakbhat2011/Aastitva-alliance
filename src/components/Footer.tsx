@@ -108,7 +108,7 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox, onOpenRe
                 {[
                   { id: 'offerings', label: 'Capabilities & Scope' },
                   { id: 'faq', label: 'FAQ' },
-                  { id: 'sponsors', label: 'Sponsors' },
+                  { id: 'sponsors', label: 'Offer Sponsorships' },
                 ].map((res) => (
                   <li key={res.label}>
                     <button
@@ -128,15 +128,11 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox, onOpenRe
               <button
                 onClick={() => {
                   sounds.playTap();
-                  if (onOpenRegister) {
-                    onOpenRegister();
-                  } else {
-                    handleLinkClick('summit');
-                  }
+                  handleLinkClick('sponsors');
                 }}
                 className="w-full py-1.5 px-2.5 rounded-lg bg-gradient-to-r from-[#EAE0C8] to-[#E8A53E] text-[#050811] font-bold text-[10px] shadow-sm active:scale-95 transition-all text-center"
               >
-                Partner With Us
+                Partner With Us / Offer Sponsorships
               </button>
             </div>
           </div>

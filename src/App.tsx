@@ -77,9 +77,32 @@ const isRegistrationUrl = () => {
   );
 };
 
+const isSponsorshipUrl = () => {
+  if (typeof window === 'undefined') return false;
+  const path = window.location.pathname.toLowerCase();
+  const search = window.location.search.toLowerCase();
+  const hash = window.location.hash.toLowerCase();
+
+  return (
+    path.startsWith('/sponsor') ||
+    path.startsWith('/sponsorship') ||
+    path.startsWith('/offer-sponsorship') ||
+    search.includes('mode=sponsor') ||
+    search.includes('tab=sponsor') ||
+    search.includes('page=sponsor') ||
+    search.includes('mode=sponsorship') ||
+    search.includes('tab=sponsorship') ||
+    hash === '#sponsor' ||
+    hash === '#sponsors' ||
+    hash === '#sponsorship' ||
+    hash === '#sponsorships'
+  );
+};
+
 export default function App() {
   const [isSiteUnlocked, setIsSiteUnlocked] = useState<boolean>(checkSiteUnlocked);
   const [isStandaloneRegister, setIsStandaloneRegister] = useState(isRegistrationUrl);
+  const [isStandaloneSponsors, setIsStandaloneSponsors] = useState(isSponsorshipUrl);
   const [osMode, setOsMode] = useState(true); // Boots into Astitva OS initially
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [summitConfig, setSummitConfig] = useState<SummitConfig>(INITIAL_SUMMIT_CONFIG);
@@ -142,7 +165,7 @@ export default function App() {
   // Lock body & document scroll when in OS Mode to prevent background web app from leaking on mobile scroll
   // (Strictly bypassed on standalone registration portal and Coming Soon screen to allow full natural scrolling)
   useEffect(() => {
-    if (isStandaloneRegister || !isSiteUnlocked) {
+    if (isStandaloneRegister || isStandaloneSponsors || !isSiteUnlocked) {
       document.body.style.overflow = 'auto';
       document.documentElement.style.overflow = 'auto';
       document.body.style.touchAction = 'auto';
@@ -164,12 +187,13 @@ export default function App() {
       document.documentElement.style.overflow = '';
       document.body.style.touchAction = '';
     };
-  }, [osMode, isStandaloneRegister, isSiteUnlocked]);
+  }, [osMode, isStandaloneRegister, isStandaloneSponsors, isSiteUnlocked]);
 
-  // Deep link & route listener for standalone registration portal
+  // Deep link & route listener for standalone registration portal & sponsorships
   useEffect(() => {
     const handleLocationChange = () => {
       setIsStandaloneRegister(isRegistrationUrl());
+      setIsStandaloneSponsors(isSponsorshipUrl());
       if (checkMailboxRequested()) {
         setDevMailboxOpen(true);
       }
@@ -205,6 +229,27 @@ export default function App() {
     );
   }
 
+  // Dedicated Autonomous Sponsorship Proposal Portal (Exception: never blocked by Coming Soon for approaching firms)
+  if (isStandaloneSponsors) {
+    return (
+      <ThemeProvider>
+        <SponsorsPage
+          isStandalone={true}
+          onNavigate={(page) => {
+            if (page === 'home') {
+              window.location.href = '/';
+            } else {
+              setIsStandaloneSponsors(false);
+              setIsSiteUnlocked(true);
+              handleEnterSiteFromOS(page);
+            }
+          }}
+          onOpenRegister={handleOpenRegisterPortal}
+        />
+      </ThemeProvider>
+    );
+  }
+
   // Pre-Launch Gate Screen (Coming Soon with buzz, quotes, countdown, and hidden developer gate)
   if (!isSiteUnlocked) {
     return (
@@ -213,6 +258,7 @@ export default function App() {
           onUnlock={() => setIsSiteUnlocked(true)}
           onOpenDevMailbox={() => setDevMailboxOpen(true)}
           onOpenRegister={handleOpenRegisterPortal}
+          onOpenSponsors={() => setIsStandaloneSponsors(true)}
           countdown={countdown}
         />
         <DeveloperMailboxModal
