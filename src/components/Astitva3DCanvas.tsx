@@ -31,13 +31,18 @@ export const Astitva3DCanvas: React.FC<Props> = ({
     // Camera
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
     camera.position.z = isMobile
-      ? variant === 'minimal' ? 7.5 : variant === 'emblem' ? 6.5 : 10.5
-      : variant === 'minimal' ? 6.5 : variant === 'emblem' ? 5.5 : 8;
+      ? variant === 'minimal' ? 7.5 : variant === 'emblem' ? 7.8 : 10.5
+      : variant === 'minimal' ? 6.5 : variant === 'emblem' ? 7.2 : 8;
 
     // Renderer with true antialiasing and crisp pixel ratio
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' });
+    renderer.setClearColor(0x000000, 0);
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.domElement.style.background = 'transparent';
+    renderer.domElement.style.display = 'block';
+    renderer.domElement.style.outline = 'none';
+    renderer.domElement.style.border = 'none';
     container.appendChild(renderer.domElement);
 
     // Determine current theme
@@ -159,10 +164,14 @@ export const Astitva3DCanvas: React.FC<Props> = ({
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
 
+    const spreadX = variant === 'emblem' ? 5 : 16;
+    const spreadY = variant === 'emblem' ? 5 : 12;
+    const spreadZ = variant === 'emblem' ? 4 : 10;
+
     for (let i = 0; i < particleCount; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 16;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 12;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 10;
+      positions[i * 3] = (Math.random() - 0.5) * spreadX;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * spreadY;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * spreadZ;
 
       colors[i * 3] = 0.85 + Math.random() * 0.15;
       colors[i * 3 + 1] = 0.75 + Math.random() * 0.2;

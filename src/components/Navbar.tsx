@@ -207,24 +207,24 @@ export const Navbar: React.FC<Props> = ({
       {/* Main Floating Glass Navbar Container */}
       <div className="w-full px-2.5 sm:px-6 pt-1.5 sm:pt-2 pb-1.5 sm:pb-2 transition-all duration-300">
         <nav
-          className={`max-w-7xl mx-auto rounded-2xl transition-all duration-300 overflow-hidden md:overflow-visible ${
+          className={`max-w-7xl mx-auto rounded-2xl transition-all duration-300 overflow-hidden ${
             scrolled
-              ? 'bg-[#0D1427]/95 backdrop-blur-xl border border-[#D4AF37]/45 shadow-[0_14px_45px_rgba(0,0,0,0.9)] py-2 px-3 sm:px-5 lg:px-6'
-              : 'bg-[#0D1427]/85 backdrop-blur-md border border-[#D4AF37]/25 hover:border-[#D4AF37]/45 py-2 sm:py-2.5 lg:py-3 px-3 sm:px-5 lg:px-6'
+              ? 'bg-[#0D1427]/95 backdrop-blur-xl border border-[#D4AF37]/45 shadow-[0_14px_45px_rgba(0,0,0,0.9)] py-2 px-3 sm:px-4 lg:px-5'
+              : 'bg-[#0D1427]/85 backdrop-blur-md border border-[#D4AF37]/25 hover:border-[#D4AF37]/45 py-2 sm:py-2.5 px-3 sm:px-4 lg:px-5'
           }`}
         >
-          <div className="flex items-center justify-between gap-1.5 sm:gap-4 lg:gap-5 xl:gap-6 w-full">
+          <div className="flex items-center justify-between gap-1.5 sm:gap-3 lg:gap-4 xl:gap-5 w-full">
             {/* Brand Logo - Stable, Clean & Static Anchor */}
             <button
               onClick={() => handleNavClick('home')}
-              className="text-left focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 rounded-xl p-0.5 shrink-0 min-w-0 max-w-[62vw] xs:max-w-[70vw] sm:max-w-none cursor-pointer"
+              className="text-left focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 rounded-xl p-0.5 shrink-0 min-w-0 max-w-[55vw] xs:max-w-[65vw] sm:max-w-none cursor-pointer"
               aria-label="Aastitva Alliance Home"
             >
               <AstitvaLogo size="sm" />
             </button>
 
             {/* Desktop Navigation Links with Smooth Indicator Glide (Laptop & PC Responsive) */}
-            <div className="hidden lg:flex items-center gap-1 xl:gap-1.5 bg-[#070A14]/85 p-1 rounded-xl border border-[#D4AF37]/30 backdrop-blur-md shrink-0 shadow-inner relative">
+            <div className="hidden lg:flex items-center gap-0.5 xl:gap-1.5 bg-[#070A14]/85 p-1 rounded-xl border border-[#D4AF37]/30 backdrop-blur-md shrink-0 shadow-inner relative">
               {navItems.map((item) => {
                 const active = currentPage === item.id;
                 return (
@@ -232,7 +232,7 @@ export const Navbar: React.FC<Props> = ({
                     key={item.id}
                     onClick={() => handleNavClick(item.id)}
                     onMouseEnter={() => sounds.playHover()}
-                    className={`relative px-2.5 xl:px-3.5 py-1.5 xl:py-2 text-xs xl:text-sm font-semibold rounded-lg transition-colors duration-200 flex items-center gap-1 xl:gap-1.5 whitespace-nowrap z-10 cursor-pointer ${
+                    className={`relative px-2 xl:px-3 py-1.5 text-xs xl:text-sm font-semibold rounded-lg transition-colors duration-200 flex items-center gap-1 xl:gap-1.5 whitespace-nowrap z-10 cursor-pointer ${
                       active
                         ? 'text-[#FAF5EF] font-bold'
                         : 'text-[#C4BBA3] hover:text-[#FAF5EF]'
@@ -257,19 +257,19 @@ export const Navbar: React.FC<Props> = ({
             </div>
 
             {/* CTA Button & Mobile Toggle with Magnetic Response */}
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-              <MagneticElement strength={0.3}>
+            <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 pr-1 sm:pr-1.5">
+              <MagneticElement strength={0.15}>
                 <button
                   onClick={() => {
                     sounds.playTap();
                     handleNavClick('sponsors');
                   }}
-                  className="inline-flex items-center gap-1.5 px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 rounded-xl shimmer-btn text-[#070A14] text-[11px] sm:text-xs lg:text-sm font-extrabold shadow-[0_4px_20px_rgba(212,175,55,0.35)] btn-sheen-sweep group whitespace-nowrap shrink-0 border border-[#FAF5EF]/30 cursor-pointer min-h-[36px] sm:min-h-[40px] lg:min-h-[42px]"
+                  className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 lg:px-4 py-1.5 rounded-xl shimmer-btn text-[#070A14] text-xs lg:text-[13px] font-extrabold shadow-[0_2px_14px_rgba(212,175,55,0.35)] btn-sheen-sweep group whitespace-nowrap shrink-0 border border-[#FAF5EF]/40 cursor-pointer min-h-[34px] sm:min-h-[36px]"
                 >
                   <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current shrink-0" />
                   <span className="hidden xs:inline whitespace-nowrap">Partner With Us</span>
                   <span className="xs:hidden">Partner</span>
-                  <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 group-hover:translate-x-1 transition-transform shrink-0" />
+                  <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 group-hover:translate-x-0.5 transition-transform shrink-0" />
                 </button>
               </MagneticElement>
 

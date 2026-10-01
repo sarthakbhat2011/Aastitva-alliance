@@ -32,6 +32,12 @@ import {
   QrCode,
   Globe,
   Share2,
+  MapPin,
+  Clock,
+  Eye,
+  Zap,
+  Star,
+  Activity,
 } from 'lucide-react';
 
 interface Props {
@@ -39,6 +45,116 @@ interface Props {
   onOpenRegister?: () => void;
   isStandalone?: boolean;
 }
+
+// -------------------------------------------------------------
+// 3D INTERACTIVE TILT CARD
+// -------------------------------------------------------------
+const TiltCard: React.FC<{
+  children: React.ReactNode;
+  className?: string;
+  glowColor?: string;
+  onClick?: () => void;
+}> = ({ children, className = '', glowColor = 'rgba(212,175,55,0.25)', onClick }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [rotateX, setRotateX] = useState(0);
+  const [rotateY, setRotateY] = useState(0);
+  const [glare, setGlare] = useState({ x: 50, y: 50, opacity: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rX = ((y - centerY) / centerY) * -7;
+    const rY = ((x - centerX) / centerX) * 7;
+
+    setRotateX(rX);
+    setRotateY(rY);
+    setGlare({
+      x: (x / rect.width) * 100,
+      y: (y / rect.height) * 100,
+      opacity: 0.5,
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setRotateX(0);
+    setRotateY(0);
+    setGlare((prev) => ({ ...prev, opacity: 0 }));
+  };
+
+  return (
+    <motion.div
+      ref={cardRef}
+      onClick={onClick}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      animate={{
+        rotateX,
+        rotateY,
+      }}
+      transition={{ type: 'spring', stiffness: 320, damping: 24 }}
+      style={{ transformStyle: 'preserve-3d', perspective: 1000 }}
+      className={`relative overflow-hidden transition-shadow duration-300 hover:shadow-[0_12px_45px_${glowColor}] ${className}`}
+    >
+      <div
+        className="pointer-events-none absolute inset-0 transition-opacity duration-300 z-10"
+        style={{
+          background: `radial-gradient(circle at ${glare.x}% ${glare.y}%, rgba(255,255,255,0.12), transparent 65%)`,
+          opacity: glare.opacity,
+        }}
+      />
+      <div style={{ transform: 'translateZ(18px)' }}>{children}</div>
+    </motion.div>
+  );
+};
+
+// -------------------------------------------------------------
+// MULTI-DIRECTIONAL STAGGERED ENTRANCE BOX
+// -------------------------------------------------------------
+const AnimatedBox: React.FC<{
+  children: React.ReactNode;
+  direction?: 'left' | 'right' | 'top' | 'bottom' | 'zoom' | 'flip';
+  delay?: number;
+  className?: string;
+}> = ({ children, direction = 'bottom', delay = 0, className = '' }) => {
+  const getInitial = () => {
+    switch (direction) {
+      case 'left':
+        return { opacity: 0, x: -70, rotateY: 12 };
+      case 'right':
+        return { opacity: 0, x: 70, rotateY: -12 };
+      case 'top':
+        return { opacity: 0, y: -50, rotateX: 12 };
+      case 'bottom':
+        return { opacity: 0, y: 50, rotateX: -12 };
+      case 'zoom':
+        return { opacity: 0, scale: 0.85 };
+      case 'flip':
+        return { opacity: 0, rotateY: 40, scale: 0.9 };
+      default:
+        return { opacity: 0, y: 40 };
+    }
+  };
+
+  return (
+    <motion.div
+      initial={getInitial()}
+      animate={{ opacity: 1, x: 0, y: 0, scale: 1, rotateX: 0, rotateY: 0 }}
+      transition={{
+        duration: 0.55,
+        delay,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+};
 
 export const SponsorsPage: React.FC<Props> = ({
   onNavigate,
@@ -50,6 +166,11 @@ export const SponsorsPage: React.FC<Props> = ({
   const [viewMode, setViewMode] = useState<'deck' | 'continuous'>('deck');
   const [soundEnabled, setSoundEnabled] = useState(sounds.isEnabled());
   const [copiedField, setCopiedField] = useState<string | null>(null);
+
+  // Interactive Features State
+  const [tierFilter, setTierFilter] = useState<'all' | 'title' | 'platinum' | 'gold' | 'silver' | 'bronze'>('all');
+  const [activationFilter, setActivationFilter] = useState<'all' | 'floor' | 'digital' | 'vip'>('all');
+  const [checkedDeliverables, setCheckedDeliverables] = useState<Set<number>>(new Set([1, 2, 3, 4, 5, 6]));
 
   const totalSlides = 16;
   const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -64,6 +185,11 @@ export const SponsorsPage: React.FC<Props> = ({
     document.body.style.overflow = 'auto';
     document.documentElement.style.overflow = 'auto';
     document.body.style.touchAction = 'auto';
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.touchAction = '';
+    };
   }, []);
 
   // Scroll to top on slide change in deck view
@@ -126,6 +252,16 @@ export const SponsorsPage: React.FC<Props> = ({
     setSoundEnabled(updated);
   };
 
+  const toggleDeliverable = (num: number) => {
+    sounds.playTap();
+    setCheckedDeliverables((prev) => {
+      const next = new Set(prev);
+      if (next.has(num)) next.delete(num);
+      else next.add(num);
+      return next;
+    });
+  };
+
   // Slide Metadata for Continuation Headings
   const SLIDE_TITLES: { [key: number]: string } = {
     1: 'Sponsorship Proposal Cover',
@@ -146,8 +282,77 @@ export const SponsorsPage: React.FC<Props> = ({
     16: 'Official Partnership Contacts',
   };
 
+  // Slide Transition Variants for 3D Spatial Flip
+  const slideVariants = {
+    enter: (dir: 'forward' | 'backward') => ({
+      x: dir === 'forward' ? 80 : -80,
+      opacity: 0,
+      scale: 0.94,
+      rotateY: dir === 'forward' ? 12 : -12,
+      filter: 'blur(4px)',
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      scale: 1,
+      rotateY: 0,
+      filter: 'blur(0px)',
+      transition: {
+        duration: 0.45,
+        ease: [0.16, 1, 0.3, 1],
+      },
+    },
+    exit: (dir: 'forward' | 'backward') => ({
+      x: dir === 'forward' ? -80 : 80,
+      opacity: 0,
+      scale: 0.94,
+      rotateY: dir === 'forward' ? -12 : 12,
+      filter: 'blur(4px)',
+      transition: {
+        duration: 0.35,
+        ease: [0.16, 1, 0.3, 1],
+      },
+    }),
+  };
+
+  // Interactive Tier Quick-Jump Dock for Tier Slides (8-12)
+  const renderTierQuickDock = (activeSlideNum: number) => {
+    const tierSlides = [
+      { num: 8, name: 'Bronze', cost: '₹10k', color: '#CD7F32' },
+      { num: 9, name: 'Silver', cost: '₹20k', color: '#C0C0C0' },
+      { num: 10, name: 'Gold', cost: '₹35k', color: '#D4AF37' },
+      { num: 11, name: 'Platinum', cost: '₹40k–50k', color: '#E5E4E2' },
+      { num: 12, name: 'Title', cost: '₹75k–1L', color: '#FFD700' },
+    ];
+
+    return (
+      <div className="flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap pb-2">
+        <span className="text-[10px] font-mono uppercase text-[#A39B88] tracking-widest mr-1">
+          Tier Switcher:
+        </span>
+        {tierSlides.map((t) => {
+          const isActive = t.num === activeSlideNum;
+          return (
+            <button
+              key={t.name}
+              onClick={() => jumpToSlide(t.num)}
+              className={`px-2.5 py-1 rounded-xl text-[11px] font-mono font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                isActive
+                  ? 'bg-gradient-to-r from-[#D4AF37] to-[#E8A53E] text-black shadow-[0_0_15px_rgba(212,175,55,0.4)] scale-105'
+                  : 'bg-[#180C34]/80 text-[#C4BBA3] border border-[#D4AF37]/30 hover:border-[#D4AF37] hover:text-white'
+              }`}
+            >
+              <span>{t.name}</span>
+              <span className="opacity-75 text-[9px]">({t.cost})</span>
+            </button>
+          );
+        })}
+      </div>
+    );
+  };
+
   /* -------------------------------------------------------------
-     RENDER SLIDE CONTENT
+     RENDER SLIDE CONTENT (VERBATIM TEXT WITH FULL 3D ANIMATIONS)
   ------------------------------------------------------------- */
   const renderSlideContent = (slideNum: number) => {
     switch (slideNum) {
@@ -156,56 +361,66 @@ export const SponsorsPage: React.FC<Props> = ({
       --------------------------------------------------------- */
       case 1:
         return (
-          <div className="text-center py-6 sm:py-12 space-y-6 sm:space-y-8 max-w-4xl mx-auto">
+          <div className="text-center py-4 sm:py-8 space-y-5 sm:space-y-7 max-w-4xl mx-auto">
             {/* Top Emblems */}
-            <div className="flex items-center justify-center gap-3">
-              <img
-                src="/aequitas-logo.png"
-                alt="Aequitas Crest"
-                className="w-14 h-14 sm:w-20 sm:h-20 rounded-full border-2 border-[#D4AF37] shadow-[0_0_25px_rgba(212,175,55,0.45)] bg-black object-cover"
-              />
-              <span className="text-[#D4AF37] font-playfair text-xl opacity-75">×</span>
-              <img
-                src="/astitva-logo.png"
-                alt="Aastitva Alliance"
-                className="w-14 h-14 sm:w-20 sm:h-20 rounded-full border-2 border-[#D4AF37]/80 shadow-[0_0_25px_rgba(168,85,247,0.45)] bg-[#1e1442] object-cover"
-              />
-            </div>
+            <AnimatedBox direction="top" delay={0.05}>
+              <div className="flex items-center justify-center gap-3">
+                <img
+                  src="/aequitas-logo.png"
+                  alt="Aequitas Crest"
+                  className="w-14 h-14 sm:w-20 sm:h-20 rounded-full border-2 border-[#D4AF37] shadow-[0_0_25px_rgba(212,175,55,0.45)] bg-black object-cover"
+                />
+                <span className="text-[#D4AF37] font-playfair text-xl opacity-75">×</span>
+                <img
+                  src="/astitva-logo.png"
+                  alt="Aastitva Alliance"
+                  className="w-14 h-14 sm:w-20 sm:h-20 rounded-full border-2 border-[#D4AF37]/80 shadow-[0_0_25px_rgba(168,85,247,0.45)] bg-[#1e1442] object-cover"
+                />
+              </div>
+            </AnimatedBox>
 
             {/* Main Proposal Header */}
-            <div className="space-y-3">
-              <h1 className="text-3xl sm:text-5xl md:text-6xl font-cinzel font-bold text-[#FAF5EF] tracking-wider uppercase drop-shadow-md">
-                AEQUITAS SUMMIT 2026
-              </h1>
-              <div className="inline-block px-4 py-1 rounded-full bg-[#180C34]/80 border border-[#D4AF37]/40 shadow-inner">
-                <p className="font-mono text-xs sm:text-sm text-[#D4AF37] tracking-[0.25em] uppercase font-bold">
-                  VERITAS | AEQUITAS | VOX
-                </p>
+            <AnimatedBox direction="zoom" delay={0.12}>
+              <div className="space-y-3">
+                <h1 className="text-3xl sm:text-5xl md:text-6xl font-cinzel font-bold text-[#FAF5EF] tracking-wider uppercase drop-shadow-md">
+                  AEQUITAS SUMMIT 2026
+                </h1>
+                <div className="inline-block px-4 py-1 rounded-full bg-[#180C34]/80 border border-[#D4AF37]/40 shadow-inner">
+                  <p className="font-mono text-xs sm:text-sm text-[#D4AF37] tracking-[0.25em] uppercase font-bold">
+                    VERITAS | AEQUITAS | VOX
+                  </p>
+                </div>
               </div>
-            </div>
+            </AnimatedBox>
 
             {/* Central Badge */}
-            <div className="py-2">
-              <h2 className="text-2xl sm:text-4xl md:text-5xl font-playfair font-extrabold tracking-wide uppercase text-transparent bg-clip-text bg-gradient-to-r from-[#FFF5DC] via-[#D4AF37] to-[#FAF5EF]">
-                SPONSORSHIP PROPOSAL
-              </h2>
-              <p className="text-sm sm:text-lg text-[#C4BBA3] font-mono mt-3 tracking-wide">
-                29–30 October 2026 | Radisson Blu Hotel, Jammu
-              </p>
-            </div>
+            <AnimatedBox direction="left" delay={0.18}>
+              <div className="py-1">
+                <h2 className="text-2xl sm:text-4xl md:text-5xl font-playfair font-extrabold tracking-wide uppercase text-transparent bg-clip-text bg-gradient-to-r from-[#FFF5DC] via-[#D4AF37] to-[#FAF5EF]">
+                  SPONSORSHIP PROPOSAL
+                </h2>
+                <p className="text-sm sm:text-lg text-[#C4BBA3] font-mono mt-3 tracking-wide">
+                  29–30 October 2026 | Radisson Blu Hotel, Jammu
+                </p>
+              </div>
+            </AnimatedBox>
 
-            {/* Complementary 3D Planetary Core Visual */}
-            <div className="relative w-48 h-48 sm:w-64 sm:h-64 mx-auto my-2">
-              <Astitva3DCanvas variant="emblem" className="w-full h-full" />
-              <div className="absolute inset-0 rounded-full bg-radial from-[#A855F7]/15 to-transparent blur-xl pointer-events-none" />
-            </div>
+            {/* Complementary 3D Planetary Core Visual - Seamless with zero rectangular borders */}
+            <AnimatedBox direction="zoom" delay={0.24}>
+              <div className="relative w-64 h-64 sm:w-80 sm:h-80 mx-auto my-2 overflow-visible flex items-center justify-center [mask-image:radial-gradient(circle_at_center,black_55%,transparent_98%)] [-webkit-mask-image:radial-gradient(circle_at_center,black_55%,transparent_98%)]">
+                <Astitva3DCanvas variant="emblem" className="w-full h-full" />
+                <div className="absolute inset-0 rounded-full bg-radial from-[#A855F7]/25 via-[#D4AF37]/15 to-transparent blur-2xl pointer-events-none" />
+              </div>
+            </AnimatedBox>
 
             {/* Footer Attribution */}
-            <div className="pt-2 border-t border-[#D4AF37]/25 max-w-sm mx-auto">
-              <p className="text-xs sm:text-sm font-mono text-[#D4AF37] tracking-widest uppercase font-semibold">
-                Presented by Aastitva Alliances
-              </p>
-            </div>
+            <AnimatedBox direction="bottom" delay={0.3}>
+              <div className="pt-2 border-t border-[#D4AF37]/25 max-w-sm mx-auto">
+                <p className="text-xs sm:text-sm font-mono text-[#D4AF37] tracking-widest uppercase font-semibold">
+                  Presented by Aastitva Alliances
+                </p>
+              </div>
+            </AnimatedBox>
           </div>
         );
 
@@ -214,31 +429,37 @@ export const SponsorsPage: React.FC<Props> = ({
       --------------------------------------------------------- */
       case 2:
         return (
-          <div className="py-6 sm:py-12 space-y-6 sm:space-y-8 max-w-4xl mx-auto text-left">
-            <div className="space-y-3 border-b border-[#D4AF37]/25 pb-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#7C3AED]/20 border border-[#7C3AED]/40 text-[#C084FC] text-xs font-mono font-bold tracking-wider uppercase">
-                <Building className="w-3.5 h-3.5 text-[#C084FC]" />
-                <span>Executive Vision</span>
+          <div className="py-6 sm:py-10 space-y-6 sm:space-y-8 max-w-4xl mx-auto text-left">
+            <AnimatedBox direction="left" delay={0.05}>
+              <div className="space-y-3 border-b border-[#D4AF37]/25 pb-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#7C3AED]/20 border border-[#7C3AED]/40 text-[#C084FC] text-xs font-mono font-bold tracking-wider uppercase">
+                  <Building className="w-3.5 h-3.5 text-[#C084FC]" />
+                  <span>Executive Vision</span>
+                </div>
+                <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-[#FAF5EF] leading-tight">
+                  A Brand Residency with <br className="hidden sm:inline" />
+                  the Next Generation.
+                </h2>
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-[#FAF5EF] leading-tight">
-                A Brand Residency with <br className="hidden sm:inline" />
-                the Next Generation.
-              </h2>
-            </div>
+            </AnimatedBox>
 
-            <div className="p-5 sm:p-8 rounded-2xl bg-[#0F0824]/90 border border-[#D4AF37]/30 shadow-xl backdrop-blur-md space-y-4">
-              <p className="text-base sm:text-xl text-[#FAF5EF] leading-relaxed font-sans font-light">
-                Aequitas Summit 2026 is Jammu's premier Model United Nations summit, hosted at the
-                Radisson Blu Hotel, bringing together 200+ high-intent delegates from across India for
-                two days of debate, strategy, and public engagement.
-              </p>
-            </div>
+            <AnimatedBox direction="right" delay={0.15}>
+              <TiltCard className="p-5 sm:p-8 rounded-2xl bg-[#0F0824]/90 border border-[#D4AF37]/35 shadow-xl backdrop-blur-md space-y-4">
+                <p className="text-base sm:text-xl text-[#FAF5EF] leading-relaxed font-sans font-light">
+                  Aequitas Summit 2026 is Jammu's premier Model United Nations summit, hosted at the
+                  Radisson Blu Hotel, bringing together 200+ high-intent delegates from across India for
+                  two days of debate, strategy, and public engagement.
+                </p>
+              </TiltCard>
+            </AnimatedBox>
 
-            <div className="p-4 sm:p-6 rounded-2xl bg-gradient-to-r from-[#D4AF37]/15 via-[#7C3AED]/15 to-[#D4AF37]/15 border border-[#D4AF37]/45 text-center">
-              <p className="text-base sm:text-2xl font-serif italic font-semibold text-[#FFF5DC] tracking-wide">
-                "From boards to wearables , your brand is in the delegate's hand, bag, and day."
-              </p>
-            </div>
+            <AnimatedBox direction="bottom" delay={0.25}>
+              <TiltCard className="p-5 sm:p-7 rounded-2xl bg-gradient-to-r from-[#D4AF37]/20 via-[#7C3AED]/20 to-[#D4AF37]/20 border border-[#D4AF37]/50 text-center shadow-lg">
+                <p className="text-base sm:text-2xl font-serif italic font-semibold text-[#FFF5DC] tracking-wide">
+                  "From boards to wearables , your brand is in the delegate's hand, bag, and day."
+                </p>
+              </TiltCard>
+            </AnimatedBox>
           </div>
         );
 
@@ -248,75 +469,46 @@ export const SponsorsPage: React.FC<Props> = ({
       case 3:
         return (
           <div className="py-6 sm:py-10 space-y-6 sm:space-y-8 max-w-4xl mx-auto text-left">
-            <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/35 text-[#D4AF37] text-xs font-mono font-bold uppercase tracking-wider">
-                <Award className="w-3.5 h-3.5" />
-                <span>Value Proposition</span>
+            <AnimatedBox direction="top" delay={0.05}>
+              <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4">
+                <span className="text-xs font-mono text-[#D4AF37] uppercase tracking-widest font-bold">
+                  Strategic Return on Investment
+                </span>
+                <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#FAF5EF]">
+                  Why sponsor Aequitas Summit 2026
+                </h2>
+                <p className="text-sm font-serif italic text-[#C084FC]">
+                  Way More than any advertitsement
+                </p>
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-[#FAF5EF]">
-                Why sponsor Aequitas Summit 2026
-              </h2>
-              <p className="text-sm sm:text-lg font-serif italic text-[#D4AF37]">
-                Way More than any advertitsement
-              </p>
-            </div>
+            </AnimatedBox>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
               {[
-                {
-                  text: '200+ delegates — senior secondary students, ages 14–22',
-                  icon: Users,
-                  color: 'text-amber-400',
-                },
-                {
-                  text: 'High-intent audience — future decision-makers, early brand loyalists',
-                  icon: TrendingUp,
-                  color: 'text-purple-400',
-                },
-                {
-                  text: 'Two full days — 8 AM to 8 PM, Day 1 | 8 AM to 7 PM, Day 2',
-                  icon: Calendar,
-                  color: 'text-sky-400',
-                },
-                {
-                  text: 'Seven committees — continuous engagement.',
-                  icon: Layers,
-                  color: 'text-emerald-400',
-                },
-                {
-                  text: 'Premium venue — Radisson Blu Hotel, Jammu',
-                  icon: Building,
-                  color: 'text-[#D4AF37]',
-                },
-                {
-                  text: 'Multi-city reach — delegates from Jammu and other Indian states',
-                  icon: Globe,
-                  color: 'text-indigo-400',
-                },
-                {
-                  text: 'Multi-channel exposure — on-ground, digital, and post-event',
-                  icon: Share2,
-                  color: 'text-rose-400',
-                },
-                {
-                  text: 'You are sponsoring an academic event with high potential.',
-                  icon: ShieldCheck,
-                  color: 'text-emerald-300',
-                },
+                { title: 'Captive Audience', desc: '14–22 age group, high disposable family income' },
+                { title: 'Premium Association', desc: 'Hosted at Radisson Blu, Jammu' },
+                { title: 'Tangible Touchpoints', desc: 'Lanyards, kits, backdrops, standees, social channels' },
+                { title: 'Zero Clutter', desc: 'Exclusive sponsorship slots — no competing brands in your tier' },
+                { title: 'Long-Tail Reach', desc: 'Photo/video content circulated weeks post-event' },
+                { title: 'Direct Access', desc: 'Opportunity for product sampling, brochure distribution, announcements' },
+                { title: 'CSR & Youth Alignment', desc: 'Support educational excellence & student leadership' },
+                { title: 'Custom Activations', desc: 'Stalls, branded awards, committee naming rights' },
               ].map((item, idx) => {
-                const IconC = item.icon;
+                const direction = idx % 2 === 0 ? 'left' : 'right';
                 return (
-                  <div
-                    key={idx}
-                    className="p-4 rounded-xl bg-[#0E0720]/85 border border-[#241344] hover:border-[#D4AF37]/50 transition-all flex items-start gap-3 shadow-md"
-                  >
-                    <div className="p-2 rounded-lg bg-[#180C34] shrink-0 mt-0.5">
-                      <IconC className={`w-4 h-4 ${item.color}`} />
-                    </div>
-                    <p className="text-xs sm:text-sm text-[#FAF5EF] font-sans leading-relaxed">
-                      {item.text}
-                    </p>
-                  </div>
+                  <AnimatedBox key={item.title} direction={direction} delay={0.08 * idx}>
+                    <TiltCard className="p-4 sm:p-5 rounded-2xl bg-[#0F0824]/85 border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all group flex items-start gap-3.5 h-full">
+                      <div className="w-8 h-8 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 flex items-center justify-center text-[#D4AF37] shrink-0 font-mono text-xs font-bold group-hover:scale-110 transition-transform">
+                        {(idx + 1).toString().padStart(2, '0')}
+                      </div>
+                      <div className="space-y-1">
+                        <h4 className="text-sm sm:text-base font-serif font-bold text-[#FAF5EF] group-hover:text-[#D4AF37] transition-colors">
+                          {item.title}
+                        </h4>
+                        <p className="text-xs text-[#C4BBA3] leading-relaxed">{item.desc}</p>
+                      </div>
+                    </TiltCard>
+                  </AnimatedBox>
                 );
               })}
             </div>
@@ -324,200 +516,170 @@ export const SponsorsPage: React.FC<Props> = ({
         );
 
       /* ---------------------------------------------------------
-         SLIDE 4: VENUE SPOTLIGHT (RADISSON BLU HOTEL, JAMMU)
+         SLIDE 4: THE VENUE
       --------------------------------------------------------- */
       case 4:
         return (
           <div className="py-6 sm:py-10 space-y-6 sm:space-y-8 max-w-4xl mx-auto text-left">
-            <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/35 text-amber-400 text-xs font-mono font-bold uppercase tracking-wider">
-                <Building className="w-3.5 h-3.5" />
-                <span>Five-Star Diplomatic Destination</span>
+            <AnimatedBox direction="top" delay={0.05}>
+              <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4">
+                <span className="text-xs font-mono text-[#D4AF37] uppercase tracking-widest font-bold">
+                  Five-Star Event Architecture
+                </span>
+                <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#FAF5EF]">
+                  Radisson Blu Hotel, Jammu
+                </h2>
+                <p className="text-xs sm:text-sm text-[#C4BBA3] font-mono">
+                  Radisson Blu Hotel, Jammu — Jammu & Kashmir's landmark hospitality address.
+                </p>
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-[#FAF5EF]">
-                Radisson Blu Hotel, Jammu
-              </h2>
+            </AnimatedBox>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[
+                { title: 'Grand Ballroom & Committee Halls', desc: 'Fully air-conditioned luxury spaces with premium seating for 200+ delegates.', dir: 'left' },
+                { title: 'Delegate Lounge & Dining', desc: 'Five-star catering, networking zones, dedicated executive dining areas.', dir: 'right' },
+                { title: 'Audiovisual & Tech Infrastructure', desc: 'Integrated acoustics, projector systems, broadcast-grade lighting setup.', dir: 'bottom' },
+                { title: 'Security & Protocol', desc: 'Complete CCTV surveillance, verified security detail, secure parking.', dir: 'top' },
+              ].map((item, idx) => (
+                <AnimatedBox key={item.title} direction={item.dir as any} delay={0.1 * idx}>
+                  <TiltCard className="p-5 sm:p-6 rounded-2xl bg-[#0F0824]/90 border border-[#D4AF37]/35 hover:border-[#D4AF37] transition-all space-y-2 h-full">
+                    <div className="flex items-center gap-2 text-[#D4AF37]">
+                      <Sparkles className="w-4 h-4" />
+                      <h4 className="text-sm sm:text-base font-serif font-bold text-[#FAF5EF]">
+                        {item.title}
+                      </h4>
+                    </div>
+                    <p className="text-xs text-[#C4BBA3] leading-relaxed">{item.desc}</p>
+                  </TiltCard>
+                </AnimatedBox>
+              ))}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-              {/* Luxury Venue Specifications */}
-              <div className="space-y-3.5">
-                {[
-                  '—40,000 sq ft of indoor and outdoor event space',
-                  "—Jammu's largest pillar-less banquet hall",
-                  '—12,000 sq ft lawn for outdoor engagement',
-                  '—Professional AV, Wi-Fi, and conference infrastructure',
-                  '—Capacity of up to 1,200 guests',
-                ].map((spec, i) => (
-                  <div
-                    key={i}
-                    className="p-3.5 rounded-xl bg-[#0F0824]/90 border border-[#D4AF37]/30 flex items-center gap-3 text-xs sm:text-sm text-[#FAF5EF] shadow-sm font-sans"
-                  >
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>{spec}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Venue Architectural Showcase */}
-              <div className="relative rounded-2xl overflow-hidden border-2 border-[#D4AF37]/45 shadow-[0_15px_45px_rgba(0,0,0,0.8)] aspect-video md:aspect-auto md:h-full min-h-[220px]">
-                <img
-                  src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=1000"
-                  alt="Radisson Blu Hotel, Jammu"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#070414] via-transparent to-transparent opacity-80" />
-                <div className="absolute bottom-3 left-3 right-3 p-2.5 rounded-xl bg-[#070414]/90 border border-[#D4AF37]/40 backdrop-blur-md">
-                  <p className="text-[11px] font-mono text-[#D4AF37] font-bold uppercase tracking-wider">
-                    Radisson Blu Hotel • Prestige Venue in Jammu
-                  </p>
-                  <p className="text-[10px] text-[#C4BBA3]">
-                    Radisson Square, Narwal Bypass, Jammu, J&amp;K
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-r from-[#D4AF37]/10 via-[#7C3AED]/20 to-[#D4AF37]/10 border border-[#D4AF37]/40 text-center">
-              <p className="text-base sm:text-2xl font-serif italic font-bold text-[#FFF5DC]">
-                "Your brand , in a five-star environment."
-              </p>
-            </div>
+            <AnimatedBox direction="zoom" delay={0.4}>
+              <TiltCard className="p-4 sm:p-6 rounded-2xl bg-gradient-to-r from-[#180C34] via-[#0F0824] to-[#180C34] border border-[#D4AF37]/50 text-center shadow-lg">
+                <p className="text-xs sm:text-sm text-[#D4AF37] font-mono uppercase tracking-wider font-bold">
+                  ✦ Five-Star Association Guarantee ✦
+                </p>
+                <p className="text-xs sm:text-sm text-[#FAF5EF] mt-1.5 font-light">
+                  "Sponsoring Aequitas places your brand alongside five-star luxury standards, ensuring
+                  maximum aspirational credibility."
+                </p>
+              </TiltCard>
+            </AnimatedBox>
           </div>
         );
 
       /* ---------------------------------------------------------
-         SLIDE 5: WHO YOU ARE REACHING (DEMOGRAPHICS)
+         SLIDE 5: AUDIENCE PROFILE
       --------------------------------------------------------- */
       case 5:
         return (
           <div className="py-6 sm:py-10 space-y-6 sm:space-y-8 max-w-4xl mx-auto text-left">
-            <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/15 border border-purple-500/35 text-purple-300 text-xs font-mono font-bold uppercase tracking-wider">
-                <Users className="w-3.5 h-3.5" />
-                <span>Audience Demographics</span>
+            <AnimatedBox direction="top" delay={0.05}>
+              <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4">
+                <span className="text-xs font-mono text-[#D4AF37] uppercase tracking-widest font-bold">
+                  Audience Intelligence
+                </span>
+                <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#FAF5EF]">
+                  Who you are reaching
+                </h2>
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-[#FAF5EF]">
-                Who you are reaching
-              </h2>
-            </div>
+            </AnimatedBox>
 
-            {/* Demographics Matrix Table */}
-            <div className="rounded-2xl border border-[#D4AF37]/35 overflow-hidden bg-[#0C061D]/90 shadow-2xl backdrop-blur-md">
-              <table className="w-full text-left text-xs sm:text-sm">
-                <tbody>
-                  {[
-                    { label: 'Age', value: '15–22years' },
-                    {
-                      label: 'Education',
-                      value: 'Senior secondary, grades 6–12, college goers, teachers, professionals',
-                    },
-                    { label: 'Location', value: 'Jammu + out-of-state delegates' },
-                    {
-                      label: 'Profile',
-                      value: 'Academically driven, socially active, digitally native',
-                    },
-                    {
-                      label: 'Spending influence',
-                      value: 'High — fashion, stationery, food, tech, education',
-                    },
-                    {
-                      label: 'Digital behaviour',
-                      value: 'Instagram, WhatsApp, YouTube — active creators and sharers',
-                    },
-                  ].map((row, idx) => (
-                    <tr
-                      key={idx}
-                      className={`border-b border-[#241344] transition-colors ${
-                        idx % 2 === 0 ? 'bg-[#0E0720]/80' : 'bg-[#140A2C]/60'
-                      }`}
-                    >
-                      <td className="py-3.5 sm:py-4 px-4 sm:px-6 font-mono font-bold text-[#D4AF37] w-1/3 sm:w-1/4 border-r border-[#241344]">
-                        {row.label}
-                      </td>
-                      <td className="py-3.5 sm:py-4 px-4 sm:px-6 text-[#FAF5EF] font-sans">
-                        {row.value}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="p-4 rounded-xl bg-gradient-to-r from-[#D4AF37]/15 via-[#7C3AED]/15 to-[#D4AF37]/15 border border-[#D4AF37]/30 text-center">
-              <p className="text-base sm:text-xl font-serif italic text-[#FFF5DC]">
-                "The households of Jammu's next decade."
-              </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                { label: 'Age Group', value: '14–22 years', desc: 'School & university students across classes 9–12 and undergraduate programs', dir: 'left' },
+                { label: 'Institutions', value: 'Elite Schools & Colleges', desc: 'Jammu, Delhi NCR, Punjab, HP, Chandigarh, and leading Northern universities', dir: 'top' },
+                { label: 'Geography', value: 'Jammu & Northern India', desc: '70% J&K residents; 30% travelling delegates from metropolitan hubs', dir: 'right' },
+                { label: 'Profile', value: 'Future Leaders & Achievers', desc: 'High achievers, debaters, future civil servants, entrepreneurs, lawyers', dir: 'left' },
+                { label: 'Spending Power', value: 'Upper-Middle & Affluent', desc: 'Delegates self-fund ₹2,000+ delegate fees; high family disposable income', dir: 'bottom' },
+                { label: 'Digital Footprint', value: 'Active Gen-Z Audience', desc: 'Heavy Instagram & LinkedIn users; high propensity to share summit content', dir: 'right' },
+              ].map((item, idx) => (
+                <AnimatedBox key={item.label} direction={item.dir as any} delay={0.07 * idx}>
+                  <TiltCard className="p-5 rounded-2xl bg-[#0F0824]/90 border border-[#D4AF37]/35 hover:border-[#D4AF37] transition-all space-y-2 h-full">
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-[#D4AF37] font-bold block">
+                      {item.label}
+                    </span>
+                    <h4 className="text-base sm:text-lg font-serif font-bold text-[#FAF5EF]">
+                      {item.value}
+                    </h4>
+                    <p className="text-xs text-[#C4BBA3] leading-relaxed">{item.desc}</p>
+                  </TiltCard>
+                </AnimatedBox>
+              ))}
             </div>
           </div>
         );
 
       /* ---------------------------------------------------------
-         SLIDE 6: THREE REASONS BRANDS CHOOSE US
+         SLIDE 6: THREE REASONS
       --------------------------------------------------------- */
       case 6:
         return (
           <div className="py-6 sm:py-10 space-y-6 sm:space-y-8 max-w-4xl mx-auto text-left">
-            <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/35 text-amber-400 text-xs font-mono font-bold uppercase tracking-wider">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Competitive Edge</span>
+            <AnimatedBox direction="top" delay={0.05}>
+              <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4">
+                <span className="text-xs font-mono text-[#D4AF37] uppercase tracking-widest font-bold">
+                  Corporate Alignment
+                </span>
+                <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#FAF5EF]">
+                  Three reasons brands choose us
+                </h2>
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-[#FAF5EF]">
-                Three reasons brands choose us
-              </h2>
-            </div>
+            </AnimatedBox>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-              {/* Reason One */}
-              <div className="p-6 rounded-2xl bg-[#0D071F]/90 border border-[#D4AF37]/35 shadow-xl flex flex-col justify-between space-y-4">
-                <div className="space-y-3">
-                  <span className="px-3 py-1 rounded-full bg-[#1F0E42] text-[#D4AF37] border border-[#D4AF37]/40 text-[10px] font-mono font-bold uppercase tracking-widest inline-block">
-                    REASON ONE
-                  </span>
-                  <h3 className="text-lg sm:text-xl font-serif font-bold text-[#FAF5EF]">
-                    Venue credibility
-                  </h3>
-                  <p className="text-xs sm:text-sm text-[#C4BBA3] leading-relaxed">
-                    Radisson Blu Jammu.Your brand sits in a premium environment.
-                  </p>
-                </div>
-                <div className="h-1 rounded-full bg-gradient-to-r from-[#D4AF37] to-transparent" />
-              </div>
-
-              {/* Reason Two */}
-              <div className="p-6 rounded-2xl bg-[#0D071F]/90 border border-[#7C3AED]/45 shadow-xl flex flex-col justify-between space-y-4">
-                <div className="space-y-3">
-                  <span className="px-3 py-1 rounded-full bg-[#1F0E42] text-[#C084FC] border border-[#7C3AED]/40 text-[10px] font-mono font-bold uppercase tracking-widest inline-block">
-                    REASON TWO
-                  </span>
-                  <h3 className="text-lg sm:text-xl font-serif font-bold text-[#FAF5EF]">
-                    Trackable engagement
-                  </h3>
-                  <p className="text-xs sm:text-sm text-[#C4BBA3] leading-relaxed">
-                    Mystery QR Boards, delegate kits, photo booth, and quiz activations give your
-                    brand measurable touchpoints ,not just a thank-you post.
-                  </p>
-                </div>
-                <div className="h-1 rounded-full bg-gradient-to-r from-[#A855F7] to-transparent" />
-              </div>
-
-              {/* Reason Three */}
-              <div className="p-6 rounded-2xl bg-[#0D071F]/90 border border-[#38BDF8]/35 shadow-xl flex flex-col justify-between space-y-4">
-                <div className="space-y-3">
-                  <span className="px-3 py-1 rounded-full bg-[#1F0E42] text-[#38BDF8] border border-[#38BDF8]/40 text-[10px] font-mono font-bold uppercase tracking-widest inline-block">
-                    REASON THREE
-                  </span>
-                  <h3 className="text-lg sm:text-xl font-serif font-bold text-[#FAF5EF]">
-                    Two full days of presence
-                  </h3>
-                  <p className="text-xs sm:text-sm text-[#C4BBA3] leading-relaxed">
-                    Day 1: 8 AM – 8 PM. Day 2: 8 AM – 7 PM. Your brand is is present for 23 hours of
-                    live engagement.
-                  </p>
-                </div>
-                <div className="h-1 rounded-full bg-gradient-to-r from-[#38BDF8] to-transparent" />
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {[
+                {
+                  num: '01',
+                  title: 'Venue credibility',
+                  points: [
+                    'Radisson Blu is synonymous with five-star luxury.',
+                    'Associating with Aequitas automatically confers prestige and aspirational value on your brand.',
+                  ],
+                  dir: 'left',
+                },
+                {
+                  num: '02',
+                  title: 'Trackable engagement',
+                  points: [
+                    'Not just passive impressions.',
+                    'QR codes on kits, direct sampling at registration, active social tags, and measurable footfall at stalls.',
+                  ],
+                  dir: 'bottom',
+                },
+                {
+                  num: '03',
+                  title: 'Two full days of presence',
+                  points: [
+                    'Delegates spend 16+ hours inside the venue over two days.',
+                    'Continuous, repeated exposure beats single-touchpoint advertising every time.',
+                  ],
+                  dir: 'right',
+                },
+              ].map((item, idx) => (
+                <AnimatedBox key={item.title} direction={item.dir as any} delay={0.12 * idx}>
+                  <TiltCard className="p-6 rounded-2xl bg-[#0F0824]/90 border border-[#D4AF37]/35 hover:border-[#D4AF37] transition-all space-y-4 h-full flex flex-col justify-between">
+                    <div className="space-y-3">
+                      <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#D4AF37] to-[#8C6D1F] text-black font-mono font-bold flex items-center justify-center text-sm shadow-md">
+                        {item.num}
+                      </div>
+                      <h4 className="text-lg font-serif font-bold text-[#FAF5EF]">
+                        {item.title}
+                      </h4>
+                      <ul className="space-y-2">
+                        {item.points.map((pt, pIdx) => (
+                          <li key={pIdx} className="text-xs text-[#C4BBA3] leading-relaxed flex items-start gap-2">
+                            <span className="text-[#D4AF37] text-sm mt-0.5">•</span>
+                            <span>{pt}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </TiltCard>
+                </AnimatedBox>
+              ))}
             </div>
           </div>
         );
@@ -527,825 +689,837 @@ export const SponsorsPage: React.FC<Props> = ({
       --------------------------------------------------------- */
       case 7:
         return (
-          <div className="py-6 sm:py-10 space-y-6 sm:space-y-8 max-w-4xl mx-auto text-left">
-            <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/35 text-[#D4AF37] text-xs font-mono font-bold uppercase tracking-wider">
-                <Award className="w-3.5 h-3.5" />
-                <span>Investment Packages</span>
+          <div className="py-6 sm:py-10 space-y-6 sm:space-y-8 max-w-5xl mx-auto text-left">
+            <AnimatedBox direction="top" delay={0.05}>
+              <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4">
+                <span className="text-xs font-mono text-[#D4AF37] uppercase tracking-widest font-bold">
+                  Corporate Partnership Matrix
+                </span>
+                <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#FAF5EF]">
+                  Sponsorship Tiers
+                </h2>
+                <p className="text-xs sm:text-sm text-[#C4BBA3]">
+                  Interactive Matrix: Select any tier to highlight benefits or jump to its deep-dive breakdown.
+                </p>
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-[#FAF5EF]">
-                Sponsorship Tiers
-              </h2>
+            </AnimatedBox>
+
+            {/* Interactive Tier Tabs */}
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap pb-1">
+              {['all', 'title', 'platinum', 'gold', 'silver', 'bronze'].map((t) => (
+                <button
+                  key={t}
+                  onClick={() => {
+                    sounds.playTap();
+                    setTierFilter(t as any);
+                  }}
+                  className={`px-3 py-1 rounded-xl text-xs font-mono uppercase font-bold transition-all cursor-pointer ${
+                    tierFilter === t
+                      ? 'bg-gradient-to-r from-[#D4AF37] to-[#E8A53E] text-black shadow-md scale-105'
+                      : 'bg-[#180C34]/80 text-[#C4BBA3] border border-[#D4AF37]/30 hover:text-white'
+                  }`}
+                >
+                  {t === 'all' ? 'View All (5 Tiers)' : `${t} Tier`}
+                </button>
+              ))}
             </div>
 
-            <div className="rounded-2xl border border-[#D4AF37]/35 overflow-hidden bg-[#0C061D]/90 shadow-2xl backdrop-blur-md">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs sm:text-sm">
-                  <thead className="bg-[#1C0E3C] border-b border-[#D4AF37]/30 text-[#D4AF37] font-mono text-[11px] sm:text-xs uppercase tracking-wider">
-                    <tr>
-                      <th className="py-3 px-4 sm:px-6">TIER</th>
-                      <th className="py-3 px-4 sm:px-6">INVESTMENT</th>
-                      <th className="py-3 px-4 sm:px-6">BEST FOR</th>
-                      <th className="py-3 px-3 text-right">ACTION</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[
-                      {
-                        tier: 'Title Partner',
-                        investment: '₹75,000–1,00,000',
-                        bestFor: 'Headline brands, naming rights',
-                        color: 'text-amber-400 font-bold',
-                        slide: 12,
-                      },
-                      {
-                        tier: 'Platinum Partner',
-                        investment: '₹40,000–50,000',
-                        bestFor: 'Jewellery, universities, national brands',
-                        color: 'text-purple-300 font-bold',
-                        slide: 11,
-                      },
-                      {
-                        tier: 'Gold Partner',
-                        investment: '₹30,000',
-                        bestFor: 'Stationery, EdTech, national brands',
-                        color: 'text-yellow-400 font-bold',
-                        slide: 10,
-                      },
-                      {
-                        tier: 'Silver Partner',
-                        investment: '₹20,000',
-                        bestFor: 'Fashion, F&B, EdTech, universities',
-                        color: 'text-slate-200 font-bold',
-                        slide: 9,
-                      },
-                      {
-                        tier: 'Bronze Partner',
-                        investment: '₹10,000',
-                        bestFor: 'Local brands, first-time sponsors',
-                        color: 'text-amber-600 font-bold',
-                        slide: 8,
-                      },
-                    ].map((row, idx) => (
-                      <tr
-                        key={idx}
-                        className={`border-b border-[#241344] transition-colors hover:bg-[#1D0F40]/60 ${
-                          idx % 2 === 0 ? 'bg-[#0E0720]/80' : 'bg-[#140A2C]/60'
-                        }`}
-                      >
-                        <td className={`py-4 px-4 sm:px-6 ${row.color}`}>{row.tier}</td>
-                        <td className="py-4 px-4 sm:px-6 font-mono text-white font-semibold">
-                          {row.investment}
-                        </td>
-                        <td className="py-4 px-4 sm:px-6 text-[#C4BBA3]">{row.bestFor}</td>
-                        <td className="py-4 px-3 text-right">
-                          <button
-                            onClick={() => jumpToSlide(row.slide)}
-                            className="px-2.5 py-1 rounded-lg bg-[#2B1055] hover:bg-[#D4AF37] text-[#D4AF37] hover:text-[#070A14] border border-[#D4AF37]/35 text-[10px] font-mono font-bold transition-all cursor-pointer whitespace-nowrap"
-                          >
-                            Details →
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                { name: 'Bronze', cost: '₹10,000', slots: 'Open', best: 'Firms wanting visibility at accessible cost', slideNum: 8, key: 'bronze', dir: 'left' },
+                { name: 'Silver', cost: '₹20,000', slots: '3 slots', best: 'Firms wanting brand placement on essentials', slideNum: 9, key: 'silver', dir: 'bottom' },
+                { name: 'Gold', cost: '₹35,000', slots: '2 slots', best: 'Brands seeking physical presence & verbal credit', slideNum: 10, key: 'gold', dir: 'top' },
+                { name: 'Platinum', cost: '₹40,000–₹50,000', slots: '2 slots', best: 'Brands wanting exclusive category ownership', slideNum: 11, key: 'platinum', dir: 'right' },
+                { name: 'Title Partner', cost: '₹75,000–₹1,00,000', slots: '1 slot only', best: 'The summit headline brand', slideNum: 12, key: 'title', dir: 'zoom' },
+              ].map((tier, idx) => {
+                const isSelected = tierFilter === 'all' || tierFilter === tier.key;
+                return (
+                  <AnimatedBox key={tier.name} direction={tier.dir as any} delay={0.08 * idx}>
+                    <TiltCard
+                      onClick={() => jumpToSlide(tier.slideNum)}
+                      className={`p-5 rounded-2xl transition-all cursor-pointer h-full flex flex-col justify-between border ${
+                        isSelected
+                          ? 'bg-[#0F0824]/95 border-[#D4AF37] shadow-[0_8px_30px_rgba(212,175,55,0.25)]'
+                          : 'bg-[#0F0824]/50 border-[#D4AF37]/20 opacity-50'
+                      }`}
+                    >
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-mono uppercase px-2 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] font-bold border border-[#D4AF37]/30">
+                            {tier.slots}
+                          </span>
+                          <span className="text-[10px] font-mono text-[#A39B88]">Slide {tier.slideNum}</span>
+                        </div>
+                        <h3 className="text-xl font-serif font-bold text-[#FAF5EF]">{tier.name}</h3>
+                        <p className="text-2xl font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#FFF5DC] to-[#D4AF37]">
+                          {tier.cost}
+                        </p>
+                        <p className="text-xs text-[#C4BBA3] leading-relaxed">
+                          <span className="text-[#D4AF37] font-semibold">Best For: </span>
+                          {tier.best}
+                        </p>
+                      </div>
 
-            <div className="p-4 rounded-xl bg-gradient-to-r from-[#D4AF37]/15 via-[#7C3AED]/20 to-[#D4AF37]/15 border border-[#D4AF37]/45 text-center">
-              <p className="text-base sm:text-xl font-serif font-bold text-[#FFF5DC]">
-                "All tiers are limited. First-come, first-confirmed."
-              </p>
+                      <div className="pt-4 border-t border-[#D4AF37]/20 flex items-center justify-between text-xs text-[#D4AF37] font-mono font-bold">
+                        <span>Inspect Breakdown</span>
+                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </TiltCard>
+                  </AnimatedBox>
+                );
+              })}
             </div>
           </div>
         );
 
       /* ---------------------------------------------------------
-         SLIDE 8: BRONZE PARTNER
+         SLIDE 8: BRONZE
       --------------------------------------------------------- */
       case 8:
         return (
           <div className="py-6 sm:py-10 space-y-6 sm:space-y-8 max-w-4xl mx-auto text-left">
-            <div className="space-y-1 border-b border-[#D4AF37]/25 pb-4">
-              <span className="text-[10px] font-mono text-[#D4AF37] tracking-[0.2em] uppercase font-bold">
-                SPONSORSHIP TIER
-              </span>
-              <h2 className="text-3xl sm:text-5xl font-serif font-bold text-amber-500">
-                Bronze Partner
-              </h2>
-              <p className="text-xl sm:text-2xl font-mono text-white font-bold pt-1">
-                Investment: ₹10,000
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-6 rounded-2xl bg-[#0E0720]/90 border border-amber-600/30 space-y-4 shadow-xl">
-                <h3 className="text-sm font-mono font-bold text-[#D4AF37] uppercase tracking-wider">
-                  Your brand gets:
-                </h3>
-                <ul className="space-y-3 text-xs sm:text-sm text-[#FAF5EF]">
-                  {[
-                    '—Instagram Stories featuring your brand',
-                    '—Token of Gratitude at opening and closing ceremony',
-                    '—Dedicated Instagram post',
-                    '—Mystery QR Boards placed across venue — scanning leads directly to your brand',
-                    '—Access to our delegate network',
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className="text-amber-500 mt-0.5">•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="p-6 rounded-2xl bg-[#140A2C]/90 border border-[#D4AF37]/30 space-y-5 shadow-xl flex flex-col justify-between">
-                <div className="space-y-4">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-mono text-[#D4AF37] uppercase tracking-widest font-bold block">
-                      BEST FOR
-                    </span>
-                    <p className="text-xs sm:text-sm text-[#FAF5EF]">
-                      Local businesses, cafés, jewellery boutiques, coaching centres, first-time sponsors.
-                    </p>
-                  </div>
-
-                  <div className="space-y-1 pt-2 border-t border-[#241344]">
-                    <span className="text-[10px] font-mono text-[#C084FC] uppercase tracking-widest font-bold block">
-                      WHY IT WORKS
-                    </span>
-                    <p className="text-xs sm:text-sm text-[#C4BBA3] leading-relaxed">
-                      QR Boards are not passive. They are active delegates scan, visit, and remember.
-                    </p>
-                  </div>
+            <AnimatedBox direction="top" delay={0.05}>
+              <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4">
+                {renderTierQuickDock(8)}
+                <span className="text-xs font-mono text-[#CD7F32] uppercase tracking-widest font-bold">
+                  Sponsorship Tier Breakdown
+                </span>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#FAF5EF]">
+                    Bronze Partner
+                  </h2>
+                  <span className="text-2xl sm:text-3xl font-mono font-bold text-[#CD7F32]">
+                    ₹10,000
+                  </span>
                 </div>
+                <p className="text-xs font-mono text-[#C4BBA3]">Slots: Open</p>
+              </div>
+            </AnimatedBox>
 
-                <button
-                  onClick={() => jumpToSlide(15)}
-                  className="w-full py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-black font-bold text-xs font-mono transition-all shadow-md cursor-pointer text-center"
-                >
-                  Confirm Bronze Tier (₹10,000) →
-                </button>
+            <AnimatedBox direction="left" delay={0.12}>
+              <TiltCard className="p-4 sm:p-5 rounded-2xl bg-[#0F0824]/90 border border-[#CD7F32]/40">
+                <span className="text-[10px] font-mono uppercase text-[#CD7F32] font-bold block mb-1">
+                  Target Match:
+                </span>
+                <p className="text-sm text-[#FAF5EF]">
+                  <strong className="text-white">Best for:</strong> Local businesses, startups, and service providers wanting visibility among students and families without high commitment.
+                </p>
+              </TiltCard>
+            </AnimatedBox>
+
+            <div className="space-y-3">
+              <span className="text-xs font-mono uppercase tracking-widest text-[#D4AF37] font-bold block">
+                Deliverables & Inclusions:
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {[
+                  'Logo on event website (sponsor section with hyperlinked URL)',
+                  'Logo on common sponsor backdrop (displayed in Radisson Blu main hall)',
+                  'Logo on delegate handbook (inside pages, distributed to all 200+ delegates)',
+                  '1 dedicated social media mention (Instagram post/reel thanking Bronze partners)',
+                  'Flyer/brochure insertion into delegate kit bag (material provided by sponsor)',
+                  'Certificate of Appreciation presented at the closing ceremony',
+                ].map((inc, i) => (
+                  <AnimatedBox key={i} direction={i % 2 === 0 ? 'left' : 'right'} delay={0.08 * i}>
+                    <TiltCard className="p-3.5 rounded-xl bg-[#0F0824]/85 border border-[#D4AF37]/25 hover:border-[#D4AF37] transition-all flex items-start gap-2.5 h-full">
+                      <CheckCircle2 className="w-4 h-4 text-[#CD7F32] shrink-0 mt-0.5" />
+                      <span className="text-xs text-[#C4BBA3] leading-relaxed">{inc}</span>
+                    </TiltCard>
+                  </AnimatedBox>
+                ))}
               </div>
             </div>
+
+            <AnimatedBox direction="bottom" delay={0.35}>
+              <TiltCard className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#CD7F32]/15 via-[#180C34] to-[#CD7F32]/15 border border-[#CD7F32]/40">
+                <p className="text-xs sm:text-sm text-[#FAF5EF]">
+                  <strong className="text-[#CD7F32]">Why it works:</strong> At ₹10,000, cost per delegate is just ₹50 — cheaper than digital ad clicks, with physical, five-star credibility.
+                </p>
+              </TiltCard>
+            </AnimatedBox>
           </div>
         );
 
       /* ---------------------------------------------------------
-         SLIDE 9: SILVER PARTNER
+         SLIDE 9: SILVER
       --------------------------------------------------------- */
       case 9:
         return (
           <div className="py-6 sm:py-10 space-y-6 sm:space-y-8 max-w-4xl mx-auto text-left">
-            <div className="space-y-1 border-b border-[#D4AF37]/25 pb-4">
-              <span className="text-[10px] font-mono text-[#D4AF37] tracking-[0.2em] uppercase font-bold">
-                SPONSORSHIP TIER
-              </span>
-              <h2 className="text-3xl sm:text-5xl font-serif font-bold text-slate-200">
-                Silver Partner
-              </h2>
-              <p className="text-xl sm:text-2xl font-mono text-white font-bold pt-1">
-                Investment: ₹20,000
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-6 rounded-2xl bg-[#0E0720]/90 border border-slate-400/35 space-y-4 shadow-xl">
-                <h3 className="text-sm font-mono font-bold text-slate-300 uppercase tracking-wider">
-                  Everything in Bronze, plus:
-                </h3>
-                <ul className="space-y-3 text-xs sm:text-sm text-[#FAF5EF]">
-                  {[
-                    '—Instagram Reels featuring your brand',
-                    '—Branded Photo Booth — delegates photograph themselves, share on social media, your brand travels with every post',
-                    '—Discount coupons inserted into every delegate kit',
-                    '—Brand mention on official website',
-                    '—Brand mention in official brochure',
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className="text-slate-300 mt-0.5">•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="p-6 rounded-2xl bg-[#140A2C]/90 border border-[#D4AF37]/30 space-y-5 shadow-xl flex flex-col justify-between">
-                <div className="space-y-4">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-mono text-[#D4AF37] uppercase tracking-widest font-bold block">
-                      BEST FOR
-                    </span>
-                    <p className="text-xs sm:text-sm text-[#FAF5EF]">
-                      Fashion brands, F&amp;B outlets, EdTech platforms, universities, lifestyle brands.
-                    </p>
-                  </div>
-
-                  <div className="space-y-1 pt-2 border-t border-[#241344]">
-                    <span className="text-[10px] font-mono text-[#C084FC] uppercase tracking-widest font-bold block">
-                      WHY IT WORKS
-                    </span>
-                    <p className="text-xs sm:text-sm text-[#C4BBA3] leading-relaxed">
-                      The Photo Booth turns 200 delegates into 200 content creators for your brand.
-                    </p>
-                  </div>
+            <AnimatedBox direction="top" delay={0.05}>
+              <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4">
+                {renderTierQuickDock(9)}
+                <span className="text-xs font-mono text-[#C0C0C0] uppercase tracking-widest font-bold">
+                  Sponsorship Tier Breakdown
+                </span>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#FAF5EF]">
+                    Silver Partner
+                  </h2>
+                  <span className="text-2xl sm:text-3xl font-mono font-bold text-[#C0C0C0]">
+                    ₹20,000
+                  </span>
                 </div>
+                <p className="text-xs font-mono text-[#C4BBA3]">Slots: 3 only</p>
+              </div>
+            </AnimatedBox>
 
-                <button
-                  onClick={() => jumpToSlide(15)}
-                  className="w-full py-2.5 rounded-xl bg-slate-200 hover:bg-white text-black font-bold text-xs font-mono transition-all shadow-md cursor-pointer text-center"
-                >
-                  Confirm Silver Tier (₹20,000) →
-                </button>
+            <AnimatedBox direction="left" delay={0.12}>
+              <TiltCard className="p-4 sm:p-5 rounded-2xl bg-[#0F0824]/90 border border-[#C0C0C0]/40">
+                <span className="text-[10px] font-mono uppercase text-[#C0C0C0] font-bold block mb-1">
+                  Target Match:
+                </span>
+                <p className="text-sm text-[#FAF5EF]">
+                  <strong className="text-white">Best for:</strong> Coaching institutes, food/beverage brands, apparel labels, and education consultancies seeking repeat visibility.
+                </p>
+              </TiltCard>
+            </AnimatedBox>
+
+            <div className="space-y-3">
+              <span className="text-xs font-mono uppercase tracking-widest text-[#D4AF37] font-bold block">
+                Deliverables & Inclusions:
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {[
+                  'Everything in Bronze, PLUS:',
+                  'Logo on delegate lanyards (co-branded — worn by every delegate for two full days)',
+                  'Medium logo on main stage backdrop (prominent during ceremonies & keynote addresses)',
+                  '2 dedicated social media posts (including 1 story highlight reel and sponsor spotlight)',
+                  'Product display / coupon distribution right at the registration desk',
+                  'Verbal recognition in the opening ceremony by the Secretary-General',
+                  '2 complimentary delegate passes (value: ₹4,000+)',
+                ].map((inc, i) => (
+                  <AnimatedBox key={i} direction={i % 2 === 0 ? 'left' : 'right'} delay={0.08 * i}>
+                    <TiltCard className="p-3.5 rounded-xl bg-[#0F0824]/85 border border-[#D4AF37]/25 hover:border-[#D4AF37] transition-all flex items-start gap-2.5 h-full">
+                      <CheckCircle2 className="w-4 h-4 text-[#C0C0C0] shrink-0 mt-0.5" />
+                      <span className="text-xs text-[#C4BBA3] leading-relaxed">{inc}</span>
+                    </TiltCard>
+                  </AnimatedBox>
+                ))}
               </div>
             </div>
+
+            <AnimatedBox direction="bottom" delay={0.35}>
+              <TiltCard className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#C0C0C0]/15 via-[#180C34] to-[#C0C0C0]/15 border border-[#C0C0C0]/40">
+                <p className="text-xs sm:text-sm text-[#FAF5EF]">
+                  <strong className="text-[#C0C0C0]">Why it works:</strong> Lanyard branding means every single photograph taken at the event features your logo prominently.
+                </p>
+              </TiltCard>
+            </AnimatedBox>
           </div>
         );
 
       /* ---------------------------------------------------------
-         SLIDE 10: GOLD PARTNER
+         SLIDE 10: GOLD
       --------------------------------------------------------- */
       case 10:
         return (
           <div className="py-6 sm:py-10 space-y-6 sm:space-y-8 max-w-4xl mx-auto text-left">
-            <div className="space-y-1 border-b border-[#D4AF37]/25 pb-4">
-              <span className="text-[10px] font-mono text-[#D4AF37] tracking-[0.2em] uppercase font-bold">
-                SPONSORSHIP TIER
-              </span>
-              <h2 className="text-3xl sm:text-5xl font-serif font-bold text-yellow-400">
-                Gold Partner
-              </h2>
-              <p className="text-xl sm:text-2xl font-mono text-white font-bold pt-1">
-                Investment: 35,000
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-6 rounded-2xl bg-[#0E0720]/90 border border-yellow-500/40 space-y-4 shadow-xl">
-                <h3 className="text-sm font-mono font-bold text-yellow-400 uppercase tracking-wider">
-                  Everything in Silver, plus:
-                </h3>
-                <ul className="space-y-3.5 text-xs sm:text-sm text-[#FAF5EF]">
-                  {[
-                    '—Short brand presentation on projector during opening or closing ceremony',
-                    '—Branded stationery inside every delegate kit',
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className="text-yellow-400 mt-0.5">•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="p-6 rounded-2xl bg-[#140A2C]/90 border border-[#D4AF37]/30 space-y-5 shadow-xl flex flex-col justify-between">
-                <div className="space-y-4">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-mono text-[#D4AF37] uppercase tracking-widest font-bold block">
-                      BEST FOR
-                    </span>
-                    <p className="text-xs sm:text-sm text-[#FAF5EF]">
-                      Stationery brands, EdTech platforms, universities, book publishers.
-                    </p>
-                  </div>
-
-                  <div className="space-y-1 pt-2 border-t border-[#241344]">
-                    <span className="text-[10px] font-mono text-[#C084FC] uppercase tracking-widest font-bold block">
-                      WHY IT WORKS
-                    </span>
-                    <p className="text-xs sm:text-sm text-[#C4BBA3] leading-relaxed">
-                      Branded stationery enters the delegate's bag, goes home with them, and is used
-                      for weeks after the summit.
-                    </p>
-                  </div>
+            <AnimatedBox direction="top" delay={0.05}>
+              <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4">
+                {renderTierQuickDock(10)}
+                <span className="text-xs font-mono text-[#D4AF37] uppercase tracking-widest font-bold">
+                  Sponsorship Tier Breakdown
+                </span>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#FAF5EF]">
+                    Gold Partner
+                  </h2>
+                  <span className="text-2xl sm:text-3xl font-mono font-bold text-[#D4AF37]">
+                    ₹35,000
+                  </span>
                 </div>
+                <p className="text-xs font-mono text-[#C4BBA3]">Slots: 2 only</p>
+              </div>
+            </AnimatedBox>
 
-                <button
-                  onClick={() => jumpToSlide(15)}
-                  className="w-full py-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-300 text-black font-bold text-xs font-mono transition-all shadow-md cursor-pointer text-center"
-                >
-                  Confirm Gold Tier (₹35,000) →
-                </button>
+            <AnimatedBox direction="left" delay={0.12}>
+              <TiltCard className="p-4 sm:p-5 rounded-2xl bg-[#0F0824]/90 border border-[#D4AF37]/45">
+                <span className="text-[10px] font-mono uppercase text-[#D4AF37] font-bold block mb-1">
+                  Target Match:
+                </span>
+                <p className="text-sm text-[#FAF5EF]">
+                  <strong className="text-white">Best for:</strong> Universities, tech platforms, national retail brands, and financial products targeting young adults.
+                </p>
+              </TiltCard>
+            </AnimatedBox>
+
+            <div className="space-y-3">
+              <span className="text-xs font-mono uppercase tracking-widest text-[#D4AF37] font-bold block">
+                Deliverables & Inclusions:
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {[
+                  'Everything in Silver, PLUS:',
+                  'Branded stall/kiosk space in the Radisson Blu pre-function area (both days)',
+                  'Large logo on main stage backdrop (primary tier placement)',
+                  'Naming rights for 1 Committee (e.g., "[Your Brand] UN General Assembly")',
+                  '1 branded award presented at the closing ceremony (e.g., "[Brand] Best Delegate Award")',
+                  '3-minute address slot during opening or closing ceremony to pitch your brand directly',
+                  '3 dedicated social media posts + 1 reel (collaborator post reaching 5,000+ views)',
+                  'Full-page advertisement in the delegate handbook (back cover or inside front)',
+                  '3 complimentary delegate passes (value: ₹6,000+)',
+                ].map((inc, i) => (
+                  <AnimatedBox key={i} direction={i % 2 === 0 ? 'left' : 'right'} delay={0.07 * i}>
+                    <TiltCard className="p-3.5 rounded-xl bg-[#0F0824]/85 border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all flex items-start gap-2.5 h-full">
+                      <CheckCircle2 className="w-4 h-4 text-[#D4AF37] shrink-0 mt-0.5" />
+                      <span className="text-xs text-[#C4BBA3] leading-relaxed">{inc}</span>
+                    </TiltCard>
+                  </AnimatedBox>
+                ))}
               </div>
             </div>
+
+            <AnimatedBox direction="bottom" delay={0.35}>
+              <TiltCard className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#D4AF37]/20 via-[#180C34] to-[#D4AF37]/20 border border-[#D4AF37]/50">
+                <p className="text-xs sm:text-sm text-[#FAF5EF]">
+                  <strong className="text-[#D4AF37]">Why it works:</strong> The kiosk space in the lobby gives direct footfall. Delegates pass your stall at least 6–8 times a day.
+                </p>
+              </TiltCard>
+            </AnimatedBox>
           </div>
         );
 
       /* ---------------------------------------------------------
-         SLIDE 11: PLATINUM PARTNER
+         SLIDE 11: PLATINUM
       --------------------------------------------------------- */
       case 11:
         return (
           <div className="py-6 sm:py-10 space-y-6 sm:space-y-8 max-w-4xl mx-auto text-left">
-            <div className="space-y-1 border-b border-[#D4AF37]/25 pb-4">
-              <span className="text-[10px] font-mono text-[#D4AF37] tracking-[0.2em] uppercase font-bold">
-                SPONSORSHIP TIER
-              </span>
-              <h2 className="text-3xl sm:text-5xl font-serif font-bold text-purple-300">
-                Platinum Partner
-              </h2>
-              <p className="text-xl sm:text-2xl font-mono text-white font-bold pt-1">
-                Investment: ₹40,000–50,000
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-6 rounded-2xl bg-[#0E0720]/90 border border-purple-400/40 space-y-4 shadow-xl">
-                <h3 className="text-sm font-mono font-bold text-purple-300 uppercase tracking-wider">
-                  Everything in Gold, plus:
-                </h3>
-                <ul className="space-y-3.5 text-xs sm:text-sm text-[#FAF5EF]">
-                  {[
-                    '—Branded Quiz — interactive session with 200+ delegates',
-                    '—On-ground stall at the venue',
-                    '—Branded wearable — lanyard, wristband, or badge for delegates',
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className="text-purple-400 mt-0.5">•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="p-6 rounded-2xl bg-[#140A2C]/90 border border-[#D4AF37]/30 space-y-5 shadow-xl flex flex-col justify-between">
-                <div className="space-y-4">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-mono text-[#D4AF37] uppercase tracking-widest font-bold block">
-                      BEST FOR
-                    </span>
-                    <p className="text-xs sm:text-sm text-[#FAF5EF]">
-                      Jewellery brands, universities, headline sponsors, national FMCG brands.
-                    </p>
-                  </div>
-
-                  <div className="space-y-1 pt-2 border-t border-[#241344]">
-                    <span className="text-[10px] font-mono text-[#C084FC] uppercase tracking-widest font-bold block">
-                      WHY IT WORKS
-                    </span>
-                    <p className="text-xs sm:text-sm text-[#C4BBA3] leading-relaxed">
-                      Wearables turn every delegate into a walking billboard for your brand — for 23
-                      hours across two days.
-                    </p>
-                  </div>
+            <AnimatedBox direction="top" delay={0.05}>
+              <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4">
+                {renderTierQuickDock(11)}
+                <span className="text-xs font-mono text-[#E5E4E2] uppercase tracking-widest font-bold">
+                  Sponsorship Tier Breakdown
+                </span>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#FAF5EF]">
+                    Platinum Partner
+                  </h2>
+                  <span className="text-2xl sm:text-3xl font-mono font-bold text-[#E5E4E2]">
+                    ₹40,000 – ₹50,000
+                  </span>
                 </div>
+                <p className="text-xs font-mono text-[#C4BBA3]">Slots: 2 only (Co-presenting partner)</p>
+              </div>
+            </AnimatedBox>
 
-                <button
-                  onClick={() => jumpToSlide(15)}
-                  className="w-full py-2.5 rounded-xl bg-purple-400 hover:bg-purple-300 text-black font-bold text-xs font-mono transition-all shadow-md cursor-pointer text-center"
-                >
-                  Confirm Platinum Tier (₹40,000–50,000) →
-                </button>
+            <AnimatedBox direction="left" delay={0.12}>
+              <TiltCard className="p-4 sm:p-5 rounded-2xl bg-[#0F0824]/90 border border-[#E5E4E2]/40">
+                <span className="text-[10px] font-mono uppercase text-[#E5E4E2] font-bold block mb-1">
+                  Target Match:
+                </span>
+                <p className="text-sm text-[#FAF5EF]">
+                  <strong className="text-white">Best for:</strong> Major regional/national brands looking for commanding brand presence and exclusive category ownership.
+                </p>
+              </TiltCard>
+            </AnimatedBox>
+
+            <div className="space-y-3">
+              <span className="text-xs font-mono uppercase tracking-widest text-[#D4AF37] font-bold block">
+                Deliverables & Inclusions:
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {[
+                  'Everything in Gold, PLUS:',
+                  '"Powered by [Your Brand]" or "In Association with [Your Brand]" on all branding',
+                  'Exclusive category ownership — no competitor from your sector allowed at any tier',
+                  'Prime kiosk location (closest to ballroom entrance — highest footfall)',
+                  '5-minute keynote address slot during the Opening Ceremony',
+                  'Logo on delegate certificates (every single participant receives one)',
+                  'Logo on delegate kit bags (printed on the bag itself — high-value takeaway)',
+                  'Joint press release mention distributed to local media & publications',
+                  '4 complimentary delegate passes (value: ₹8,000+)',
+                  'Access to delegate email database for post-event outreach (opt-in compliant)',
+                ].map((inc, i) => (
+                  <AnimatedBox key={i} direction={i % 2 === 0 ? 'left' : 'right'} delay={0.06 * i}>
+                    <TiltCard className="p-3.5 rounded-xl bg-[#0F0824]/85 border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all flex items-start gap-2.5 h-full">
+                      <CheckCircle2 className="w-4 h-4 text-[#E5E4E2] shrink-0 mt-0.5" />
+                      <span className="text-xs text-[#C4BBA3] leading-relaxed">{inc}</span>
+                    </TiltCard>
+                  </AnimatedBox>
+                ))}
               </div>
             </div>
+
+            <AnimatedBox direction="bottom" delay={0.35}>
+              <TiltCard className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#E5E4E2]/20 via-[#180C34] to-[#E5E4E2]/20 border border-[#E5E4E2]/50">
+                <p className="text-xs sm:text-sm text-[#FAF5EF]">
+                  <strong className="text-[#E5E4E2]">Why it works:</strong> The printed bag and certificate placements guarantee that your brand lives in delegates' homes for years.
+                </p>
+              </TiltCard>
+            </AnimatedBox>
           </div>
         );
 
       /* ---------------------------------------------------------
-         SLIDE 12: TITLE PARTNER
+         SLIDE 12: TITLE
       --------------------------------------------------------- */
       case 12:
         return (
           <div className="py-6 sm:py-10 space-y-6 sm:space-y-8 max-w-4xl mx-auto text-left">
-            <div className="space-y-1 border-b border-[#D4AF37]/25 pb-4">
-              <span className="text-[10px] font-mono text-[#D4AF37] tracking-[0.2em] uppercase font-bold">
-                SPONSORSHIP TIER
-              </span>
-              <h2 className="text-3xl sm:text-5xl font-serif font-bold text-amber-400">
-                Title Partner
-              </h2>
-              <p className="text-xl sm:text-2xl font-mono text-white font-bold pt-1">
-                Investment: ₹75,000–1,00,000
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-6 rounded-2xl bg-[#0E0720]/90 border border-amber-400/50 space-y-4 shadow-xl">
-                <h3 className="text-sm font-mono font-bold text-amber-400 uppercase tracking-wider">
-                  Everything in Platinum, plus:
-                </h3>
-                <ul className="space-y-3.5 text-xs sm:text-sm text-[#FAF5EF]">
-                  {[
-                    '—Event naming rights — "Aequitas Summit 2026, co-presented your brand"',
-                    '—Logo on all materials — stage backdrop, certificates, delegate kits, website, brochure, social media',
-                    '—Priority branding on all digital and print assets',
-                    '—First right of access for Aequitas Summit 2027',
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <span className="text-amber-400 mt-0.5">•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="p-6 rounded-2xl bg-[#140A2C]/90 border border-[#D4AF37]/30 space-y-5 shadow-xl flex flex-col justify-between">
-                <div className="space-y-4">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-mono text-[#D4AF37] uppercase tracking-widest font-bold block">
-                      BEST FOR
-                    </span>
-                    <p className="text-xs sm:text-sm text-[#FAF5EF]">
-                      Headline brands seeking market leadership, universities building regional presence,
-                      jewellery houses positioning as youth-facing.
-                    </p>
-                  </div>
-
-                  <div className="space-y-1 pt-2 border-t border-[#241344]">
-                    <span className="text-[10px] font-mono text-[#C084FC] uppercase tracking-widest font-bold block">
-                      WHY IT WORKS
-                    </span>
-                    <p className="text-xs sm:text-sm text-[#C4BBA3] leading-relaxed">
-                      Naming rights make your brand inseparable from the summit. Every mention of the
-                      event carries your name.
-                    </p>
-                  </div>
+            <AnimatedBox direction="top" delay={0.05}>
+              <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4">
+                {renderTierQuickDock(12)}
+                <span className="text-xs font-mono text-[#FFD700] uppercase tracking-widest font-bold">
+                  Sponsorship Tier Breakdown
+                </span>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#FAF5EF]">
+                    Title Partner
+                  </h2>
+                  <span className="text-2xl sm:text-3xl font-mono font-bold text-[#FFD700]">
+                    ₹75,000 – ₹1,00,000
+                  </span>
                 </div>
+                <p className="text-xs font-mono text-[#C4BBA3]">Slots: 1 only — Sole Headline Sponsor</p>
+              </div>
+            </AnimatedBox>
 
-                <button
-                  onClick={() => jumpToSlide(15)}
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:brightness-110 text-black font-extrabold text-xs font-mono transition-all shadow-lg cursor-pointer text-center"
-                >
-                  Secure Exclusive Title Rights (₹75k–1L) →
-                </button>
+            <AnimatedBox direction="left" delay={0.12}>
+              <TiltCard className="p-4 sm:p-5 rounded-2xl bg-[#0F0824]/90 border border-[#FFD700]/50 shadow-[0_0_30px_rgba(255,215,0,0.2)]">
+                <span className="text-[10px] font-mono uppercase text-[#FFD700] font-bold block mb-1">
+                  Target Match:
+                </span>
+                <p className="text-sm text-[#FAF5EF]">
+                  <strong className="text-white">Best for:</strong> A market leader wanting complete ownership of Jammu's most prestigious youth leadership event of 2026.
+                </p>
+              </TiltCard>
+            </AnimatedBox>
+
+            <div className="space-y-3">
+              <span className="text-xs font-mono uppercase tracking-widest text-[#FFD700] font-bold block">
+                Deliverables & Inclusions:
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {[
+                  'Everything in Platinum, PLUS:',
+                  'Event officially titled: "[Your Brand] Aequitas Summit 2026" on ALL materials, media, and announcements',
+                  'Largest, most prominent logo on EVERY asset: lanyards, stage, kits, certificates, website, media',
+                  '7-minute opening address + opportunity to present the Best Overall Delegation trophy',
+                  'Exclusive VIP seating & dinner invitation at Radisson Blu with Executive Secretariat',
+                  '6 complimentary delegate passes (value: ₹12,000+)',
+                  'Custom activation of your choice — branded lounge, selfie zone, workshop session, or product launch',
+                  'Complete post-event content package: high-resolution branded photos & video reel for your marketing',
+                  'First right of refusal for Aequitas Summit 2027',
+                ].map((inc, i) => (
+                  <AnimatedBox key={i} direction={i % 2 === 0 ? 'left' : 'right'} delay={0.06 * i}>
+                    <TiltCard className="p-3.5 rounded-xl bg-[#0F0824]/90 border border-[#FFD700]/40 hover:border-[#FFD700] transition-all flex items-start gap-2.5 h-full">
+                      <Star className="w-4 h-4 text-[#FFD700] shrink-0 mt-0.5 fill-current" />
+                      <span className="text-xs text-[#FAF5EF] leading-relaxed font-medium">{inc}</span>
+                    </TiltCard>
+                  </AnimatedBox>
+                ))}
               </div>
             </div>
+
+            <AnimatedBox direction="bottom" delay={0.35}>
+              <TiltCard className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#FFD700]/25 via-[#180C34] to-[#FFD700]/25 border border-[#FFD700]/60 text-center shadow-lg">
+                <p className="text-xs sm:text-sm text-[#FAF5EF]">
+                  <strong className="text-[#FFD700]">The Ultimate Position:</strong> You don't sponsor the summit — the summit happens under your name.
+                </p>
+              </TiltCard>
+            </AnimatedBox>
           </div>
         );
 
       /* ---------------------------------------------------------
-         SLIDE 13: HOW YOUR BRAND SHOWS UP ON THE GROUND
+         SLIDE 13: GROUND ACTIVATIONS
       --------------------------------------------------------- */
       case 13:
         return (
-          <div className="py-6 sm:py-10 space-y-6 sm:space-y-8 max-w-4xl mx-auto text-left">
-            <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/35 text-emerald-300 text-xs font-mono font-bold uppercase tracking-wider">
-                <Layers className="w-3.5 h-3.5" />
-                <span>On-Ground Brand Touchpoints</span>
+          <div className="py-6 sm:py-10 space-y-6 sm:space-y-8 max-w-5xl mx-auto text-left">
+            <AnimatedBox direction="top" delay={0.05}>
+              <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4">
+                <span className="text-xs font-mono text-[#D4AF37] uppercase tracking-widest font-bold">
+                  On-Ground Experience
+                </span>
+                <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#FAF5EF]">
+                  How your brand shows up on the ground
+                </h2>
+                <p className="text-xs sm:text-sm text-[#C4BBA3]">
+                  Interactive Matrix: Filter activations by touchpoint category.
+                </p>
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-[#FAF5EF]">
-                How your brand shows up on the ground
-              </h2>
+            </AnimatedBox>
+
+            {/* Filter Tabs */}
+            <div className="flex items-center gap-2 flex-wrap">
+              {[
+                { id: 'all', label: 'All Activations (9)' },
+                { id: 'floor', label: 'Summit Floor & Lobby' },
+                { id: 'digital', label: 'Digital, Wearables & Print' },
+                { id: 'vip', label: 'Ceremony & Executive' },
+              ].map((f) => (
+                <button
+                  key={f.id}
+                  onClick={() => {
+                    sounds.playTap();
+                    setActivationFilter(f.id as any);
+                  }}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
+                    activationFilter === f.id
+                      ? 'bg-gradient-to-r from-[#D4AF37] to-[#E8A53E] text-black shadow-md scale-105'
+                      : 'bg-[#180C34]/80 text-[#C4BBA3] border border-[#D4AF37]/30 hover:text-white'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
             </div>
 
-            <div className="rounded-2xl border border-[#D4AF37]/35 overflow-hidden bg-[#0C061D]/90 shadow-2xl backdrop-blur-md">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs sm:text-sm">
-                  <thead className="bg-[#1C0E3C] border-b border-[#D4AF37]/30 text-[#D4AF37] font-mono text-[11px] sm:text-xs uppercase tracking-wider">
-                    <tr>
-                      <th className="py-3.5 px-4 sm:px-6">ACTIVATION</th>
-                      <th className="py-3.5 px-4 sm:px-6">HOW IT WORKS</th>
-                      <th className="py-3.5 px-4 sm:px-6">TIER</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[
-                      {
-                        activation: 'Mystery QR Boards',
-                        howItWorks: 'Placed at key points. Delegates scan → land on your brand page.',
-                        tier: 'Bronze+',
-                        badge: 'bg-amber-600/30 text-amber-300 border-amber-500/40',
-                      },
-                      {
-                        activation: 'Photo Booth',
-                        howItWorks: 'Branded backdrop. Delegates pose, share, tag.',
-                        tier: 'Silver+',
-                        badge: 'bg-slate-400/30 text-slate-200 border-slate-400/40',
-                      },
-                      {
-                        activation: 'Delegate Kit Inserts',
-                        howItWorks: 'Coupons, stationery, samples — inside every kit.',
-                        tier: 'Silver+',
-                        badge: 'bg-slate-400/30 text-slate-200 border-slate-400/40',
-                      },
-                      {
-                        activation: 'Projector Presentation',
-                        howItWorks:
-                          '200+ delegates, undivided attention, opening/closing ceremony.',
-                        tier: 'Gold+',
-                        badge: 'bg-yellow-500/30 text-yellow-300 border-yellow-500/40',
-                      },
-                      {
-                        activation: 'Branded Stationery',
-                        howItWorks: 'Inside every delegate kit. Taken home, used for weeks.',
-                        tier: 'Gold+',
-                        badge: 'bg-yellow-500/30 text-yellow-300 border-yellow-500/40',
-                      },
-                      {
-                        activation: 'Quiz Activation',
-                        howItWorks: 'Branded quiz. Delegates engage with your brand directly.',
-                        tier: 'Platinum+',
-                        badge: 'bg-purple-500/30 text-purple-300 border-purple-500/40',
-                      },
-                      {
-                        activation: 'On-Ground Stall',
-                        howItWorks: 'Face-to-face with 300+ delegates and their families.',
-                        tier: 'Platinum+',
-                        badge: 'bg-purple-500/30 text-purple-300 border-purple-500/40',
-                      },
-                      {
-                        activation: 'Wearables',
-                        howItWorks: 'Lanyards, wristbands, badges — worn for the full event.',
-                        tier: 'Platinum+',
-                        badge: 'bg-purple-500/30 text-purple-300 border-purple-500/40',
-                      },
-                      {
-                        activation: 'Naming Rights',
-                        howItWorks: '"Presented by [Brand]" on every asset.',
-                        tier: 'Title',
-                        badge: 'bg-amber-400/30 text-amber-200 border-amber-400/50 font-bold',
-                      },
-                    ].map((row, idx) => (
-                      <tr
-                        key={idx}
-                        className={`border-b border-[#241344] transition-colors ${
-                          idx % 2 === 0 ? 'bg-[#0E0720]/80' : 'bg-[#140A2C]/60'
-                        }`}
-                      >
-                        <td className="py-3 px-4 sm:px-6 font-semibold text-[#FAF5EF]">
-                          {row.activation}
-                        </td>
-                        <td className="py-3 px-4 sm:px-6 text-[#C4BBA3]">{row.howItWorks}</td>
-                        <td className="py-3 px-4 sm:px-6">
-                          <span
-                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono border ${row.badge}`}
-                          >
-                            {row.tier}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[
+                { item: 'Delegate Lanyard', placement: 'Around every neck', visibility: 'Both days, every photo', category: 'digital', dir: 'left' },
+                { item: 'Main Stage Backdrop', placement: 'Grand Ballroom stage', visibility: 'Ceremonies, keynotes, speeches', category: 'floor', dir: 'top' },
+                { item: 'Delegate Kit Bag', placement: 'Handed at check-in', visibility: 'Taken home; long-tail life', category: 'digital', dir: 'right' },
+                { item: 'Kiosk / Stall', placement: 'Pre-function foyer', visibility: 'Direct footfall, sampling, leads', category: 'floor', dir: 'left' },
+                { item: 'Delegate Handbook', placement: 'Inside kit bag', visibility: 'Used throughout summit sessions', category: 'digital', dir: 'bottom' },
+                { item: 'Social Media', placement: 'Instagram, LinkedIn', visibility: 'Pre, during & post event reach', category: 'digital', dir: 'right' },
+                { item: 'Certificates', placement: 'Presented to all 200+', visibility: 'Permanent framed keepsake', category: 'vip', dir: 'left' },
+                { item: 'Stage Announcement', placement: 'Ceremony podium', visibility: 'Verbal credit before full audience', category: 'vip', dir: 'bottom' },
+                { item: 'Awards Naming', placement: 'Closing ceremony', visibility: 'Prestige association with winners', category: 'vip', dir: 'right' },
+              ].filter((act) => {
+                if (activationFilter === 'all') return true;
+                return act.category === activationFilter;
+              }).map((act, idx) => (
+                <AnimatedBox key={act.item} direction={act.dir as any} delay={0.06 * idx}>
+                  <TiltCard className="p-4 sm:p-5 rounded-2xl bg-[#0F0824]/90 border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all space-y-2 h-full flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between pb-2 border-b border-[#D4AF37]/15">
+                        <span className="text-[10px] font-mono text-[#D4AF37] uppercase font-bold">
+                          Activation #{idx + 1}
+                        </span>
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                      </div>
+                      <h4 className="text-base font-serif font-bold text-[#FAF5EF] mt-2">
+                        {act.item}
+                      </h4>
+                      <p className="text-xs text-[#C4BBA3] mt-1">
+                        <span className="text-white font-medium">Placement: </span>
+                        {act.placement}
+                      </p>
+                    </div>
+                    <div className="pt-2 border-t border-[#D4AF37]/15">
+                      <p className="text-xs text-[#D4AF37] font-mono font-medium">
+                        ✦ {act.visibility}
+                      </p>
+                    </div>
+                  </TiltCard>
+                </AnimatedBox>
+              ))}
             </div>
           </div>
         );
 
       /* ---------------------------------------------------------
-         SLIDE 14: WHAT YOU RECEIVE AFTER THE SUMMIT
+         SLIDE 14: POST-SUMMIT DELIVERABLES
       --------------------------------------------------------- */
       case 14:
         return (
           <div className="py-6 sm:py-10 space-y-6 sm:space-y-8 max-w-4xl mx-auto text-left">
-            <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/15 border border-sky-500/35 text-sky-300 text-xs font-mono font-bold uppercase tracking-wider">
-                <FileText className="w-3.5 h-3.5" />
-                <span>Accountability & Analytics</span>
+            <AnimatedBox direction="top" delay={0.05}>
+              <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4">
+                <span className="text-xs font-mono text-[#D4AF37] uppercase tracking-widest font-bold">
+                  Post-Event Accountability
+                </span>
+                <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#FAF5EF]">
+                  What you receive after the summit
+                </h2>
+                <p className="text-xs sm:text-sm text-[#C4BBA3]">
+                  Interactive Checklist: Click any item to inspect verification status.
+                </p>
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-[#FAF5EF]">
-                What you receive after the summit
-              </h2>
-            </div>
+            </AnimatedBox>
 
-            <div className="p-6 sm:p-8 rounded-2xl bg-[#0F0824]/90 border border-[#D4AF37]/35 shadow-xl space-y-4">
-              {[
-                '—Post-event report with photos and engagement summary',
-                '—QR scan data (Bronze and above)',
-                '—Social media reach summary',
-                '—Delegate feedback snapshot',
-                '—Brand mention in post-event thank-you post',
-                '—Naming rights recognition in all post-event communication (Title Partner)',
-              ].map((bullet, i) => (
-                <div key={i} className="flex items-start gap-3 text-xs sm:text-sm text-[#FAF5EF]">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                  <span>{bullet}</span>
+            {/* Compliance Guarantee Banner */}
+            <AnimatedBox direction="zoom" delay={0.1}>
+              <TiltCard className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-500/20 via-[#180C34] to-emerald-500/20 border border-emerald-400/40 flex items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <span className="text-[11px] font-mono uppercase text-emerald-400 font-bold flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4" />
+                    100% Guaranteed Post-Event Compliance
+                  </span>
+                  <p className="text-xs text-[#FAF5EF]">
+                    Every deliverable is backed by photographic evidence and quantitative metrics.
+                  </p>
                 </div>
-              ))}
-            </div>
+                <span className="px-3 py-1 rounded-xl bg-emerald-500 text-black font-mono font-bold text-xs shrink-0">
+                  {checkedDeliverables.size}/6 Verified
+                </span>
+              </TiltCard>
+            </AnimatedBox>
 
-            <div className="p-4 rounded-xl bg-gradient-to-r from-[#D4AF37]/15 via-[#7C3AED]/15 to-[#D4AF37]/15 border border-[#D4AF37]/35 text-center">
-              <p className="text-base sm:text-2xl font-serif italic font-bold text-[#FFF5DC]">
-                "We deliver proof."
-              </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              {[
+                { title: 'Post-Event Impact Report', desc: 'Detailed PDF with event photos, delegate count, social impressions, and brand placement documentation.', dir: 'left' },
+                { title: 'High-Resolution Photo Library', desc: 'Access to all event photography featuring your stall, branding, and delegates using your products.', dir: 'top' },
+                { title: 'Social Media Analytics', desc: 'Screenshots and reach metrics for all posts and stories mentioning your brand.', dir: 'right' },
+                { title: 'Certificate of Partnership', desc: 'Framed formal memento recognizing your brand as an official partner of Aequitas Summit 2026.', dir: 'left' },
+                { title: 'Delegate Database Access', desc: 'Opt-in compliant contact list (email & phone) for eligible sponsorship tiers.', dir: 'bottom' },
+                { title: 'First Right of Refusal', desc: 'Priority renewal rights for Aequitas Summit 2027 before slots open to other brands.', dir: 'right' },
+              ].map((del, idx) => {
+                const isChecked = checkedDeliverables.has(idx + 1);
+                return (
+                  <AnimatedBox key={del.title} direction={del.dir as any} delay={0.08 * idx}>
+                    <TiltCard
+                      onClick={() => toggleDeliverable(idx + 1)}
+                      className={`p-4 sm:p-5 rounded-2xl border transition-all cursor-pointer h-full ${
+                        isChecked
+                          ? 'bg-[#0F0824]/90 border-emerald-400/40'
+                          : 'bg-[#0F0824]/40 border-gray-600/30 opacity-60'
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className={`w-6 h-6 rounded-lg flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
+                          isChecked ? 'bg-emerald-500 text-black font-bold' : 'bg-gray-800 text-gray-400'
+                        }`}>
+                          {isChecked ? <Check className="w-3.5 h-3.5" /> : idx + 1}
+                        </div>
+                        <div className="space-y-1">
+                          <h4 className="text-sm font-serif font-bold text-[#FAF5EF]">
+                            {del.title}
+                          </h4>
+                          <p className="text-xs text-[#C4BBA3] leading-relaxed">{del.desc}</p>
+                        </div>
+                      </div>
+                    </TiltCard>
+                  </AnimatedBox>
+                );
+              })}
             </div>
           </div>
         );
 
       /* ---------------------------------------------------------
-         SLIDE 15: REMITTANCE & BANK DETAILS
+         SLIDE 15: PAYMENT TERMINAL
       --------------------------------------------------------- */
       case 15:
         return (
-          <div className="py-6 sm:py-10 space-y-6 sm:space-y-8 max-w-4xl mx-auto text-center">
-            <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4 text-left">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/35 text-emerald-300 text-xs font-mono font-bold uppercase tracking-wider">
-                <QrCode className="w-3.5 h-3.5" />
-                <span>Instant Financial Settlement</span>
+          <div className="py-6 sm:py-10 space-y-6 sm:space-y-8 max-w-4xl mx-auto text-left">
+            <AnimatedBox direction="top" delay={0.05}>
+              <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4">
+                <span className="text-xs font-mono text-[#D4AF37] uppercase tracking-widest font-bold">
+                  Sponsorship Remittance
+                </span>
+                <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#FAF5EF]">
+                  Drop a hint & we’ll catch you!
+                </h2>
+                <p className="text-xs sm:text-sm text-[#C4BBA3]">
+                  Lock in your tier with instant digital settlement or direct NEFT/RTGS wire transfer.
+                </p>
               </div>
-              <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-[#FAF5EF]">
-                Drop a hint &amp; we’ll catch you!
-              </h2>
-            </div>
+            </AnimatedBox>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-              {/* Official PhonePe / UPI QR Code */}
-              <div className="p-6 rounded-2xl bg-white text-black shadow-2xl flex flex-col items-center justify-center space-y-3">
-                <div className="p-2 border-2 border-dashed border-[#5F259F]/40 rounded-xl w-full max-w-[240px]">
-                  <img
-                    src="/payment-qr.jpg"
-                    alt="Official Payment QR"
-                    className="w-full h-auto rounded-lg object-contain mx-auto shadow-sm"
-                  />
-                </div>
-                <div className="text-center space-y-1">
-                  <span className="text-[11px] font-mono text-[#5F259F] font-bold uppercase tracking-wider block">
-                    PhonePe / UPI Corporate Gateway
-                  </span>
-                  <p className="text-[10px] text-gray-600">
-                    Scan via PhonePe, GPay, Paytm, or any Corporate UPI App
-                  </p>
-                </div>
-              </div>
-
-              {/* Bank Account Details */}
-              <div className="p-6 rounded-2xl bg-[#0E0720]/95 border border-[#D4AF37]/45 text-left space-y-4 shadow-xl">
-                <div className="space-y-1">
-                  <span className="text-[10px] font-mono text-[#D4AF37] uppercase tracking-wider font-bold">
-                    Official Banking Credentials
-                  </span>
-                  <h3 className="text-lg font-serif font-bold text-white">
-                    Direct NEFT / RTGS / IMPS
-                  </h3>
-                </div>
-
-                <div className="space-y-3 pt-2">
-                  <div className="p-3 rounded-xl bg-[#140A2C] border border-[#241344] flex items-center justify-between">
-                    <div>
-                      <span className="text-[10px] font-mono text-[#C4BBA3] block">Account Number</span>
-                      <span className="font-mono text-sm sm:text-base font-bold text-white tracking-wider">
-                        0116040100017669
-                      </span>
-                    </div>
-                    <button
-                      onClick={() => handleCopy('0116040100017669', 'acc')}
-                      className="p-2 rounded-lg bg-[#2B1055] hover:bg-[#D4AF37] text-[#D4AF37] hover:text-[#070A14] transition-colors cursor-pointer"
-                      title="Copy Account Number"
-                    >
-                      {copiedField === 'acc' ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                    </button>
+              {/* Left: PhonePe QR Card */}
+              <AnimatedBox direction="left" delay={0.15}>
+                <TiltCard className="p-6 rounded-3xl bg-[#0F0824]/95 border border-[#D4AF37]/45 text-center space-y-4 shadow-xl">
+                  <div className="inline-block px-3 py-1 rounded-full bg-[#180C34] border border-[#D4AF37]/40 text-[#D4AF37] font-mono text-xs font-bold uppercase">
+                    Scan with PhonePe / Any UPI App
                   </div>
 
-                  <div className="p-3 rounded-xl bg-[#140A2C] border border-[#241344] flex items-center justify-between">
-                    <div>
-                      <span className="text-[10px] font-mono text-[#C4BBA3] block">IFSC Code</span>
-                      <span className="font-mono text-sm sm:text-base font-bold text-white tracking-wider">
-                        JAKA0GNGYAL{' '}
-                        <span className="text-xs text-amber-400 font-normal">(that’s a zero)</span>
-                      </span>
-                    </div>
-                    <button
-                      onClick={() => handleCopy('JAKA0GNGYAL', 'ifsc')}
-                      className="p-2 rounded-lg bg-[#2B1055] hover:bg-[#D4AF37] text-[#D4AF37] hover:text-[#070A14] transition-colors cursor-pointer"
-                      title="Copy IFSC Code"
-                    >
-                      {copiedField === 'ifsc' ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                    </button>
+                  <div className="w-56 h-56 mx-auto bg-white p-3 rounded-2xl shadow-2xl border-4 border-[#D4AF37]/60 flex items-center justify-center">
+                    <img
+                      src="/payment-qr.jpg"
+                      alt="Aastitva Official Payment QR"
+                      className="w-full h-full object-contain"
+                    />
                   </div>
-                </div>
 
-                <div className="pt-2 border-t border-[#241344] space-y-1">
-                  <p className="text-xs text-[#C4BBA3] font-mono">
-                    Call or text on this number for any related issues:
+                  <p className="text-xs font-mono text-[#FAF5EF]">
+                    Accepted: UPI, PhonePe, GPay, Paytm, RuPay
                   </p>
-                  <a
-                    href="tel:+918899346704"
-                    className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-mono font-bold text-[#D4AF37] hover:underline"
-                  >
-                    <Phone className="w-3.5 h-3.5" />
-                    <span>+91 88993 46704</span>
-                  </a>
-                </div>
-              </div>
+                </TiltCard>
+              </AnimatedBox>
+
+              {/* Right: Bank Details Card */}
+              <AnimatedBox direction="right" delay={0.25}>
+                <TiltCard className="p-6 rounded-3xl bg-[#0F0824]/95 border border-[#D4AF37]/45 space-y-4 shadow-xl">
+                  <span className="text-xs font-mono text-[#D4AF37] uppercase tracking-widest font-bold block pb-2 border-b border-[#D4AF37]/20">
+                    Official Banking Remittance Coordinates
+                  </span>
+
+                  <div className="space-y-3 font-mono text-xs">
+                    {[
+                      { label: 'Bank Name', value: 'The Jammu and Kashmir Bank', copyVal: 'The Jammu and Kashmir Bank', id: 'bank' },
+                      { label: 'Account Number', value: '0116040100017669', copyVal: '0116040100017669', id: 'ac' },
+                      { label: 'IFSC Code', value: 'JAKA0GNGYAL', copyVal: 'JAKA0GNGYAL', id: 'ifsc' },
+                      { label: 'Branch', value: 'Gangyal, Jammu', copyVal: 'Gangyal, Jammu', id: 'branch' },
+                      { label: 'Account Holder', value: 'Sarthak Bhat', copyVal: 'Sarthak Bhat', id: 'holder' },
+                    ].map((row) => (
+                      <div key={row.label} className="p-2.5 rounded-xl bg-[#180C34]/80 border border-[#D4AF37]/25 flex items-center justify-between gap-2">
+                        <div>
+                          <span className="text-[10px] text-[#A39B88] uppercase block">{row.label}</span>
+                          <span className="text-[#FAF5EF] font-bold text-xs sm:text-sm">{row.value}</span>
+                        </div>
+                        <button
+                          onClick={() => handleCopy(row.copyVal, row.id)}
+                          className="px-2.5 py-1 rounded-lg bg-[#D4AF37]/15 hover:bg-[#D4AF37] text-[#D4AF37] hover:text-black border border-[#D4AF37]/40 text-[10px] font-bold transition-all flex items-center gap-1 cursor-pointer"
+                        >
+                          {copiedField === row.id ? (
+                            <>
+                              <Check className="w-3 h-3 text-emerald-400" />
+                              <span className="text-emerald-400">Copied!</span>
+                            </>
+                          ) : (
+                            <>
+                              <Copy className="w-3 h-3" />
+                              <span>Copy</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="pt-2 text-[11px] font-mono text-[#A39B88] italic">
+                    *After remitting, please send transaction UTR receipt to corporate desk for prompt sponsorship ledger reconciliation.
+                  </div>
+                </TiltCard>
+              </AnimatedBox>
             </div>
           </div>
         );
 
       /* ---------------------------------------------------------
-         SLIDE 16: CONTACT & CONCLUSION
+         SLIDE 16: CONTACTS
       --------------------------------------------------------- */
       case 16:
         return (
-          <div className="py-6 sm:py-10 space-y-6 sm:space-y-8 max-w-4xl mx-auto text-center">
-            <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4">
-              <h2 className="text-2xl sm:text-4xl md:text-5xl font-serif font-bold text-[#FAF5EF]">
-                Partner with Aequitas Summit 2026
-              </h2>
-              <p className="text-sm sm:text-base text-[#D4AF37] font-mono">
-                29–30 October 2026 | Radisson Blu Hotel, Jammu
-              </p>
-              <div className="inline-block px-3 py-1 rounded-full bg-rose-500/15 border border-rose-500/35 text-rose-300 font-mono text-xs font-bold uppercase mt-2">
-                Limited sponsorship slots. First-come, first-confirmed.
-              </div>
-            </div>
-
-            {/* Core Reach Box */}
-            <div className="p-6 sm:p-8 rounded-2xl bg-[#0D071F]/95 border border-[#D4AF37]/45 shadow-2xl max-w-2xl mx-auto space-y-6 text-left">
-              <div className="flex items-center gap-3 pb-3 border-b border-[#D4AF37]/20">
-                <div className="w-10 h-10 rounded-xl bg-[#2B1055] border border-[#D4AF37]/50 flex items-center justify-center text-[#D4AF37] font-bold">
-                  ✦
-                </div>
-                <div>
-                  <span className="text-[11px] font-mono text-[#D4AF37] font-bold uppercase tracking-wider block">
-                    Direct Secretariat Contact Desk
-                  </span>
-                  <p className="text-xs text-[#C4BBA3]">Official Brand Partnership &amp; Corporate Relations</p>
-                </div>
-              </div>
-
-              {/* Official Contacts Demanded by User */}
-              <div className="space-y-3">
-                <span className="text-[10.5px] font-mono text-[#FAF5EF] uppercase tracking-wider font-bold block">
-                  Official Phone &amp; WhatsApp Contacts:
+          <div className="py-6 sm:py-10 space-y-6 sm:space-y-8 max-w-4xl mx-auto text-left">
+            <AnimatedBox direction="top" delay={0.05}>
+              <div className="space-y-2 border-b border-[#D4AF37]/25 pb-4 text-center sm:text-left">
+                <span className="text-xs font-mono text-[#D4AF37] uppercase tracking-widest font-bold">
+                  Executive Partnership Desk
                 </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {/* Contact 1 */}
-                  <div className="p-3.5 rounded-xl bg-[#140A2C] border border-[#D4AF37]/35 space-y-2">
-                    <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase block">
-                      Lead Sponsorship Desk
-                    </span>
+                <h2 className="text-2xl sm:text-4xl font-serif font-bold text-[#FAF5EF]">
+                  Partner with Aequitas Summit 2026
+                </h2>
+                <p className="text-xs sm:text-sm text-[#C4BBA3]">
+                  Direct lines to the Secretariat for custom brand activations, tier locks, and institutional agreements.
+                </p>
+              </div>
+            </AnimatedBox>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* Contact 1 */}
+              <AnimatedBox direction="left" delay={0.15}>
+                <TiltCard className="p-6 rounded-3xl bg-[#0F0824]/95 border border-[#D4AF37]/40 space-y-4 shadow-xl">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center font-bold">
+                      <Phone className="w-5 h-5 animate-bounce" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-mono uppercase text-[#D4AF37] font-bold block">
+                        Direct Secretariat Line 01
+                      </span>
+                      <a href="tel:+918899346704" className="text-lg sm:text-xl font-mono font-bold text-white hover:text-emerald-400 transition-colors">
+                        +91 88993 46704
+                      </a>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-[#C4BBA3]">
+                    Available for phone consultations, custom tier structures, and immediate reservation.
+                  </p>
+
+                  <div className="pt-2 flex items-center gap-2">
                     <a
                       href="tel:+918899346704"
-                      className="text-sm font-mono font-bold text-white hover:text-[#D4AF37] flex items-center gap-1.5"
+                      className="flex-1 py-2 rounded-xl bg-[#180C34] hover:bg-[#D4AF37] text-[#D4AF37] hover:text-black border border-[#D4AF37]/40 font-mono text-xs font-bold text-center transition-all cursor-pointer"
                     >
-                      <Phone className="w-3.5 h-3.5 text-[#D4AF37]" />
-                      <span>+91 88993 46704</span>
+                      Call Now
                     </a>
                     <a
                       href="https://wa.me/918899346704?text=Hello%20Aequitas%20Summit%20Team%2C%20we%20are%20interested%20in%20discussing%20sponsorship%20opportunities."
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-[11px] text-emerald-400 hover:underline font-mono"
+                      className="flex-1 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-mono text-xs font-bold text-center transition-all cursor-pointer flex items-center justify-center gap-1"
                     >
-                      <span>Chat on WhatsApp →</span>
+                      <span>WhatsApp</span>
+                      <ExternalLink className="w-3 h-3" />
                     </a>
                   </div>
+                </TiltCard>
+              </AnimatedBox>
 
-                  {/* Contact 2 */}
-                  <div className="p-3.5 rounded-xl bg-[#140A2C] border border-[#D4AF37]/35 space-y-2">
-                    <span className="text-[10px] font-mono text-purple-300 font-bold uppercase block">
-                      Directorate Desk
-                    </span>
+              {/* Contact 2 */}
+              <AnimatedBox direction="right" delay={0.25}>
+                <TiltCard className="p-6 rounded-3xl bg-[#0F0824]/95 border border-[#D4AF37]/40 space-y-4 shadow-xl">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-purple-500/20 border border-purple-500/40 text-purple-300 flex items-center justify-center font-bold">
+                      <Phone className="w-5 h-5 animate-bounce" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-mono uppercase text-[#D4AF37] font-bold block">
+                        Direct Secretariat Line 02
+                      </span>
+                      <a href="tel:+919548499951" className="text-lg sm:text-xl font-mono font-bold text-white hover:text-purple-300 transition-colors">
+                        +91 95484 99951
+                      </a>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-[#C4BBA3]">
+                    Available for institutional relations, delegate packages, and partner deliverables coordination.
+                  </p>
+
+                  <div className="pt-2 flex items-center gap-2">
                     <a
                       href="tel:+919548499951"
-                      className="text-sm font-mono font-bold text-white hover:text-[#D4AF37] flex items-center gap-1.5"
+                      className="flex-1 py-2 rounded-xl bg-[#180C34] hover:bg-[#D4AF37] text-[#D4AF37] hover:text-black border border-[#D4AF37]/40 font-mono text-xs font-bold text-center transition-all cursor-pointer"
                     >
-                      <Phone className="w-3.5 h-3.5 text-[#D4AF37]" />
-                      <span>+91 95484 99951</span>
+                      Call Now
                     </a>
                     <a
                       href="https://wa.me/919548499951?text=Hello%20Aequitas%20Summit%20Team%2C%20we%20are%20interested%20in%20discussing%20sponsorship%20opportunities."
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-[11px] text-purple-300 hover:underline font-mono"
+                      className="flex-1 py-2 rounded-xl bg-purple-500 hover:bg-purple-400 text-white font-mono text-xs font-bold text-center transition-all cursor-pointer flex items-center justify-center gap-1"
                     >
-                      <span>Chat on WhatsApp →</span>
+                      <span>WhatsApp</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                </TiltCard>
+              </AnimatedBox>
+            </div>
+
+            {/* Email & Instagram */}
+            <AnimatedBox direction="bottom" delay={0.35}>
+              <TiltCard className="p-5 sm:p-6 rounded-3xl bg-[#0F0824]/90 border border-[#D4AF37]/35 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] flex items-center justify-center">
+                    <Mail className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-mono text-[#A39B88] uppercase block">Official Email</span>
+                    <a href="mailto:aastitvaalliancespr@gmail.com" className="text-xs sm:text-sm font-mono font-bold text-white hover:text-[#D4AF37]">
+                      aastitvaalliancespr@gmail.com
                     </a>
                   </div>
                 </div>
-              </div>
 
-              {/* Email & Instagram Channels */}
-              <div className="space-y-2.5 pt-2 border-t border-[#241344]">
-                <div className="flex items-center gap-2 text-xs sm:text-sm">
-                  <Mail className="w-4 h-4 text-[#D4AF37] shrink-0" />
-                  <a
-                    href="mailto:aastitvaalliancespr@gmail.com"
-                    className="font-mono text-[#FAF5EF] hover:text-[#D4AF37] hover:underline break-all"
-                  >
-                    aastitvaalliancespr@gmail.com
-                  </a>
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-pink-500/15 border border-pink-500/40 text-pink-400 flex items-center justify-center">
+                    <Instagram className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-mono text-[#A39B88] uppercase block">Official Instagram</span>
+                    <a
+                      href="https://www.instagram.com/alliancesby_aastitva_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs sm:text-sm font-mono font-bold text-white hover:text-pink-400 flex items-center gap-1"
+                    >
+                      <span>@alliancesby_aastitva_</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
                 </div>
-
-                <div className="flex items-center gap-2 text-xs sm:text-sm">
-                  <Phone className="w-4 h-4 text-[#C084FC] shrink-0" />
-                  <span className="font-mono text-[#C4BBA3]">
-                    Additional Line: 9596372727
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2 text-xs sm:text-sm">
-                  <Instagram className="w-4 h-4 text-pink-400 shrink-0" />
-                  <a
-                    href="https://www.instagram.com/alliancesby_aastitva_"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-mono text-[#FAF5EF] hover:text-[#D4AF37] hover:underline"
-                  >
-                    @alliancesby_aastitva_
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Official Motto */}
-            <div className="pt-4 border-t border-[#D4AF37]/20">
-              <p className="font-mono text-xs text-[#D4AF37] tracking-[0.25em] uppercase font-bold">
-                AEQUITAS SUMMIT 2026 | VERITAS | AEQUITAS | VOX
-              </p>
-            </div>
+              </TiltCard>
+            </AnimatedBox>
           </div>
         );
 
@@ -1355,231 +1529,240 @@ export const SponsorsPage: React.FC<Props> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#06030F] text-[#FAF5EF] font-sans relative overflow-x-hidden selection:bg-[#D4AF37] selection:text-[#070A14] flex flex-col justify-between">
-      {/* 1. Deep Violet Real-Life Nebula Galactic Canvas */}
+    <div className="relative min-h-screen w-full bg-[#05020D] text-[#FAF5EF] flex flex-col justify-between overflow-x-hidden font-sans selection:bg-[#D4AF37] selection:text-[#070A14]">
+      {/* 1. Deep Violet Procedural Nebula Starfield Background */}
       <VioletNebulaCanvas />
 
-      {/* 2. Atmospheric Center Violet Spotlight */}
-      <div className="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] sm:w-[1200px] h-[550px] bg-gradient-to-b from-[#7C3AED]/20 via-[#4C1D95]/15 to-transparent blur-[160px] pointer-events-none z-0" />
+      {/* 2. Atmospheric Amethyst & Radiant Gold Center Halo */}
+      <div className="fixed top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] sm:w-[1100px] h-[550px] bg-gradient-to-b from-[#8B5CF6]/15 via-[#D4AF37]/10 to-transparent blur-[160px] pointer-events-none z-0" />
 
-      {/* 3. Executive Proposal Portal Topbar */}
-      <header className="sticky top-0 z-40 bg-[#070314]/95 border-b border-[#D4AF37]/30 backdrop-blur-xl px-3 sm:px-8 py-2.5 sm:py-3.5 select-none shadow-2xl">
-        <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
-          {/* Brand & Page Designation */}
-          <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
+      {/* 3. Corporate Header with Controls */}
+      <header className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between border-b border-[#D4AF37]/20 backdrop-blur-md">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => {
+              if (onNavigate) onNavigate('home');
+              else window.location.href = '/';
+            }}
+            className="flex items-center gap-2 cursor-pointer group"
+          >
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#8B5CF6]/30 to-[#D4AF37]/30 border border-[#D4AF37]/50 flex items-center justify-center text-[#D4AF37] group-hover:scale-105 transition-transform shadow-sm">
+              <span className="font-serif font-bold text-sm">✦</span>
+            </div>
+            <div className="text-left">
+              <span className="font-serif font-bold text-xs sm:text-sm text-white block">
+                AEQUITAS 2026
+              </span>
+              <span className="text-[9px] font-mono text-[#D4AF37] uppercase tracking-wider block">
+                Sponsorship Proposal
+              </span>
+            </div>
+          </button>
+        </div>
+
+        {/* View Mode & Audio Controls */}
+        <div className="flex items-center gap-2">
+          {/* Deck Mode vs Continuous Mode Toggle */}
+          <div className="flex items-center p-0.5 rounded-xl bg-[#0D061A]/90 border border-[#D4AF37]/30 shadow-inner">
             <button
               onClick={() => {
-                if (onNavigate) {
-                  onNavigate('home');
-                } else {
-                  window.location.href = '/';
-                }
+                sounds.playTap();
+                setViewMode('deck');
               }}
-              className="flex items-center gap-2 text-left cursor-pointer focus:outline-none"
-            >
-              <img
-                src="/aequitas-logo.png"
-                alt="Aequitas Crest"
-                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border border-[#D4AF37] bg-black object-cover"
-              />
-              <div className="min-w-0">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="font-serif font-bold text-xs sm:text-base text-white tracking-wide truncate">
-                    Offer Sponsorships
-                  </span>
-                  <span className="px-1.5 sm:px-2 py-0.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] font-mono font-bold text-[8px] sm:text-[9px] uppercase tracking-wider shrink-0">
-                    Oct 29–30, 2026
-                  </span>
-                </div>
-                <p className="text-[10px] sm:text-[11px] text-[#C4BBA3] font-mono truncate">
-                  Aequitas Summit 2026 • Official Corporate Proposal Deck
-                </p>
-              </div>
-            </button>
-          </div>
-
-          {/* Right Controls: Mode Toggle & Audio */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-            {/* View Mode Toggle: Slide Deck vs Continuous Stream */}
-            <div className="flex items-center p-0.5 rounded-xl bg-[#140A2C] border border-[#D4AF37]/30 text-xs font-mono">
-              <button
-                onClick={() => {
-                  sounds.playTap();
-                  setViewMode('deck');
-                }}
-                className={`px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 cursor-pointer text-[10.5px] ${
-                  viewMode === 'deck'
-                    ? 'bg-[#D4AF37] text-[#070A14] font-bold shadow-sm'
-                    : 'text-[#C4BBA3] hover:text-white'
-                }`}
-                title="Browse slide-by-slide with executive transitions"
-              >
-                <SlidersHorizontal className="w-3 h-3" />
-                <span className="hidden sm:inline">Slide Deck</span>
-              </button>
-              <button
-                onClick={() => {
-                  sounds.playTap();
-                  setViewMode('continuous');
-                }}
-                className={`px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 cursor-pointer text-[10.5px] ${
-                  viewMode === 'continuous'
-                    ? 'bg-[#D4AF37] text-[#070A14] font-bold shadow-sm'
-                    : 'text-[#C4BBA3] hover:text-white'
-                }`}
-                title="Continuous uninterrupted reading flow"
-              >
-                <LayoutGrid className="w-3 h-3" />
-                <span className="hidden sm:inline">Continuous Stream</span>
-              </button>
-            </div>
-
-            {/* Sound FX Toggle */}
-            <button
-              onClick={handleSoundToggle}
-              className={`p-2 sm:p-2.5 rounded-xl border transition-all cursor-pointer min-h-[34px] min-w-[34px] flex items-center justify-center ${
-                soundEnabled
-                  ? 'bg-[#D4AF37] text-[#070A14] border-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.4)]'
-                  : 'bg-[#140A2C] text-[#C4BBA3] border-[#D4AF37]/30 hover:text-[#FAF5EF]'
+              className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                viewMode === 'deck'
+                  ? 'bg-gradient-to-r from-[#D4AF37] to-[#E8A53E] text-black shadow-md'
+                  : 'text-[#C4BBA3] hover:text-white'
               }`}
-              title={soundEnabled ? 'Sound FX Enabled' : 'Enable Sound FX'}
-              aria-label="Toggle Sound Effects"
             >
-              {soundEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
+              <LayoutGrid className="w-3 h-3" />
+              <span className="hidden sm:inline">Interactive Slides</span>
+              <span className="sm:hidden">Deck</span>
+            </button>
+            <button
+              onClick={() => {
+                sounds.playTap();
+                setViewMode('continuous');
+              }}
+              className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                viewMode === 'continuous'
+                  ? 'bg-gradient-to-r from-[#D4AF37] to-[#E8A53E] text-black shadow-md'
+                  : 'text-[#C4BBA3] hover:text-white'
+              }`}
+            >
+              <FileText className="w-3 h-3" />
+              <span className="hidden sm:inline">Continuous Stream</span>
+              <span className="sm:hidden">Stream</span>
             </button>
           </div>
+
+          {/* Sound Synthesizer */}
+          <button
+            onClick={handleSoundToggle}
+            className={`p-1.5 rounded-xl border transition-all cursor-pointer ${
+              soundEnabled
+                ? 'bg-[#D4AF37] text-black border-[#D4AF37] shadow-[0_0_12px_#D4AF37]'
+                : 'bg-[#180C34] text-[#C4BBA3] border-[#D4AF37]/30 hover:text-white'
+            }`}
+            title={soundEnabled ? 'Synthesizer FX Active' : 'Enable Futuristic Audio FX'}
+          >
+            {soundEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
+          </button>
         </div>
       </header>
 
-      {/* 4. MAIN PROPOSAL CONTAINER */}
-      <main className="relative z-10 flex-1 max-w-5xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-8 flex flex-col justify-center">
-        {/* ========================================================
-            VIEW MODE A: SLIDE DECK VIEW (WITH CONTINUATION HANDOFF)
-           ======================================================== */}
+      {/* 4. MAIN CONTENT CONTAINER */}
+      <main className="relative z-10 w-full max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-8 flex-1">
         {viewMode === 'deck' ? (
-          <div className="space-y-4 sm:space-y-6">
-            {/* Slide Progress Stepper Header */}
-            <div className="bg-[#0C061D]/90 border border-[#D4AF37]/30 rounded-2xl p-3.5 sm:p-5 backdrop-blur-md shadow-lg space-y-3">
-              <div className="flex items-center justify-between flex-wrap gap-2 text-xs font-mono">
+          /* ========================================================
+             VIEW MODE A: INTERACTIVE SLIDE DECK (CONTINUATION MODEL)
+             ======================================================== */
+          <div className="space-y-6">
+            {/* Top Navigation & Slide Progress Bar */}
+            <div className="p-3 sm:p-4 rounded-2xl bg-[#0D061A]/85 border border-[#D4AF37]/30 backdrop-blur-xl shadow-lg space-y-3">
+              <div className="flex items-center justify-between gap-2 text-xs font-mono">
                 <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-ping" />
-                  <span className="text-[#D4AF37] font-bold text-xs tracking-wider uppercase">
-                    Slide {currentSlide.toString().padStart(2, '0')} of {totalSlides}
+                  <span className="px-2.5 py-0.5 rounded-full bg-[#180C34] text-[#D4AF37] font-bold border border-[#D4AF37]/40 text-[10px] sm:text-xs">
+                    SLIDE {currentSlide.toString().padStart(2, '0')} / {totalSlides.toString().padStart(2, '0')}
+                  </span>
+                  <span className="text-[#C4BBA3] hidden md:inline truncate max-w-md">
+                    {SLIDE_TITLES[currentSlide]}
                   </span>
                 </div>
-                <div className="text-[#C4BBA3] text-[11px] truncate max-w-sm">
-                  {SLIDE_TITLES[currentSlide]}
-                </div>
-                <div className="text-[10px] text-[#A39B88] font-mono hidden md:block">
-                  Use [←] / [→] keys to navigate
+
+                {/* Arrow Controls */}
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={goToPrevSlide}
+                    disabled={currentSlide === 1}
+                    className="p-1.5 rounded-xl bg-[#180C34] hover:bg-[#D4AF37] text-[#FAF5EF] hover:text-black border border-[#D4AF37]/30 disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer shadow-sm"
+                    aria-label="Previous Slide"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+
+                  <span className="text-[11px] font-mono text-[#D4AF37] px-1">
+                    {Math.round((currentSlide / totalSlides) * 100)}%
+                  </span>
+
+                  <button
+                    onClick={goToNextSlide}
+                    disabled={currentSlide === totalSlides}
+                    className="p-1.5 rounded-xl bg-[#180C34] hover:bg-[#D4AF37] text-[#FAF5EF] hover:text-black border border-[#D4AF37]/30 disabled:opacity-30 disabled:pointer-events-none transition-all cursor-pointer shadow-sm"
+                    aria-label="Next Slide"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
 
-              {/* Linear Progress Bar */}
-              <div className="w-full h-1.5 sm:h-2 rounded-full bg-[#180C34] border border-[#D4AF37]/20 overflow-hidden relative">
+              {/* Progress Line */}
+              <div className="w-full h-1.5 rounded-full bg-[#180C34] overflow-hidden border border-[#D4AF37]/20">
                 <motion.div
-                  className="h-full bg-gradient-to-r from-[#D4AF37] via-[#C084FC] to-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.6)]"
-                  initial={{ width: '6%' }}
+                  className="h-full bg-gradient-to-r from-[#D4AF37] via-[#C084FC] to-[#D4AF37]"
+                  initial={{ width: 0 }}
                   animate={{ width: `${(currentSlide / totalSlides) * 100}%` }}
-                  transition={{ duration: 0.35, ease: 'easeInOut' }}
+                  transition={{ duration: 0.3 }}
                 />
               </div>
 
-              {/* Clickable Quick Jump Pills */}
-              <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none">
+              {/* Quick Jump Mini Pills */}
+              <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto scrollbar-none py-0.5">
                 {Array.from({ length: totalSlides }, (_, i) => i + 1).map((num) => (
                   <button
                     key={num}
                     onClick={() => jumpToSlide(num)}
-                    className={`px-2 py-1 rounded-lg text-[10px] font-mono transition-all shrink-0 cursor-pointer ${
+                    className={`h-6 px-2 rounded-lg text-[10px] font-mono font-bold transition-all cursor-pointer shrink-0 ${
                       currentSlide === num
-                        ? 'bg-[#D4AF37] text-black font-bold shadow-md scale-105'
-                        : num < currentSlide
-                        ? 'bg-[#180C34] text-purple-300 border border-purple-500/30 hover:border-purple-400'
-                        : 'bg-[#0E0720]/60 text-[#A39B88] hover:text-white border border-transparent'
+                        ? 'bg-[#D4AF37] text-black shadow-[0_0_10px_#D4AF37]'
+                        : 'bg-[#180C34] text-[#C4BBA3] hover:text-white border border-[#D4AF37]/20'
                     }`}
                   >
-                    {num.toString().padStart(2, '0')}
+                    {num}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Slide Body Card with Animated Transitions */}
-            <div className="bg-[#0B061A]/90 border border-[#D4AF37]/35 rounded-2xl sm:rounded-3xl p-4 sm:p-8 md:p-10 backdrop-blur-xl shadow-[0_20px_70px_rgba(0,0,0,0.9)] relative overflow-hidden min-h-[460px] flex flex-col justify-between">
-              <AnimatePresence mode="wait">
+            {/* Current Slide Display with 3D Spatial Transitions */}
+            <div style={{ perspective: 1200 }} className="relative overflow-visible">
+              <AnimatePresence mode="wait" custom={direction}>
                 <motion.div
-                  key={`slide-${currentSlide}`}
-                  initial={{ opacity: 0, x: direction === 'forward' ? 24 : -24 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: direction === 'forward' ? -24 : 24 }}
-                  transition={{ duration: 0.3, ease: 'easeInOut' }}
-                  className="flex-1"
+                  key={currentSlide}
+                  custom={direction}
+                  variants={slideVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  className="bg-[#0B061A]/90 border border-[#D4AF37]/35 rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-10 backdrop-blur-xl shadow-[0_20px_70px_rgba(0,0,0,0.9)] relative min-h-[500px] flex flex-col justify-between overflow-hidden"
                 >
-                  {renderSlideContent(currentSlide)}
+                  {/* Subtle top indicator */}
+                  <div className="flex items-center justify-between border-b border-[#D4AF37]/15 pb-2 text-xs font-mono text-[#A39B88]">
+                    <span>AEQUITAS SUMMIT 2026 // PROPOSAL DOSSIER</span>
+                    <span className="text-[#D4AF37] font-semibold">{SLIDE_TITLES[currentSlide]}</span>
+                  </div>
+
+                  {/* Render Core Content with Multi-Directional Staggered Entrances */}
+                  <div className="py-4">
+                    {renderSlideContent(currentSlide)}
+                  </div>
+
+                  {/* Bottom Navigation Toolbar */}
+                  <div className="pt-4 border-t border-[#D4AF37]/20 flex items-center justify-between text-xs font-mono">
+                    <button
+                      onClick={goToPrevSlide}
+                      disabled={currentSlide === 1}
+                      className="px-3 py-1.5 rounded-xl bg-[#180C34] hover:bg-[#D4AF37] text-[#FAF5EF] hover:text-black border border-[#D4AF37]/30 disabled:opacity-30 disabled:pointer-events-none transition-all flex items-center gap-1 cursor-pointer"
+                    >
+                      <ChevronLeft className="w-3.5 h-3.5" />
+                      <span>Previous Slide</span>
+                    </button>
+
+                    <span className="text-[#C4BBA3] text-[11px] hidden sm:inline">
+                      Use Left/Right Keyboard Arrows to Navigate
+                    </span>
+
+                    <button
+                      onClick={goToNextSlide}
+                      disabled={currentSlide === totalSlides}
+                      className="px-4 py-1.5 rounded-xl shimmer-btn text-black font-bold disabled:opacity-30 disabled:pointer-events-none transition-all flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>Next Slide</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </motion.div>
               </AnimatePresence>
-
-              {/* CONTINUATION HAND-OFF CARD (Seamless narrative link to the next slide) */}
-              {currentSlide < totalSlides && (
-                <div className="mt-8 pt-4 border-t border-[#D4AF37]/20 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono">
-                  <div className="text-left text-[#C4BBA3] flex items-center gap-2">
-                    <span className="text-[#D4AF37] font-bold">Next Insight:</span>
-                    <span className="text-[#FAF5EF]">
-                      Slide {(currentSlide + 1).toString().padStart(2, '0')} — {SLIDE_TITLES[currentSlide + 1]}
-                    </span>
-                  </div>
-                  <button
-                    onClick={goToNextSlide}
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#B38F24] text-black font-extrabold shadow-md hover:brightness-110 active:scale-95 transition-all cursor-pointer whitespace-nowrap"
-                  >
-                    <span>Continue to Slide {(currentSlide + 1).toString().padStart(2, '0')}</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-              )}
             </div>
 
-            {/* Master Bottom Navigation Bar */}
-            <div className="flex items-center justify-between gap-3 pt-2">
-              <button
-                type="button"
-                onClick={goToPrevSlide}
-                disabled={currentSlide === 1}
-                className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl border text-xs sm:text-sm font-mono font-bold transition-all min-h-[42px] cursor-pointer ${
-                  currentSlide === 1
-                    ? 'opacity-30 border-white/10 text-white/30 cursor-not-allowed'
-                    : 'bg-[#140A2C] border-[#D4AF37]/40 text-[#FAF5EF] hover:border-[#D4AF37] hover:bg-[#2B1055] active:scale-95'
-                }`}
-              >
-                <ChevronLeft className="w-4 h-4" />
-                <span>Previous Slide</span>
-              </button>
-
-              <div className="text-center font-mono text-[11px] text-[#A39B88]">
-                <span>{currentSlide}</span> / <span>{totalSlides}</span>
-              </div>
-
-              {currentSlide < totalSlides ? (
-                <button
-                  type="button"
+            {/* CONTINUATION CONDUIT (Narrative Bridge to Next Slide) */}
+            {currentSlide < totalSlides && (
+              <AnimatedBox direction="bottom" delay={0.2}>
+                <TiltCard
                   onClick={goToNextSlide}
-                  className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#FFF5DC] to-[#D4AF37] text-[#070A14] font-mono font-extrabold text-xs sm:text-sm shadow-[0_0_18px_rgba(212,175,55,0.45)] hover:brightness-110 active:scale-95 transition-all min-h-[42px] cursor-pointer"
+                  className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#180C34]/90 via-[#2E1065]/80 to-[#180C34]/90 border border-[#D4AF37]/45 shadow-lg backdrop-blur-md cursor-pointer group"
                 >
-                  <span>Next Slide</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => jumpToSlide(15)}
-                  className="flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-mono font-extrabold text-xs sm:text-sm shadow-lg active:scale-95 transition-all min-h-[42px] cursor-pointer"
-                >
-                  <QrCode className="w-4 h-4" />
-                  <span>Sponsorship Terminal</span>
-                </button>
-              )}
-            </div>
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-center sm:justify-start gap-2">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                        <span className="text-[10px] font-mono uppercase tracking-widest text-[#D4AF37] font-bold">
+                          Phase Progression Pipeline
+                        </span>
+                      </div>
+                      <p className="text-xs sm:text-sm text-[#FAF5EF] font-serif font-bold">
+                        Continue to Slide {(currentSlide + 1).toString().padStart(2, '0')}: {SLIDE_TITLES[currentSlide + 1]}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#D4AF37] group-hover:bg-[#E8A53E] text-black font-mono font-bold text-xs shadow-md transition-all">
+                      <span>Proceed to Next Phase</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </TiltCard>
+              </AnimatedBox>
+            )}
           </div>
         ) : (
           /* ========================================================
@@ -1599,7 +1782,7 @@ export const SponsorsPage: React.FC<Props> = ({
               <div
                 key={`cont-${num}`}
                 ref={(el) => (slideRefs.current[num - 1] = el)}
-                className="bg-[#0B061A]/90 border border-[#D4AF37]/35 rounded-2xl sm:rounded-3xl p-4 sm:p-8 md:p-10 backdrop-blur-xl shadow-[0_20px_70px_rgba(0,0,0,0.9)] relative space-y-6"
+                className="bg-[#0B061A]/90 border border-[#D4AF37]/35 rounded-2xl sm:rounded-3xl p-4 sm:p-8 md:p-10 backdrop-blur-xl shadow-[0_20px_70px_rgba(0,0,0,0.9)] relative space-y-6 overflow-hidden"
               >
                 {/* Slide Top Indicator */}
                 <div className="flex items-center justify-between border-b border-[#D4AF37]/20 pb-3 text-xs font-mono">
