@@ -1346,7 +1346,6 @@ export const SponsorsPage: React.FC<Props> = ({
                       { label: 'Account Number', value: '0116040100017669', copyVal: '0116040100017669', id: 'ac' },
                       { label: 'IFSC Code', value: 'JAKA0GNGYAL', copyVal: 'JAKA0GNGYAL', id: 'ifsc' },
                       { label: 'Branch', value: 'Gangyal, Jammu', copyVal: 'Gangyal, Jammu', id: 'branch' },
-                      { label: 'Account Holder', value: 'Sarthak Bhat', copyVal: 'Sarthak Bhat', id: 'holder' },
                     ].map((row) => (
                       <div key={row.label} className="p-2.5 rounded-xl bg-[#180C34]/80 border border-[#D4AF37]/25 flex items-center justify-between gap-2">
                         <div>
