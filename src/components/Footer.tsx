@@ -1,7 +1,7 @@
 import React from 'react';
 import { AstitvaLogo } from './AstitvaLogo';
 import { Page } from '../types';
-import { Mail, Phone, ArrowUp, Instagram, MessageSquare, Key } from 'lucide-react';
+import { Mail, Phone, ArrowUp, Instagram, MessageSquare, Key, BookOpen } from 'lucide-react';
 import { MagneticElement } from './motion/MagneticElement';
 import { sounds } from '../utils/soundEffects';
 
@@ -109,6 +109,7 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox, onOpenRe
                   { id: 'offerings', label: 'Capabilities & Scope' },
                   { id: 'faq', label: 'FAQ' },
                   { id: 'sponsors', label: 'Offer Sponsorships' },
+                  { id: 'blogs', label: 'Blogs Section' },
                 ].map((res) => (
                   <li key={res.label}>
                     <button
@@ -183,6 +184,18 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox, onOpenRe
           >
             Privacy & Terms
           </button>
+
+          {/* Dedicated BLOGS SECTION Button in Bottom Utility Bar */}
+          <MagneticElement strength={0.3}>
+            <button
+              onClick={() => handleLinkClick('blogs')}
+              onMouseEnter={() => sounds.playHover()}
+              className="px-3 py-1 rounded-lg sm:rounded-xl bg-gradient-to-r from-[#16203B] via-[#0D1427] to-[#16203B] hover:from-[#1E2D53] hover:to-[#16203B] text-[#D4AF37] hover:text-[#FAF5EF] border border-[#D4AF37]/50 hover:border-[#D4AF37] transition-all flex items-center gap-1.5 font-bold cursor-pointer text-[10px] sm:text-xs shadow-[0_0_15px_rgba(212,175,55,0.2)] hover:shadow-[0_0_25px_rgba(212,175,55,0.4)]"
+            >
+              <BookOpen className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#D4AF37]" />
+              <span>BLOGS SECTION</span>
+            </button>
+          </MagneticElement>
 
           {onOpenDevMailbox && (
             <MagneticElement strength={0.25}>

@@ -6,7 +6,9 @@ export type Page =
   | 'how-it-works'
   | 'summit'
   | 'sponsors'
-  | 'faq';
+  | 'faq'
+  | 'blogs'
+  | 'blog';
 
 export interface CountdownTime {
   days: number;
@@ -61,6 +63,19 @@ export interface FAQItem {
   category: string;
 }
 
+export interface BlogSection {
+  heading?: string;
+  subheading?: string;
+  paragraphs?: string[];
+  bullets?: string[];
+  numberedList?: string[];
+  table?: {
+    headers: string[];
+    rows: string[][];
+  };
+  callout?: string;
+}
+
 export interface BlogPost {
   id: string;
   title: string;
@@ -71,6 +86,8 @@ export interface BlogPost {
   category: string;
   image: string;
   content: string[];
+  sections?: BlogSection[];
+  sources?: string[];
 }
 
 export interface SummitConfig {

@@ -25,6 +25,7 @@ import { SummitPage } from './pages/SummitPage';
 import { SponsorsPage } from './pages/SponsorsPage';
 import { FAQPage } from './pages/FAQPage';
 import { AequitasRegistrationPage } from './pages/AequitasRegistrationPage';
+import { BlogsPage } from './pages/BlogsPage';
 import { ComingSoonScreen } from './components/ComingSoonScreen';
 
 const checkSiteUnlocked = () => {
@@ -96,6 +97,24 @@ const isSponsorshipUrl = () => {
     hash === '#sponsors' ||
     hash === '#sponsorship' ||
     hash === '#sponsorships'
+  );
+};
+
+const isBlogsUrl = () => {
+  if (typeof window === 'undefined') return false;
+  const path = window.location.pathname.toLowerCase();
+  const search = window.location.search.toLowerCase();
+  const hash = window.location.hash.toLowerCase();
+
+  return (
+    path.startsWith('/blogs') ||
+    path.startsWith('/blog') ||
+    search.includes('page=blogs') ||
+    search.includes('page=blog') ||
+    search.includes('tab=blogs') ||
+    search.includes('tab=blog') ||
+    hash === '#blogs' ||
+    hash === '#blog'
   );
 };
 
@@ -197,7 +216,12 @@ export default function App() {
       if (checkMailboxRequested()) {
         setDevMailboxOpen(true);
       }
+      if (isBlogsUrl()) {
+        setOsMode(false);
+        setCurrentPage('blogs');
+      }
     };
+    handleLocationChange();
     window.addEventListener('popstate', handleLocationChange);
     window.addEventListener('hashchange', handleLocationChange);
     return () => {
@@ -325,6 +349,14 @@ export default function App() {
         );
       case 'faq':
         return <FAQPage />;
+      case 'blogs':
+      case 'blog':
+        return (
+          <BlogsPage
+            onNavigate={handleNavigate}
+            onOpenRegister={handleOpenRegisterPortal}
+          />
+        );
       default:
         return (
           <HomePage

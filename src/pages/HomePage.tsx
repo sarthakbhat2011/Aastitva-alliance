@@ -20,6 +20,7 @@ import { CinematicScene } from '../components/cinematic/CinematicScene';
 import { CinematicMaskReveal } from '../components/cinematic/CinematicMaskReveal';
 import { FilmConduitConnector } from '../components/cinematic/FilmConduitConnector';
 import { CinematicCameraRig } from '../components/cinematic/CinematicCameraRig';
+import { BlogCornerWidget } from '../components/BlogCornerWidget';
 import {
   Sparkles,
   ArrowRight,
@@ -777,7 +778,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
                 <button
                   onClick={() => {
                     sounds.playTap();
-                    onNavigate('blog');
+                    onNavigate('blogs');
                   }}
                   className="text-xs font-bold text-[#E8A53E] hover:underline flex items-center gap-1 self-start sm:self-auto min-touch cursor-pointer"
                 >
@@ -799,7 +800,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
                     <div
                       onClick={() => {
                         sounds.playTap();
-                        onNavigate('blog');
+                        onNavigate('blogs');
                       }}
                       className="group cursor-pointer space-y-4 text-left border-l-2 border-transparent hover:border-[#E8A53E] pl-4 transition-all p-3 rounded-2xl bg-[#0D1427]/40 hover:bg-[#0D1427]/80"
                     >
@@ -900,6 +901,9 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
         onClose={() => setGlobalRegisterOpen(false)}
         preselectedCommittee={preselectedCommittee}
       />
+
+      {/* Floating 3D Corner Pop-up Widget for Blogs (Visible only in the Home Page at the corner) */}
+      <BlogCornerWidget onNavigate={onNavigate} />
     </div>
   );
 };
