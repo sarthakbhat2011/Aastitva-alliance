@@ -58,7 +58,7 @@ async function startServer() {
       eventType: 'Aequitas 2026 Delegate: CCC - Continuous Crisis Committee [General Allocation]',
       preferredDate: '2026-10-29',
       message:
-        '[DELEGATE APPLICATION - AEQ-2026-9281]\nDelegate Name: Ekansh Mahajan\nEmail: ekanshmahajan@gmail.com\nPhone: +91 99065 12613\nInstitution: Jammu Sanskriti School\nAcademic Division: Senior Secondary School (Grades 11–12)\nPrior MUN Experience: Junior Delegate (1–3 MUNs)\nHonors / Accolades: None\n1st Choice Committee: CCC - Continuous Crisis Committee (Preferred: General Allocation)\n2nd Choice Committee: UNHRC - United Nations Human Rights Council (Preferred: General Allocation)\n3rd Choice Committee: JKLA - Jammu & Kashmir Legislative Assembly (Preferred: General Allocation)\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: Verified (Jammu Sanskriti School)\nStatement of Purpose:\nOfficial delegate registration for Aequitas Summit 2026 representing Jammu Sanskriti School.',
+        '[DELEGATE APPLICATION - AEQ-2026-9281]\nDelegate Name: Ekansh Mahajan\nEmail: ekanshmahajan@gmail.com\nPhone: +91 99065 12613\nInstitution: Jammu Sanskriti School\nAcademic Division: Senior Secondary School (Grades 11–12)\nPrior MUN Experience: Junior Delegate (1–3 MUNs)\nHonors / Accolades: None\n1st Choice Committee: CCC - Continuous Crisis Committee (Preferred: General Allocation)\n2nd Choice Committee: UNHRC - United Nations Human Rights Council (Preferred: General Allocation)\n3rd Choice Committee: BRICS - BRICS Summit (Preferred: General Allocation)\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: Verified (Jammu Sanskriti School)\nStatement of Purpose:\nOfficial delegate registration for Aequitas Summit 2026 representing Jammu Sanskriti School.',
       status: 'New',
     },
     {
@@ -207,7 +207,7 @@ async function startServer() {
         if (val.includes('IPC') || val.includes('Press') || val.includes('International Press')) return '• IPC - International Press Corps';
         if (val.includes('CCC') || val.includes('Crisis') || val.includes('CC')) return '• CCC - Continuous Crisis Committee';
         if (val.includes('UNHRC') || val.includes('Human Rights')) return '• UNHRC - United Nations Human Rights Council';
-        if (val.includes('JKLA') || val.includes('Legislative')) return '• JKLA - Jammu & Kashmir Legislative Assembly';
+        if (val.includes('BRICS') || val.includes('JKLA') || val.includes('Legislative')) return '• BRICS - BRICS Summit';
         if (val.includes('Women')) return '• UN Women - United Nations Entity for Gender Equality';
         if (val.includes('Lok Sabha') || val.includes('House')) return '• Lok Sabha - Lok Sabha (House of the People)';
         if (val.includes('IPL') || val.includes('Premier')) return '• IPL - Indian Premier League Auction Council';
@@ -244,7 +244,7 @@ async function startServer() {
         'entry.299951131': clean.firstChoicePortfolio || 'General Allocation',
         'entry.580509636': mapCommittee(clean.secondChoiceCommittee || 'UNHRC - United Nations Human Rights Council'),
         'entry.777137221': clean.secondChoicePortfolio || 'General Allocation',
-        'entry.635888889': mapCommittee(clean.thirdChoiceCommittee || 'JKLA - Jammu & Kashmir Legislative Assembly'),
+        'entry.635888889': mapCommittee(clean.thirdChoiceCommittee || 'BRICS - BRICS Summit'),
         'entry.794534023': clean.thirdChoicePortfolio || 'General Allocation',
         'entry.156711483': clean.statement || 'Registered via Aequitas Delegate Portal.',
         'entry.1604443743': clean.transactionId || 'Verified Remittance',
@@ -632,7 +632,7 @@ async function startServer() {
       const port1 = sanitizeString(cols[offset + 8] || 'General Allocation', 120);
       let comm2 = sanitizeString(cols[offset + 9] || 'UNHRC - United Nations Human Rights Council', 120);
       const port2 = sanitizeString(cols[offset + 10] || 'General Allocation', 120);
-      let comm3 = sanitizeString(cols[offset + 11] || 'JKLA - Jammu & Kashmir Legislative Assembly', 120);
+      let comm3 = sanitizeString(cols[offset + 11] || 'BRICS - BRICS Summit', 120);
       const port3 = sanitizeString(cols[offset + 12] || 'General Allocation', 120);
       const statement = sanitizeString(cols[offset + 13] || 'Imported from Google Form Responses', 3000);
       const utrCode = sanitizeString(cols[offset + 14] || '', 100);
@@ -801,7 +801,7 @@ async function startServer() {
         'General Allocation';
       let comm3 =
         sanitizeString(getVal(['thirdChoiceCommittee', '3rd Choice Committee (Tertiary / Contingency)', 'comm3']), 120) ||
-        'JKLA - Jammu & Kashmir Legislative Assembly';
+        'BRICS - BRICS Summit';
       const port3 =
         sanitizeString(getVal(['thirdChoicePortfolio', '3rd Choice Portfolio / Country Preference', 'port3']), 120) ||
         'General Allocation';
@@ -961,7 +961,7 @@ async function startServer() {
         eventType: 'Aequitas 2026 Delegate: CCC - Continuous Crisis Committee [General Allocation]',
         preferredDate: '2026-10-29',
         message:
-          '[DELEGATE APPLICATION - AEQ-2026-9281]\nDelegate Name: Ekansh Mahajan\nEmail: ekanshmahajan@gmail.com\nPhone: +91 99065 12613\nInstitution: Jammu Sanskriti School\nAcademic Division: Senior Secondary School (Grades 11–12)\nPrior MUN Experience: Junior Delegate (1–3 MUNs)\nHonors / Accolades: None\n1st Choice Committee: CCC - Continuous Crisis Committee (Preferred: General Allocation)\n2nd Choice Committee: UNHRC - United Nations Human Rights Council (Preferred: General Allocation)\n3rd Choice Committee: JKLA - Jammu & Kashmir Legislative Assembly (Preferred: General Allocation)\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: Verified (Jammu Sanskriti School)\nStatement of Purpose:\nOfficial delegate registration for Aequitas Summit 2026 representing Jammu Sanskriti School.',
+          '[DELEGATE APPLICATION - AEQ-2026-9281]\nDelegate Name: Ekansh Mahajan\nEmail: ekanshmahajan@gmail.com\nPhone: +91 99065 12613\nInstitution: Jammu Sanskriti School\nAcademic Division: Senior Secondary School (Grades 11–12)\nPrior MUN Experience: Junior Delegate (1–3 MUNs)\nHonors / Accolades: None\n1st Choice Committee: CCC - Continuous Crisis Committee (Preferred: General Allocation)\n2nd Choice Committee: UNHRC - United Nations Human Rights Council (Preferred: General Allocation)\n3rd Choice Committee: BRICS - BRICS Summit (Preferred: General Allocation)\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: Verified (Jammu Sanskriti School)\nStatement of Purpose:\nOfficial delegate registration for Aequitas Summit 2026 representing Jammu Sanskriti School.',
         status: 'New',
       },
       {

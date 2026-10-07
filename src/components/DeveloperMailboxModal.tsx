@@ -231,7 +231,7 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
     firstChoicePortfolio: 'General Allocation',
     secondChoiceCommittee: 'UNHRC - United Nations Human Rights Council',
     secondChoicePortfolio: 'General Allocation',
-    thirdChoiceCommittee: 'JKLA - Jammu & Kashmir Legislative Assembly',
+    thirdChoiceCommittee: 'BRICS - BRICS Summit',
     thirdChoicePortfolio: 'General Allocation',
     priorExperience: 'Junior Delegate (1–3 MUNs)',
     feeStatus: '₹1,999 (Delegate Remittance Recorded)',
@@ -365,7 +365,7 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
         const port1 = cols[offset + 8] || 'General Allocation';
         let comm2 = cols[offset + 9] || 'UNHRC - United Nations Human Rights Council';
         const port2 = cols[offset + 10] || 'General Allocation';
-        let comm3 = cols[offset + 11] || 'JKLA - Jammu & Kashmir Legislative Assembly';
+        let comm3 = cols[offset + 11] || 'BRICS - BRICS Summit';
         const port3 = cols[offset + 12] || 'General Allocation';
         const statement = cols[offset + 13] || 'Imported from Google Form Responses';
         const utrCode = cols[offset + 14] ? cols[offset + 14].trim() : '';
@@ -636,7 +636,7 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
         firstChoicePortfolio: 'General Allocation',
         secondChoiceCommittee: 'UNHRC - United Nations Human Rights Council',
         secondChoicePortfolio: 'General Allocation',
-        thirdChoiceCommittee: 'JKLA - Jammu & Kashmir Legislative Assembly',
+        thirdChoiceCommittee: 'BRICS - BRICS Summit',
         thirdChoicePortfolio: 'General Allocation',
         priorExperience: 'Junior Delegate (1–3 MUNs)',
         feeStatus: '₹1,999 (Delegate Remittance Recorded)',
@@ -1617,7 +1617,7 @@ Current Status: ${mail.status}`;
                     >
                       <option value="CCC - Continuous Crisis Committee">CCC - Continuous Crisis Committee</option>
                       <option value="UNHRC - United Nations Human Rights Council">UNHRC - United Nations Human Rights Council</option>
-                      <option value="JKLA - Jammu & Kashmir Legislative Assembly">JKLA - Jammu & Kashmir Legislative Assembly</option>
+                      <option value="BRICS - BRICS Summit">BRICS - BRICS Summit</option>
                       <option value="UN Women - United Nations Entity for Gender Equality">UN Women - United Nations Entity for Gender Equality</option>
                       <option value="Lok Sabha - Lok Sabha (House of the People)">Lok Sabha - Lok Sabha (House of the People)</option>
                       <option value="IPL - Indian Premier League Auction Council">IPL - Indian Premier League Auction Council</option>
@@ -1646,7 +1646,7 @@ Current Status: ${mail.status}`;
                     >
                       <option value="UNHRC - United Nations Human Rights Council">UNHRC - United Nations Human Rights Council</option>
                       <option value="CCC - Continuous Crisis Committee">CCC - Continuous Crisis Committee</option>
-                      <option value="JKLA - Jammu & Kashmir Legislative Assembly">JKLA - Jammu & Kashmir Legislative Assembly</option>
+                      <option value="BRICS - BRICS Summit">BRICS - BRICS Summit</option>
                       <option value="UN Women - United Nations Entity for Gender Equality">UN Women - United Nations Entity for Gender Equality</option>
                       <option value="Lok Sabha - Lok Sabha (House of the People)">Lok Sabha - Lok Sabha (House of the People)</option>
                       <option value="IPL - Indian Premier League Auction Council">IPL - Indian Premier League Auction Council</option>

@@ -18,7 +18,8 @@ export const DiplomaticCommandConsole: React.FC<Props> = ({ onOpenRegister }) =>
       case 'cc':
       case 'ccc': return Users;
       case 'unhrc': return Shield;
-      case 'jkla': return Building;
+      case 'brics':
+      case 'jkla': return Globe;
       case 'un-women': return HeartHandshake;
       case 'lok-sabha': return Zap;
       case 'ipl': return TrendingUp;

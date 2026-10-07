@@ -649,7 +649,7 @@ export const AequitasRegistrationPage: React.FC = () => {
         if (val.includes('IPC') || val.includes('Press') || val.includes('International Press')) return '• IPC - International Press Corps';
         if (val.includes('CCC') || val.includes('Crisis') || val.includes('CC')) return '• CCC - Continuous Crisis Committee';
         if (val.includes('UNHRC') || val.includes('Human Rights')) return '• UNHRC - United Nations Human Rights Council';
-        if (val.includes('JKLA') || val.includes('Legislative')) return '• JKLA - Jammu & Kashmir Legislative Assembly';
+        if (val.includes('BRICS') || val.includes('JKLA') || val.includes('Legislative')) return '• BRICS - BRICS Summit';
         if (val.includes('Women')) return '• UN Women - United Nations Entity for Gender Equality';
         if (val.includes('Lok Sabha') || val.includes('House')) return '• Lok Sabha - Lok Sabha (House of the People)';
         if (val.includes('IPL') || val.includes('Premier')) return '• IPL - Indian Premier League Auction Council';
@@ -680,7 +680,7 @@ export const AequitasRegistrationPage: React.FC = () => {
       // 11. 2nd Choice Portfolio / Country Preference
       body.append('entry.777137221', form.secondChoicePortfolio.trim() || 'General Allocation');
       // 12. 3rd Choice Committee (Tertiary / Contingency)
-      body.append('entry.635888889', mapCommitteeToGoogleOption(form.thirdChoiceCommittee || 'JKLA - Jammu & Kashmir Legislative Assembly'));
+      body.append('entry.635888889', mapCommitteeToGoogleOption(form.thirdChoiceCommittee || 'BRICS - BRICS Summit'));
       // 13. 3rd Choice Portfolio / Country Preference
       body.append('entry.794534023', form.thirdChoicePortfolio.trim() || 'General Allocation');
       // 14. Statement of Purpose & Motivation

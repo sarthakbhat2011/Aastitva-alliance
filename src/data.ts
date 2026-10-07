@@ -56,11 +56,11 @@ export const COMMITTEES = [
     seats: 60,
   },
   {
-    id: 'jkla',
-    code: 'JKLA',
-    name: 'Jammu Kashmir Legislative Assembly',
-    agenda: 'Cross-Border Drug Trafficking and Emerging Narco-Terrorism Threat in Jammu & Kashmir.',
-    description: 'Vibrant state assembly debate focusing on regional development, public policy, and administrative governance.',
+    id: 'brics',
+    code: 'BRICS',
+    name: 'BRICS Summit',
+    agenda: 'Strengthening Multilateralism, Alternative Financial Architectures & Strategic Economic Cooperation in a Multipolar World.',
+    description: 'High-level multilateral diplomatic summit focusing on geopolitical alignment, global economic frameworks, and cross-border cooperation.',
     seats: 55,
   },
   {

@@ -16,6 +16,7 @@ import {
   TrendingUp,
   Award,
   Users,
+  Globe,
 } from 'lucide-react';
 import { COMMITTEES } from '../data';
 import { sounds } from '../utils/soundEffects';
@@ -50,12 +51,12 @@ export const CommitteeFitDecryptor: React.FC<Props> = ({ onSelectCommittee }) =>
       badge: 'UN Human Rights',
     },
     {
-      id: 'jk-assembly',
-      title: 'Jammu & Kashmir Regional Policy & Security',
-      desc: 'Regional administration, cross-border anti-narcotics, counter-terrorism, and local state development.',
-      icon: Building,
-      primaryComm: 'jkla',
-      badge: 'J&K Legislative Assembly',
+      id: 'brics-summit',
+      title: 'Multilateral Diplomacy, Global South & Economic Order',
+      desc: 'Geopolitical alliances, de-dollarization, emerging markets collaboration, and international trade policy.',
+      icon: Globe,
+      primaryComm: 'brics',
+      badge: 'BRICS Summit',
     },
     {
       id: 'gender-policy',
@@ -102,13 +103,13 @@ export const CommitteeFitDecryptor: React.FC<Props> = ({ onSelectCommittee }) =>
       id: 'intermediate',
       label: 'Intermediate Debater (2-4 MUNs)',
       desc: 'Comfortable with working papers, draft resolutions, intense moderated caucuses, and strategic lobbying.',
-      preferredComms: ['lok-sabha', 'jkla', 'unhrc', 'ipl', 'ipc'],
+      preferredComms: ['lok-sabha', 'brics', 'unhrc', 'ipl', 'ipc'],
     },
     {
       id: 'veteran',
       label: 'Circuit Veteran / Gavel Seeker (5+ MUNs)',
       desc: 'Thrives in unpredictable midnight crisis updates, high-stakes parliamentary cross-examination, and bidding wars.',
-      preferredComms: ['ccc', 'jkla', 'ipl', 'lok-sabha', 'ipc'],
+      preferredComms: ['ccc', 'brics', 'ipl', 'lok-sabha', 'ipc'],
     },
   ];
 
@@ -124,7 +125,7 @@ export const CommitteeFitDecryptor: React.FC<Props> = ({ onSelectCommittee }) =>
     if (expId === 'novice' && (targetId === 'cc' || targetId === 'ccc')) {
       // If novice picks Continuous Crisis Committee, recommend tailored score or foundational guidance
       score = 94;
-    } else if (expId === 'veteran' && (targetId === 'cc' || targetId === 'ccc' || targetId === 'jkla' || targetId === 'ipl')) {
+    } else if (expId === 'veteran' && (targetId === 'cc' || targetId === 'ccc' || targetId === 'brics' || targetId === 'ipl')) {
       score = 99;
     } else if (expId === 'intermediate') {
       score = 96;

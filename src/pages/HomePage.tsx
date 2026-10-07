@@ -91,7 +91,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
         if (val.includes('IPC') || val.includes('Press') || val.includes('International Press')) return '• IPC - International Press Corps';
         if (val.includes('CCC') || val.includes('Crisis') || val.includes('CC')) return '• CCC - Continuous Crisis Committee';
         if (val.includes('UNHRC') || val.includes('Human Rights')) return '• UNHRC - United Nations Human Rights Council';
-        if (val.includes('JKLA') || val.includes('Legislative')) return '• JKLA - Jammu & Kashmir Legislative Assembly';
+        if (val.includes('BRICS') || val.includes('JKLA') || val.includes('Legislative')) return '• BRICS - BRICS Summit';
         if (val.includes('Women')) return '• UN Women - United Nations Entity for Gender Equality';
         if (val.includes('Lok Sabha') || val.includes('House')) return '• Lok Sabha - Lok Sabha (House of the People)';
         if (val.includes('IPL') || val.includes('Premier')) return '• IPL - Indian Premier League Auction Council';
@@ -119,7 +119,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
       body.append('entry.299951131', 'General Allocation');
       body.append('entry.580509636', mapCommittee(form.secondChoiceCommittee || 'UNHRC - United Nations Human Rights Council'));
       body.append('entry.777137221', 'General Allocation');
-      body.append('entry.635888889', '• JKLA - Jammu & Kashmir Legislative Assembly');
+      body.append('entry.635888889', '• BRICS - BRICS Summit');
       body.append('entry.794534023', 'General Allocation');
       body.append('entry.156711483', 'Registered via Home Page Express Portal.');
       body.append('entry.1604443743', 'Verified Remittance');
