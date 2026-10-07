@@ -147,6 +147,8 @@ const COMMON_INSTITUTIONS = [
   'University of Jammu',
 ];
 
+// Connected Google Form URL: https://docs.google.com/forms/d/e/1FAIpQLSdgVhSI5tgSKD4vk_m8YWI0q6zFuJFytzer4R7-DSbzu7G8rg/viewform?usp=pp_url
+// Backend Form Action Endpoint:
 const GOOGLE_FORM_ACTION =
   'https://docs.google.com/forms/d/e/1FAIpQLSdgVhSI5tgSKD4vk_m8YWI0q6zFuJFytzer4R7-DSbzu7G8rg/formResponse';
 

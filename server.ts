@@ -199,7 +199,12 @@ async function startServer() {
     });
   });
 
-  // Google Form Synchronization Engine (Guaranteed delivery bypassing browser ad blockers/CORS)
+  // ============================================================================
+  // GOOGLE FORM SYNCHRONIZATION ENGINE (Backend Endpoint Integration)
+  // Target Form: https://docs.google.com/forms/d/e/1FAIpQLSdgVhSI5tgSKD4vk_m8YWI0q6zFuJFytzer4R7-DSbzu7G8rg/viewform?usp=pp_url
+  // Response Action: https://docs.google.com/forms/d/e/1FAIpQLSdgVhSI5tgSKD4vk_m8YWI0q6zFuJFytzer4R7-DSbzu7G8rg/formResponse
+  // Guaranteed server-side HTTPS dispatch bypassing browser ad blockers and CORS limitations
+  // ============================================================================
   function syncToGoogleForm(clean: any) {
     try {
       const mapCommittee = (val: string) => {
@@ -267,18 +272,19 @@ async function startServer() {
           },
         },
         (res) => {
-          console.log(`[Google Forms Sync] Server synced application to Google Form (Status: ${res.statusCode})`);
+          const isSuccess = res.statusCode && (res.statusCode === 200 || res.statusCode === 302 || res.statusCode === 303);
+          console.log(`[Google Forms Backend Sync] Server synced application to Google Form (Status: ${res.statusCode}${isSuccess ? ' - OK' : ''})`);
         }
       );
 
       req.on('error', (err) => {
-        console.warn('[Google Forms Sync] Dispatch warning:', err.message);
+        console.warn('[Google Forms Backend Sync] Dispatch warning:', err.message);
       });
 
       req.write(formData);
       req.end();
     } catch (err: any) {
-      console.warn('[Google Forms Sync] Exception during dispatch:', err?.message);
+      console.warn('[Google Forms Backend Sync] Exception during dispatch:', err?.message);
     }
   }
 
