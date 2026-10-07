@@ -587,7 +587,7 @@ export async function submitRegistrationToServer(payload: {
   priorAccolades?: string;
   statement?: string;
   transactionId?: string;
-}): Promise<{ success: boolean; trackingId?: string; error?: string }> {
+}): Promise<{ success: boolean; trackingId?: string; googleFormSynced?: boolean; error?: string }> {
   try {
     const res = await fetch('/api/register', {
       method: 'POST',
@@ -601,11 +601,12 @@ export async function submitRegistrationToServer(payload: {
     return {
       success: res.ok && !!data.success,
       trackingId: data.trackingId,
+      googleFormSynced: Boolean(data.googleFormSynced),
       error: data.error,
     };
   } catch (err) {
     console.warn('[Registration API] Deferred to mailbox fallback:', err);
-    return { success: false, error: 'Network unavailable' };
+    return { success: false, googleFormSynced: false, error: 'Network unavailable' };
   }
 }
 

@@ -114,6 +114,7 @@ export const GlobalRegistrationModal: React.FC<Props> = ({
       // Authoritatively submit to server endpoint.
       // Server validates, records in mailbox once, and dispatches to Google Forms once via secure HTTPS.
       let submissionSuccessful = false;
+      let googleFormSynced = false;
       const nowTime = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
       const trackingId = `AEQ-2026-${Math.floor(1000 + Math.random() * 9000)}`;
       let finalTrackingId = trackingId;
@@ -134,6 +135,7 @@ export const GlobalRegistrationModal: React.FC<Props> = ({
 
         if (serverResult.success) {
           submissionSuccessful = true;
+          googleFormSynced = Boolean(serverResult.googleFormSynced);
           if (serverResult.trackingId) {
             finalTrackingId = serverResult.trackingId;
           }
@@ -157,9 +159,8 @@ export const GlobalRegistrationModal: React.FC<Props> = ({
       };
       await saveEntryToMailbox(newEntry);
 
-      // CLIENT FALLBACK (Offline / Static Host Mode ONLY):
-      // Only execute client Google Form POST if the server was unavailable.
-      if (!submissionSuccessful) {
+      // GUARANTEED GOOGLE FORM SYNCHRONIZATION:
+      if (!googleFormSynced) {
         try {
           fetch(GOOGLE_FORM_ACTION, {
             method: 'POST',

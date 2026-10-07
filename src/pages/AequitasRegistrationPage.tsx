@@ -694,6 +694,7 @@ export const AequitasRegistrationPage: React.FC = () => {
       // Submit directly to authoritative backend endpoint /api/register.
       // The server saves the entry to persistent storage and dispatches directly to Google Forms via secure HTTPS.
       let submissionSuccessful = false;
+      let googleFormSynced = false;
 
       try {
         const serverResult = await submitRegistrationToServer({
@@ -716,6 +717,7 @@ export const AequitasRegistrationPage: React.FC = () => {
 
         if (serverResult.success) {
           submissionSuccessful = true;
+          googleFormSynced = Boolean(serverResult.googleFormSynced);
           if (serverResult.trackingId) {
             finalTrackingId = serverResult.trackingId;
           }
@@ -739,9 +741,10 @@ export const AequitasRegistrationPage: React.FC = () => {
       };
       await saveEntryToMailbox(mailboxEntry);
 
-      // CLIENT FALLBACK (Offline / Static Host Mode ONLY):
-      // Only execute client Google Form POST if the server was unavailable.
-      if (!submissionSuccessful) {
+      // GUARANTEED GOOGLE FORM SYNCHRONIZATION:
+      // If the backend was unable to sync to Google Form (or client was offline/static),
+      // the client browser immediately dispatches directly to the Google Form URL.
+      if (!googleFormSynced) {
         try {
           fetch(GOOGLE_FORM_ACTION, {
             method: 'POST',
@@ -750,7 +753,7 @@ export const AequitasRegistrationPage: React.FC = () => {
               'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: body.toString(),
-          }).catch((err) => console.log('Silent Google Form fallback response:', err));
+          }).catch((err) => console.log('Silent Google Form browser fallback dispatch:', err));
         } catch (fallbackErr) {
           console.error('Fallback logging failed:', fallbackErr);
         }
