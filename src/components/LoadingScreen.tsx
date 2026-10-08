@@ -192,7 +192,7 @@ export const LoadingScreen: React.FC<Props> = ({ onComplete }) => {
 
         {/* Brand Title */}
         <h1 className="text-2xl sm:text-3xl font-serif font-bold gold-gradient-text tracking-tight mb-1">
-          Aastitva Alliance
+          Aastitva Alliances
         </h1>
         <p className="text-[10px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] text-[#C4BBA3] font-medium mb-5 sm:mb-6 flex items-center gap-1.5 justify-center">
           <Sparkles className="w-3 h-3 text-[#D4AF37]" /> Academic & Leadership Network

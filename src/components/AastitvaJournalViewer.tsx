@@ -13,7 +13,7 @@ export const AastitvaJournalViewer: React.FC = () => {
       date: 'August 2026',
       readTime: '4 min read',
       excerpt: 'What is missing in modern academic events is rarely the initial idea, but everything standing between that idea and its full existence.',
-      content: 'Every event an organiser dreams of already exists somewhere in a proposal, a conversation, a hope that students will show up and something meaningful will happen. Aastitva Alliance was born to collapse that distance, providing high-integrity infrastructure across Northern India.',
+      content: 'Every event an organiser dreams of already exists somewhere in a proposal, a conversation, a hope that students will show up and something meaningful will happen. Aastitva Alliances was born to collapse that distance, providing high-integrity infrastructure across Northern India.',
     },
     {
       id: 2,

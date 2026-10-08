@@ -33,7 +33,7 @@ export const CinematicStoryReel: React.FC = () => {
       act: 'ACT III • THE CORRIDORS',
       title: 'Corridors of Debate',
       quote: '"Organisers, brimming with ambition, were often reduced to juggling logistics, sacrificing the creative soul of their event."',
-      narration: 'Ideas were being built, but rarely allowed to fully exist. Ideas were abundant. Existence was rare. Aastitva Alliance was born to fill that void.',
+      narration: 'Ideas were being built, but rarely allowed to fully exist. Ideas were abundant. Existence was rare. Aastitva Alliances was born to fill that void.',
       tag: 'Origin of Aastitva',
       bgGradient: 'from-rose-950/40 via-[#0D1427] to-[#070A14]',
       borderAccent: 'border-rose-400',

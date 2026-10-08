@@ -218,7 +218,7 @@ export const Navbar: React.FC<Props> = ({
             <button
               onClick={() => handleNavClick('home')}
               className="text-left focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 rounded-xl p-0.5 shrink-0 min-w-0 max-w-[55vw] xs:max-w-[65vw] sm:max-w-none cursor-pointer"
-              aria-label="Aastitva Alliance Home"
+              aria-label="Aastitva Alliances Home"
             >
               <AstitvaLogo size="sm" />
             </button>

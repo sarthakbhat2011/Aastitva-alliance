@@ -71,7 +71,7 @@ export const ServicesManagerXP: React.FC<Props> = ({ onOpenRegister }) => {
   const handleDownloadSpec = () => {
     sounds.playTap();
     const specContent = `=====================================================
-AASTITVA ALLIANCE • INSTITUTIONAL CAPABILITY SPECIFICATION
+AASTITVA ALLIANCES • INSTITUTIONAL CAPABILITY SPECIFICATION
 =====================================================
 Module Name: ${activeOffering.title}
 Category: ${activeOffering.category}
@@ -87,7 +87,7 @@ FOUNDER'S PERSONAL COVENANT:
 "This is a promise: no hidden costs, no vague promises, just honest conversations from day one."
 
 =====================================================
-Issued by: Aastitva Alliance Infrastructure Kernel
+Issued by: Aastitva Alliances Infrastructure Kernel
 Status: VERIFIED & READY FOR INSTITUTIONAL DEPLOYMENT
 =====================================================`;
 

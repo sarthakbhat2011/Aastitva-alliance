@@ -384,7 +384,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
                 transition={{ duration: 0.65, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
                 className="text-xs sm:text-base text-[#C4BBA3] font-inter max-w-2xl mx-auto lg:mx-0 leading-relaxed"
               >
-                Every event an organiser dreams of already exists in a proposal, a conversation, a hope. Aastitva Alliance simplifies the complexity of running academic events—so every idea gets the chance to fully exist.
+                Every event an organiser dreams of already exists in a proposal, a conversation, a hope. Aastitva Alliances simplifies the complexity of running academic events—so every idea gets the chance to fully exist.
               </motion.p>
 
               {/* THREE HERO BUTTONS (PDF Page 1 Specification) */}
@@ -859,7 +859,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
             </CinematicMaskReveal>
 
             <p className="text-base sm:text-lg text-var-text-secondary max-w-2xl mx-auto leading-relaxed animate-text-reveal animate-delay-2">
-              Partner with Aastitva Alliance for zero-risk infrastructure, elite Executive Board recruitment, and complete delegate preparation.
+              Partner with Aastitva Alliances for zero-risk infrastructure, elite Executive Board recruitment, and complete delegate preparation.
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4 pt-4 animate-text-reveal animate-delay-3">

@@ -26,12 +26,12 @@ export const WhereWeAreTodayCard: React.FC<Props> = ({ onNavigateSummit }) => {
 
       <div className="space-y-4">
         <h3 className="text-2xl sm:text-4xl font-cormorant font-bold text-[#FAF5EF]">
-          Building Aastitva Alliance from the ground up
+          Building Aastitva Alliances from the ground up
         </h3>
 
         <div className="p-6 rounded-2xl bg-[#070A14]/90 border-l-4 border-[#D4AF37] space-y-2.5 shadow-inner">
           <p className="text-sm sm:text-base text-[#FAF5EF] leading-relaxed font-cormorant italic">
-            "We're building Aastitva Alliance from the ground up, starting with our first live partnership, the inaugural Aequitas Summit, with a clear intent to expand across event types and across the region in the years ahead."
+            "We're building Aastitva Alliances from the ground up, starting with our first live partnership, the inaugural Aequitas Summit, with a clear intent to expand across event types and across the region in the years ahead."
           </p>
           <p className="text-xs sm:text-sm text-[#C4BBA3] leading-relaxed font-jakarta">
             "We're nascent, and we are transparent about that. But <em>Aastitva</em> was never about how long we've existed; it's about making sure the events we touch get to exist fully, properly, the way they were meant to."

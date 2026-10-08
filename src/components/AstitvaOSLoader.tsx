@@ -185,7 +185,7 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister, 
           { text: '  map        - Inspect 13-city Northern India network map', type: 'resp' },
           { text: '  register   - Trigger official delegate application modal', type: 'resp' },
           { text: '  mailbox    - Access encrypted Developer Mailbox console', type: 'resp' },
-          { text: '  enter      - Launch the complete Aastitva Alliance website', type: 'resp' },
+          { text: '  enter      - Launch the complete Aastitva Alliances website', type: 'resp' },
           { text: '  clear      - Clear terminal screen buffer', type: 'resp' }
         );
         break;
@@ -307,7 +307,7 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister, 
           <div className="w-64 h-64 sm:w-96 sm:h-96 opacity-35">
             <Astitva3DCanvas variant="hero" />
           </div>
-          <h2 className="text-xl sm:text-4xl font-serif font-bold text-[#D4AF37] mt-1 opacity-25">AASTITVA ALLIANCE</h2>
+          <h2 className="text-xl sm:text-4xl font-serif font-bold text-[#D4AF37] mt-1 opacity-25">AASTITVA ALLIANCES</h2>
           <p className="text-[9px] sm:text-xs uppercase tracking-[0.25em] text-[#C4BBA3] opacity-25">Collapsing the Distance to Existence</p>
         </div>
 
@@ -715,7 +715,7 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister, 
               <div className="flex items-center gap-3 pb-3 border-b border-[#D4AF37]/30">
                 <AstitvaLogo size="md" variant="mark-only" showSubtitle={false} />
                 <div>
-                  <h4 className="font-serif font-bold text-base text-[#FAF5EF]">Aastitva Alliance</h4>
+                  <h4 className="font-serif font-bold text-base text-[#FAF5EF]">Aastitva Alliances</h4>
                   <span className="text-[10px] text-[#D4AF37] font-mono">Academic OS v2.4.0</span>
                 </div>
               </div>

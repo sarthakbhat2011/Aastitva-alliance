@@ -588,7 +588,7 @@ export const BlogsPage: React.FC<Props> = ({ onNavigate, onOpenRegister, initial
                 Why We Publish Analytical Dispatches
               </h4>
               <p className="text-xs sm:text-sm text-[#C4BBA3] leading-relaxed">
-                Academic diplomacy is more than a 3-day competition. Aastitva Alliance publishes continuous research, policy analyses, and educational frameworks to ensure that delegates, faculty advisors, and institutional leaders have access to actionable intellectual infrastructure year-round.
+                Academic diplomacy is more than a 3-day competition. Aastitva Alliances publishes continuous research, policy analyses, and educational frameworks to ensure that delegates, faculty advisors, and institutional leaders have access to actionable intellectual infrastructure year-round.
               </p>
             </div>
           </div>

@@ -205,7 +205,7 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
       </CinematicScene>
 
       {/* ========================================================================= */}
-      {/* 2. FULL-WIDTH LIVE COUNTDOWN — POWERED BY AASTITVA ALLIANCE (PDF Page 5 S2)*/}
+      {/* 2. FULL-WIDTH LIVE COUNTDOWN — POWERED BY AASTITVA ALLIANCES (PDF Page 5 S2)*/}
       {/* ========================================================================= */}
       <CinematicScene shotType="theatrical-prop" intensity={0.9} cameraTilt={true}>
         <ScrollReveal direction="up" delay={0.1}>
@@ -214,7 +214,7 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
               <div className="space-y-0.5">
                 <span className="text-xs uppercase tracking-widest font-extrabold text-[#78350F] flex items-center justify-center md:justify-start gap-1 font-jakarta">
                   <Sparkles className="w-3 h-3 text-[#78350F] fill-current" />
-                  <span>LIVE COUNTDOWN • POWERED BY AASTITVA ALLIANCE</span>
+                  <span>LIVE COUNTDOWN • POWERED BY AASTITVA ALLIANCES</span>
                 </span>
                 <h3 className="text-xl sm:text-2xl font-cormorant font-bold text-[#070A14]">
                   Countdown to Opening Gavel

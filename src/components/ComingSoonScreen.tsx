@@ -450,7 +450,7 @@ export const ComingSoonScreen: React.FC<Props> = ({
             </div>
             <div>
               <span className="font-serif font-bold text-xs sm:text-sm tracking-wide text-white block">
-                AASTITVA ALLIANCE
+                AASTITVA ALLIANCES
               </span>
               <span className="text-[9px] sm:text-[10px] font-mono text-[#D4AF37] tracking-widest uppercase block">
                 Academic Event Management + Network Organisation
@@ -713,7 +713,7 @@ export const ComingSoonScreen: React.FC<Props> = ({
               FOUNDING COVENANT & OPERATIONAL POLICIES
             </span>
             <span className="text-[10px] font-mono text-[#768074]">
-              AASTITVA ALLIANCE CHARTER
+              AASTITVA ALLIANCES CHARTER
             </span>
           </div>
 
@@ -841,7 +841,7 @@ export const ComingSoonScreen: React.FC<Props> = ({
       {/* FOOTER: Accreditation & The Hidden Developer Access Option */}
       <footer className="relative z-10 w-full max-w-7xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-[#243563]/40 text-xs text-[#768074]">
         <div className="text-center sm:text-left text-[11px]">
-          <span>© 2026 Aastitva Alliance. All rights reserved.</span>
+          <span>© 2026 Aastitva Alliances. All rights reserved.</span>
           <span className="mx-2">•</span>
           <span className="text-[#A39B88]">Aequitas Summit Secretariat</span>
         </div>

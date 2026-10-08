@@ -31,7 +31,7 @@ export const AastitvaEmblemHologram: React.FC<Props> = ({ onOpenRegister }) => {
 
       <div className="space-y-1 z-10 font-jakarta">
         <span className="text-[10px] font-mono text-[#D4AF37] uppercase font-bold tracking-widest block">
-          Aastitva Alliance Sovereign Seal
+          Aastitva Alliances Sovereign Seal
         </span>
         <h4 className="text-xl sm:text-2xl font-cormorant font-bold text-[#FAF5EF]">
           Collapsing The Distance

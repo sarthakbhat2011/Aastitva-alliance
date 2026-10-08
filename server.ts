@@ -155,7 +155,7 @@ async function startServer() {
   app.get('/api/health', (req, res) => {
     res.json({
       status: 'ok',
-      service: 'Aastitva Alliance Infrastructure Engine',
+      service: 'Aastitva Alliances Infrastructure Engine',
       ssl: '256-Bit SSL Secured',
       timestamp: new Date().toISOString(),
     });
@@ -1159,7 +1159,7 @@ async function startServer() {
 
   app.listen(PORT, '0.0.0.0', () => {
     console.log(
-      `Aastitva Alliance server running at http://localhost:${PORT} and http://127.0.0.1:${PORT}`
+      `Aastitva Alliances server running at http://localhost:${PORT} and http://127.0.0.1:${PORT}`
     );
     // Initial startup Google Sheet sync (if configured)
     const initCfg = readSheetConfig();

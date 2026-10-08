@@ -1,4 +1,4 @@
-# Impeccable Design Vocabulary & Anti-Slop Rules for Aastitva Alliance
+# Impeccable Design Vocabulary & Anti-Slop Rules for Aastitva Alliances
 
 This repository enforces **Impeccable UI Design Standards** (inspired by [impeccable.style](https://impeccable.style/)).
 

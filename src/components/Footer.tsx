@@ -171,7 +171,7 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox, onOpenRe
       {/* Bottom Compact Utility Strip */}
       <div className="max-w-7xl mx-auto pt-4 sm:pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] sm:text-xs text-[#9C9482] font-inter">
         <div className="flex items-center justify-between w-full sm:w-auto gap-3 text-center sm:text-left">
-          <p>© 2026 Aastitva Alliance</p>
+          <p>© 2026 Aastitva Alliances</p>
           <p className="hidden md:block font-serif italic text-[#D3C5E5]">
             "The Infrastructure behind Great Events"
           </p>

@@ -373,7 +373,7 @@ export const SponsorsPage: React.FC<Props> = ({
                 <span className="text-[#D4AF37] font-playfair text-xl opacity-75">×</span>
                 <img
                   src="/astitva-logo.png"
-                  alt="Aastitva Alliance"
+                  alt="Aastitva Alliances"
                   className="w-14 h-14 sm:w-20 sm:h-20 rounded-full border-2 border-[#D4AF37]/80 shadow-[0_0_25px_rgba(168,85,247,0.45)] bg-[#1e1442] object-cover"
                 />
               </div>

@@ -219,12 +219,12 @@ export const GlobalRegistrationModal: React.FC<Props> = ({
                 <span className="font-playfair font-bold text-xs text-[#D4AF37]">×</span>
                 <img
                   src="/astitva-logo.png"
-                  alt="Aastitva Alliance"
+                  alt="Aastitva Alliances"
                   className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-[#D4AF37]/70 shadow-sm bg-[#1e1442]"
                 />
               </div>
               <span className="font-playfair font-bold text-xs sm:text-sm text-[#FAF5EF] tracking-wide">
-                Aequitas Summit x Aastitva Alliance
+                Aequitas Summit x Aastitva Alliances
               </span>
             </div>
 

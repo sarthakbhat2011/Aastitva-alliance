@@ -303,7 +303,7 @@ export const FAQS: FAQItem[] = [
   {
     id: 'faq-11',
     category: 'Leadership & Founder',
-    question: 'Who is behind Aastitva Alliance?',
+    question: 'Who is behind Aastitva Alliances?',
     answer: "Check out the  About page for the founder's background and motivation for starting the company.",
   },
 ];

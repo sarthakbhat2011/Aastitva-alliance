@@ -64,7 +64,7 @@ export const PAYMENT_CONFIG = {
   ifscCode: 'JAKA0GNGYAL',
   bankName: 'Jammu & Kashmir Bank (J&K Bank)',
   branch: 'Gangyal, Jammu',
-  beneficiaryName: 'Aequitas Conclave / Aastitva Alliance',
+  beneficiaryName: 'Aequitas Conclave / Aastitva Alliances',
   qrCodeUrl: '/payment-qr.jpg',
   primaryContact: {
     number: '+91 99065 12613',
@@ -896,7 +896,7 @@ export const AequitasRegistrationPage: React.FC = () => {
               <div className="relative">
                 <img
                   src="/astitva-logo.png"
-                  alt="Aastitva Alliance"
+                  alt="Aastitva Alliances"
                   className="w-8 h-8 sm:w-11 sm:h-11 rounded-full object-cover border-2 border-[#D4AF37]/70 shadow-[0_0_12px_rgba(168,85,247,0.3)] block bg-[#1e1442]"
                 />
               </div>
@@ -905,7 +905,7 @@ export const AequitasRegistrationPage: React.FC = () => {
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                 <span className="font-playfair font-extrabold text-xs sm:text-base md:text-lg text-[#FAF5EF] tracking-wide truncate">
-                  Aequitas Summit x Aastitva Alliance
+                  Aequitas Summit x Aastitva Alliances
                 </span>
                 <span className="px-1.5 sm:px-2 py-0.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] font-mono font-bold text-[8px] sm:text-[9px] uppercase tracking-wider shrink-0">
                   Oct 29–30, 2026

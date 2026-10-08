@@ -34,7 +34,7 @@ export const AstitvaLogo: React.FC<Props> = ({
         {/* Official Circular Logo Image */}
         <img
           src="/astitva-logo.png"
-          alt="Aastitva Alliance Logo"
+          alt="Aastitva Alliances Logo"
           className="w-full h-full rounded-full object-cover"
         />
       </div>
@@ -48,9 +48,9 @@ export const AstitvaLogo: React.FC<Props> = ({
               Aastitva
             </span>
 
-            {/* "ALLIANCE" Modern Institutional Sans */}
+            {/* "ALLIANCES" Modern Institutional Sans */}
             <span className="font-jakarta text-[9.5px] sm:text-[12px] font-extrabold uppercase tracking-[0.16em] sm:tracking-[0.22em] text-[#E8A53E] shrink-0">
-              ALLIANCE
+              ALLIANCES
             </span>
           </div>
 

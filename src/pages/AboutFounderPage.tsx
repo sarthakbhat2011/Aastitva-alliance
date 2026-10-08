@@ -39,7 +39,7 @@ export const AboutFounderPage: React.FC<Props> = ({ onNavigate }) => {
             <div className="space-y-6 text-left relative z-10 max-w-4xl">
               <div className="inline-flex items-center justify-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-1.5 rounded-2xl sm:rounded-full bg-[#581C87]/40 border border-[#C084FC]/50 text-[#E9D5FF] text-[9.5px] xs:text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider shadow-sm font-jakarta max-w-[92vw] sm:max-w-none">
                 <Sparkles className="w-3.5 h-3.5 animate-pulse text-[#D4AF37] shrink-0" />
-                <span className="break-words">About Aastitva Alliance • Academic Event Management + Network Organisation</span>
+                <span className="break-words">About Aastitva Alliances • Academic Event Management + Network Organisation</span>
               </div>
 
               <CinematicMaskReveal variant="gold-trace-sweep" duration={0.9}>
@@ -95,7 +95,7 @@ export const AboutFounderPage: React.FC<Props> = ({ onNavigate }) => {
                   My journey began in the corridors of India’s MUN circuits, where I witnessed a recurring irony: organisers, brimming with ambition, were often reduced to juggling logistics, often sacrificing the creative soul of their event to the tyranny of management. I observed that while every institution possesses distinct values and a desire to leave a mark, but that spark is too often extinguished by the sheer burden of operational chaos.
                 </p>
                 <p className="font-semibold text-[#FAF5EF] text-sm sm:text-lg border-l-2 border-[#D4AF37] pl-3 py-1">
-                  Aastitva Alliance was born to fill that void.
+                  Aastitva Alliances was born to fill that void.
                 </p>
                 <p>
                   The problem is barely a lack of effort; rather, I feel it’s the absence of a dedicated ecosystem connecting all the pieces an event actually needs , each one solved in isolation, event after event, by people already stretched thin. Ideas were being built, but rarely allowed to fully exist. Ideas were abundant. Existence was rare.
@@ -181,7 +181,7 @@ export const AboutFounderPage: React.FC<Props> = ({ onNavigate }) => {
                 Having experienced these challenges firsthand, I set out to build something different: an organisation that makes event execution simpler, stronger, and more connected, so schools and organisers could focus on their students and creative prospects, not on holding logistics together.
               </p>
               <p>
-                That commitment took me beyond planning. Before Aastitva Alliance took shape, I personally visited government schools across Jammu , to understand where the real gaps were. Not just for well-resourced institutions, the ones least likely to ever see the inside of a conference hall.
+                That commitment took me beyond planning. Before Aastitva Alliances took shape, I personally visited government schools across Jammu , to understand where the real gaps were. Not just for well-resourced institutions, the ones least likely to ever see the inside of a conference hall.
               </p>
               <div className="p-6 rounded-2xl bg-[#0F0A24]/90 border-l-4 border-[#D4AF37] backdrop-blur-md space-y-2 mt-4">
                 <p className="text-sm sm:text-lg font-cormorant italic text-[#FAF5EF]">
@@ -241,7 +241,7 @@ export const AboutFounderPage: React.FC<Props> = ({ onNavigate }) => {
             {/* Verbatim from PDF Page 3 */}
             <div className="space-y-4 text-xs sm:text-base text-[#DDD6FE] leading-relaxed max-w-4xl">
               <p>
-                We're building Aastitva Alliance from the ground up, starting with our first live partnership, the inaugural Aequitas Summit, with a clear intent to expand across event types and across the region in the years ahead.
+                We're building Aastitva Alliances from the ground up, starting with our first live partnership, the inaugural Aequitas Summit, with a clear intent to expand across event types and across the region in the years ahead.
               </p>
               <p>
                 We're nascent, and we are transparent about that. But <em>Aastitva</em> was never about how long we've existed; it's about making sure the events we touch get to exist fully, properly, the way they were meant to.
@@ -272,13 +272,13 @@ export const AboutFounderPage: React.FC<Props> = ({ onNavigate }) => {
             {/* Verbatim from PDF Page 3 */}
             <div className="space-y-4 text-xs sm:text-base text-[#DDD6FE] leading-relaxed max-w-4xl">
               <p>
-                Aastitva Alliance is backed by a personal network spanning across states, relationships built long before the company existed.
+                Aastitva Alliances is backed by a personal network spanning across states, relationships built long before the company existed.
               </p>
               <p>
                 Beyond Jammu, we have established professional connections across Delhi, Pune, Jaipur, Abohar(Rajastan) Haryana, Dehradun(Uttarakhand), Amritsar, Ludhiana(Punjab), Kashmir, Chandigarh, Meerut(Uttar Pradesh), and even in Himachal Pradesh, the relationships built through years of involvement in the MUN and academic events circuit.
               </p>
               <p className="font-semibold text-[#FAF5EF]">
-                As Aastitva Alliance grows, this network becomes the foundation for expansion.
+                As Aastitva Alliances grows, this network becomes the foundation for expansion.
               </p>
             </div>
 

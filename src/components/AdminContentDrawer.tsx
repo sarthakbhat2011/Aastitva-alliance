@@ -97,7 +97,7 @@ export const AdminContentDrawer: React.FC<Props> = ({
                     Restricted Access
                   </h4>
                   <p className="text-xs text-[#C4BBA3] mt-1">
-                    Only authorized Aastitva Alliance directors with executive credentials can update live summit configuration.
+                    Only authorized Aastitva Alliances directors with executive credentials can update live summit configuration.
                   </p>
                 </div>
 
