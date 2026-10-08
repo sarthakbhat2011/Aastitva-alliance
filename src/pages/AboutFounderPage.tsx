@@ -1,24 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { createPortal } from 'react-dom';
+import React, { useState } from 'react';
 import { Page } from '../types';
 import {
   Sparkles,
   MapPin,
   ShieldCheck,
   Quote,
-  Maximize2,
-  X,
-  ChevronLeft,
-  ChevronRight,
   ArrowRight,
-  Heart,
-  Eye,
-  Scale,
-  Compass,
-  Camera,
 } from 'lucide-react';
 import { ScrollReveal } from '../components/ScrollReveal';
-import { OptimizedImage } from '../components/OptimizedImage';
 import { IndiaNetworkMap } from '../components/IndiaNetworkMap';
 import { KenKeseyWaveCard } from '../components/KenKeseyWaveCard';
 import { GlobalRegistrationModal } from '../components/GlobalRegistrationModal';
@@ -34,77 +23,7 @@ interface Props {
 }
 
 export const AboutFounderPage: React.FC<Props> = ({ onNavigate }) => {
-  const [activePhoto, setActivePhoto] = useState<number | null>(null);
   const [registrationModalOpen, setRegistrationModalOpen] = useState(false);
-
-  // 3-4 Founder Photo Shoots (PDF Page 1: "We might add 3-4 shoots of founder in this page")
-  const founderPhotos = [
-    {
-      id: 1,
-      title: 'Meet The Founder',
-      subtitle: 'Corridors of India’s MUN circuits',
-      img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=1200',
-    },
-    {
-      id: 2,
-      title: 'Beyond the Blueprint',
-      subtitle: 'Grassroots school visits across Jammu',
-      img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=1200',
-    },
-    {
-      id: 3,
-      title: 'Where We Are Today',
-      subtitle: 'Building from the ground up • Aequitas Summit',
-      img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=1200',
-    },
-    {
-      id: 4,
-      title: 'Personal Network & Reach',
-      subtitle: 'Pan-India academic circuit connections',
-      img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=1200',
-    },
-  ];
-
-  // Lightbox navigation
-  const handlePrevPhoto = (e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    if (activePhoto === null) return;
-    sounds.playTap();
-    const currentIndex = founderPhotos.findIndex((p) => p.id === activePhoto);
-    const prevIndex = (currentIndex - 1 + founderPhotos.length) % founderPhotos.length;
-    setActivePhoto(founderPhotos[prevIndex].id);
-  };
-
-  const handleNextPhoto = (e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    if (activePhoto === null) return;
-    sounds.playTap();
-    const currentIndex = founderPhotos.findIndex((p) => p.id === activePhoto);
-    const nextIndex = (currentIndex + 1) % founderPhotos.length;
-    setActivePhoto(founderPhotos[nextIndex].id);
-  };
-
-  useEffect(() => {
-    if (activePhoto !== null) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [activePhoto]);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (activePhoto === null) return;
-      if (e.key === 'Escape') setActivePhoto(null);
-      if (e.key === 'ArrowLeft') handlePrevPhoto();
-      if (e.key === 'ArrowRight') handleNextPhoto();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activePhoto]);
 
   return (
     <div className="relative font-sans text-[#FAF5EF] py-8 sm:py-16 px-4 sm:px-8 max-w-7xl mx-auto space-y-16 sm:space-y-24 text-left">
@@ -183,36 +102,58 @@ export const AboutFounderPage: React.FC<Props> = ({ onNavigate }) => {
                 </p>
               </div>
 
-              {/* Founder Photo Shoot Card (PDF Page 1 & 2) */}
-              <div className="lg:col-span-4">
-                <PerspectiveCard maxTilt={8} scale={1.02}>
-                  <div
-                    onClick={() => {
-                      sounds.playTap();
-                      setActivePhoto(1);
-                    }}
-                    className="group relative rounded-2xl overflow-hidden border-2 border-[#A855F7]/40 cursor-pointer shadow-xl"
-                  >
-                    <OptimizedImage
-                      src={founderPhotos[0].img}
-                      alt="Meet The Founder"
-                      className="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A0618] via-transparent to-transparent opacity-85" />
-                    <div className="absolute bottom-4 left-4 right-4 text-left">
-                      <span className="text-[10px] font-mono text-[#D4AF37] uppercase tracking-wider block">
-                        Caption: Meet The Founder
-                      </span>
-                      <h4 className="text-sm font-bold text-[#FAF5EF]">
-                        {founderPhotos[0].title}
-                      </h4>
+              {/* Kinetic Negative Animative Space Conduit (No Personal Photos) */}
+              <div className="lg:col-span-4 flex items-center justify-center">
+                <PerspectiveCard maxTilt={6} scale={1.01}>
+                  <div className="relative w-full h-80 rounded-2xl overflow-hidden border border-[#A855F7]/35 bg-gradient-to-b from-[#1C103B]/80 via-[#0B061A]/95 to-[#05030E] flex flex-col items-center justify-center p-6 text-center shadow-2xl group">
+                    {/* Ambient Glows */}
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(168,85,247,0.18),transparent_70%)] animate-pulse" />
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-[#D4AF37]/10 rounded-full blur-2xl pointer-events-none" />
+                    <div className="absolute bottom-0 left-0 w-32 h-32 bg-[#7C3AED]/20 rounded-full blur-2xl pointer-events-none" />
+
+                    {/* Kinetic Planetary & Celestial Orbital Conduit */}
+                    <div className="relative w-40 h-40 flex items-center justify-center">
+                      {/* Outer Dashed Orbit */}
+                      <div
+                        className="absolute inset-0 rounded-full border border-dashed border-[#A855F7]/40 animate-spin"
+                        style={{ animationDuration: '28s' }}
+                      />
+                      {/* Counter-rotating Middle Ellipse */}
+                      <div
+                        className="absolute inset-2.5 rounded-full border border-dotted border-[#D4AF37]/45 animate-spin"
+                        style={{ animationDuration: '18s', animationDirection: 'reverse' }}
+                      />
+                      {/* Pulsing Aura Rings */}
+                      <div
+                        className="absolute inset-7 rounded-full border border-[#C084FC]/30 animate-ping opacity-25"
+                        style={{ animationDuration: '4s' }}
+                      />
+                      <div className="absolute inset-9 rounded-full bg-gradient-to-tr from-[#581C87]/40 via-[#3B0764]/60 to-[#D4AF37]/20 backdrop-blur-md border border-[#A855F7]/50 shadow-[0_0_25px_rgba(168,85,247,0.35)]" />
+
+                      {/* Floating Starlight Centerpiece */}
+                      <div className="relative z-10 flex flex-col items-center justify-center">
+                        <Sparkles className="w-8 h-8 text-[#D4AF37] animate-pulse drop-shadow-[0_0_14px_rgba(212,175,55,0.8)]" />
+                      </div>
+
+                      {/* Micro Starlight Nodes */}
+                      <div className="absolute top-2 left-6 w-2 h-2 rounded-full bg-[#FAF5EF] shadow-[0_0_8px_#FAF5EF] animate-pulse" />
+                      <div
+                        className="absolute bottom-3 right-7 w-1.5 h-1.5 rounded-full bg-[#D4AF37] shadow-[0_0_6px_#D4AF37] animate-ping"
+                        style={{ animationDuration: '3s' }}
+                      />
+                      <div className="absolute top-1/2 -right-1 w-2 h-2 rounded-full bg-[#A855F7] shadow-[0_0_8px_#A855F7]" />
+                      <div className="absolute -left-1 top-1/3 w-1.5 h-1.5 rounded-full bg-[#C084FC] shadow-[0_0_6px_#C084FC]" />
                     </div>
-                    <button
-                      className="absolute top-3 right-3 p-2 rounded-full bg-[#0A0618]/70 text-[#E9D5FF] backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity"
-                      aria-label="Enlarge photo"
-                    >
-                      <Maximize2 className="w-4 h-4" />
-                    </button>
+
+                    {/* Negative Space Typographic Balance */}
+                    <div className="relative z-10 mt-5 space-y-1">
+                      <span className="text-[10px] font-mono uppercase tracking-[0.22em] text-[#D4AF37] font-bold block">
+                        CELESTIAL NEXUS • IDENTITY
+                      </span>
+                      <p className="text-xs text-[#DDD6FE]/80 font-cormorant italic">
+                        "Pure architectural intent, liberated from form."
+                      </p>
+                    </div>
                   </div>
                 </PerspectiveCard>
               </div>
@@ -249,38 +190,35 @@ export const AboutFounderPage: React.FC<Props> = ({ onNavigate }) => {
               </div>
             </div>
 
-            {/* 3-4 Photo Gallery Shoots (PDF Page 1 Specification) */}
-            <div className="pt-6">
-              <div className="text-[11px] font-mono uppercase text-[#D4AF37] font-bold tracking-widest mb-4 flex items-center gap-1.5">
-                <Camera className="w-3.5 h-3.5 text-[#D4AF37]" />
-                <span>Founder Visual Chronicle (3-4 Editorial Shoots)</span>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {founderPhotos.map((photo) => (
-                  <div
-                    key={photo.id}
-                    onClick={() => {
-                      sounds.playTap();
-                      setActivePhoto(photo.id);
-                    }}
-                    className="group relative rounded-xl overflow-hidden border border-[#A855F7]/30 cursor-pointer shadow-md"
-                  >
-                    <OptimizedImage
-                      src={photo.img}
-                      alt={photo.title}
-                      className="w-full h-36 sm:h-48 object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A0618] via-transparent to-transparent opacity-80" />
-                    <div className="absolute bottom-2 left-2 right-2 text-left">
-                      <span className="text-[9px] font-mono text-[#D4AF37] block truncate">
-                        Shoot 0{photo.id}
-                      </span>
-                      <span className="text-[11px] font-bold text-[#FAF5EF] block truncate">
-                        {photo.title}
-                      </span>
-                    </div>
+            {/* Kinetic Negative Animative Space Harmonic Field (No Personal Photos) */}
+            <div className="pt-4">
+              <div className="relative rounded-2xl overflow-hidden border border-[#A855F7]/30 bg-gradient-to-r from-[#0C061E]/90 via-[#190C36]/70 to-[#0C061E]/90 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(168,85,247,0.14),transparent_70%)] pointer-events-none" />
+
+                <div className="space-y-2 text-left relative z-10 max-w-xl">
+                  <div className="flex items-center gap-2 text-[10px] font-mono text-[#D4AF37] uppercase tracking-widest font-bold">
+                    <Sparkles className="w-3.5 h-3.5 text-[#D4AF37] animate-pulse" />
+                    <span>SPATIAL RESONANCE • UNCOMPROMISED FOCUS</span>
                   </div>
-                ))}
+                  <p className="text-xs sm:text-sm text-[#DDD6FE] leading-relaxed">
+                    Eliminating personal distraction to place the spotlight entirely on institutional dignity, delegate empowerment, and uncompromised academic rigor.
+                  </p>
+                </div>
+
+                {/* Kinetic Pulsing Soundwave / Light Frequency Bars */}
+                <div className="relative z-10 flex items-center gap-1.5 shrink-0 px-4 py-3 rounded-xl bg-[#090514]/80 border border-[#A855F7]/30 shadow-inner">
+                  {[38, 62, 28, 82, 48, 92, 42, 72, 32, 88, 58].map((h, i) => (
+                    <span
+                      key={i}
+                      className="w-1 rounded-full bg-gradient-to-t from-[#7C3AED] via-[#C084FC] to-[#D4AF37] animate-pulse"
+                      style={{
+                        height: `${h * 0.32}px`,
+                        animationDelay: `${i * 120}ms`,
+                        animationDuration: '1.8s',
+                      }}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </section>
@@ -458,67 +396,6 @@ export const AboutFounderPage: React.FC<Props> = ({ onNavigate }) => {
           </section>
         </ScrollReveal>
       </CinematicScene>
-
-      {/* Global Photo Lightbox Modal */}
-      {activePhoto !== null &&
-        createPortal(
-          <div
-            onClick={() => setActivePhoto(null)}
-            className="fixed inset-0 z-[99999] bg-[#050811]/95 backdrop-blur-2xl flex items-center justify-center p-4 sm:p-8 animate-fade-in"
-          >
-            <div
-              onClick={(e) => e.stopPropagation()}
-              className="relative max-w-4xl w-full bg-[#140C2C] border-2 border-[#A855F7]/60 rounded-3xl overflow-hidden shadow-[0_0_90px_rgba(168,85,247,0.4)] flex flex-col max-h-[90vh]"
-            >
-              <div className="p-4 bg-[#0A0618] border-b border-[#A855F7]/30 flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] font-mono text-[#D4AF37] uppercase tracking-wider">
-                    Founder Chronicle Photo 0{activePhoto} of 0{founderPhotos.length}
-                  </span>
-                  <h3 className="text-base font-bold text-[#FAF5EF]">
-                    {founderPhotos.find((p) => p.id === activePhoto)?.title}
-                  </h3>
-                </div>
-                <button
-                  onClick={() => setActivePhoto(null)}
-                  className="p-2 rounded-xl bg-[#1C103B] hover:bg-[#2A1654] text-[#E9D5FF] transition-colors cursor-pointer"
-                  aria-label="Close Lightbox"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              <div className="relative flex-1 bg-black flex items-center justify-center overflow-hidden min-h-[300px]">
-                <OptimizedImage
-                  src={founderPhotos.find((p) => p.id === activePhoto)?.img || ''}
-                  alt={founderPhotos.find((p) => p.id === activePhoto)?.title || ''}
-                  className="max-h-[65vh] w-auto object-contain mx-auto"
-                />
-
-                <button
-                  onClick={handlePrevPhoto}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 p-3 rounded-full bg-[#0A0618]/80 text-[#FAF5EF] hover:bg-[#A855F7] hover:text-[#070A14] transition-all cursor-pointer border border-[#A855F7]/40 shadow-xl"
-                  aria-label="Previous photo"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                </button>
-
-                <button
-                  onClick={handleNextPhoto}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-3 rounded-full bg-[#0A0618]/80 text-[#FAF5EF] hover:bg-[#A855F7] hover:text-[#070A14] transition-all cursor-pointer border border-[#A855F7]/40 shadow-xl"
-                  aria-label="Next photo"
-                >
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-              </div>
-
-              <div className="p-4 bg-[#0A0618] border-t border-[#A855F7]/30 text-xs text-[#DDD6FE]">
-                {founderPhotos.find((p) => p.id === activePhoto)?.subtitle}
-              </div>
-            </div>
-          </div>,
-          document.body
-        )}
 
       {/* Global Delegate Registration Modal */}
       <GlobalRegistrationModal

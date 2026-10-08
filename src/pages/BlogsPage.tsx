@@ -23,9 +23,9 @@ import {
 import { BLOG_POSTS } from '../data';
 import { BlogPost, Page } from '../types';
 import { PerspectiveCard } from '../components/motion/PerspectiveCard';
-import { ScrollReveal } from '../components/motion/ScrollReveal';
-import { CinematicScene } from '../components/motion/CinematicScene';
-import { CinematicMaskReveal } from '../components/motion/CinematicMaskReveal';
+import { ScrollReveal } from '../components/ScrollReveal';
+import { CinematicScene } from '../components/cinematic/CinematicScene';
+import { CinematicMaskReveal } from '../components/cinematic/CinematicMaskReveal';
 import { MagneticElement } from '../components/motion/MagneticElement';
 import { sounds } from '../utils/soundEffects';
 

@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
-import confetti from 'canvas-confetti';
-import { Page, SummitConfig, CountdownTime, RegistrationFormData, PartnerMailEntry } from '../types';
-import { saveEntryToMailbox, submitRegistrationToServer } from '../utils/mailboxApi';
+import { Page, SummitConfig, CountdownTime } from '../types';
 import { COMMITTEES } from '../data';
 import { Astitva3DCanvas } from '../components/Astitva3DCanvas';
 import { DiplomaticCommandConsole } from '../components/DiplomaticCommandConsole';
@@ -41,6 +39,7 @@ import {
   Camera,
   HeartHandshake,
   BookOpen,
+  ArrowRight,
 } from 'lucide-react';
 
 interface Props {
@@ -54,184 +53,33 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
   const [modalPreselectedCommittee, setModalPreselectedCommittee] = useState<string>('');
   const [activeVenuePhoto, setActiveVenuePhoto] = useState<number | null>(null);
 
-  const [form, setForm] = useState<RegistrationFormData>({
-    fullName: '',
-    email: '',
-    phone: '',
-    institution: '',
-    grade: 'High School (11-12)',
-    firstChoiceCommittee: 'CCC - Continuous Crisis Committee',
-    firstChoicePortfolio: '',
-    secondChoiceCommittee: 'UNHRC - United Nations Human Rights Council',
-    secondChoicePortfolio: '',
-    priorExperience: '1-3 MUNs',
-  });
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  // Venue Gallery Photos (PDF Page 5 Section 4: Venue Preview photo gallery click to enlarge)
+  // Verified Official Radisson Blu Hotel, Jammu Venue Assets
   const venuePhotos = [
     {
       id: 1,
-      title: 'Grand Plenary Auditorium',
-      desc: 'Tiered acoustic hall with broadcast-grade podiums and structured conference seating.',
-      image: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=1200',
+      title: 'The Royal Ballroom • Radisson Blu Jammu',
+      desc: "City's largest pillarless banquet & conference hall (over 40,000 sq ft) equipped with acoustic treatment, presidential seating, and plenary stage.",
+      image: 'https://media.radissonhotels.net/image/radisson-blu-hotel-jammu/ballroom/16256-114056-f63652683_3xl.jpg',
     },
     {
       id: 2,
       title: 'Diplomatic Committee Chambers',
-      desc: 'Acoustically isolated council rooms configured for moderated caucusing.',
-      image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200',
+      desc: 'High-tech executive boardrooms and council suites designed for intensive moderated caucusing, crisis commands, and multilateral debate.',
+      image: 'https://media.radissonhotels.net/image/radisson-blu-hotel-jammu/meeting-room/16256-114056-f63652681_3xl.jpg',
     },
     {
       id: 3,
-      title: 'Executive Board Foyer & Lounge',
-      desc: 'Central coordination lounge for crisis directors and faculty advisors.',
-      image: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=1200',
+      title: 'Ambrosia & BLU Pan Dining',
+      desc: 'Multi-cuisine delegate banqueting wings with open show kitchens offering authentic regional Kashmiri cuisine and international delicacies.',
+      image: 'https://media.radissonhotels.net/image/radisson-blu-hotel-jammu/restaurant/16256-114056-f63652685_3xl.jpg',
     },
     {
       id: 4,
-      title: 'Banquet Hall & Delegate Dining',
-      desc: 'Dedicated buffet wing adhering to highest standards of hygiene and dietary options.',
-      image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&q=80&w=1200',
+      title: 'Grand Facade & Convention Lawns',
+      desc: 'Upscale five-star hospitality complex at Radisson Square, Narwal Bala Bypass, featuring over 12,000 sq ft of manicured convention lawns.',
+      image: 'https://media.radissonhotels.net/image/radisson-blu-hotel-jammu/exterior/16256-114056-f63652619_3xl.jpg',
     },
   ];
-
-  const GOOGLE_FORM_ACTION =
-    'https://docs.google.com/forms/d/e/1FAIpQLSdgVhSI5tgSKD4vk_m8YWI0q6zFuJFytzer4R7-DSbzu7G8rg/formResponse';
-
-  const handleRegisterSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      const mapCommittee = (val: string) => {
-        if (!val) return '• CCC - Continuous Crisis Committee';
-        if (val.includes('IPC') || val.includes('Press') || val.includes('International Press')) return '• IPC - International Press Corps';
-        if (val.includes('CCC') || val.includes('Crisis') || val.includes('CC')) return '• CCC - Continuous Crisis Committee';
-        if (val.includes('UNHRC') || val.includes('Human Rights')) return '• UNHRC - United Nations Human Rights Council';
-        if (val.includes('BRICS') || val.includes('JKLA') || val.includes('Legislative')) return '• BRICS - BRICS Summit';
-        if (val.includes('Women')) return '• UN Women - United Nations Entity for Gender Equality';
-        if (val.includes('Lok Sabha') || val.includes('House')) return '• Lok Sabha - Lok Sabha (House of the People)';
-        if (val.includes('IPL') || val.includes('Premier')) return '• IPL - Indian Premier League Auction Council';
-        return '• CCC - Continuous Crisis Committee';
-      };
-
-      const mapGrade = (val: string) => {
-        if (!val) return '•Senior Secondary School (Grades 11–12)';
-        if (val.includes('Middle') || val.includes('6-8') || val.includes('6–8')) return '• Middle School (Grades 6–8)';
-        if (val.includes('Secondary') && !val.includes('Senior') && !val.includes('11-12') && !val.includes('11–12')) return '• Secondary School (Grades 9–10)';
-        if (val.includes('Senior') || val.includes('11-12') || val.includes('11–12') || val.includes('High School')) return '•Senior Secondary School (Grades 11–12)';
-        if (val.includes('College') || val.includes('Undergraduate')) return '• Undergraduate / College';
-        return '•Senior Secondary School (Grades 11–12)';
-      };
-
-      const mapExperience = (val: string) => {
-        if (!val) return '• Junior Delegate (1–3 MUNs)';
-        if (val.includes('First-Timer') || val.includes('Novice') || val.includes('0 MUNs')) return '• First-Timer / Novice (0 MUNs)';
-        if (val.includes('Junior') || val.includes('1-3') || val.includes('1–3')) return '• Junior Delegate (1–3 MUNs)';
-        if (val.includes('Seasoned') || val.includes('4-7') || val.includes('4–7')) return '• Seasoned Delegate (4–7 MUNs)';
-        if (val.includes('Veteran') || val.includes('8+')) return '• Veteran Delegate (8+ MUNs)';
-        return '• Junior Delegate (1–3 MUNs)';
-      };
-
-      const body = new URLSearchParams();
-      body.append('entry.1134035501', 'NO');
-      body.append('entry.780764261', form.fullName.trim());
-      body.append('entry.830016473', form.email.trim());
-      body.append('entry.86288026', form.phone.trim());
-      body.append('entry.1083196564', form.institution.trim());
-      body.append('entry.278555826', mapGrade(form.grade));
-      body.append('entry.898367359', mapExperience(form.priorExperience));
-      body.append('entry.291987551', 'None');
-      body.append('entry.977018072', mapCommittee(form.firstChoiceCommittee));
-      body.append('entry.299951131', form.firstChoicePortfolio.trim() || 'General Allocation');
-      body.append('entry.580509636', mapCommittee(form.secondChoiceCommittee || 'UNHRC - United Nations Human Rights Council'));
-      body.append('entry.777137221', form.secondChoicePortfolio.trim() || 'General Allocation');
-      body.append('entry.635888889', '• BRICS - BRICS Summit');
-      body.append('entry.794534023', 'General Allocation');
-      body.append('entry.156711483', 'Registered via Summit Page Portal.');
-      body.append('entry.1604443743', 'Verified Remittance');
-
-      // SINGLE-ENTRY PIPELINE:
-      // Authoritatively submit to server endpoint.
-      // Server validates, records in mailbox once, and dispatches to Google Forms once via secure HTTPS.
-      let submissionSuccessful = false;
-      let googleFormSynced = false;
-      const nowTime = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
-      const trackingId = `AEQ-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-      let finalTrackingId = trackingId;
-
-      try {
-        const serverResult = await submitRegistrationToServer({
-          fullName: form.fullName.trim(),
-          email: form.email.trim(),
-          phone: form.phone.trim(),
-          institution: form.institution.trim(),
-          grade: form.grade,
-          firstChoiceCommittee: form.firstChoiceCommittee,
-          firstChoicePortfolio: form.firstChoicePortfolio.trim(),
-          secondChoiceCommittee: form.secondChoiceCommittee,
-          secondChoicePortfolio: form.secondChoicePortfolio.trim(),
-          priorExperience: form.priorExperience,
-        });
-
-        if (serverResult.success) {
-          submissionSuccessful = true;
-          googleFormSynced = Boolean(serverResult.googleFormSynced);
-          if (serverResult.trackingId) {
-            finalTrackingId = serverResult.trackingId;
-          }
-        }
-      } catch (err) {
-        console.warn('Server registration call failed, switching to fallback:', err);
-      }
-
-      // ALWAYS save application to local mailbox immediately so it is never lost
-      const newEntry: PartnerMailEntry = {
-        id: finalTrackingId,
-        timestamp: nowTime,
-        schoolName: form.institution.trim(),
-        contactPerson: `${form.fullName.trim()} (${form.grade})`,
-        email: form.email.trim(),
-        phone: form.phone.trim(),
-        eventType: `Summit Page Registration: ${form.firstChoiceCommittee}`,
-        preferredDate: '2026-10-29',
-        message: `[SUMMIT PAGE DELEGATE REGISTRATION - ${finalTrackingId}]\n1st Choice: ${form.firstChoiceCommittee} [${form.firstChoicePortfolio}]\n2nd Choice: ${form.secondChoiceCommittee} [${form.secondChoicePortfolio}]\nDivision: ${form.grade}\nExperience: ${form.priorExperience}`,
-        status: 'New',
-      };
-      await saveEntryToMailbox(newEntry);
-
-      // GUARANTEED GOOGLE FORM SYNCHRONIZATION:
-      if (!googleFormSynced) {
-        try {
-          fetch(GOOGLE_FORM_ACTION, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: body.toString(),
-          }).catch((err) => console.log('Silent Google Form POST fallback:', err));
-        } catch (fallbackErr) {
-          console.error('Failed to dispatch Google Form fallback:', fallbackErr);
-        }
-      }
-    } catch (err) {
-      console.log('Background submit:', err);
-    }
-
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-      confetti({
-        particleCount: 140,
-        spread: 85,
-        origin: { y: 0.5 },
-        colors: ['#D4AF37', '#FFF5DC', '#A855F7', '#10B981'],
-      });
-    }, 500);
-  };
 
   const handleOpenQuickRegister = (commCode?: string) => {
     sounds.playTap();
@@ -536,132 +384,86 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
 
 
         {/* ========================================================================= */}
-        {/* 6. REGISTRATION CTA (PDF Page 5 Section 6)                                */}
+        {/* 6. REGISTRATION PORTAL REDIRECT GATEWAY                                   */}
         {/* ========================================================================= */}
         <CinematicScene shotType="lens-focus" intensity={0.9}>
           <ScrollReveal direction="up" delay={0.1}>
-            <section className="p-8 sm:p-12 rounded-3xl bg-[#140C2C]/95 border-2 border-[#A855F7]/40 shadow-2xl text-left font-jakarta space-y-8">
-              <div className="text-center max-w-2xl mx-auto space-y-3">
-                <span className="px-3.5 py-1 rounded-full bg-[#581C87]/40 border border-[#C084FC]/40 text-[#E9D5FF] text-xs font-bold uppercase tracking-widest inline-block">
-                  Registration Gateway
-                </span>
-                <h2 className="text-3xl sm:text-4xl font-cormorant font-bold text-[#FAF5EF]">
-                  Secure Your Delegate Seat
-                </h2>
-                <p className="text-xs sm:text-sm text-[#DDD6FE]">
-                  Submit the online registration form below or launch the dedicated interactive allocation portal in a new tab.
-                </p>
-                <div className="pt-2">
-                  <a
-                    href="/register"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => sounds.playTap()}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#E8A53E] to-[#D4AF37] text-[#070A14] font-extrabold text-xs sm:text-sm shadow-[0_0_25px_rgba(212,175,55,0.4)] hover:brightness-110 active:scale-95 transition-all cursor-pointer"
-                  >
-                    <Sparkles className="w-4 h-4 fill-current" />
-                    <span>Launch Interactive Slide-by-Slide Portal (New Tab)</span>
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
-                </div>
-              </div>
+            <section className="relative p-8 sm:p-14 rounded-3xl bg-gradient-to-br from-[#1C103B] via-[#120B29]/95 to-[#0A0618] border-2 border-[#A855F7]/40 shadow-[0_20px_70px_rgba(12,4,32,0.95)] overflow-hidden text-center font-jakarta space-y-8">
+              {/* Atmospheric Glows */}
+              <div className="absolute top-0 right-0 w-80 h-80 bg-[#A855F7]/15 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none" />
 
-              {submitted ? (
-                <div className="p-8 rounded-2xl bg-emerald-500/15 border border-emerald-400/40 text-center space-y-4 max-w-xl mx-auto">
-                  <CheckCircle2 className="w-14 h-14 text-emerald-400 mx-auto" />
-                  <h3 className="text-2xl font-cormorant font-bold text-[#FAF5EF]">
-                    Registration Submitted Successfully!
-                  </h3>
-                  <p className="text-sm text-[#DDD6FE]">
-                    Thank you! The Secretariat will verify your committee preference and email your allotment letter within 24 hours.
-                  </p>
+              <div className="relative z-10 max-w-3xl mx-auto space-y-5">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#581C87]/40 border border-[#C084FC]/50 text-[#E9D5FF] text-xs font-mono font-bold uppercase tracking-wider shadow-sm">
+                  <Sparkles className="w-3.5 h-3.5 animate-pulse text-[#D4AF37]" />
+                  <span>Official Allocation Gateway • Radisson Blu Hotel Jammu</span>
+                </div>
+
+                <h2 className="text-3xl sm:text-5xl lg:text-6xl font-cormorant font-bold text-[#FAF5EF] leading-tight">
+                  Enter The Official <span className="gold-gradient-text">Registration Portal</span>
+                </h2>
+
+                <p className="text-xs sm:text-base text-[#DDD6FE] leading-relaxed max-w-2xl mx-auto">
+                  Access the complete interactive registration console to select your residential accommodation track, specify committee &amp; portfolio preferences, and secure your verified delegate seat.
+                </p>
+
+                {/* Delegate Feature Highlights */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-3 pb-2 text-left">
+                  <div className="p-4 rounded-2xl bg-[#0F0A24]/90 border border-[#A855F7]/30 space-y-1.5">
+                    <div className="flex items-center gap-2 text-xs font-bold text-[#FAF5EF]">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>Dual Delegate Tracks</span>
+                    </div>
+                    <p className="text-[11px] text-[#C4BBA3]/80">
+                      With Accommodation (₹4,999) or Non-Residential Delegate (₹1,999).
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-[#0F0A24]/90 border border-[#A855F7]/30 space-y-1.5">
+                    <div className="flex items-center gap-2 text-xs font-bold text-[#FAF5EF]">
+                      <Landmark className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                      <span>6 Historic Councils</span>
+                    </div>
+                    <p className="text-[11px] text-[#C4BBA3]/80">
+                      BRICS Summit, UNHRC, UN Women, Lok Sabha, CCC, and IPC.
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-[#0F0A24]/90 border border-[#A855F7]/30 space-y-1.5">
+                    <div className="flex items-center gap-2 text-xs font-bold text-[#FAF5EF]">
+                      <ShieldCheck className="w-4 h-4 text-[#A855F7] shrink-0" />
+                      <span>Live Sync &amp; Allocation</span>
+                    </div>
+                    <p className="text-[11px] text-[#C4BBA3]/80">
+                      Instant Secretariat record &amp; verified delegate allotment letter.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Redirecting Portal Buttons */}
+                <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <MagneticElement strength={0.35}>
+                    <a
+                      href="/register"
+                      onClick={() => sounds.playTap()}
+                      className="px-8 sm:px-10 py-4 sm:py-5 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#F3C969] to-[#D4AF37] text-[#070A14] font-extrabold text-sm sm:text-base shadow-[0_0_35px_rgba(212,175,55,0.45)] hover:brightness-110 active:scale-95 transition-all inline-flex items-center gap-3 cursor-pointer group"
+                    >
+                      <Sparkles className="w-5 h-5 fill-current text-[#070A14]" />
+                      <span>Launch Registration Portal</span>
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </a>
+                  </MagneticElement>
+
                   <button
-                    onClick={() => setSubmitted(false)}
-                    className="px-6 py-2.5 rounded-xl bg-[#2A1654] text-xs font-bold text-[#D4AF37] border border-[#D4AF37]/40 hover:bg-[#3B1D6E] cursor-pointer"
+                    type="button"
+                    onClick={() => handleOpenQuickRegister()}
+                    className="px-6 py-4 rounded-2xl bg-[#1C103B]/80 hover:bg-[#2A1654] border border-[#A855F7]/40 text-[#FAF5EF] text-xs sm:text-sm font-semibold transition-all inline-flex items-center gap-2 cursor-pointer"
                   >
-                    Register Another Delegate
+                    <span>Quick Registration Modal</span>
+                    <ExternalLink className="w-4 h-4 text-[#D4AF37]" />
                   </button>
                 </div>
-              ) : (
-                <form onSubmit={handleRegisterSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-3xl mx-auto text-xs sm:text-sm">
-                  <div>
-                    <label className="block text-xs font-semibold text-[#E9D5FF] mb-1">Full Name *</label>
-                    <input
-                      type="text"
-                      required
-                      value={form.fullName}
-                      onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-                      placeholder="e.g. Delegate Name"
-                      className="w-full px-4 py-3 rounded-xl bg-[#090614] border border-[#A855F7]/40 text-[#FAF5EF] focus:outline-none focus:border-[#D4AF37]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-[#E9D5FF] mb-1">Email Address *</label>
-                    <input
-                      type="email"
-                      required
-                      value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      placeholder="delegate@example.com"
-                      className="w-full px-4 py-3 rounded-xl bg-[#090614] border border-[#A855F7]/40 text-[#FAF5EF] focus:outline-none focus:border-[#D4AF37]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-[#E9D5FF] mb-1">WhatsApp / Phone Number *</label>
-                    <input
-                      type="tel"
-                      required
-                      value={form.phone}
-                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      placeholder="+91 XXXXX XXXXX"
-                      className="w-full px-4 py-3 rounded-xl bg-[#090614] border border-[#A855F7]/40 text-[#FAF5EF] focus:outline-none focus:border-[#D4AF37]"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-[#E9D5FF] mb-1">Institution / School Name *</label>
-                    <input
-                      type="text"
-                      required
-                      value={form.institution}
-                      onChange={(e) => setForm({ ...form, institution: e.target.value })}
-                      placeholder="e.g. Your School / College Name"
-                      className="w-full px-4 py-3 rounded-xl bg-[#090614] border border-[#A855F7]/40 text-[#FAF5EF] focus:outline-none focus:border-[#D4AF37]"
-                    />
-                  </div>
-                  <div className="sm:col-span-2">
-                    <label className="block text-xs font-semibold text-[#E9D5FF] mb-1">First Choice Committee *</label>
-                    <select
-                      value={form.firstChoiceCommittee}
-                      onChange={(e) => setForm({ ...form, firstChoiceCommittee: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-[#090614] border border-[#A855F7]/40 text-[#FAF5EF] focus:outline-none focus:border-[#D4AF37]"
-                    >
-                      {COMMITTEES.map((c) => (
-                        <option key={c.id} value={`${c.code} - ${c.name}`}>
-                          {c.code} - {c.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="sm:col-span-2 pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <MagneticElement strength={0.35}>
-                      <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full sm:w-auto px-8 py-4 rounded-xl shimmer-btn text-[#070A14] font-bold text-sm shadow-xl hover:brightness-110 flex items-center justify-center gap-2 cursor-pointer btn-sheen-sweep disabled:opacity-50"
-                      >
-                        {loading ? <span>Transmitting...</span> : <span>Submit Delegate Application</span>}
-                      </button>
-                    </MagneticElement>
-                    <button
-                      type="button"
-                      onClick={() => handleOpenQuickRegister()}
-                      className="text-xs text-[#D4AF37] hover:underline cursor-pointer"
-                    >
-                      Open Full Allocation Wizard ↗
-                    </button>
-                  </div>
-                </form>
-              )}
+              </div>
             </section>
           </ScrollReveal>
         </CinematicScene>
