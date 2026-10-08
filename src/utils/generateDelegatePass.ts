@@ -291,7 +291,7 @@ export function generateDelegatePassDataUrl(data: DelegatePassData): string {
   ctx.letterSpacing = '3px';
   ctx.fillText(
     data.hasAccommodation
-      ? '★ TRACK: RESIDENTIAL DELEGATE • 3 NIGHTS ACCOMMODATION INCLUDED'
+      ? '★ TRACK: RESIDENTIAL DELEGATE • ACCOMMODATION INCLUDED'
       : '• TRACK: STANDARD DELEGATE • CONFERENCE PASS ONLY',
     width / 2,
     footerY + 72

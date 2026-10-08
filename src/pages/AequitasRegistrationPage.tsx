@@ -1019,7 +1019,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                       <div className="space-y-2 pt-2 border-t border-[#D4AF37]/20 font-mono text-[11px] text-[#FAF5EF]/90">
                         <div className="flex items-center gap-2">
                           <Check className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
-                          <span><strong>3 Nights / 2 Days</strong> hotel stay at partner hotel</span>
+                          <span><strong>Hotel Accommodation Included</strong> at partner hotel</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Check className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
@@ -1146,7 +1146,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                         </span>
                       </div>
                       <span className="hidden md:inline-block px-2 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] text-[10px] font-bold border border-[#D4AF37]/30">
-                        3 Nights Stay Included
+                        Accommodation Included
                       </span>
                     </>
                   ) : (
@@ -1942,7 +1942,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                           </div>
                           <p className="text-[11px] text-[#C4BBA3] mt-0.5">
                             {hasAccommodation
-                              ? 'All-inclusive: 3 Nights Hotel Stay, Local Transport Shuttles, 2-day Summit Entry, Committee Allocation, Delegate Kit, High-Res Official Pass, Breakfast, Lunch, High Tea & Dinner.'
+                              ? 'All-inclusive: Hotel Accommodation, Local Transport Shuttles, 2-day Summit Entry, Committee Allocation, Delegate Kit, High-Res Official Pass, Breakfast, Lunch, High Tea & Dinner.'
                               : 'All-inclusive: 2-day Summit Entry, Committee Allocation, Delegate Kit, High-Res Official Pass, Lunch & High Tea.'}
                           </p>
                         </div>
@@ -2021,13 +2021,13 @@ export const AequitasRegistrationPage: React.FC = () => {
                               </span>
                             </div>
                             <p className="text-xs text-[#C4BBA3] max-w-xl leading-relaxed">
-                              Includes 3 Nights / 2 Days hotel stay in Jammu, daily transit shuttles to summit venue, all meals (breakfast, lunch, high tea, dinner), 2-day conference debate pass &amp; official credentials kit.
+                              Includes hotel accommodation in Jammu, daily transit shuttles to summit venue, all meals (breakfast, lunch, high tea, dinner), 2-day conference debate pass &amp; official credentials kit.
                             </p>
                           </div>
                           <div className="flex flex-col sm:flex-row md:flex-col items-start md:items-end gap-2 shrink-0">
                             <span className="px-3 py-1.5 rounded-xl bg-[#070A14] border border-[#D4AF37]/60 text-[#D4AF37] text-xs font-mono font-bold flex items-center gap-1.5 shadow-md">
                               <Hotel className="w-4 h-4 text-[#D4AF37]" />
-                              3 Nights Stay Included
+                              Accommodation Included
                             </span>
                             <span className="px-3 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/35 text-emerald-300 text-[11px] font-mono font-semibold flex items-center gap-1.5">
                               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
@@ -2063,7 +2063,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                                 Amount: ₹4,999
                               </div>
                               <div className="text-[11px] text-emerald-400 font-mono">
-                                Residential Package with 3 Nights Stay
+                                Residential Package with Hotel Accommodation
                               </div>
                               <div className="text-[10px] text-[#A39B88] font-mono">
                                 Scan via PhonePe, GPay, Paytm, BHIM, Cred
@@ -2343,7 +2343,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                               className="mt-1 w-4 h-4 rounded border-[#D4AF37]/40 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer"
                             />
                             <span className="text-xs text-[#C4BBA3] leading-relaxed">
-                              I confirm that I have remitted <strong>₹4,999</strong> towards the residential delegate registration fee (inclusive of 3 nights accommodation, transit &amp; all meals) and that the Transaction / UTR ID entered above is genuine. I agree to abide by the official Rules of Procedure, diplomatic decorum, and zero-bias code of conduct established by the Aequitas Summit 2026 Executive Board.
+                              I confirm that I have remitted <strong>₹4,999</strong> towards the residential delegate registration fee (inclusive of hotel accommodation, transit &amp; all meals) and that the Transaction / UTR ID entered above is genuine. I agree to abide by the official Rules of Procedure, diplomatic decorum, and zero-bias code of conduct established by the Aequitas Summit 2026 Executive Board.
                             </span>
                           </label>
                           {validationErrors.agreedToTerms && (
@@ -2835,7 +2835,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                   {hasAccommodation ? (
                     <>
                       <Hotel className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
-                      <span className="text-[#D4AF37]">Residential Delegation (3 Nights Stay)</span>
+                      <span className="text-[#D4AF37]">Residential Delegation (Accommodation Included)</span>
                     </>
                   ) : (
                     <>
