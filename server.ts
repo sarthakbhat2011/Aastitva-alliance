@@ -385,9 +385,11 @@ async function startServer() {
       contactPerson: `${clean.fullName} (${clean.grade})`,
       email: clean.email,
       phone: clean.phone,
-      eventType: `Aequitas 2026 Delegate: ${clean.firstChoiceCommittee} [${clean.firstChoicePortfolio}]`,
+      eventType: clean.hasAccommodation
+        ? `Aequitas 2026 Delegate (With Accommodation): ${clean.firstChoiceCommittee} [${clean.firstChoicePortfolio}]`
+        : `Aequitas 2026 Delegate: ${clean.firstChoiceCommittee} [${clean.firstChoicePortfolio}]`,
       preferredDate: '2026-10-29',
-      message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${clean.fullName}\nEmail: ${clean.email}\nPhone: ${clean.phone}\nInstitution: ${clean.institution}\nAcademic Division: ${clean.grade}\nPrior MUN Experience: ${clean.priorExperience}\nHonors / Accolades: ${clean.priorAccolades || 'None'}\n1st Choice Committee: ${clean.firstChoiceCommittee} (Preferred: ${clean.firstChoicePortfolio})\n2nd Choice Committee: ${clean.secondChoiceCommittee || 'None'} (Preferred: ${clean.secondChoicePortfolio || 'None'})\n3rd Choice Committee: ${clean.thirdChoiceCommittee || 'None'} (Preferred: ${clean.thirdChoicePortfolio || 'None'})\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: ${clean.transactionId || 'Pending Verification'}\nStatement of Purpose:\n${clean.statement || 'Standard Application'}`,
+      message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${clean.fullName}\nEmail: ${clean.email}\nPhone: ${clean.phone}\nInstitution: ${clean.institution}\nAcademic Division: ${clean.grade}\nPrior MUN Experience: ${clean.priorExperience}\nHonors / Accolades: ${clean.priorAccolades || 'None'}\nAccommodation Track: ${clean.hasAccommodation ? 'YES (Residential Package - ₹4,999)' : 'NO (Standard Pass - ₹1,999)'}\n1st Choice Committee: ${clean.firstChoiceCommittee} (Preferred: ${clean.firstChoicePortfolio})\n2nd Choice Committee: ${clean.secondChoiceCommittee || 'None'} (Preferred: ${clean.secondChoicePortfolio || 'None'})\n3rd Choice Committee: ${clean.thirdChoiceCommittee || 'None'} (Preferred: ${clean.thirdChoicePortfolio || 'None'})\nFee Status: ${clean.hasAccommodation ? '₹4,999 (Residential Delegate Remittance Recorded)' : '₹1,999 (Delegate Remittance Recorded)'}\nTransaction / UTR ID: ${clean.transactionId || 'Pending Verification'}\nStatement of Purpose:\n${clean.statement || 'Standard Application'}`,
       status: 'New',
     };
 

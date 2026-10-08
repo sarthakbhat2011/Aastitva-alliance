@@ -587,6 +587,7 @@ export async function submitRegistrationToServer(payload: {
   priorAccolades?: string;
   statement?: string;
   transactionId?: string;
+  hasAccommodation?: boolean;
 }): Promise<{ success: boolean; trackingId?: string; googleFormSynced?: boolean; error?: string }> {
   try {
     const res = await fetch('/api/register', {

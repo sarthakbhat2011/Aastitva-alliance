@@ -39,6 +39,8 @@ import {
   MessageSquare,
   ExternalLink,
   Landmark,
+  Hotel,
+  Building,
 } from 'lucide-react';
 import { COMMITTEES, INITIAL_SUMMIT_CONFIG } from '../data';
 import { sounds } from '../utils/soundEffects';
@@ -52,6 +54,10 @@ import { saveEntryToMailbox, submitRegistrationToServer } from '../utils/mailbox
 import { DeveloperMailboxModal } from '../components/DeveloperMailboxModal';
 
 export const PAYMENT_CONFIG = {
+  standardAmount: '1999',
+  standardFormatted: '₹1,999',
+  accommodationAmount: '4999',
+  accommodationFormatted: '₹4,999',
   amount: '1999',
   formattedAmount: '₹1,999',
   accountNumber: '0116040100017669',
@@ -202,6 +208,15 @@ export const AequitasRegistrationPage: React.FC = () => {
     agreedToTerms: false,
   });
 
+  const [hasAccommodation, setHasAccommodation] = useState<boolean | null>(() => {
+    if (typeof window !== 'undefined') {
+      const search = window.location.search.toLowerCase();
+      if (search.includes('accom=yes') || search.includes('stay=yes') || search.includes('res=yes')) return true;
+      if (search.includes('accom=no') || search.includes('stay=no') || search.includes('res=no')) return false;
+    }
+    return null;
+  });
+
   // Ensure document-level scrolling is fully unlocked on the registration portal
   useEffect(() => {
     document.body.style.overflow = 'auto';
@@ -214,10 +229,10 @@ export const AequitasRegistrationPage: React.FC = () => {
     };
   }, []);
 
-  // Scroll to top on step change
+  // Scroll to top on step change or accommodation track change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [currentStep]);
+  }, [currentStep, hasAccommodation]);
 
   // Set document title
   useEffect(() => {
@@ -713,6 +728,7 @@ export const AequitasRegistrationPage: React.FC = () => {
           priorAccolades: form.priorAccolades.trim(),
           statement: form.statement.trim(),
           transactionId: form.transactionId.trim(),
+          hasAccommodation: Boolean(hasAccommodation),
         });
 
         if (serverResult.success) {
@@ -734,9 +750,11 @@ export const AequitasRegistrationPage: React.FC = () => {
         contactPerson: `${form.fullName.trim()} (${form.grade})`,
         email: form.email.trim(),
         phone: form.phone.trim(),
-        eventType: `Aequitas 2026 Delegate: ${form.firstChoiceCommittee} [${form.firstChoicePortfolio.trim()}]`,
+        eventType: hasAccommodation
+          ? `Aequitas 2026 Delegate (With Accommodation): ${form.firstChoiceCommittee} [${form.firstChoicePortfolio.trim()}]`
+          : `Aequitas 2026 Delegate: ${form.firstChoiceCommittee} [${form.firstChoicePortfolio.trim()}]`,
         preferredDate: '2026-10-29',
-        message: `[DELEGATE APPLICATION - ${finalTrackingId}]\nDelegate Name: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.institution.trim()}\nAcademic Division: ${form.grade}\nPrior MUN Experience: ${form.priorExperience}\nHonors / Accolades: ${form.priorAccolades.trim() || 'None'}\n1st Choice Committee: ${form.firstChoiceCommittee} (Preferred: ${form.firstChoicePortfolio.trim()})\n2nd Choice Committee: ${form.secondChoiceCommittee} (Preferred: ${form.secondChoicePortfolio.trim()})\n3rd Choice Committee: ${form.thirdChoiceCommittee} (Preferred: ${form.thirdChoicePortfolio.trim()})\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: ${form.transactionId.trim()}\nStatement of Purpose:\n${form.statement.trim()}`,
+        message: `[DELEGATE APPLICATION - ${finalTrackingId}]\nDelegate Name: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.institution.trim()}\nAcademic Division: ${form.grade}\nPrior MUN Experience: ${form.priorExperience}\nHonors / Accolades: ${form.priorAccolades.trim() || 'None'}\nAccommodation Track: ${hasAccommodation ? 'YES (Residential Package - ₹4,999)' : 'NO (Standard Pass - ₹1,999)'}\n1st Choice Committee: ${form.firstChoiceCommittee} (Preferred: ${form.firstChoicePortfolio.trim()})\n2nd Choice Committee: ${form.secondChoiceCommittee} (Preferred: ${form.secondChoicePortfolio.trim()})\n3rd Choice Committee: ${form.thirdChoiceCommittee} (Preferred: ${form.thirdChoicePortfolio.trim()})\nFee Status: ${hasAccommodation ? '₹4,999 (Residential Delegate Remittance Recorded)' : '₹1,999 (Delegate Remittance Recorded)'}\nTransaction / UTR ID: ${form.transactionId.trim()}\nStatement of Purpose:\n${form.statement.trim()}`,
         status: 'New',
       };
       await saveEntryToMailbox(mailboxEntry);
@@ -765,7 +783,8 @@ export const AequitasRegistrationPage: React.FC = () => {
         stored.push({
           trackingId: finalTrackingId,
           timestamp: nowTime,
-          feePaid: '₹1,999',
+          feePaid: hasAccommodation ? '₹4,999' : '₹1,999',
+          hasAccommodation: Boolean(hasAccommodation),
           transactionId: form.transactionId.trim(),
           ...form,
         });
@@ -791,6 +810,7 @@ export const AequitasRegistrationPage: React.FC = () => {
           institution: form.institution.trim(),
           grade: form.grade,
           trackingId: finalTrackingId,
+          hasAccommodation: Boolean(hasAccommodation),
         });
         setPassDataUrl(passUrl);
       } catch (err) {
@@ -829,6 +849,7 @@ export const AequitasRegistrationPage: React.FC = () => {
     });
     setIsSubmitted(false);
     setCurrentStep(1);
+    setHasAccommodation(null);
     setValidationErrors({});
   };
 
@@ -926,24 +947,258 @@ export const AequitasRegistrationPage: React.FC = () => {
       {/* Main Interactive Slide-by-Slide Container */}
       <main className="relative z-10 flex-1 max-w-4xl w-full mx-auto px-3 sm:px-6 py-4 sm:py-8 flex flex-col justify-center">
         {!isSubmitted ? (
-          <div className="space-y-4 sm:space-y-6">
-            {/* Slide Progress Stepper Header */}
-            <div className="bg-[#070A14]/90 border border-[#D4AF37]/30 rounded-2xl p-3.5 sm:p-5 backdrop-blur-md shadow-lg space-y-3 sm:space-y-4">
-              <div className="flex items-center justify-between flex-wrap gap-1.5 text-xs font-mono">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-ping" />
-                  <span className="text-[#D4AF37] font-bold text-xs tracking-wider uppercase">
-                    Slide {currentStep} of 5
-                  </span>
+          hasAccommodation === null ? (
+            /* PRIMARY INTERFACE: ARE YOU A DELEGATE WITH ACCOMMODATION? */
+            <motion.div
+              key="primary-accommodation-view"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
+              className="space-y-6 max-w-3xl mx-auto w-full py-2 sm:py-6"
+            >
+              <div className="bg-[#070A14]/95 border-2 border-[#D4AF37]/50 rounded-3xl p-6 sm:p-9 backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.85)] text-center space-y-5 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#4318FF]/10 rounded-full blur-3xl pointer-events-none" />
+
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] font-mono font-bold text-xs uppercase tracking-widest">
+                  <Sparkles className="w-3.5 h-3.5 text-[#D4AF37] animate-pulse" />
+                  <span>INITIAL ALLOCATION GATEWAY // STEP 01 OF ENROLMENT</span>
                 </div>
-                <div className="text-[#C4BBA3] text-[10.5px] sm:text-[11px] truncate">
-                  {currentStep === 1 && 'Personal & Institutional Data'}
-                  {currentStep === 2 && 'Experience Tier & Profile'}
-                  {currentStep === 3 && 'Council & Portfolio Allocation'}
-                  {currentStep === 4 && 'Complete Registration Dossier Review'}
-                  {currentStep === 5 && 'Delegate Fee Remittance (₹1,999)'}
+
+                <div className="space-y-2">
+                  <h1 className="text-2xl sm:text-4xl md:text-5xl font-playfair font-extrabold text-white tracking-tight leading-tight">
+                    Are you a delegate with accommodation?
+                  </h1>
+                  <p className="text-xs sm:text-sm md:text-base text-[#C4BBA3] max-w-xl mx-auto leading-relaxed font-mono">
+                    Please select your preferred conference attendance package below to configure your council allocation dossier, logistical provisioning, and registration fee.
+                  </p>
+                </div>
+
+                {/* Two Interactive Selection Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 pt-3 text-left">
+                  {/* OPTION 1: YES - WITH ACCOMMODATION (₹4,999) */}
+                  <div
+                    onClick={() => {
+                      sounds.playChime();
+                      setHasAccommodation(true);
+                      setCurrentStep(1);
+                    }}
+                    className="group relative rounded-2xl bg-gradient-to-b from-[#16203B]/90 via-[#0D1427]/95 to-[#070A14] border-2 border-[#D4AF37] hover:border-[#F3E5AB] p-5 sm:p-6 transition-all duration-300 hover:scale-[1.02] shadow-[0_0_30px_rgba(212,175,55,0.25)] hover:shadow-[0_0_45px_rgba(212,175,55,0.45)] cursor-pointer flex flex-col justify-between space-y-4"
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="px-2.5 py-1 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/45 text-[#D4AF37] font-mono font-bold text-[10px] uppercase tracking-wider">
+                          Residential Package
+                        </span>
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-mono font-bold">
+                          Recommended for Outstation
+                        </span>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-[#D4AF37]/20 border border-[#D4AF37] flex items-center justify-center shrink-0 shadow-inner group-hover:scale-110 transition-transform">
+                          <Hotel className="w-5 h-5 text-[#D4AF37]" />
+                        </div>
+                        <div>
+                          <h3 className="text-xl sm:text-2xl font-playfair font-bold text-white group-hover:text-[#D4AF37] transition-colors">
+                            Yes, With Accommodation
+                          </h3>
+                          <div className="text-2xl sm:text-3xl font-extrabold font-playfair text-[#D4AF37] mt-0.5">
+                            ₹4,999 <span className="text-xs font-mono text-[#C4BBA3] font-normal">/ Delegate</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <p className="text-xs text-[#C4BBA3] leading-relaxed">
+                        Complete residential package curated for outstation & travelling delegates requiring premium hotel stay, meals, and venue transit in Jammu.
+                      </p>
+
+                      <div className="space-y-2 pt-2 border-t border-[#D4AF37]/20 font-mono text-[11px] text-[#FAF5EF]/90">
+                        <div className="flex items-center gap-2">
+                          <Check className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
+                          <span><strong>3 Nights / 2 Days</strong> hotel stay at partner hotel</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Check className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
+                          <span><strong>Daily Transit Shuttles</strong> between hotel & summit venue</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Check className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
+                          <span><strong>All Meals Included:</strong> Breakfast, Lunch, High Tea & Dinner</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Check className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
+                          <span>Full 2-Day Summit debate pass & committee allocation</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Check className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
+                          <span>Official delegate credentials kit & high-res PNG pass</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Check className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
+                          <span>Dedicated Secretariat residential concierge desk</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E8A53E] to-[#D4AF37] text-[#070A14] font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(212,175,55,0.4)] group-hover:brightness-110 transition-all cursor-pointer"
+                    >
+                      <span>Choose With Accommodation (₹4,999)</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                  </div>
+
+                  {/* OPTION 2: NO - WITHOUT ACCOMMODATION (₹1,999) */}
+                  <div
+                    onClick={() => {
+                      sounds.playTap();
+                      setHasAccommodation(false);
+                      setCurrentStep(1);
+                    }}
+                    className="group relative rounded-2xl bg-gradient-to-b from-[#0D1427]/90 via-[#070A14]/95 to-[#050811] border-2 border-[#243563] hover:border-[#D4AF37]/60 p-5 sm:p-6 transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-[0_0_30px_rgba(67,24,255,0.25)] cursor-pointer flex flex-col justify-between space-y-4"
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="px-2.5 py-1 rounded-full bg-[#16203B] border border-[#243563] text-[#8FB3DE] font-mono font-bold text-[10px] uppercase tracking-wider">
+                          Conference Pass Only
+                        </span>
+                        <span className="px-2 py-0.5 rounded-full bg-slate-800 text-[#C4BBA3] border border-slate-700 text-[10px] font-mono">
+                          Standard Delegate Tier
+                        </span>
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-[#16203B] border border-[#243563] flex items-center justify-center shrink-0 shadow-inner group-hover:scale-110 transition-transform">
+                          <Globe className="w-5 h-5 text-[#8FB3DE]" />
+                        </div>
+                        <div>
+                          <h3 className="text-xl sm:text-2xl font-playfair font-bold text-white group-hover:text-[#D4AF37] transition-colors">
+                            No, Without Accommodation
+                          </h3>
+                          <div className="text-2xl sm:text-3xl font-extrabold font-playfair text-white mt-0.5">
+                            ₹1,999 <span className="text-xs font-mono text-[#C4BBA3] font-normal">/ Delegate</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <p className="text-xs text-[#C4BBA3] leading-relaxed">
+                        Standard conference pass designed for local delegates residing in Jammu or outstation delegates arranging their own independent lodging.
+                      </p>
+
+                      <div className="space-y-2 pt-2 border-t border-[#243563] font-mono text-[11px] text-[#C4BBA3]">
+                        <div className="flex items-center gap-2">
+                          <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                          <span>Full 2-Day Summit debate pass (29 & 30 October 2026)</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                          <span>Executive conference lunch & high tea on both days</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                          <span>Committee allocation & preferred portfolio evaluation</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                          <span>Official delegate stationery, handbook & kit credentials</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                          <span>High-resolution official delegate pass & certificate</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-[#A39B88]">
+                          <span className="text-amber-400 shrink-0 font-bold">•</span>
+                          <span><em>Hotel lodging & local transit arranged independently</em></span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="w-full py-3 px-4 rounded-xl bg-[#16203B] hover:bg-[#D4AF37] hover:text-[#070A14] text-[#8FB3DE] border border-[#D4AF37]/30 font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer"
+                    >
+                      <span>Choose Without Accommodation (₹1,999)</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                  </div>
                 </div>
               </div>
+            </motion.div>
+          ) : (
+            <div className="space-y-4 sm:space-y-6">
+              {/* Selected Track Status Bar */}
+              <div className="bg-[#070A14]/90 border border-[#D4AF37]/35 rounded-2xl p-3 sm:p-4 backdrop-blur-md shadow-lg flex items-center justify-between flex-wrap gap-2 text-xs font-mono">
+                <div className="flex items-center gap-2.5">
+                  {hasAccommodation ? (
+                    <>
+                      <div className="p-1.5 rounded-lg bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37]">
+                        <Hotel className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <span className="text-[#C4BBA3] text-[10px] uppercase block">Selected Attendance Track</span>
+                        <span className="text-white font-bold text-xs sm:text-sm">
+                          Delegate With Accommodation — <strong className="text-[#D4AF37]">₹4,999</strong>
+                        </span>
+                      </div>
+                      <span className="hidden md:inline-block px-2 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] text-[10px] font-bold border border-[#D4AF37]/30">
+                        3 Nights Stay Included
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <div className="p-1.5 rounded-lg bg-[#16203B] border border-[#243563] text-[#8FB3DE]">
+                        <Globe className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <span className="text-[#C4BBA3] text-[10px] uppercase block">Selected Attendance Track</span>
+                        <span className="text-white font-bold text-xs sm:text-sm">
+                          Delegate Without Accommodation — <strong className="text-white">₹1,999</strong>
+                        </span>
+                      </div>
+                      <span className="hidden md:inline-block px-2 py-0.5 rounded-full bg-slate-800 text-[#C4BBA3] text-[10px] font-bold border border-slate-700">
+                        Standard Day Pass
+                      </span>
+                    </>
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    sounds.playTap();
+                    setHasAccommodation(null);
+                  }}
+                  className="px-3 py-1.5 rounded-lg bg-[#16203B] hover:bg-[#D4AF37] hover:text-[#070A14] text-[#D4AF37] border border-[#D4AF37]/35 text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
+                  title="Click to change accommodation preference"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  <span>Change Track</span>
+                </button>
+              </div>
+
+              {/* Slide Progress Stepper Header */}
+              <div className="bg-[#070A14]/90 border border-[#D4AF37]/30 rounded-2xl p-3.5 sm:p-5 backdrop-blur-md shadow-lg space-y-3 sm:space-y-4">
+                <div className="flex items-center justify-between flex-wrap gap-1.5 text-xs font-mono">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#D4AF37] animate-ping" />
+                    <span className="text-[#D4AF37] font-bold text-xs tracking-wider uppercase">
+                      Slide {currentStep} of 5
+                    </span>
+                  </div>
+                  <div className="text-[#C4BBA3] text-[10.5px] sm:text-[11px] truncate">
+                    {currentStep === 1 && 'Personal & Institutional Data'}
+                    {currentStep === 2 && 'Experience Tier & Profile'}
+                    {currentStep === 3 && 'Council & Portfolio Allocation'}
+                    {currentStep === 4 && 'Complete Registration Dossier Review'}
+                    {currentStep === 5 &&
+                      (hasAccommodation
+                        ? 'Delegate Fee Remittance (₹4,999 - With Accommodation)'
+                        : 'Delegate Fee Remittance (₹1,999)')}
+                  </div>
+                </div>
 
               {/* Linear Progress Bar */}
               <div className="w-full h-1.5 sm:h-2 rounded-full bg-[#0D1427] border border-[#D4AF37]/20 overflow-hidden relative">
@@ -1677,16 +1932,29 @@ export const AequitasRegistrationPage: React.FC = () => {
                       <div className="p-4 rounded-xl bg-gradient-to-r from-[#D4AF37]/15 via-[#E8A53E]/10 to-transparent border border-[#D4AF37]/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
                           <span className="text-[10px] font-mono uppercase tracking-wider text-[#D4AF37] font-bold block">
-                            Standard Delegate Fee
+                            {hasAccommodation ? 'Residential Delegation Package (With Accommodation)' : 'Standard Delegate Fee'}
                           </span>
                           <div className="text-xl sm:text-2xl font-bold font-playfair text-white mt-0.5">
-                            ₹1,999 <span className="text-xs font-mono text-[#C4BBA3] font-normal">/ Delegate</span>
+                            {hasAccommodation ? '₹4,999' : '₹1,999'}{' '}
+                            <span className="text-xs font-mono text-[#C4BBA3] font-normal">/ Delegate</span>
                           </div>
                           <p className="text-[11px] text-[#C4BBA3] mt-0.5">
-                            All-inclusive: 2-day Summit Entry, Committee Allocation, Delegate Kit, High-Res Official Pass, Lunch & High Tea.
+                            {hasAccommodation
+                              ? 'All-inclusive: 3 Nights Hotel Stay, Local Transport Shuttles, 2-day Summit Entry, Committee Allocation, Delegate Kit, High-Res Official Pass, Breakfast, Lunch, High Tea & Dinner.'
+                              : 'All-inclusive: 2-day Summit Entry, Committee Allocation, Delegate Kit, High-Res Official Pass, Lunch & High Tea.'}
                           </p>
                         </div>
-                        <div className="sm:text-right shrink-0">
+                        <div className="sm:text-right shrink-0 flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              sounds.playTap();
+                              setHasAccommodation(null);
+                            }}
+                            className="px-2.5 py-1 rounded-lg bg-[#16203B] text-[#D4AF37] text-xs font-mono border border-[#D4AF37]/30 hover:bg-[#D4AF37] hover:text-[#070A14] transition-all cursor-pointer"
+                          >
+                            Edit Track
+                          </button>
                           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-xs font-mono font-bold">
                             <Check className="w-3 h-3 text-emerald-400" />
                             Ready for Remittance
@@ -1714,356 +1982,731 @@ export const AequitasRegistrationPage: React.FC = () => {
                     transition={{ duration: 0.3, ease: 'easeInOut' }}
                     className="space-y-6"
                   >
-                    <div>
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/35 text-xs font-mono font-semibold mb-2">
-                        <QrCode className="w-3 h-3" />
-                        <span>Step 05 // Delegate Fee Remittance & Verification</span>
-                      </div>
-                      <h2 className="text-xl sm:text-2xl md:text-3xl font-playfair font-bold text-white">
-                        Delegate Fee Remittance
-                      </h2>
-                      <p className="text-xs sm:text-sm text-[#C4BBA3] mt-1">
-                        Secure payment of ₹1,999 to finalize your registration and generate your official delegate pass.
-                      </p>
-                    </div>
-
-                    {/* Prominent Amount Header Banner */}
-                    <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#16203B] via-[#0D1427] to-[#16203B] border-2 border-[#D4AF37]/50 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                      <div>
-                        <span className="text-[10.5px] font-mono uppercase tracking-widest text-[#D4AF37] font-bold block">
-                          Total Amount Payable
-                        </span>
-                        <div className="text-2xl sm:text-3xl font-playfair font-extrabold text-white flex items-baseline gap-2 mt-0.5">
-                          <span>₹1,999</span>
-                          <span className="text-xs font-mono font-normal text-emerald-400">
-                            (Delegate All-Inclusive Fee)
-                          </span>
-                        </div>
-                        <p className="text-xs text-[#C4BBA3] mt-1">
-                          Covers 29 & 30 October 2026 Summit entry, official kit, lunch, high tea & pass credentials.
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="px-3 py-1.5 rounded-xl bg-[#070A14] border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-mono font-bold flex items-center gap-1.5">
-                          <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                          Verified Gateway
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Dual Payment Channels Grid (QR Code + Direct Bank Transfer) */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {/* Channel 1: Scan & Pay via UPI QR */}
-                      <div className="rounded-2xl bg-[#070A14]/95 border-2 border-[#D4AF37]/40 p-4 sm:p-5 flex flex-col items-center text-center space-y-3.5 shadow-lg">
-                        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] text-[11px] font-mono font-bold uppercase tracking-wider">
-                          <QrCode className="w-3.5 h-3.5" />
-                          <span>Option 1: Scan & Pay</span>
-                        </div>
-                        <p className="text-xs text-[#C4BBA3]">
-                          Open <strong>PhonePe, Google Pay, Paytm, BHIM</strong>, or any UPI app and scan the QR code below:
-                        </p>
-
-                        {/* QR Image Box */}
-                        <div className="relative p-2.5 rounded-2xl bg-white border-2 border-[#D4AF37] shadow-[0_0_25px_rgba(212,175,55,0.25)] max-w-[210px] w-full aspect-square flex items-center justify-center overflow-hidden">
-                          <img
-                            src={PAYMENT_CONFIG.qrCodeUrl}
-                            alt="Aequitas Payment QR Code"
-                            className="w-full h-full object-contain rounded-xl"
-                          />
-                        </div>
-
-                        <div className="space-y-1">
-                          <div className="text-xs font-bold text-white font-mono">
-                            Amount: ₹1,999
+                    {hasAccommodation ? (
+                      /* RESIDENTIAL PAYMENT INTERFACE (₹4,999 - WITH ACCOMMODATION) */
+                      <>
+                        <div>
+                          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/35 text-xs font-mono font-semibold mb-2">
+                            <Hotel className="w-3.5 h-3.5 text-[#D4AF37]" />
+                            <span>Step 05 // Delegate Fee Remittance &amp; Residential Provisioning</span>
                           </div>
-                          <div className="text-[11px] text-[#C4BBA3] font-mono">
-                            Scan via PhonePe, GPay, Paytm, BHIM, Cred
-                          </div>
-                        </div>
-
-                        <a
-                          href={PAYMENT_CONFIG.qrCodeUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-xs text-[#D4AF37] hover:underline font-mono"
-                        >
-                          <ExternalLink className="w-3.5 h-3.5" />
-                          <span>Open Full Size QR Code</span>
-                        </a>
-                      </div>
-
-                      {/* Channel 2: Direct Bank Transfer (NEFT / IMPS / RTGS) */}
-                      <div className="rounded-2xl bg-[#070A14]/95 border-2 border-[#D4AF37]/40 p-4 sm:p-5 flex flex-col justify-between space-y-4 shadow-lg">
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] text-[11px] font-mono font-bold uppercase tracking-wider">
-                              <Landmark className="w-3.5 h-3.5" />
-                              <span>Option 2: Direct Bank Transfer</span>
-                            </div>
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#16203B] text-emerald-400 border border-emerald-500/30">
-                              IMPS / NEFT / RTGS
+                          <h2 className="text-xl sm:text-2xl md:text-3xl font-playfair font-bold text-white flex items-center gap-2.5 flex-wrap">
+                            <span>Residential Delegate Fee Remittance</span>
+                            <span className="text-xs font-mono px-2.5 py-0.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] font-semibold">
+                              With Accommodation
                             </span>
-                          </div>
-
-                          <p className="text-xs text-[#C4BBA3]">
-                            Transfer ₹1,999 directly to the official Aequitas Conclave bank account using net banking or mobile banking:
+                          </h2>
+                          <p className="text-xs sm:text-sm text-[#C4BBA3] mt-1">
+                            Secure payment of ₹4,999 to finalize your residential conference registration, partner hotel stay in Jammu, and generate your official delegate pass.
                           </p>
+                        </div>
 
-                          {/* Bank Details Table */}
-                          <div className="space-y-2.5 font-mono text-xs">
-                            {/* Account Number */}
-                            <div className="p-2.5 rounded-xl bg-[#0D1427] border border-[#D4AF37]/30 flex items-center justify-between gap-2">
-                              <div className="min-w-0">
-                                <span className="text-[10px] uppercase text-[#A39B88] block">Account Number</span>
-                                <span className="text-white font-bold text-sm tracking-wider select-all truncate block">
-                                  {PAYMENT_CONFIG.accountNumber}
-                                </span>
-                              </div>
-                              <button
-                                type="button"
-                                onClick={() => handleCopy(PAYMENT_CONFIG.accountNumber, 'acc')}
-                                className="shrink-0 px-2.5 py-1.5 rounded-lg bg-[#16203B] hover:bg-[#D4AF37] hover:text-[#070A14] text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-sans font-semibold transition-all flex items-center gap-1 cursor-pointer"
-                              >
-                                {copiedField === 'acc' ? (
-                                  <>
-                                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                                    <span>Copied!</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <Copy className="w-3.5 h-3.5" />
-                                    <span>Copy</span>
-                                  </>
-                                )}
-                              </button>
+                        {/* Prominent Residential Amount Header Banner */}
+                        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#1E1442] via-[#0D1427] to-[#16203B] border-2 border-[#D4AF37] shadow-[0_0_35px_rgba(212,175,55,0.25)] flex flex-col md:flex-row md:items-center justify-between gap-4">
+                          <div className="space-y-1.5">
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10.5px] font-mono uppercase tracking-widest text-[#D4AF37] font-bold block">
+                                Total Amount Payable
+                              </span>
+                              <span className="px-2 py-0.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/40 text-[#D4AF37] text-[10px] font-mono font-bold">
+                                Residential Package
+                              </span>
                             </div>
-
-                            {/* IFSC Code */}
-                            <div className="p-2.5 rounded-xl bg-[#0D1427] border border-[#D4AF37]/30 flex items-center justify-between gap-2">
-                              <div className="min-w-0">
-                                <span className="text-[10px] uppercase text-[#A39B88] block">IFSC Code</span>
-                                <span className="text-white font-bold text-sm tracking-wider select-all truncate block">
-                                  {PAYMENT_CONFIG.ifscCode}
-                                </span>
-                              </div>
-                              <button
-                                type="button"
-                                onClick={() => handleCopy(PAYMENT_CONFIG.ifscCode, 'ifsc')}
-                                className="shrink-0 px-2.5 py-1.5 rounded-lg bg-[#16203B] hover:bg-[#D4AF37] hover:text-[#070A14] text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-sans font-semibold transition-all flex items-center gap-1 cursor-pointer"
-                              >
-                                {copiedField === 'ifsc' ? (
-                                  <>
-                                    <Check className="w-3.5 h-3.5 text-emerald-400" />
-                                    <span>Copied!</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <Copy className="w-3.5 h-3.5" />
-                                    <span>Copy</span>
-                                  </>
-                                )}
-                              </button>
+                            <div className="text-2xl sm:text-3xl font-playfair font-extrabold text-white flex items-baseline gap-2">
+                              <span className="text-[#D4AF37]">₹4,999</span>
+                              <span className="text-xs font-mono font-normal text-emerald-400">
+                                (Residential All-Inclusive Fee)
+                              </span>
                             </div>
-
-                            {/* Bank & Branch Details */}
-                            <div className="p-2.5 rounded-xl bg-[#0D1427]/60 border border-[#243563] space-y-1 text-[11px]">
-                              <div>
-                                <span className="text-[#A39B88]">Bank: </span>
-                                <strong className="text-[#FAF5EF]">{PAYMENT_CONFIG.bankName}</strong>
-                              </div>
-                              <div>
-                                <span className="text-[#A39B88]">Branch: </span>
-                                <strong className="text-[#FAF5EF]">{PAYMENT_CONFIG.branch}</strong>
-                              </div>
-                              <div>
-                                <span className="text-[#A39B88]">Account Name: </span>
-                                <strong className="text-[#FAF5EF]">{PAYMENT_CONFIG.beneficiaryName}</strong>
-                              </div>
-                            </div>
+                            <p className="text-xs text-[#C4BBA3] max-w-xl leading-relaxed">
+                              Includes 3 Nights / 2 Days hotel stay in Jammu, daily transit shuttles to summit venue, all meals (breakfast, lunch, high tea, dinner), 2-day conference debate pass &amp; official credentials kit.
+                            </p>
                           </div>
-                        </div>
-
-                        <div className="text-[11px] text-amber-300 font-mono bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/25 flex items-center gap-2">
-                          <ShieldCheck className="w-4 h-4 shrink-0 text-[#D4AF37]" />
-                          <span>Confidential Account Credentials • Verified for Aequitas 2026.</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Transaction Reference / UTR Number Input */}
-                    <div className="rounded-2xl bg-[#070A14]/95 border-2 border-[#D4AF37]/50 p-4 sm:p-6 space-y-3 shadow-xl">
-                      <label className="block text-xs sm:text-sm font-semibold text-[#FAF5EF]">
-                        12-Digit Transaction Reference (UTR / UPI Ref Number / Transaction ID) *
-                      </label>
-                      <div className="relative">
-                        <input
-                          type="text"
-                          required
-                          placeholder="e.g. 426812345678 or Bank UTR Number"
-                          value={form.transactionId}
-                          onChange={(e) => {
-                            setForm({ ...form, transactionId: e.target.value });
-                            if (validationErrors.transactionId) {
-                              setValidationErrors({ ...validationErrors, transactionId: '' });
-                            }
-                          }}
-                          className={`w-full px-4 py-3 rounded-xl bg-[#050811] border text-white font-mono text-sm tracking-wider focus:outline-none transition-colors ${
-                            validationErrors.transactionId
-                              ? 'border-rose-500 focus:border-rose-400'
-                              : 'border-[#D4AF37]/45 focus:border-[#D4AF37]'
-                          }`}
-                        />
-                      </div>
-                      <p className="text-[11px] text-[#C4BBA3] font-mono leading-relaxed">
-                        You can find your 12-digit UTR or UPI Reference Number in your payment receipt on PhonePe, Google Pay, Paytm, or your bank's transfer confirmation.
-                      </p>
-                      {validationErrors.transactionId && (
-                        <p className="text-rose-400 text-xs mt-1 flex items-center gap-1 font-mono">
-                          <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                          <span>{validationErrors.transactionId}</span>
-                        </p>
-                      )}
-                    </div>
-
-                    {/* DEDICATED HELPLINE FOR INQUIRIES */}
-                    <div className="rounded-2xl bg-gradient-to-br from-[#0D1427] via-[#070A14] to-[#16203B] border-2 border-[#D4AF37]/45 p-4 sm:p-6 space-y-3.5 shadow-xl">
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pb-2 border-b border-[#D4AF37]/25">
-                        <div className="flex items-center gap-2">
-                          <PhoneCall className="w-4 h-4 text-[#D4AF37]" />
-                          <h3 className="text-sm sm:text-base font-bold text-white font-playfair tracking-wide">
-                            For Any Inquiries &amp; Remittance Support
-                          </h3>
-                        </div>
-                        <span className="text-[10.5px] font-mono text-amber-300 bg-[#D4AF37]/15 px-2 py-0.5 rounded-full border border-[#D4AF37]/30">
-                          Official Secretariat Helplines
-                        </span>
-                      </div>
-
-                      <p className="text-xs text-[#C4BBA3] leading-relaxed">
-                        For any questions regarding registration, committee allocations, payment verification, or group delegations, reach out directly to our coordinating officers:
-                      </p>
-
-                      {/* SECTION 1: PRIMARY CONTACT */}
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                          <span className="text-[11px] font-mono uppercase font-bold text-[#D4AF37] tracking-wider">
-                            1. Primary Contact
-                          </span>
-                        </div>
-
-                        <div className="p-3.5 sm:p-4 rounded-xl bg-gradient-to-r from-[#16203B] via-[#0D1427] to-[#16203B] border-2 border-[#D4AF37]/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md">
-                          <div>
-                            <span className="text-[10px] font-mono uppercase text-[#A39B88] block">
-                              Main Secretariat &amp; Inquiries Lead
+                          <div className="flex flex-col sm:flex-row md:flex-col items-start md:items-end gap-2 shrink-0">
+                            <span className="px-3 py-1.5 rounded-xl bg-[#070A14] border border-[#D4AF37]/60 text-[#D4AF37] text-xs font-mono font-bold flex items-center gap-1.5 shadow-md">
+                              <Hotel className="w-4 h-4 text-[#D4AF37]" />
+                              3 Nights Stay Included
                             </span>
-                            <span className="text-base sm:text-lg font-mono font-bold text-white block mt-0.5 tracking-wider">
-                              {PAYMENT_CONFIG.primaryContact.number}
+                            <span className="px-3 py-1 rounded-xl bg-emerald-500/15 border border-emerald-500/35 text-emerald-300 text-[11px] font-mono font-semibold flex items-center gap-1.5">
+                              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                              Verified Residential Desk
                             </span>
                           </div>
+                        </div>
 
-                          <div className="flex items-center gap-2">
+                        {/* Dual Payment Channels Grid (QR Code + Direct Bank Transfer) */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {/* Channel 1: Scan & Pay via UPI QR */}
+                          <div className="rounded-2xl bg-[#070A14]/95 border-2 border-[#D4AF37]/60 p-4 sm:p-5 flex flex-col items-center text-center space-y-3.5 shadow-xl relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-[#D4AF37]/10 rounded-full blur-2xl pointer-events-none" />
+                            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] text-[11px] font-mono font-bold uppercase tracking-wider">
+                              <QrCode className="w-3.5 h-3.5" />
+                              <span>Option 1: Scan &amp; Pay (Residential)</span>
+                            </div>
+                            <p className="text-xs text-[#C4BBA3]">
+                              Open <strong>PhonePe, Google Pay, Paytm, BHIM</strong>, or any UPI app and scan the QR code below:
+                            </p>
+
+                            {/* QR Image Box */}
+                            <div className="relative p-2.5 rounded-2xl bg-white border-2 border-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.3)] max-w-[210px] w-full aspect-square flex items-center justify-center overflow-hidden">
+                              <img
+                                src={PAYMENT_CONFIG.qrCodeUrl}
+                                alt="Aequitas Residential Payment QR Code"
+                                className="w-full h-full object-contain rounded-xl"
+                              />
+                            </div>
+
+                            <div className="space-y-1">
+                              <div className="text-sm font-extrabold text-[#D4AF37] font-mono">
+                                Amount: ₹4,999
+                              </div>
+                              <div className="text-[11px] text-emerald-400 font-mono">
+                                Residential Package with 3 Nights Stay
+                              </div>
+                              <div className="text-[10px] text-[#A39B88] font-mono">
+                                Scan via PhonePe, GPay, Paytm, BHIM, Cred
+                              </div>
+                            </div>
+
                             <a
-                              href={`tel:${PAYMENT_CONFIG.primaryContact.raw}`}
-                              className="py-2 px-3.5 sm:px-4 rounded-lg bg-[#D4AF37] hover:bg-[#F3E5AB] text-[#070A14] text-xs font-mono font-extrabold transition-all flex items-center justify-center gap-1.5 shadow-sm"
-                              title={`Call Primary Contact ${PAYMENT_CONFIG.primaryContact.number}`}
-                            >
-                              <Phone className="w-3.5 h-3.5" />
-                              <span>Call Primary</span>
-                            </a>
-                            <a
-                              href={`https://wa.me/${PAYMENT_CONFIG.primaryContact.raw}?text=${encodeURIComponent(
-                                `Hello Aequitas Secretariat, I have an inquiry regarding delegate registration (Fee: ₹1,999) for ${form.fullName || 'a delegate'}.`
-                              )}`}
+                              href={PAYMENT_CONFIG.qrCodeUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="py-2 px-3.5 sm:px-4 rounded-lg bg-[#0E3A2F] hover:bg-emerald-500 hover:text-white text-xs font-mono font-bold text-emerald-300 transition-all flex items-center justify-center gap-1.5 shadow-sm"
-                              title={`WhatsApp Primary Contact ${PAYMENT_CONFIG.primaryContact.number}`}
+                              className="inline-flex items-center gap-1.5 text-xs text-[#D4AF37] hover:underline font-mono"
                             >
-                              <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
-                              <span>WhatsApp</span>
+                              <ExternalLink className="w-3.5 h-3.5" />
+                              <span>Open Full Size QR Code</span>
                             </a>
                           </div>
-                        </div>
-                      </div>
 
-                      {/* SECTION 2: SECONDARY / EMERGENCY CONTACTS */}
-                      <div className="space-y-2 pt-2 border-t border-[#D4AF37]/20">
-                        <div className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-amber-400" />
-                          <span className="text-[11px] font-mono uppercase font-bold text-[#FAF5EF] tracking-wider">
-                            2. Secondary / Emergency Contacts
-                          </span>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                          {PAYMENT_CONFIG.secondaryContacts.map((contact, idx) => (
-                            <div
-                              key={idx}
-                              className="p-3 rounded-xl bg-[#070A14] border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all space-y-2 flex flex-col justify-between"
-                            >
-                              <div>
-                                <span className="text-[10px] font-mono uppercase text-[#A39B88] block">
-                                  Secondary / Emergency Line 0{idx + 1}
-                                </span>
-                                <span className="text-xs sm:text-sm font-mono font-bold text-white block mt-0.5">
-                                  {contact.number}
+                          {/* Channel 2: Direct Bank Transfer (NEFT / IMPS / RTGS) */}
+                          <div className="rounded-2xl bg-[#070A14]/95 border-2 border-[#D4AF37]/60 p-4 sm:p-5 flex flex-col justify-between space-y-4 shadow-xl">
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between">
+                                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] text-[11px] font-mono font-bold uppercase tracking-wider">
+                                  <Landmark className="w-3.5 h-3.5" />
+                                  <span>Option 2: Direct Bank Transfer</span>
+                                </div>
+                                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#16203B] text-emerald-400 border border-emerald-500/30">
+                                  IMPS / NEFT / RTGS
                                 </span>
                               </div>
 
-                              <div className="flex items-center gap-1.5 pt-1">
+                              <p className="text-xs text-[#C4BBA3]">
+                                Transfer ₹4,999 directly to the official Aequitas Conclave bank account using net banking or mobile banking:
+                              </p>
+
+                              {/* Bank Details Table */}
+                              <div className="space-y-2.5 font-mono text-xs">
+                                {/* Account Number */}
+                                <div className="p-2.5 rounded-xl bg-[#0D1427] border border-[#D4AF37]/40 flex items-center justify-between gap-2">
+                                  <div className="min-w-0">
+                                    <span className="text-[10px] uppercase text-[#A39B88] block">Account Number</span>
+                                    <span className="text-white font-bold text-sm tracking-wider select-all truncate block">
+                                      {PAYMENT_CONFIG.accountNumber}
+                                    </span>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleCopy(PAYMENT_CONFIG.accountNumber, 'acc')}
+                                    className="shrink-0 px-2.5 py-1.5 rounded-lg bg-[#16203B] hover:bg-[#D4AF37] hover:text-[#070A14] text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-sans font-semibold transition-all flex items-center gap-1 cursor-pointer"
+                                  >
+                                    {copiedField === 'acc' ? (
+                                      <>
+                                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                        <span>Copied!</span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Copy className="w-3.5 h-3.5" />
+                                        <span>Copy</span>
+                                      </>
+                                    )}
+                                  </button>
+                                </div>
+
+                                {/* IFSC Code */}
+                                <div className="p-2.5 rounded-xl bg-[#0D1427] border border-[#D4AF37]/40 flex items-center justify-between gap-2">
+                                  <div className="min-w-0">
+                                    <span className="text-[10px] uppercase text-[#A39B88] block">IFSC Code</span>
+                                    <span className="text-white font-bold text-sm tracking-wider select-all truncate block">
+                                      {PAYMENT_CONFIG.ifscCode}
+                                    </span>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleCopy(PAYMENT_CONFIG.ifscCode, 'ifsc')}
+                                    className="shrink-0 px-2.5 py-1.5 rounded-lg bg-[#16203B] hover:bg-[#D4AF37] hover:text-[#070A14] text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-sans font-semibold transition-all flex items-center gap-1 cursor-pointer"
+                                  >
+                                    {copiedField === 'ifsc' ? (
+                                      <>
+                                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                        <span>Copied!</span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Copy className="w-3.5 h-3.5" />
+                                        <span>Copy</span>
+                                      </>
+                                    )}
+                                  </button>
+                                </div>
+
+                                {/* Bank & Branch Details */}
+                                <div className="p-2.5 rounded-xl bg-[#0D1427]/60 border border-[#243563] space-y-1 text-[11px]">
+                                  <div>
+                                    <span className="text-[#A39B88]">Bank: </span>
+                                    <strong className="text-[#FAF5EF]">{PAYMENT_CONFIG.bankName}</strong>
+                                  </div>
+                                  <div>
+                                    <span className="text-[#A39B88]">Branch: </span>
+                                    <strong className="text-[#FAF5EF]">{PAYMENT_CONFIG.branch}</strong>
+                                  </div>
+                                  <div>
+                                    <span className="text-[#A39B88]">Account Name: </span>
+                                    <strong className="text-[#FAF5EF]">{PAYMENT_CONFIG.beneficiaryName}</strong>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="text-[11px] text-amber-300 font-mono bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/25 flex items-center gap-2">
+                              <ShieldCheck className="w-4 h-4 shrink-0 text-[#D4AF37]" />
+                              <span>Jammu Hotel Stay &amp; Transit Provisioned with this Remittance.</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Transaction Reference / UTR Number Input */}
+                        <div className="rounded-2xl bg-[#070A14]/95 border-2 border-[#D4AF37]/50 p-4 sm:p-6 space-y-3 shadow-xl">
+                          <label className="block text-xs sm:text-sm font-semibold text-[#FAF5EF]">
+                            12-Digit Transaction Reference (UTR / UPI Ref Number / Transaction ID) *
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              required
+                              placeholder="e.g. 426812345678 or Bank UTR Number"
+                              value={form.transactionId}
+                              onChange={(e) => {
+                                setForm({ ...form, transactionId: e.target.value });
+                                if (validationErrors.transactionId) {
+                                  setValidationErrors({ ...validationErrors, transactionId: '' });
+                                }
+                              }}
+                              className={`w-full px-4 py-3 rounded-xl bg-[#050811] border text-white font-mono text-sm tracking-wider focus:outline-none transition-colors ${
+                                validationErrors.transactionId
+                                  ? 'border-rose-500 focus:border-rose-400'
+                                  : 'border-[#D4AF37]/45 focus:border-[#D4AF37]'
+                              }`}
+                            />
+                          </div>
+                          <p className="text-[11px] text-[#C4BBA3] font-mono leading-relaxed">
+                            You can find your 12-digit UTR or UPI Reference Number in your payment receipt on PhonePe, Google Pay, Paytm, or your bank's transfer confirmation.
+                          </p>
+                          {validationErrors.transactionId && (
+                            <p className="text-rose-400 text-xs mt-1 flex items-center gap-1 font-mono">
+                              <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                              <span>{validationErrors.transactionId}</span>
+                            </p>
+                          )}
+                        </div>
+
+                        {/* DEDICATED HELPLINE FOR RESIDENTIAL INQUIRIES */}
+                        <div className="rounded-2xl bg-gradient-to-br from-[#0D1427] via-[#070A14] to-[#16203B] border-2 border-[#D4AF37]/45 p-4 sm:p-6 space-y-3.5 shadow-xl">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pb-2 border-b border-[#D4AF37]/25">
+                            <div className="flex items-center gap-2">
+                              <PhoneCall className="w-4 h-4 text-[#D4AF37]" />
+                              <h3 className="text-sm sm:text-base font-bold text-white font-playfair tracking-wide">
+                                For Any Inquiries &amp; Residential Concierge Support
+                              </h3>
+                            </div>
+                            <span className="text-[10.5px] font-mono text-amber-300 bg-[#D4AF37]/15 px-2 py-0.5 rounded-full border border-[#D4AF37]/30">
+                              Official Secretariat Helplines
+                            </span>
+                          </div>
+
+                          <p className="text-xs text-[#C4BBA3] leading-relaxed">
+                            For any questions regarding accommodation, hotel check-in dates, food preferences, or fee verification, reach out directly to our coordinating officers:
+                          </p>
+
+                          {/* SECTION 1: PRIMARY CONTACT */}
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                              <span className="text-[11px] font-mono uppercase font-bold text-[#D4AF37] tracking-wider">
+                                1. Primary Contact
+                              </span>
+                            </div>
+
+                            <div className="p-3.5 sm:p-4 rounded-xl bg-gradient-to-r from-[#16203B] via-[#0D1427] to-[#16203B] border-2 border-[#D4AF37]/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md">
+                              <div>
+                                <span className="text-[10px] font-mono uppercase text-[#A39B88] block">
+                                  Main Secretariat &amp; Inquiries Lead
+                                </span>
+                                <span className="text-base sm:text-lg font-mono font-bold text-white block mt-0.5 tracking-wider">
+                                  {PAYMENT_CONFIG.primaryContact.number}
+                                </span>
+                              </div>
+
+                              <div className="flex items-center gap-2">
                                 <a
-                                  href={`tel:${contact.raw}`}
-                                  className="flex-1 py-1.5 px-2 rounded-lg bg-[#16203B] hover:bg-[#D4AF37] hover:text-[#070A14] text-xs font-mono font-semibold text-white transition-all flex items-center justify-center gap-1"
-                                  title={`Call ${contact.number}`}
+                                  href={`tel:${PAYMENT_CONFIG.primaryContact.raw}`}
+                                  className="py-2 px-3.5 sm:px-4 rounded-lg bg-[#D4AF37] hover:bg-[#F3E5AB] text-[#070A14] text-xs font-mono font-extrabold transition-all flex items-center justify-center gap-1.5 shadow-sm"
+                                  title={`Call Primary Contact ${PAYMENT_CONFIG.primaryContact.number}`}
                                 >
-                                  <Phone className="w-3 h-3 text-emerald-400" />
-                                  <span>Call</span>
+                                  <Phone className="w-3.5 h-3.5" />
+                                  <span>Call Primary</span>
                                 </a>
                                 <a
-                                  href={`https://wa.me/${contact.raw}?text=${encodeURIComponent(
-                                    `Hello Aequitas Secretariat, I have an inquiry regarding delegate registration (Fee: ₹1,999) for ${form.fullName || 'a delegate'}.`
+                                  href={`https://wa.me/${PAYMENT_CONFIG.primaryContact.raw}?text=${encodeURIComponent(
+                                    `Hello Aequitas Secretariat, I have an inquiry regarding residential delegate registration (Fee: ₹4,999 with Accommodation) for ${form.fullName || 'a delegate'}.`
                                   )}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="flex-1 py-1.5 px-2 rounded-lg bg-[#0E3A2F] hover:bg-emerald-500 hover:text-white text-xs font-mono font-semibold text-emerald-300 transition-all flex items-center justify-center gap-1"
-                                  title={`WhatsApp ${contact.number}`}
+                                  className="py-2 px-3.5 sm:px-4 rounded-lg bg-[#0E3A2F] hover:bg-emerald-500 hover:text-white text-xs font-mono font-bold text-emerald-300 transition-all flex items-center justify-center gap-1.5 shadow-sm"
+                                  title={`WhatsApp Primary Contact ${PAYMENT_CONFIG.primaryContact.number}`}
                                 >
-                                  <MessageSquare className="w-3 h-3 text-emerald-400" />
+                                  <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
                                   <span>WhatsApp</span>
                                 </a>
                               </div>
                             </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
+                          </div>
 
-                    {/* Remittance Declaration Checkbox */}
-                    <div className="p-4 rounded-xl bg-[#070A14]/80 border border-[#D4AF37]/35 space-y-2">
-                      <label className="flex items-start gap-3 cursor-pointer select-none">
-                        <input
-                          type="checkbox"
-                          checked={form.agreedToTerms}
-                          onChange={(e) => {
-                            setForm({ ...form, agreedToTerms: e.target.checked });
-                            if (validationErrors.agreedToTerms) {
-                              setValidationErrors({ ...validationErrors, agreedToTerms: '' });
-                            }
-                          }}
-                          className="mt-1 w-4 h-4 rounded border-[#D4AF37]/40 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer"
-                        />
-                        <span className="text-xs text-[#C4BBA3] leading-relaxed">
-                          I confirm that I have remitted <strong>₹1,999</strong> towards the delegate registration fee and that the Transaction / UTR ID entered above is genuine. I agree to abide by the official Rules of Procedure, diplomatic decorum, and zero-bias code of conduct established by the Aequitas Summit 2026 Executive Board.
-                        </span>
-                      </label>
-                      {validationErrors.agreedToTerms && (
-                        <p className="text-rose-400 text-xs mt-1 flex items-center gap-1 font-mono">
-                          <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                          <span>{validationErrors.agreedToTerms}</span>
-                        </p>
-                      )}
-                    </div>
+                          {/* SECTION 2: SECONDARY / EMERGENCY CONTACTS */}
+                          <div className="space-y-2 pt-2 border-t border-[#D4AF37]/20">
+                            <div className="flex items-center gap-2">
+                              <span className="w-2 h-2 rounded-full bg-amber-400" />
+                              <span className="text-[11px] font-mono uppercase font-bold text-[#FAF5EF] tracking-wider">
+                                2. Secondary / Emergency Contacts
+                              </span>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                              {PAYMENT_CONFIG.secondaryContacts.map((contact, idx) => (
+                                <div
+                                  key={idx}
+                                  className="p-3 rounded-xl bg-[#070A14] border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all space-y-2 flex flex-col justify-between"
+                                >
+                                  <div>
+                                    <span className="text-[10px] font-mono uppercase text-[#A39B88] block">
+                                      Secondary / Emergency Line 0{idx + 1}
+                                    </span>
+                                    <span className="text-xs sm:text-sm font-mono font-bold text-white block mt-0.5">
+                                      {contact.number}
+                                    </span>
+                                  </div>
+
+                                  <div className="flex items-center gap-1.5 pt-1">
+                                    <a
+                                      href={`tel:${contact.raw}`}
+                                      className="flex-1 py-1.5 px-2 rounded-lg bg-[#16203B] hover:bg-[#D4AF37] hover:text-[#070A14] text-xs font-mono font-semibold text-white transition-all flex items-center justify-center gap-1"
+                                      title={`Call ${contact.number}`}
+                                    >
+                                      <Phone className="w-3 h-3 text-emerald-400" />
+                                      <span>Call</span>
+                                    </a>
+                                    <a
+                                      href={`https://wa.me/${contact.raw}?text=${encodeURIComponent(
+                                        `Hello Aequitas Secretariat, I have an inquiry regarding residential delegate registration (Fee: ₹4,999 with Accommodation) for ${form.fullName || 'a delegate'}.`
+                                      )}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="flex-1 py-1.5 px-2 rounded-lg bg-[#0E3A2F] hover:bg-emerald-500 hover:text-white text-xs font-mono font-semibold text-emerald-300 transition-all flex items-center justify-center gap-1"
+                                      title={`WhatsApp ${contact.number}`}
+                                    >
+                                      <MessageSquare className="w-3 h-3 text-emerald-400" />
+                                      <span>WhatsApp</span>
+                                    </a>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Remittance Declaration Checkbox */}
+                        <div className="p-4 rounded-xl bg-[#070A14]/80 border border-[#D4AF37]/35 space-y-2">
+                          <label className="flex items-start gap-3 cursor-pointer select-none">
+                            <input
+                              type="checkbox"
+                              checked={form.agreedToTerms}
+                              onChange={(e) => {
+                                setForm({ ...form, agreedToTerms: e.target.checked });
+                                if (validationErrors.agreedToTerms) {
+                                  setValidationErrors({ ...validationErrors, agreedToTerms: '' });
+                                }
+                              }}
+                              className="mt-1 w-4 h-4 rounded border-[#D4AF37]/40 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer"
+                            />
+                            <span className="text-xs text-[#C4BBA3] leading-relaxed">
+                              I confirm that I have remitted <strong>₹4,999</strong> towards the residential delegate registration fee (inclusive of 3 nights accommodation, transit &amp; all meals) and that the Transaction / UTR ID entered above is genuine. I agree to abide by the official Rules of Procedure, diplomatic decorum, and zero-bias code of conduct established by the Aequitas Summit 2026 Executive Board.
+                            </span>
+                          </label>
+                          {validationErrors.agreedToTerms && (
+                            <p className="text-rose-400 text-xs mt-1 flex items-center gap-1 font-mono">
+                              <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                              <span>{validationErrors.agreedToTerms}</span>
+                            </p>
+                          )}
+                        </div>
+                      </>
+                    ) : (
+                      /* STANDARD PAYMENT INTERFACE (₹1,999 - WITHOUT ACCOMMODATION) */
+                      <>
+                        <div>
+                          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/35 text-xs font-mono font-semibold mb-2">
+                            <QrCode className="w-3 h-3" />
+                            <span>Step 05 // Delegate Fee Remittance &amp; Verification</span>
+                          </div>
+                          <h2 className="text-xl sm:text-2xl md:text-3xl font-playfair font-bold text-white">
+                            Delegate Fee Remittance
+                          </h2>
+                          <p className="text-xs sm:text-sm text-[#C4BBA3] mt-1">
+                            Secure payment of ₹1,999 to finalize your registration and generate your official delegate pass.
+                          </p>
+                        </div>
+
+                        {/* Prominent Amount Header Banner */}
+                        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#16203B] via-[#0D1427] to-[#16203B] border-2 border-[#D4AF37]/50 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div>
+                            <span className="text-[10.5px] font-mono uppercase tracking-widest text-[#D4AF37] font-bold block">
+                              Total Amount Payable
+                            </span>
+                            <div className="text-2xl sm:text-3xl font-playfair font-extrabold text-white flex items-baseline gap-2 mt-0.5">
+                              <span>₹1,999</span>
+                              <span className="text-xs font-mono font-normal text-emerald-400">
+                                (Delegate All-Inclusive Fee)
+                              </span>
+                            </div>
+                            <p className="text-xs text-[#C4BBA3] mt-1">
+                              Covers 29 &amp; 30 October 2026 Summit entry, official kit, lunch, high tea &amp; pass credentials.
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="px-3 py-1.5 rounded-xl bg-[#070A14] border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-mono font-bold flex items-center gap-1.5">
+                              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                              Verified Gateway
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Dual Payment Channels Grid (QR Code + Direct Bank Transfer) */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {/* Channel 1: Scan & Pay via UPI QR */}
+                          <div className="rounded-2xl bg-[#070A14]/95 border-2 border-[#D4AF37]/40 p-4 sm:p-5 flex flex-col items-center text-center space-y-3.5 shadow-lg">
+                            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] text-[11px] font-mono font-bold uppercase tracking-wider">
+                              <QrCode className="w-3.5 h-3.5" />
+                              <span>Option 1: Scan &amp; Pay</span>
+                            </div>
+                            <p className="text-xs text-[#C4BBA3]">
+                              Open <strong>PhonePe, Google Pay, Paytm, BHIM</strong>, or any UPI app and scan the QR code below:
+                            </p>
+
+                            {/* QR Image Box */}
+                            <div className="relative p-2.5 rounded-2xl bg-white border-2 border-[#D4AF37] shadow-[0_0_25px_rgba(212,175,55,0.25)] max-w-[210px] w-full aspect-square flex items-center justify-center overflow-hidden">
+                              <img
+                                src={PAYMENT_CONFIG.qrCodeUrl}
+                                alt="Aequitas Payment QR Code"
+                                className="w-full h-full object-contain rounded-xl"
+                              />
+                            </div>
+
+                            <div className="space-y-1">
+                              <div className="text-xs font-bold text-white font-mono">
+                                Amount: ₹1,999
+                              </div>
+                              <div className="text-[11px] text-[#C4BBA3] font-mono">
+                                Scan via PhonePe, GPay, Paytm, BHIM, Cred
+                              </div>
+                            </div>
+
+                            <a
+                              href={PAYMENT_CONFIG.qrCodeUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 text-xs text-[#D4AF37] hover:underline font-mono"
+                            >
+                              <ExternalLink className="w-3.5 h-3.5" />
+                              <span>Open Full Size QR Code</span>
+                            </a>
+                          </div>
+
+                          {/* Channel 2: Direct Bank Transfer (NEFT / IMPS / RTGS) */}
+                          <div className="rounded-2xl bg-[#070A14]/95 border-2 border-[#D4AF37]/40 p-4 sm:p-5 flex flex-col justify-between space-y-4 shadow-lg">
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between">
+                                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] text-[11px] font-mono font-bold uppercase tracking-wider">
+                                  <Landmark className="w-3.5 h-3.5" />
+                                  <span>Option 2: Direct Bank Transfer</span>
+                                </div>
+                                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#16203B] text-emerald-400 border border-emerald-500/30">
+                                  IMPS / NEFT / RTGS
+                                </span>
+                              </div>
+
+                              <p className="text-xs text-[#C4BBA3]">
+                                Transfer ₹1,999 directly to the official Aequitas Conclave bank account using net banking or mobile banking:
+                              </p>
+
+                              {/* Bank Details Table */}
+                              <div className="space-y-2.5 font-mono text-xs">
+                                {/* Account Number */}
+                                <div className="p-2.5 rounded-xl bg-[#0D1427] border border-[#D4AF37]/30 flex items-center justify-between gap-2">
+                                  <div className="min-w-0">
+                                    <span className="text-[10px] uppercase text-[#A39B88] block">Account Number</span>
+                                    <span className="text-white font-bold text-sm tracking-wider select-all truncate block">
+                                      {PAYMENT_CONFIG.accountNumber}
+                                    </span>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleCopy(PAYMENT_CONFIG.accountNumber, 'acc')}
+                                    className="shrink-0 px-2.5 py-1.5 rounded-lg bg-[#16203B] hover:bg-[#D4AF37] hover:text-[#070A14] text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-sans font-semibold transition-all flex items-center gap-1 cursor-pointer"
+                                  >
+                                    {copiedField === 'acc' ? (
+                                      <>
+                                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                        <span>Copied!</span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Copy className="w-3.5 h-3.5" />
+                                        <span>Copy</span>
+                                      </>
+                                    )}
+                                  </button>
+                                </div>
+
+                                {/* IFSC Code */}
+                                <div className="p-2.5 rounded-xl bg-[#0D1427] border border-[#D4AF37]/30 flex items-center justify-between gap-2">
+                                  <div className="min-w-0">
+                                    <span className="text-[10px] uppercase text-[#A39B88] block">IFSC Code</span>
+                                    <span className="text-white font-bold text-sm tracking-wider select-all truncate block">
+                                      {PAYMENT_CONFIG.ifscCode}
+                                    </span>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleCopy(PAYMENT_CONFIG.ifscCode, 'ifsc')}
+                                    className="shrink-0 px-2.5 py-1.5 rounded-lg bg-[#16203B] hover:bg-[#D4AF37] hover:text-[#070A14] text-[#D4AF37] border border-[#D4AF37]/40 text-xs font-sans font-semibold transition-all flex items-center gap-1 cursor-pointer"
+                                  >
+                                    {copiedField === 'ifsc' ? (
+                                      <>
+                                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                        <span>Copied!</span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Copy className="w-3.5 h-3.5" />
+                                        <span>Copy</span>
+                                      </>
+                                    )}
+                                  </button>
+                                </div>
+
+                                {/* Bank & Branch Details */}
+                                <div className="p-2.5 rounded-xl bg-[#0D1427]/60 border border-[#243563] space-y-1 text-[11px]">
+                                  <div>
+                                    <span className="text-[#A39B88]">Bank: </span>
+                                    <strong className="text-[#FAF5EF]">{PAYMENT_CONFIG.bankName}</strong>
+                                  </div>
+                                  <div>
+                                    <span className="text-[#A39B88]">Branch: </span>
+                                    <strong className="text-[#FAF5EF]">{PAYMENT_CONFIG.branch}</strong>
+                                  </div>
+                                  <div>
+                                    <span className="text-[#A39B88]">Account Name: </span>
+                                    <strong className="text-[#FAF5EF]">{PAYMENT_CONFIG.beneficiaryName}</strong>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="text-[11px] text-amber-300 font-mono bg-amber-500/10 p-2.5 rounded-xl border border-amber-500/25 flex items-center gap-2">
+                              <ShieldCheck className="w-4 h-4 shrink-0 text-[#D4AF37]" />
+                              <span>Confidential Account Credentials • Verified for Aequitas 2026.</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Transaction Reference / UTR Number Input */}
+                        <div className="rounded-2xl bg-[#070A14]/95 border-2 border-[#D4AF37]/50 p-4 sm:p-6 space-y-3 shadow-xl">
+                          <label className="block text-xs sm:text-sm font-semibold text-[#FAF5EF]">
+                            12-Digit Transaction Reference (UTR / UPI Ref Number / Transaction ID) *
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="text"
+                              required
+                              placeholder="e.g. 426812345678 or Bank UTR Number"
+                              value={form.transactionId}
+                              onChange={(e) => {
+                                setForm({ ...form, transactionId: e.target.value });
+                                if (validationErrors.transactionId) {
+                                  setValidationErrors({ ...validationErrors, transactionId: '' });
+                                }
+                              }}
+                              className={`w-full px-4 py-3 rounded-xl bg-[#050811] border text-white font-mono text-sm tracking-wider focus:outline-none transition-colors ${
+                                validationErrors.transactionId
+                                  ? 'border-rose-500 focus:border-rose-400'
+                                  : 'border-[#D4AF37]/45 focus:border-[#D4AF37]'
+                              }`}
+                            />
+                          </div>
+                          <p className="text-[11px] text-[#C4BBA3] font-mono leading-relaxed">
+                            You can find your 12-digit UTR or UPI Reference Number in your payment receipt on PhonePe, Google Pay, Paytm, or your bank's transfer confirmation.
+                          </p>
+                          {validationErrors.transactionId && (
+                            <p className="text-rose-400 text-xs mt-1 flex items-center gap-1 font-mono">
+                              <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                              <span>{validationErrors.transactionId}</span>
+                            </p>
+                          )}
+                        </div>
+
+                        {/* DEDICATED HELPLINE FOR INQUIRIES */}
+                        <div className="rounded-2xl bg-gradient-to-br from-[#0D1427] via-[#070A14] to-[#16203B] border-2 border-[#D4AF37]/45 p-4 sm:p-6 space-y-3.5 shadow-xl">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 pb-2 border-b border-[#D4AF37]/25">
+                            <div className="flex items-center gap-2">
+                              <PhoneCall className="w-4 h-4 text-[#D4AF37]" />
+                              <h3 className="text-sm sm:text-base font-bold text-white font-playfair tracking-wide">
+                                For Any Inquiries &amp; Remittance Support
+                              </h3>
+                            </div>
+                            <span className="text-[10.5px] font-mono text-amber-300 bg-[#D4AF37]/15 px-2 py-0.5 rounded-full border border-[#D4AF37]/30">
+                              Official Secretariat Helplines
+                            </span>
+                          </div>
+
+                          <p className="text-xs text-[#C4BBA3] leading-relaxed">
+                            For any questions regarding registration, committee allocations, payment verification, or group delegations, reach out directly to our coordinating officers:
+                          </p>
+
+                          {/* SECTION 1: PRIMARY CONTACT */}
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                              <span className="text-[11px] font-mono uppercase font-bold text-[#D4AF37] tracking-wider">
+                                1. Primary Contact
+                              </span>
+                            </div>
+
+                            <div className="p-3.5 sm:p-4 rounded-xl bg-gradient-to-r from-[#16203B] via-[#0D1427] to-[#16203B] border-2 border-[#D4AF37]/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-md">
+                              <div>
+                                <span className="text-[10px] font-mono uppercase text-[#A39B88] block">
+                                  Main Secretariat &amp; Inquiries Lead
+                                </span>
+                                <span className="text-base sm:text-lg font-mono font-bold text-white block mt-0.5 tracking-wider">
+                                  {PAYMENT_CONFIG.primaryContact.number}
+                                </span>
+                              </div>
+
+                              <div className="flex items-center gap-2">
+                                <a
+                                  href={`tel:${PAYMENT_CONFIG.primaryContact.raw}`}
+                                  className="py-2 px-3.5 sm:px-4 rounded-lg bg-[#D4AF37] hover:bg-[#F3E5AB] text-[#070A14] text-xs font-mono font-extrabold transition-all flex items-center justify-center gap-1.5 shadow-sm"
+                                  title={`Call Primary Contact ${PAYMENT_CONFIG.primaryContact.number}`}
+                                >
+                                  <Phone className="w-3.5 h-3.5" />
+                                  <span>Call Primary</span>
+                                </a>
+                                <a
+                                  href={`https://wa.me/${PAYMENT_CONFIG.primaryContact.raw}?text=${encodeURIComponent(
+                                    `Hello Aequitas Secretariat, I have an inquiry regarding delegate registration (Fee: ₹1,999) for ${form.fullName || 'a delegate'}.`
+                                  )}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="py-2 px-3.5 sm:px-4 rounded-lg bg-[#0E3A2F] hover:bg-emerald-500 hover:text-white text-xs font-mono font-bold text-emerald-300 transition-all flex items-center justify-center gap-1.5 shadow-sm"
+                                  title={`WhatsApp Primary Contact ${PAYMENT_CONFIG.primaryContact.number}`}
+                                >
+                                  <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
+                                  <span>WhatsApp</span>
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* SECTION 2: SECONDARY / EMERGENCY CONTACTS */}
+                          <div className="space-y-2 pt-2 border-t border-[#D4AF37]/20">
+                            <div className="flex items-center gap-2">
+                              <span className="w-2 h-2 rounded-full bg-amber-400" />
+                              <span className="text-[11px] font-mono uppercase font-bold text-[#FAF5EF] tracking-wider">
+                                2. Secondary / Emergency Contacts
+                              </span>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                              {PAYMENT_CONFIG.secondaryContacts.map((contact, idx) => (
+                                <div
+                                  key={idx}
+                                  className="p-3 rounded-xl bg-[#070A14] border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all space-y-2 flex flex-col justify-between"
+                                >
+                                  <div>
+                                    <span className="text-[10px] font-mono uppercase text-[#A39B88] block">
+                                      Secondary / Emergency Line 0{idx + 1}
+                                    </span>
+                                    <span className="text-xs sm:text-sm font-mono font-bold text-white block mt-0.5">
+                                      {contact.number}
+                                    </span>
+                                  </div>
+
+                                  <div className="flex items-center gap-1.5 pt-1">
+                                    <a
+                                      href={`tel:${contact.raw}`}
+                                      className="flex-1 py-1.5 px-2 rounded-lg bg-[#16203B] hover:bg-[#D4AF37] hover:text-[#070A14] text-xs font-mono font-semibold text-white transition-all flex items-center justify-center gap-1"
+                                      title={`Call ${contact.number}`}
+                                    >
+                                      <Phone className="w-3 h-3 text-emerald-400" />
+                                      <span>Call</span>
+                                    </a>
+                                    <a
+                                      href={`https://wa.me/${contact.raw}?text=${encodeURIComponent(
+                                        `Hello Aequitas Secretariat, I have an inquiry regarding delegate registration (Fee: ₹1,999) for ${form.fullName || 'a delegate'}.`
+                                      )}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="flex-1 py-1.5 px-2 rounded-lg bg-[#0E3A2F] hover:bg-emerald-500 hover:text-white text-xs font-mono font-semibold text-emerald-300 transition-all flex items-center justify-center gap-1"
+                                      title={`WhatsApp ${contact.number}`}
+                                    >
+                                      <MessageSquare className="w-3 h-3 text-emerald-400" />
+                                      <span>WhatsApp</span>
+                                    </a>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Remittance Declaration Checkbox */}
+                        <div className="p-4 rounded-xl bg-[#070A14]/80 border border-[#D4AF37]/35 space-y-2">
+                          <label className="flex items-start gap-3 cursor-pointer select-none">
+                            <input
+                              type="checkbox"
+                              checked={form.agreedToTerms}
+                              onChange={(e) => {
+                                setForm({ ...form, agreedToTerms: e.target.checked });
+                                if (validationErrors.agreedToTerms) {
+                                  setValidationErrors({ ...validationErrors, agreedToTerms: '' });
+                                }
+                              }}
+                              className="mt-1 w-4 h-4 rounded border-[#D4AF37]/40 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer"
+                            />
+                            <span className="text-xs text-[#C4BBA3] leading-relaxed">
+                              I confirm that I have remitted <strong>₹1,999</strong> towards the delegate registration fee and that the Transaction / UTR ID entered above is genuine. I agree to abide by the official Rules of Procedure, diplomatic decorum, and zero-bias code of conduct established by the Aequitas Summit 2026 Executive Board.
+                            </span>
+                          </label>
+                          {validationErrors.agreedToTerms && (
+                            <p className="text-rose-400 text-xs mt-1 flex items-center gap-1 font-mono">
+                              <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                              <span>{validationErrors.agreedToTerms}</span>
+                            </p>
+                          )}
+                        </div>
+                      </>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -2080,7 +2723,18 @@ export const AequitasRegistrationPage: React.FC = () => {
                     <span>Previous</span>
                   </button>
                 ) : (
-                  <div />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      sounds.playTap();
+                      setHasAccommodation(null);
+                    }}
+                    className="px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-[#070A14] text-[#C4BBA3] border border-[#D4AF37]/30 hover:text-white hover:border-[#D4AF37] transition-all flex items-center gap-1.5 text-xs font-semibold cursor-pointer min-h-[44px]"
+                    title="Return to accommodation question"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    <span>Back to Track Selection</span>
+                  </button>
                 )}
 
                 {currentStep < 4 ? (
@@ -2099,7 +2753,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                     className="px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E8A53E] to-[#D4AF37] text-[#070A14] font-extrabold text-xs sm:text-sm shadow-[0_0_25px_rgba(212,175,55,0.5)] hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 cursor-pointer ml-auto min-h-[44px]"
                   >
                     <CreditCard className="w-4 h-4" />
-                    <span>Proceed to Fee Payment (₹1,999)</span>
+                    <span>Proceed to Fee Payment ({hasAccommodation ? '₹4,999' : '₹1,999'})</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 ) : (
@@ -2119,7 +2773,11 @@ export const AequitasRegistrationPage: React.FC = () => {
                     ) : (
                       <>
                         <ShieldCheck className="w-4 h-4" />
-                        <span>Confirm Payment &amp; Complete Registration</span>
+                        <span>
+                          {hasAccommodation
+                            ? 'Confirm Payment & Complete Registration (₹4,999)'
+                            : 'Confirm Payment & Complete Registration'}
+                        </span>
                       </>
                     )}
                   </button>
@@ -2127,7 +2785,8 @@ export const AequitasRegistrationPage: React.FC = () => {
               </div>
             </div>
           </div>
-        ) : (
+        )
+      ) : (
           /* SLIDE 5: CONFIRMATION RECEIPT (NO REDIRECT TO HOME) */
           <motion.div
             initial={{ opacity: 0, scale: 0.96 }}
@@ -2164,7 +2823,25 @@ export const AequitasRegistrationPage: React.FC = () => {
               </div>
               <div className="flex items-center justify-between pb-2 border-b border-[#D4AF37]/20">
                 <span className="text-[#C4BBA3]">Fee Remittance:</span>
-                <span className="text-emerald-400 font-bold">₹1,999 (Recorded)</span>
+                <span className="text-emerald-400 font-bold">
+                  {hasAccommodation ? '₹4,999 (Recorded - With Accommodation)' : '₹1,999 (Recorded)'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between pb-2 border-b border-[#D4AF37]/20">
+                <span className="text-[#C4BBA3]">Attendance Track:</span>
+                <span className="text-white font-bold flex items-center gap-1.5 text-right">
+                  {hasAccommodation ? (
+                    <>
+                      <Hotel className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
+                      <span className="text-[#D4AF37]">Residential Delegation (3 Nights Stay)</span>
+                    </>
+                  ) : (
+                    <>
+                      <Globe className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                      <span>Standard Pass (Non-Residential)</span>
+                    </>
+                  )}
+                </span>
               </div>
               <div className="flex items-center justify-between pb-2 border-b border-[#D4AF37]/20">
                 <span className="text-[#C4BBA3]">Transaction UTR:</span>
@@ -2262,7 +2939,9 @@ export const AequitasRegistrationPage: React.FC = () => {
                   </a>
                   <a
                     href={`https://wa.me/${PAYMENT_CONFIG.primaryContact.raw}?text=${encodeURIComponent(
-                      `Hello Aequitas Secretariat, I have an inquiry regarding delegate registration (Fee: ₹1,999) for ${form.fullName || 'a delegate'}.`
+                      `Hello Aequitas Secretariat, I have an inquiry regarding delegate registration (Fee: ${
+                        hasAccommodation ? '₹4,999 with Accommodation' : '₹1,999'
+                      }) for ${form.fullName || 'a delegate'}.`
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"

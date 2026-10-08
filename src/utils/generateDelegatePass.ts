@@ -15,6 +15,7 @@ export interface DelegatePassData {
   institution: string;
   grade: string;
   trackingId?: string;
+  hasAccommodation?: boolean;
 }
 
 const POETIC_QUOTE =
@@ -283,6 +284,18 @@ export function generateDelegatePassDataUrl(data: DelegatePassData): string {
   ctx.fillStyle = '#C4BBA3';
   ctx.letterSpacing = '2px';
   ctx.fillText('AASTITVA ALLIANCE • EXECUTIVE SECRETARIAT • OFFICIAL CONCLAVE SEAL', width / 2, footerY + 54);
+
+  // Package Track Designation
+  ctx.font = 'bold 9px "Space Grotesk", sans-serif';
+  ctx.fillStyle = data.hasAccommodation ? '#D4AF37' : '#8FB3DE';
+  ctx.letterSpacing = '3px';
+  ctx.fillText(
+    data.hasAccommodation
+      ? '★ TRACK: RESIDENTIAL DELEGATE • 3 NIGHTS ACCOMMODATION INCLUDED'
+      : '• TRACK: STANDARD DELEGATE • CONFERENCE PASS ONLY',
+    width / 2,
+    footerY + 72
+  );
   ctx.restore();
 
   return canvas.toDataURL('image/png');

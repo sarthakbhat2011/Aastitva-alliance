@@ -270,6 +270,7 @@ export interface CleanRegistration {
   statement?: string;
   transactionId?: string;
   agreedToTerms?: boolean;
+  hasAccommodation?: boolean;
 }
 
 export function validateRegistrationPayload(body: any): {
@@ -347,6 +348,7 @@ export function validateRegistrationPayload(body: any): {
       statement: statement || undefined,
       transactionId: transactionId || undefined,
       agreedToTerms,
+      hasAccommodation: Boolean(body.hasAccommodation),
     },
   };
 }

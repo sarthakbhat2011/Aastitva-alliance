@@ -125,6 +125,7 @@ export interface RegistrationFormData {
   secondChoiceCommittee: string;
   secondChoicePortfolio: string;
   priorExperience: string;
+  hasAccommodation?: boolean;
 }
 
 export interface AnalyticsStats {
