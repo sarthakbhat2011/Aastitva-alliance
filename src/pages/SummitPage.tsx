@@ -53,31 +53,31 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
   const [modalPreselectedCommittee, setModalPreselectedCommittee] = useState<string>('');
   const [activeVenuePhoto, setActiveVenuePhoto] = useState<number | null>(null);
 
-  // Verified Official Radisson Blu Hotel, Jammu Venue Assets
+  // Verified Official Radisson Blu Hotel, Jammu Venue Assets (Local High-Resolution Imagery)
   const venuePhotos = [
     {
       id: 1,
-      title: 'The Royal Ballroom • Radisson Blu Jammu',
-      desc: "City's largest pillarless banquet & conference hall (over 40,000 sq ft) equipped with acoustic treatment, presidential seating, and plenary stage.",
-      image: 'https://media.radissonhotels.net/image/radisson-blu-hotel-jammu/ballroom/16256-114056-f63652683_3xl.jpg',
+      title: 'Radisson Blu Hotel, Jammu • Facade & Architecture',
+      desc: 'Upscale five-star landmark on Narwal Bala Bypass, featuring state-of-the-art conference facilities and diplomatic suites.',
+      image: '/images/venue/radisson-blu-facade.png',
     },
     {
       id: 2,
-      title: 'Diplomatic Committee Chambers',
-      desc: 'High-tech executive boardrooms and council suites designed for intensive moderated caucusing, crisis commands, and multilateral debate.',
-      image: 'https://media.radissonhotels.net/image/radisson-blu-hotel-jammu/meeting-room/16256-114056-f63652681_3xl.jpg',
+      title: 'Grand Foyer & Executive Atrium Lounge',
+      desc: 'Magnificent double-height architectural lobby with artisan woodwork, ambient chandelier illumination, and delegate registration suites.',
+      image: '/images/venue/radisson-blu-foyer-atrium.jpg',
     },
     {
       id: 3,
-      title: 'Ambrosia & BLU Pan Dining',
-      desc: 'Multi-cuisine delegate banqueting wings with open show kitchens offering authentic regional Kashmiri cuisine and international delicacies.',
-      image: 'https://media.radissonhotels.net/image/radisson-blu-hotel-jammu/restaurant/16256-114056-f63652685_3xl.jpg',
+      title: 'Diplomatic Entrance & Porte-Cochère',
+      desc: 'Dedicated VIP arrival concourse and valet reception configured for high-level security, executive board, and institutional delegations.',
+      image: '/images/venue/radisson-blu-entrance.png',
     },
     {
       id: 4,
-      title: 'Grand Facade & Convention Lawns',
-      desc: 'Upscale five-star hospitality complex at Radisson Square, Narwal Bala Bypass, featuring over 12,000 sq ft of manicured convention lawns.',
-      image: 'https://media.radissonhotels.net/image/radisson-blu-hotel-jammu/exterior/16256-114056-f63652619_3xl.jpg',
+      title: 'Illuminated Convention Wing & Lawns',
+      desc: 'Stunning evening panorama of the Radisson Blu summit complex hosting over 40,000 sq ft of indoor ballrooms and manicured lawns.',
+      image: '/images/venue/radisson-blu-exterior-twilight.png',
     },
   ];
 

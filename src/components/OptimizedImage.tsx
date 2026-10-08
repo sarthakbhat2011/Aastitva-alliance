@@ -35,19 +35,23 @@ export const OptimizedImage: React.FC<Props> = ({
     return url;
   };
 
+  const isUnsplash = src.includes('images.unsplash.com');
+  const isWebp = src.toLowerCase().endsWith('.webp') || src.includes('.webp?') || isUnsplash;
   const webpSrc = getWebpUrl(src);
-  const webpSrcset = src.includes('images.unsplash.com')
+  const webpSrcset = isUnsplash
     ? `${getWebpUrl(src, 400)} 400w, ${getWebpUrl(src, 800)} 800w, ${getWebpUrl(src, 1200)} 1200w`
     : undefined;
 
   return (
     <picture className="w-full h-full block">
       {/* WebP High-Efficiency Source for Modern Browsers & Low-Bandwidth Mobile */}
-      <source
-        type="image/webp"
-        srcSet={webpSrcset || webpSrc}
-        sizes="(max-width: 640px) 400px, (max-width: 1024px) 800px, 1200px"
-      />
+      {isWebp && (
+        <source
+          type="image/webp"
+          srcSet={webpSrcset || webpSrc}
+          sizes="(max-width: 640px) 400px, (max-width: 1024px) 800px, 1200px"
+        />
+      )}
 
       {/* Fallback Standard Image */}
       <img
