@@ -136,6 +136,7 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
       };
 
       const body = new URLSearchParams();
+      body.append('entry.1134035501', 'NO');
       body.append('entry.780764261', form.fullName.trim());
       body.append('entry.830016473', form.email.trim());
       body.append('entry.86288026', form.phone.trim());

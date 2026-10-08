@@ -674,6 +674,8 @@ export const AequitasRegistrationPage: React.FC = () => {
       };
 
       const body = new URLSearchParams();
+      // 0. Are you a delegate with accommodation?
+      body.append('entry.1134035501', hasAccommodation ? 'YES' : 'NO');
       // 1. Full Legal Name
       body.append('entry.780764261', form.fullName.trim());
       // 2. Official Email Address

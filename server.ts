@@ -205,57 +205,85 @@ async function startServer() {
   // Response Action: https://docs.google.com/forms/d/e/1FAIpQLSdgVhSI5tgSKD4vk_m8YWI0q6zFuJFytzer4R7-DSbzu7G8rg/formResponse
   // Guaranteed server-side HTTPS dispatch bypassing browser ad blockers and CORS limitations
   // ============================================================================
-  function syncToGoogleForm(clean: any): Promise<boolean> {
-    return new Promise((resolve) => {
-      try {
-        const mapCommittee = (val: string) => {
-          if (!val) return '• CCC - Continuous Crisis Committee';
-          if (val.includes('IPC') || val.includes('Press') || val.includes('International Press')) return '• IPC - International Press Corps';
-          if (val.includes('CCC') || val.includes('Crisis') || val.includes('CC')) return '• CCC - Continuous Crisis Committee';
-          if (val.includes('UNHRC') || val.includes('Human Rights')) return '• UNHRC - United Nations Human Rights Council';
-          if (val.includes('BRICS') || val.includes('JKLA') || val.includes('Legislative')) return '• BRICS - BRICS Summit';
-          if (val.includes('Women')) return '• UN Women - United Nations Entity for Gender Equality';
-          if (val.includes('Lok Sabha') || val.includes('House')) return '• Lok Sabha - Lok Sabha (House of the People)';
-          if (val.includes('IPL') || val.includes('Premier')) return '• IPL - Indian Premier League Auction Council';
-          return '• CCC - Continuous Crisis Committee';
-        };
+  async function syncToGoogleForm(clean: any): Promise<boolean> {
+    try {
+      const mapCommittee = (val: string) => {
+        if (!val) return '• CCC - Continuous Crisis Committee';
+        if (val.includes('IPC') || val.includes('Press') || val.includes('International Press')) return '• IPC - International Press Corps';
+        if (val.includes('CCC') || val.includes('Crisis') || val.includes('CC')) return '• CCC - Continuous Crisis Committee';
+        if (val.includes('UNHRC') || val.includes('Human Rights')) return '• UNHRC - United Nations Human Rights Council';
+        if (val.includes('BRICS') || val.includes('JKLA') || val.includes('Legislative')) return '• BRICS - BRICS Summit';
+        if (val.includes('Women')) return '• UN Women - United Nations Entity for Gender Equality';
+        if (val.includes('Lok Sabha') || val.includes('House')) return '• Lok Sabha - Lok Sabha (House of the People)';
+        if (val.includes('IPL') || val.includes('Premier')) return '• IPL - Indian Premier League Auction Council';
+        return '• CCC - Continuous Crisis Committee';
+      };
 
-        const mapGrade = (val: string) => {
-          if (!val) return '•Senior Secondary School (Grades 11–12)';
-          if (val.includes('Middle') || val.includes('6-8') || val.includes('6–8')) return '• Middle School (Grades 6–8)';
-          if (val.includes('Secondary') && !val.includes('Senior') && !val.includes('11-12') && !val.includes('11–12')) return '• Secondary School (Grades 9–10)';
-          if (val.includes('Senior') || val.includes('11-12') || val.includes('11–12') || val.includes('High School')) return '•Senior Secondary School (Grades 11–12)';
-          if (val.includes('College') || val.includes('Undergraduate')) return '• Undergraduate / College';
-          return '•Senior Secondary School (Grades 11–12)';
-        };
+      const mapGrade = (val: string) => {
+        if (!val) return '•Senior Secondary School (Grades 11–12)';
+        if (val.includes('Middle') || val.includes('6-8') || val.includes('6–8')) return '• Middle School (Grades 6–8)';
+        if (val.includes('Secondary') && !val.includes('Senior') && !val.includes('11-12') && !val.includes('11–12')) return '• Secondary School (Grades 9–10)';
+        if (val.includes('Senior') || val.includes('11-12') || val.includes('11–12') || val.includes('High School')) return '•Senior Secondary School (Grades 11–12)';
+        if (val.includes('College') || val.includes('Undergraduate')) return '• Undergraduate / College';
+        return '•Senior Secondary School (Grades 11–12)';
+      };
 
-        const mapExperience = (val: string) => {
-          if (!val) return '• Junior Delegate (1–3 MUNs)';
-          if (val.includes('First-Timer') || val.includes('Novice') || val.includes('0 MUNs')) return '• First-Timer / Novice (0 MUNs)';
-          if (val.includes('Junior') || val.includes('1-3') || val.includes('1–3')) return '• Junior Delegate (1–3 MUNs)';
-          if (val.includes('Seasoned') || val.includes('4-7') || val.includes('4–7')) return '• Seasoned Delegate (4–7 MUNs)';
-          if (val.includes('Veteran') || val.includes('8+')) return '• Veteran Delegate (8+ MUNs)';
-          return '• Junior Delegate (1–3 MUNs)';
-        };
+      const mapExperience = (val: string) => {
+        if (!val) return '• Junior Delegate (1–3 MUNs)';
+        if (val.includes('First-Timer') || val.includes('Novice') || val.includes('0 MUNs')) return '• First-Timer / Novice (0 MUNs)';
+        if (val.includes('Junior') || val.includes('1-3') || val.includes('1–3')) return '• Junior Delegate (1–3 MUNs)';
+        if (val.includes('Seasoned') || val.includes('4-7') || val.includes('4–7')) return '• Seasoned Delegate (4–7 MUNs)';
+        if (val.includes('Veteran') || val.includes('8+')) return '• Veteran Delegate (8+ MUNs)';
+        return '• Junior Delegate (1–3 MUNs)';
+      };
 
-        const formData = new URLSearchParams({
-          'entry.780764261': clean.fullName || '',
-          'entry.830016473': clean.email || '',
-          'entry.86288026': clean.phone || '',
-          'entry.1083196564': clean.institution || '',
-          'entry.278555826': mapGrade(clean.grade),
-          'entry.898367359': mapExperience(clean.priorExperience),
-          'entry.291987551': clean.priorAccolades || 'None',
-          'entry.977018072': mapCommittee(clean.firstChoiceCommittee),
-          'entry.299951131': clean.firstChoicePortfolio || 'General Allocation',
-          'entry.580509636': mapCommittee(clean.secondChoiceCommittee || 'UNHRC - United Nations Human Rights Council'),
-          'entry.777137221': clean.secondChoicePortfolio || 'General Allocation',
-          'entry.635888889': mapCommittee(clean.thirdChoiceCommittee || 'BRICS - BRICS Summit'),
-          'entry.794534023': clean.thirdChoicePortfolio || 'General Allocation',
-          'entry.156711483': clean.statement || 'Registered via Aequitas Delegate Portal.',
-          'entry.1604443743': clean.transactionId || 'Verified Remittance',
-        }).toString();
+      const hasAccom = clean.hasAccommodation === true || clean.hasAccommodation === 'true' || clean.hasAccommodation === 'yes';
 
+      const formData = new URLSearchParams({
+        'entry.1134035501': hasAccom ? 'YES' : 'NO',
+        'entry.780764261': (clean.fullName || '').trim(),
+        'entry.830016473': (clean.email || '').trim(),
+        'entry.86288026': (clean.phone || '').trim(),
+        'entry.1083196564': (clean.institution || '').trim(),
+        'entry.278555826': mapGrade(clean.grade),
+        'entry.898367359': mapExperience(clean.priorExperience),
+        'entry.291987551': (clean.priorAccolades || '').trim() || 'None',
+        'entry.977018072': mapCommittee(clean.firstChoiceCommittee),
+        'entry.299951131': (clean.firstChoicePortfolio || '').trim() || 'General Allocation',
+        'entry.580509636': mapCommittee(clean.secondChoiceCommittee || 'UNHRC - United Nations Human Rights Council'),
+        'entry.777137221': (clean.secondChoicePortfolio || '').trim() || 'General Allocation',
+        'entry.635888889': mapCommittee(clean.thirdChoiceCommittee || 'BRICS - BRICS Summit'),
+        'entry.794534023': (clean.thirdChoicePortfolio || '').trim() || 'General Allocation',
+        'entry.156711483': (clean.statement || '').trim() || 'Registered via Aequitas Delegate Portal.',
+        'entry.1604443743': (clean.transactionId || '').trim() || 'Verified Remittance',
+      }).toString();
+
+      const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSdgVhSI5tgSKD4vk_m8YWI0q6zFuJFytzer4R7-DSbzu7G8rg/formResponse';
+
+      // 1. Primary Dispatch using fetch with timeout
+      if (typeof fetch === 'function') {
+        const response = await fetch(formUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'User-Agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+            'Referer':
+              'https://docs.google.com/forms/d/e/1FAIpQLSdgVhSI5tgSKD4vk_m8YWI0q6zFuJFytzer4R7-DSbzu7G8rg/viewform',
+          },
+          body: formData,
+          signal: AbortSignal.timeout(10000),
+        });
+
+        const isSuccess = response.ok || response.status === 200 || response.status === 302 || response.status === 303;
+        console.log(
+          `[Google Forms Backend Sync] Server synced application to Google Form (Status: ${response.status}${isSuccess ? ' - OK' : ''})`
+        );
+        return isSuccess;
+      }
+
+      // 2. HTTPS Request Fallback
+      return new Promise((resolve) => {
         const req = https.request(
           {
             hostname: 'docs.google.com',
@@ -298,11 +326,11 @@ async function startServer() {
 
         req.write(formData);
         req.end();
-      } catch (err: any) {
-        console.warn('[Google Forms Backend Sync] Exception during dispatch:', err?.message);
-        resolve(false);
-      }
-    });
+      });
+    } catch (err: any) {
+      console.warn('[Google Forms Backend Sync] Exception during dispatch:', err?.message);
+      return false;
+    }
   }
 
   // 8. HARDENING: Dedicated Secure Delegate Registration Endpoint (OWASP ASVS 5.1)
