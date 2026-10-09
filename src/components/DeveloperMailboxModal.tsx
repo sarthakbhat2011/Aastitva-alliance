@@ -227,7 +227,7 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
     grade: 'Senior Secondary School (Grades 11–12)',
     phone: '',
     email: '',
-    firstChoiceCommittee: 'CCC - Continuous Crisis Committee',
+    firstChoiceCommittee: 'CC - Citizen Council',
     firstChoicePortfolio: 'General Allocation',
     secondChoiceCommittee: 'UNHRC - United Nations Human Rights Council',
     secondChoicePortfolio: 'General Allocation',
@@ -361,7 +361,7 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
         let grade = cols[offset + 4] || 'Senior Secondary School (Grades 11–12)';
         let experience = cols[offset + 5] || 'Junior Delegate (1–3 MUNs)';
         const accolades = cols[offset + 6] || 'None';
-        let comm1 = cols[offset + 7] || 'CCC - Continuous Crisis Committee';
+        let comm1 = cols[offset + 7] || 'CC - Citizen Council';
         const port1 = cols[offset + 8] || 'General Allocation';
         let comm2 = cols[offset + 9] || 'UNHRC - United Nations Human Rights Council';
         const port2 = cols[offset + 10] || 'General Allocation';
@@ -632,7 +632,7 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
         grade: 'Senior Secondary School (Grades 11–12)',
         phone: '',
         email: '',
-        firstChoiceCommittee: 'CCC - Continuous Crisis Committee',
+        firstChoiceCommittee: 'CC - Citizen Council',
         firstChoicePortfolio: 'General Allocation',
         secondChoiceCommittee: 'UNHRC - United Nations Human Rights Council',
         secondChoicePortfolio: 'General Allocation',
@@ -1615,7 +1615,7 @@ Current Status: ${mail.status}`;
                       onChange={(e) => setNewDelegate({ ...newDelegate, firstChoiceCommittee: e.target.value })}
                       className="w-full px-2.5 py-1.5 rounded-lg bg-[#16203B] border border-[#243563] text-white focus:outline-none focus:border-[#D4AF37]"
                     >
-                      <option value="CCC - Continuous Crisis Committee">CCC - Continuous Crisis Committee</option>
+                      <option value="CC - Citizen Council">CC - Citizen Council</option>
                       <option value="UNHRC - United Nations Human Rights Council">UNHRC - United Nations Human Rights Council</option>
                       <option value="BRICS - BRICS Summit">BRICS - BRICS Summit</option>
                       <option value="UN Women - United Nations Entity for Gender Equality">UN Women - United Nations Entity for Gender Equality</option>
@@ -1645,7 +1645,7 @@ Current Status: ${mail.status}`;
                       className="w-full px-2.5 py-1.5 rounded-lg bg-[#16203B] border border-[#243563] text-white focus:outline-none focus:border-[#D4AF37]"
                     >
                       <option value="UNHRC - United Nations Human Rights Council">UNHRC - United Nations Human Rights Council</option>
-                      <option value="CCC - Continuous Crisis Committee">CCC - Continuous Crisis Committee</option>
+                      <option value="CC - Citizen Council">CC - Citizen Council</option>
                       <option value="BRICS - BRICS Summit">BRICS - BRICS Summit</option>
                       <option value="UN Women - United Nations Entity for Gender Equality">UN Women - United Nations Entity for Gender Equality</option>
                       <option value="Lok Sabha - Lok Sabha (House of the People)">Lok Sabha - Lok Sabha (House of the People)</option>

@@ -55,10 +55,10 @@ async function startServer() {
       contactPerson: 'Ekansh Mahajan (Senior Secondary School)',
       email: 'ekanshmahajan@gmail.com',
       phone: '+91 99065 12613',
-      eventType: 'Aequitas 2026 Delegate: CCC - Continuous Crisis Committee [General Allocation]',
+      eventType: 'Aequitas 2026 Delegate: CC - Citizen Council [General Allocation]',
       preferredDate: '2026-10-29',
       message:
-        '[DELEGATE APPLICATION - AEQ-2026-9281]\nDelegate Name: Ekansh Mahajan\nEmail: ekanshmahajan@gmail.com\nPhone: +91 99065 12613\nInstitution: Jammu Sanskriti School\nAcademic Division: Senior Secondary School (Grades 11–12)\nPrior MUN Experience: Junior Delegate (1–3 MUNs)\nHonors / Accolades: None\n1st Choice Committee: CCC - Continuous Crisis Committee (Preferred: General Allocation)\n2nd Choice Committee: UNHRC - United Nations Human Rights Council (Preferred: General Allocation)\n3rd Choice Committee: BRICS - BRICS Summit (Preferred: General Allocation)\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: Verified (Jammu Sanskriti School)\nStatement of Purpose:\nOfficial delegate registration for Aequitas Summit 2026 representing Jammu Sanskriti School.',
+        '[DELEGATE APPLICATION - AEQ-2026-9281]\nDelegate Name: Ekansh Mahajan\nEmail: ekanshmahajan@gmail.com\nPhone: +91 99065 12613\nInstitution: Jammu Sanskriti School\nAcademic Division: Senior Secondary School (Grades 11–12)\nPrior MUN Experience: Junior Delegate (1–3 MUNs)\nHonors / Accolades: None\n1st Choice Committee: CC - Citizen Council (Preferred: General Allocation)\n2nd Choice Committee: UNHRC - United Nations Human Rights Council (Preferred: General Allocation)\n3rd Choice Committee: BRICS - BRICS Summit (Preferred: General Allocation)\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: Verified (Jammu Sanskriti School)\nStatement of Purpose:\nOfficial delegate registration for Aequitas Summit 2026 representing Jammu Sanskriti School.',
       status: 'New',
     },
     {
@@ -210,7 +210,7 @@ async function startServer() {
       const mapCommittee = (val: string) => {
         if (!val) return '• CCC - Continuous Crisis Committee';
         if (val.includes('IPC') || val.includes('Press') || val.includes('International Press')) return '• IPC - International Press Corps';
-        if (val.includes('CCC') || val.includes('Crisis') || val.includes('CC')) return '• CCC - Continuous Crisis Committee';
+        if (val.includes('CC') || val.includes('Citizen') || val.includes('CCC') || val.includes('Crisis')) return '• CCC - Continuous Crisis Committee';
         if (val.includes('UNHRC') || val.includes('Human Rights')) return '• UNHRC - United Nations Human Rights Council';
         if (val.includes('BRICS') || val.includes('JKLA') || val.includes('Legislative')) return '• BRICS - BRICS Summit';
         if (val.includes('Women')) return '• UN Women - United Nations Entity for Gender Equality';
@@ -683,7 +683,7 @@ async function startServer() {
       let grade = sanitizeString(cols[offset + 4] || 'Senior Secondary School (Grades 11–12)', 100);
       let experience = sanitizeString(cols[offset + 5] || 'Junior Delegate (1–3 MUNs)', 100);
       const accolades = sanitizeString(cols[offset + 6] || 'None', 500);
-      let comm1 = sanitizeString(cols[offset + 7] || 'CCC - Continuous Crisis Committee', 120);
+      let comm1 = sanitizeString(cols[offset + 7] || 'CC - Citizen Council', 120);
       const port1 = sanitizeString(cols[offset + 8] || 'General Allocation', 120);
       let comm2 = sanitizeString(cols[offset + 9] || 'UNHRC - United Nations Human Rights Council', 120);
       const port2 = sanitizeString(cols[offset + 10] || 'General Allocation', 120);
@@ -844,7 +844,7 @@ async function startServer() {
         sanitizeString(getVal(['priorAccolades', 'Prior MUN Honors / Accolades', 'accolades']), 500) || 'None';
       let comm1 =
         sanitizeString(getVal(['firstChoiceCommittee', '1st Choice Committee (Primary)', 'comm1']), 120) ||
-        'CCC - Continuous Crisis Committee';
+        'CC - Citizen Council';
       const port1 =
         sanitizeString(getVal(['firstChoicePortfolio', '1st Choice Portfolio / Country Preference', 'port1']), 120) ||
         'General Allocation';
@@ -1013,10 +1013,10 @@ async function startServer() {
         contactPerson: 'Ekansh Mahajan (Senior Secondary School)',
         email: 'ekanshmahajan@gmail.com',
         phone: '+91 99065 12613',
-        eventType: 'Aequitas 2026 Delegate: CCC - Continuous Crisis Committee [General Allocation]',
+        eventType: 'Aequitas 2026 Delegate: CC - Citizen Council [General Allocation]',
         preferredDate: '2026-10-29',
         message:
-          '[DELEGATE APPLICATION - AEQ-2026-9281]\nDelegate Name: Ekansh Mahajan\nEmail: ekanshmahajan@gmail.com\nPhone: +91 99065 12613\nInstitution: Jammu Sanskriti School\nAcademic Division: Senior Secondary School (Grades 11–12)\nPrior MUN Experience: Junior Delegate (1–3 MUNs)\nHonors / Accolades: None\n1st Choice Committee: CCC - Continuous Crisis Committee (Preferred: General Allocation)\n2nd Choice Committee: UNHRC - United Nations Human Rights Council (Preferred: General Allocation)\n3rd Choice Committee: BRICS - BRICS Summit (Preferred: General Allocation)\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: Verified (Jammu Sanskriti School)\nStatement of Purpose:\nOfficial delegate registration for Aequitas Summit 2026 representing Jammu Sanskriti School.',
+          '[DELEGATE APPLICATION - AEQ-2026-9281]\nDelegate Name: Ekansh Mahajan\nEmail: ekanshmahajan@gmail.com\nPhone: +91 99065 12613\nInstitution: Jammu Sanskriti School\nAcademic Division: Senior Secondary School (Grades 11–12)\nPrior MUN Experience: Junior Delegate (1–3 MUNs)\nHonors / Accolades: None\n1st Choice Committee: CC - Citizen Council (Preferred: General Allocation)\n2nd Choice Committee: UNHRC - United Nations Human Rights Council (Preferred: General Allocation)\n3rd Choice Committee: BRICS - BRICS Summit (Preferred: General Allocation)\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: Verified (Jammu Sanskriti School)\nStatement of Purpose:\nOfficial delegate registration for Aequitas Summit 2026 representing Jammu Sanskriti School.',
         status: 'New',
       },
       {

@@ -66,7 +66,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
     phone: '',
     schoolName: '',
     grade: '11th Grade',
-    firstChoiceCommittee: 'CCC',
+    firstChoiceCommittee: 'CC',
     secondChoiceCommittee: 'UNHRC',
     firstChoicePortfolio: '',
     secondChoicePortfolio: '',
@@ -90,7 +90,7 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
       const mapCommittee = (val: string) => {
         if (!val) return '• CCC - Continuous Crisis Committee';
         if (val.includes('IPC') || val.includes('Press') || val.includes('International Press')) return '• IPC - International Press Corps';
-        if (val.includes('CCC') || val.includes('Crisis') || val.includes('CC')) return '• CCC - Continuous Crisis Committee';
+        if (val.includes('CC') || val.includes('Citizen') || val.includes('CCC') || val.includes('Crisis')) return '• CCC - Continuous Crisis Committee';
         if (val.includes('UNHRC') || val.includes('Human Rights')) return '• UNHRC - United Nations Human Rights Council';
         if (val.includes('BRICS') || val.includes('JKLA') || val.includes('Legislative')) return '• BRICS - BRICS Summit';
         if (val.includes('Women')) return '• UN Women - United Nations Entity for Gender Equality';

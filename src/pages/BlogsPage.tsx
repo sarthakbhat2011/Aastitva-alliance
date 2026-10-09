@@ -19,6 +19,7 @@ import {
   Zap,
   Quote,
   ShieldCheck,
+  Mail,
 } from 'lucide-react';
 import { BLOG_POSTS } from '../data';
 import { BlogPost, Page } from '../types';
@@ -398,19 +399,38 @@ export const BlogsPage: React.FC<Props> = ({ onNavigate, onOpenRegister, initial
           /* ========================================================================= */
           <div className="space-y-12 sm:space-y-16">
             {/* Header Hero Section */}
-            <header className="space-y-4 text-center max-w-3xl mx-auto">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-mono font-bold tracking-wider uppercase">
-                <BookOpen className="w-3.5 h-3.5 text-[#D4AF37]" />
-                <span>AASTITVA DISPATCHES // THOUGHT LEADERSHIP PORTAL</span>
+            <header className="space-y-4 text-center max-w-4xl mx-auto">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] text-xs font-mono font-bold tracking-widest uppercase shadow-sm">
+                <BookOpen className="w-4 h-4 text-[#D4AF37]" />
+                <span>AASTITVA DISPATCHES</span>
               </div>
 
-              <h1 className="text-3xl sm:text-5xl md:text-6xl font-playfair font-bold text-white tracking-tight leading-tight">
-                Academic Papers & Thought Leadership
+              <h1 className="text-3xl sm:text-5xl md:text-6xl font-playfair font-bold text-white tracking-tight leading-tight uppercase">
+                THOUGHTS TO TAKE WITH YOU
               </h1>
 
-              <p className="text-sm sm:text-base text-[#C4BBA3] leading-relaxed">
-                Analytical essays, media literacy frameworks, and career roadmaps crafted for ambitious student diplomats, educators, and event organizers.
+              <p className="text-sm sm:text-base md:text-lg text-[#C4BBA3] leading-relaxed max-w-2xl mx-auto">
+                Ideas, reflections, and practical reads for curious students, educators, and young leaders finding their way beyond the classroom.
               </p>
+
+              {/* Contributor / Blog Submission Invitation */}
+              <div className="pt-2">
+                <div className="inline-flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 px-5 py-3 rounded-2xl bg-gradient-to-r from-[#0D1427]/90 via-[#16203B]/90 to-[#0D1427]/90 border border-[#D4AF37]/40 shadow-[0_10px_30px_rgba(0,0,0,0.5)] backdrop-blur-md">
+                  <div className="flex items-center gap-2 text-xs font-mono text-[#D4AF37]">
+                    <Mail className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                    <span className="font-semibold uppercase tracking-wider">Want to publish your blog here?</span>
+                  </div>
+                  <span className="text-xs text-[#FAF5EF]/90 font-inter">
+                    Send your draft or pitch to{' '}
+                    <a
+                      href="mailto:aastitvaalliancespr@gmail.com"
+                      className="font-mono text-[#D4AF37] hover:underline font-bold transition-colors"
+                    >
+                      aastitvaalliancespr@gmail.com
+                    </a>
+                  </span>
+                </div>
+              </div>
             </header>
 
             {/* Filter & Live Search Toolbar */}
@@ -590,6 +610,16 @@ export const BlogsPage: React.FC<Props> = ({ onNavigate, onOpenRegister, initial
               <p className="text-xs sm:text-sm text-[#C4BBA3] leading-relaxed">
                 Academic diplomacy is more than a 3-day competition. Aastitva Alliances publishes continuous research, policy analyses, and educational frameworks to ensure that delegates, faculty advisors, and institutional leaders have access to actionable intellectual infrastructure year-round.
               </p>
+              <div className="pt-2 border-t border-[#D4AF37]/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs">
+                <span className="text-[#DDD6FE]">Open Submission Protocol for Student &amp; Faculty Authors:</span>
+                <a
+                  href="mailto:aastitvaalliancespr@gmail.com"
+                  className="font-mono text-[#D4AF37] hover:underline font-semibold flex items-center gap-1.5"
+                >
+                  <Mail className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span>aastitvaalliancespr@gmail.com</span>
+                </a>
+              </div>
             </div>
           </div>
         )}

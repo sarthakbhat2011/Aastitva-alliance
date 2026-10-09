@@ -52,31 +52,40 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
   const [globalModalOpen, setGlobalModalOpen] = useState(false);
   const [modalPreselectedCommittee, setModalPreselectedCommittee] = useState<string>('');
   const [activeVenuePhoto, setActiveVenuePhoto] = useState<number | null>(null);
+  const [spotlightIndex, setSpotlightIndex] = useState(0);
 
   // Verified Official Radisson Blu Hotel, Jammu Venue Assets (Local High-Resolution Imagery)
   const venuePhotos = [
     {
       id: 1,
       title: 'Radisson Blu Hotel, Jammu • Facade & Architecture',
-      desc: 'Upscale five-star landmark on Narwal Bala Bypass, featuring state-of-the-art conference facilities and diplomatic suites.',
+      tag: 'Grand Facade & Grounds',
+      highlight: '5-Star Landmark • Narwal Bala Bypass',
+      desc: 'Upscale five-star landmark on Narwal Bala Bypass, featuring state-of-the-art conference facilities, diplomatic suites, and expansive landscaped lawns for open-air concourses.',
       image: '/images/venue/radisson-blu-facade.png',
     },
     {
       id: 2,
       title: 'Grand Foyer & Executive Atrium Lounge',
-      desc: 'Magnificent double-height architectural lobby with artisan woodwork, ambient chandelier illumination, and delegate registration suites.',
+      tag: 'Grand Executive Atrium',
+      highlight: 'Double-Height Assembly Lounge',
+      desc: 'Magnificent double-height architectural lobby with artisan woodwork, ambient chandelier illumination, and dedicated registration suites for delegates and faculty.',
       image: '/images/venue/radisson-blu-foyer-atrium.jpg',
     },
     {
       id: 3,
       title: 'Diplomatic Entrance & Porte-Cochère',
-      desc: 'Dedicated VIP arrival concourse and valet reception configured for high-level security, executive board, and institutional delegations.',
+      tag: 'VIP Arrival Concourse',
+      highlight: 'High-Security Convoy Reception',
+      desc: 'Dedicated VIP arrival concourse and valet reception configured for high-level security, executive board arrivals, and international delegations.',
       image: '/images/venue/radisson-blu-entrance.png',
     },
     {
       id: 4,
       title: 'Illuminated Convention Wing & Lawns',
-      desc: 'Stunning evening panorama of the Radisson Blu summit complex hosting over 40,000 sq ft of indoor ballrooms and manicured lawns.',
+      tag: 'Convention Wing & Lawns',
+      highlight: 'Over 40,000 Sq Ft Capacity',
+      desc: 'Stunning evening panorama of the Radisson Blu summit complex hosting over 40,000 sq ft of indoor ballrooms, committee rooms, and banqueting facilities.',
       image: '/images/venue/radisson-blu-exterior-twilight.png',
     },
   ];
@@ -329,53 +338,188 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
         <FilmConduitConnector label="SCENE 04 // VENUE PREVIEW & PARTNERSHIP" />
 
         {/* ========================================================================= */}
-        {/* 4. VENUE PREVIEW — PHOTO GALLERY CLICK TO ENLARGE (PDF Page 5 Section 4)  */}
+        {/* 4. VENUE PREVIEW — RADISSON BLU HOTEL JAMMU SPOTLIGHT & GALLERY          */}
         {/* ========================================================================= */}
         <CinematicScene shotType="lens-focus" intensity={0.85}>
           <ScrollReveal direction="up" delay={0.1}>
             <section className="space-y-8 text-left font-jakarta">
+              {/* Section Header */}
               <div className="text-center max-w-3xl mx-auto space-y-3">
-                <span className="px-4 py-1 rounded-full bg-[#581C87]/40 border border-[#C084FC]/40 text-[#E9D5FF] text-xs font-bold uppercase tracking-widest inline-flex items-center gap-1.5">
-                  <Camera className="w-3.5 h-3.5 text-[#D4AF37]" /> Venue Preview
+                <span className="px-4 py-1.5 rounded-full bg-[#581C87]/40 border border-[#C084FC]/50 text-[#E9D5FF] text-xs font-mono font-bold uppercase tracking-widest inline-flex items-center gap-2 shadow-sm">
+                  <Camera className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span>OFFICIAL FIVE-STAR VENUE &amp; ACCOMMODATION PARTNER</span>
                 </span>
-                <h2 className="text-3xl sm:text-5xl font-cormorant font-bold gold-gradient-text">
-                  Conference Facility & Hall Gallery
+                <h2 className="text-3xl sm:text-5xl lg:text-6xl font-cormorant font-bold gold-gradient-text">
+                  Radisson Blu Hotel, Jammu
                 </h2>
-                <p className="text-xs sm:text-sm text-[#DDD6FE] leading-relaxed">
-                  Click any facility image below to inspect layout, stage acoustics, committee rooms, and dining zones.
+                <p className="text-xs sm:text-base text-[#DDD6FE] leading-relaxed max-w-2xl mx-auto">
+                  The official five-star home of Aequitas Summit 2026. Featuring over 40,000 sq ft of majestic convention halls, acoustic committee chambers, and luxury residential delegate rooms.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {venuePhotos.map((venue) => (
-                  <div
-                    key={venue.id}
-                    onClick={() => {
-                      sounds.playTap();
-                      setActiveVenuePhoto(venue.id);
-                    }}
-                    className="group rounded-3xl overflow-hidden bg-[#140C2C] border border-[#A855F7]/35 hover:border-[#D4AF37] cursor-pointer transition-all duration-300 shadow-xl"
-                  >
-                    <div className="relative h-56 w-full overflow-hidden bg-[#241349]">
-                      <OptimizedImage
-                        src={venue.image}
-                        alt={venue.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute top-3 right-3 p-2 rounded-full bg-black/70 text-[#D4AF37] backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Maximize2 className="w-4 h-4" />
-                      </div>
+              {/* ENLARGED PAGE-CENTRIC SPOTLIGHT STAGE */}
+              <div className="relative rounded-3xl overflow-hidden border-2 border-[#D4AF37]/50 bg-[#0A0618] shadow-[0_25px_80px_rgba(0,0,0,0.85)] group">
+                {/* Main Hero Image Container (Large cinematic height) */}
+                <div className="relative h-80 sm:h-[460px] md:h-[540px] lg:h-[600px] w-full overflow-hidden bg-black">
+                  <OptimizedImage
+                    src={venuePhotos[spotlightIndex].image}
+                    alt={venuePhotos[spotlightIndex].title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+
+                  {/* Gradient overlays */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#070A14] via-[#070A14]/30 to-black/50 pointer-events-none" />
+                  <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.6)_100%)] pointer-events-none" />
+
+                  {/* Top Header Floating Badges */}
+                  <div className="absolute top-4 sm:top-6 left-4 sm:left-6 right-4 sm:right-6 flex items-center justify-between gap-3 pointer-events-none">
+                    <div className="flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-[#070A14]/85 border border-[#D4AF37]/40 backdrop-blur-md shadow-lg pointer-events-auto">
+                      <Sparkles className="w-3.5 h-3.5 text-[#D4AF37] animate-pulse" />
+                      <span className="text-[10px] sm:text-xs font-mono font-bold text-[#FAF5EF] uppercase tracking-wider">
+                        {venuePhotos[spotlightIndex].highlight}
+                      </span>
                     </div>
-                    <div className="p-4 space-y-1 bg-[#0E0820]/90">
-                      <h4 className="text-sm font-bold text-[#FAF5EF] group-hover:text-[#D4AF37] transition-colors">
-                        {venue.title}
-                      </h4>
-                      <p className="text-xs text-[#DDD6FE] line-clamp-2 leading-relaxed">
-                        {venue.desc}
+
+                    <button
+                      onClick={() => {
+                        sounds.playTap();
+                        setActiveVenuePhoto(venuePhotos[spotlightIndex].id);
+                      }}
+                      className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/80 hover:bg-[#1C103B] border border-[#D4AF37]/60 text-[#D4AF37] text-xs font-mono font-bold backdrop-blur-md shadow-lg transition-all pointer-events-auto cursor-pointer"
+                      title="Inspect in Fullscreen Lightbox"
+                    >
+                      <Maximize2 className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">Fullscreen Zoom</span>
+                    </button>
+                  </div>
+
+                  {/* Carousel Left / Right Arrows */}
+                  <div className="absolute inset-y-0 left-3 sm:left-5 flex items-center">
+                    <button
+                      onClick={() => {
+                        sounds.playTap();
+                        setSpotlightIndex((prev) => (prev - 1 + venuePhotos.length) % venuePhotos.length);
+                      }}
+                      className="p-2.5 sm:p-3.5 rounded-full bg-[#070A14]/80 hover:bg-[#1C103B] text-[#D4AF37] border border-[#D4AF37]/40 backdrop-blur-md transition-all shadow-xl hover:scale-110 cursor-pointer"
+                      aria-label="Previous Perspective"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                  </div>
+                  <div className="absolute inset-y-0 right-3 sm:right-5 flex items-center">
+                    <button
+                      onClick={() => {
+                        sounds.playTap();
+                        setSpotlightIndex((prev) => (prev + 1) % venuePhotos.length);
+                      }}
+                      className="p-2.5 sm:p-3.5 rounded-full bg-[#070A14]/80 hover:bg-[#1C103B] text-[#D4AF37] border border-[#D4AF37]/40 backdrop-blur-md transition-all shadow-xl hover:scale-110 cursor-pointer"
+                      aria-label="Next Perspective"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  {/* Bottom Information Glass Overlay */}
+                  <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 p-4 sm:p-6 rounded-2xl bg-[#070A14]/85 border border-[#D4AF37]/40 backdrop-blur-xl shadow-2xl flex flex-col md:flex-row md:items-end justify-between gap-4">
+                    <div className="space-y-1.5 max-w-2xl text-left">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] sm:text-xs font-mono text-[#D4AF37] uppercase tracking-widest font-bold">
+                          PERSPECTIVE 0{spotlightIndex + 1} OF 0{venuePhotos.length} // {venuePhotos[spotlightIndex].tag}
+                        </span>
+                      </div>
+                      <h3 className="text-lg sm:text-2xl font-cormorant font-bold text-[#FAF5EF]">
+                        {venuePhotos[spotlightIndex].title}
+                      </h3>
+                      <p className="text-xs sm:text-sm text-[#DDD6FE] leading-relaxed">
+                        {venuePhotos[spotlightIndex].desc}
                       </p>
                     </div>
+
+                    {/* Quick Indicator Dots */}
+                    <div className="flex items-center gap-2 self-start md:self-auto shrink-0">
+                      {venuePhotos.map((v, idx) => (
+                        <button
+                          key={v.id}
+                          onClick={() => {
+                            sounds.playTap();
+                            setSpotlightIndex(idx);
+                          }}
+                          className={`transition-all rounded-full cursor-pointer ${
+                            spotlightIndex === idx
+                              ? 'w-8 h-2.5 bg-[#D4AF37] shadow-[0_0_10px_rgba(212,175,55,0.8)]'
+                              : 'w-2.5 h-2.5 bg-white/30 hover:bg-white/60'
+                          }`}
+                          aria-label={`View ${v.title}`}
+                        />
+                      ))}
+                    </div>
                   </div>
-                ))}
+                </div>
+              </div>
+
+              {/* CURATED PERSPECTIVE THUMBNAILS MATRIX */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 pt-2">
+                {venuePhotos.map((venue, idx) => {
+                  const isActive = spotlightIndex === idx;
+                  return (
+                    <div
+                      key={venue.id}
+                      onClick={() => {
+                        sounds.playTap();
+                        setSpotlightIndex(idx);
+                      }}
+                      className={`group relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 border ${
+                        isActive
+                          ? 'border-[#D4AF37] ring-2 ring-[#D4AF37]/60 shadow-[0_0_20px_rgba(212,175,55,0.35)] scale-[1.02]'
+                          : 'border-[#A855F7]/30 hover:border-[#D4AF37]/60 bg-[#140C2C]/70'
+                      }`}
+                    >
+                      <div className="relative h-28 sm:h-36 w-full overflow-hidden bg-black">
+                        <OptimizedImage
+                          src={venue.image}
+                          alt={venue.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                        <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/70 border border-white/10 text-[9px] font-mono text-[#D4AF37] font-bold">
+                          0{idx + 1}
+                        </span>
+                      </div>
+                      <div className="p-2.5 sm:p-3 bg-[#0E0820]/95 text-left space-y-0.5">
+                        <h4 className="text-xs font-bold text-[#FAF5EF] truncate group-hover:text-[#D4AF37] transition-colors">
+                          {venue.tag}
+                        </h4>
+                        <p className="text-[10px] text-[#C4BBA3] truncate">
+                          {venue.highlight}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* RADISSON BLU FACTSHEET / CONVENTION ATTRIBUTES RIBBON */}
+              <div className="p-4 sm:p-6 rounded-2xl bg-[#0E0820]/80 border border-[#D4AF37]/30 backdrop-blur-md grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <div className="space-y-1">
+                  <span className="text-xs font-mono text-[#D4AF37] uppercase tracking-wider block font-bold">Category</span>
+                  <p className="text-sm sm:text-base font-bold text-[#FAF5EF]">5-Star Luxury Flagship</p>
+                  <p className="text-[11px] text-[#DDD6FE]/70">Radisson Hotel Group</p>
+                </div>
+                <div className="space-y-1">
+                  <span className="text-xs font-mono text-[#D4AF37] uppercase tracking-wider block font-bold">Convention Space</span>
+                  <p className="text-sm sm:text-base font-bold text-[#FAF5EF]">40,000+ Sq Ft</p>
+                  <p className="text-[11px] text-[#DDD6FE]/70">Ballrooms &amp; Lawns</p>
+                </div>
+                <div className="space-y-1">
+                  <span className="text-xs font-mono text-[#D4AF37] uppercase tracking-wider block font-bold">Location</span>
+                  <p className="text-sm sm:text-base font-bold text-[#FAF5EF]">Narwal Bala Bypass</p>
+                  <p className="text-[11px] text-[#DDD6FE]/70">Jammu, J&amp;K (Prime Concourse)</p>
+                </div>
+                <div className="space-y-1">
+                  <span className="text-xs font-mono text-[#D4AF37] uppercase tracking-wider block font-bold">Residential Stay</span>
+                  <p className="text-sm sm:text-base font-bold text-[#FAF5EF]">Delegate Accommodation</p>
+                  <p className="text-[11px] text-[#DDD6FE]/70">Luxury Rooms &amp; Dining</p>
+                </div>
               </div>
             </section>
           </ScrollReveal>
@@ -425,7 +569,7 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
                       <span>6 Historic Councils</span>
                     </div>
                     <p className="text-[11px] text-[#C4BBA3]/80">
-                      BRICS Summit, UNHRC, UN Women, Lok Sabha, CCC, and IPC.
+                      BRICS Summit, UNHRC, UN Women, Lok Sabha, CC (Citizen Council), and IPC.
                     </p>
                   </div>
 
@@ -523,7 +667,7 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
           >
             <div
               onClick={(e) => e.stopPropagation()}
-              className="relative max-w-4xl w-full rounded-3xl bg-[#140C2C] border-2 border-[#A855F7]/70 p-6 shadow-2xl space-y-4 my-auto font-jakarta"
+              className="relative max-w-5xl w-full rounded-3xl bg-[#0D0820] border-2 border-[#D4AF37]/60 p-5 sm:p-7 shadow-[0_20px_80px_rgba(0,0,0,0.95)] space-y-4 my-auto font-jakarta"
             >
               {(() => {
                 const venue = venuePhotos.find((v) => v.id === activeVenuePhoto);
@@ -531,29 +675,61 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
 
                 return (
                   <>
-                    <div className="flex items-center justify-between border-b border-[#A855F7]/25 pb-3">
-                      <h3 className="text-xl font-cormorant font-bold text-[#FAF5EF]">
-                        {venue.title}
-                      </h3>
+                    <div className="flex items-center justify-between border-b border-[#D4AF37]/30 pb-3">
+                      <div>
+                        <span className="text-[10px] font-mono uppercase tracking-widest text-[#D4AF37] font-bold block">
+                          Radisson Blu Hotel, Jammu // {venue.highlight}
+                        </span>
+                        <h3 className="text-xl sm:text-2xl font-cormorant font-bold text-[#FAF5EF]">
+                          {venue.title}
+                        </h3>
+                      </div>
                       <button
                         onClick={() => setActiveVenuePhoto(null)}
-                        className="p-2 rounded-full bg-rose-600/30 text-rose-100 hover:bg-rose-600/60 border border-rose-500/40 transition-colors"
+                        className="p-2 rounded-full bg-rose-600/30 text-rose-100 hover:bg-rose-600/60 border border-rose-500/40 transition-colors cursor-pointer"
+                        aria-label="Close Lightbox"
                       >
                         <X className="w-5 h-5" />
                       </button>
                     </div>
 
-                    <div className="relative h-[320px] sm:h-[450px] w-full rounded-2xl overflow-hidden bg-black">
+                    <div className="relative h-[360px] sm:h-[500px] md:h-[580px] w-full rounded-2xl overflow-hidden bg-black border border-[#D4AF37]/30">
                       <OptimizedImage
                         src={venue.image}
                         alt={venue.title}
                         className="w-full h-full object-cover"
                       />
+                      {/* Lightbox Next/Prev Arrows */}
+                      <button
+                        onClick={() => {
+                          const currIdx = venuePhotos.findIndex((v) => v.id === activeVenuePhoto);
+                          const nextIdx = (currIdx - 1 + venuePhotos.length) % venuePhotos.length;
+                          setActiveVenuePhoto(venuePhotos[nextIdx].id);
+                        }}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/80 hover:bg-[#1C103B] text-[#D4AF37] border border-[#D4AF37]/50 backdrop-blur-md cursor-pointer transition-all"
+                        aria-label="Previous image"
+                      >
+                        <ChevronLeft className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          const currIdx = venuePhotos.findIndex((v) => v.id === activeVenuePhoto);
+                          const nextIdx = (currIdx + 1) % venuePhotos.length;
+                          setActiveVenuePhoto(venuePhotos[nextIdx].id);
+                        }}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/80 hover:bg-[#1C103B] text-[#D4AF37] border border-[#D4AF37]/50 backdrop-blur-md cursor-pointer transition-all"
+                        aria-label="Next image"
+                      >
+                        <ChevronRight className="w-5 h-5" />
+                      </button>
                     </div>
 
-                    <p className="text-xs sm:text-sm text-[#DDD6FE] leading-relaxed">
-                      {venue.desc}
-                    </p>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs sm:text-sm text-[#DDD6FE]">
+                      <p className="leading-relaxed">{venue.desc}</p>
+                      <span className="font-mono text-[#D4AF37] shrink-0 font-bold">
+                        {venue.tag}
+                      </span>
+                    </div>
                   </>
                 );
               })()}

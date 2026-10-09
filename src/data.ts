@@ -40,11 +40,11 @@ export const calculateCountdown = (
 
 export const COMMITTEES = [
   {
-    id: 'ccc',
-    code: 'CCC',
-    name: 'Continuous Crisis Committee',
-    agenda: 'Deliberation on high-stakes emergency directives, geopolitical flashpoints, and rapid-response crisis governance.',
-    description: 'High-tempo crisis simulation requiring rapid dynamic directives, breaking crisis updates, and decisive diplomatic negotiation.',
+    id: 'cc',
+    code: 'CC',
+    name: 'Citizen Council',
+    agenda: 'Deliberation on the role of satirical movements, public protests and civil society campaigns in shaping democratic accountability, while balancing public order and national security.',
+    description: 'Deliberation on the role of satirical movements, public protests and civil society campaigns in shaping democratic accountability, while balancing public order and national security.',
     seats: 40,
   },
   {

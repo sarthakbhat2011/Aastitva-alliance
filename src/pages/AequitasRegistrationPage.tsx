@@ -198,7 +198,7 @@ export const AequitasRegistrationPage: React.FC = () => {
     priorExperience: 'Junior Delegate (1–3 MUNs)',
     priorAccolades: '',
     statement: '',
-    firstChoiceCommittee: 'CCC - Continuous Crisis Committee',
+    firstChoiceCommittee: 'CC - Citizen Council',
     firstChoicePortfolio: '',
     secondChoiceCommittee: 'UNHRC - United Nations Human Rights Council',
     secondChoicePortfolio: '',
@@ -664,7 +664,7 @@ export const AequitasRegistrationPage: React.FC = () => {
       const mapCommitteeToGoogleOption = (val: string) => {
         if (!val) return '• CCC - Continuous Crisis Committee';
         if (val.includes('IPC') || val.includes('Press') || val.includes('International Press')) return '• IPC - International Press Corps';
-        if (val.includes('CCC') || val.includes('Crisis') || val.includes('CC')) return '• CCC - Continuous Crisis Committee';
+        if (val.includes('CC') || val.includes('Citizen') || val.includes('CCC') || val.includes('Crisis')) return '• CCC - Continuous Crisis Committee';
         if (val.includes('UNHRC') || val.includes('Human Rights')) return '• UNHRC - United Nations Human Rights Council';
         if (val.includes('BRICS') || val.includes('JKLA') || val.includes('Legislative')) return '• BRICS - BRICS Summit';
         if (val.includes('Women')) return '• UN Women - United Nations Entity for Gender Equality';
@@ -840,7 +840,7 @@ export const AequitasRegistrationPage: React.FC = () => {
       priorExperience: 'Junior Delegate (1–3 MUNs)',
       priorAccolades: '',
       statement: '',
-      firstChoiceCommittee: 'CCC - Continuous Crisis Committee',
+      firstChoiceCommittee: 'CC - Citizen Council',
       firstChoicePortfolio: '',
       secondChoiceCommittee: 'UNHRC - United Nations Human Rights Council',
       secondChoicePortfolio: '',
