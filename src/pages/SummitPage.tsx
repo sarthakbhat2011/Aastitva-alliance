@@ -300,9 +300,6 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
                           <span className="px-3 py-1 rounded-full bg-[#581C87]/40 text-[#D4AF37] font-mono font-bold text-xs border border-[#C084FC]/30">
                             {comm.code}
                           </span>
-                          <span className="text-[11px] font-mono text-emerald-400 font-semibold">
-                            {comm.seats} Seats
-                          </span>
                         </div>
                         <h4 className="text-lg font-bold text-[#FAF5EF] font-cormorant">
                           {comm.name}

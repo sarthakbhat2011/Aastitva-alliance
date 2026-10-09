@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Menu, X, Sparkles, ChevronRight, ArrowUpRight, ArrowRight, ShieldCheck, Settings, Clock, Monitor, Volume2, VolumeX } from 'lucide-react';
+import { Menu, X, Sparkles, ChevronRight, ArrowUpRight, ArrowRight, Clock, Monitor, Volume2, VolumeX } from 'lucide-react';
 import { AstitvaLogo } from './AstitvaLogo';
 import { ThemeToggle } from './ThemeToggle';
 import { Page, SummitConfig, CountdownTime } from '../types';
@@ -12,8 +12,8 @@ interface Props {
   currentPage: Page;
   onNavigate: (page: Page) => void;
   summitConfig: SummitConfig;
-  onOpenAudit: () => void;
-  onOpenAdmin: () => void;
+  onOpenAudit?: () => void;
+  onOpenAdmin?: () => void;
   onOpenOS?: () => void;
   onOpenRegister?: () => void;
 }
@@ -22,8 +22,6 @@ export const Navbar: React.FC<Props> = ({
   currentPage,
   onNavigate,
   summitConfig,
-  onOpenAudit,
-  onOpenAdmin,
   onOpenOS,
   onOpenRegister,
 }) => {
@@ -176,28 +174,6 @@ export const Navbar: React.FC<Props> = ({
                 {soundActive ? <Volume2 className="w-3 sm:w-3.5 h-3 sm:h-3.5" /> : <VolumeX className="w-3 sm:w-3.5 h-3 sm:h-3.5" />}
               </button>
             </MagneticElement>
-
-            <button
-              onClick={() => {
-                sounds.playTap();
-                onOpenAudit();
-              }}
-              className="p-1 rounded text-[#9E93C4] hover:text-[#FAF5EF] transition-colors cursor-pointer"
-              title="System Diagnostics & SSL Status"
-            >
-              <ShieldCheck className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
-            </button>
-
-            <button
-              onClick={() => {
-                sounds.playTap();
-                onOpenAdmin();
-              }}
-              className="p-1 rounded text-[#9E93C4] hover:text-[#D4AF37] transition-colors cursor-pointer"
-              title="Edit Event Content"
-            >
-              <Settings className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
-            </button>
 
             <ThemeToggle variant="compact" className="ml-0.5" />
           </div>

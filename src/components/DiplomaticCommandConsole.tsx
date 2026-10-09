@@ -73,9 +73,6 @@ export const DiplomaticCommandConsole: React.FC<Props> = ({ onOpenRegister }) =>
               >
                 <CouncilIcon className="w-4 h-4 shrink-0" />
                 <span className="text-xs font-bold font-mono truncate w-full">{c.code}</span>
-                <span className={`text-[10px] font-mono ${isSelected ? 'text-[#070A14]' : 'text-[#D4AF37]'}`}>
-                  {c.seats} Seats
-                </span>
               </button>
             );
           })}
