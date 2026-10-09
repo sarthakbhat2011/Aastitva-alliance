@@ -88,23 +88,25 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
         'https://docs.google.com/forms/d/e/1FAIpQLSdgVhSI5tgSKD4vk_m8YWI0q6zFuJFytzer4R7-DSbzu7G8rg/formResponse';
 
       const mapCommittee = (val: string) => {
-        if (!val) return '• CCC - Continuous Crisis Committee';
-        if (val.includes('IPC') || val.includes('Press') || val.includes('International Press')) return '• IPC - International Press Corps';
-        if (val.includes('CC') || val.includes('Citizen') || val.includes('CCC') || val.includes('Crisis')) return '• CCC - Continuous Crisis Committee';
-        if (val.includes('UNHRC') || val.includes('Human Rights')) return '• UNHRC - United Nations Human Rights Council';
-        if (val.includes('BRICS') || val.includes('JKLA') || val.includes('Legislative')) return '• BRICS - BRICS Summit';
-        if (val.includes('Women')) return '• UN Women - United Nations Entity for Gender Equality';
-        if (val.includes('Lok Sabha') || val.includes('House')) return '• Lok Sabha - Lok Sabha (House of the People)';
-        if (val.includes('IPL') || val.includes('Premier')) return '• IPL - Indian Premier League Auction Council';
-        return '• CCC - Continuous Crisis Committee';
+        if (!val) return '• CC - Citizens Council';
+        const str = String(val).trim();
+        if (str.includes('IPC') || str.includes('Press') || str.includes('International Press')) return '• IPC - International Press Corps';
+        if (str.includes('UNHRC') || str.includes('Human Rights')) return '• UNHRC - United Nations Human Rights Council';
+        if (str.includes('BRICS') || str.includes('JKLA') || str.includes('Legislative')) return '• BRICS - BRICS Summit';
+        if (str.includes('Women')) return '• UN Women - United Nations Entity for Gender Equality';
+        if (str.includes('Lok Sabha') || str.includes('House')) return '• Lok Sabha - Lok Sabha (House of the People)';
+        if (str.includes('IPL') || str.includes('Premier')) return '• IPL - Indian Premier League Auction Council';
+        if (str.includes('CC') || str.includes('Citizen') || str.includes('Council') || str.includes('CCC') || str.includes('Crisis')) return '• CC - Citizens Council';
+        return '• CC - Citizens Council';
       };
 
       const mapGrade = (val: string) => {
         if (!val) return '•Senior Secondary School (Grades 11–12)';
-        if (val.includes('Middle') || val.includes('6-8') || val.includes('6–8')) return '• Middle School (Grades 6–8)';
-        if (val.includes('Secondary') && !val.includes('Senior') && !val.includes('11-12') && !val.includes('11–12')) return '• Secondary School (Grades 9–10)';
-        if (val.includes('Senior') || val.includes('11-12') || val.includes('11–12') || val.includes('High School')) return '•Senior Secondary School (Grades 11–12)';
-        if (val.includes('College') || val.includes('Undergraduate')) return '• Undergraduate / College';
+        const str = String(val).trim();
+        if (str.includes('Middle') || str.includes('6-8') || str.includes('6–8')) return '• Middle School (Grades 6–8)';
+        if (str.includes('Secondary') && !str.includes('Senior') && !str.includes('11-12') && !str.includes('11–12')) return '• Secondary School (Grades 9–10)';
+        if (str.includes('Senior') || str.includes('11-12') || str.includes('11–12') || str.includes('High School')) return '•Senior Secondary School (Grades 11–12)';
+        if (str.includes('College') || str.includes('Undergraduate')) return '• Undergraduate / College';
         return '•Senior Secondary School (Grades 11–12)';
       };
 

@@ -299,7 +299,7 @@ export function validateRegistrationPayload(body: any): {
     errors.phone = 'A valid phone number with at least 10 digits is required.';
   }
 
-  const institution = sanitizeString(body.institution, 150);
+  const institution = sanitizeString(body.institution || body.schoolName, 150);
   if (!institution || institution.length < 2) {
     errors.institution = 'Institution name is required.';
   }
