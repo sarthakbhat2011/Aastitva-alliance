@@ -293,7 +293,7 @@ export const CommitteeFitDecryptor: React.FC<Props> = ({ onSelectCommittee }) =>
                 TOP RECOMMENDATION: {matchedCommittee.code}
               </span>
               <span className="text-xs font-mono text-[#D4AF37] bg-[#16203B] px-3 py-1 rounded-full border border-[#D4AF37]/30">
-                Council Capacity: {matchedCommittee.seats} Seats Available
+                Verified Executive Board Allocation
               </span>
             </div>
 
@@ -345,7 +345,7 @@ export const CommitteeFitDecryptor: React.FC<Props> = ({ onSelectCommittee }) =>
                   <div className="space-y-0.5">
                     <span className="text-[10px] font-mono text-[#D4AF37] font-bold">{alt.code}</span>
                     <h5 className="text-xs font-bold text-[#FAF5EF] truncate max-w-[200px]">{alt.name}</h5>
-                    <span className="text-[10px] text-[#C4BBA3]">{alt.seats} Seats</span>
+                    <span className="text-[10px] text-[#C4BBA3]">Verified Allocation</span>
                   </div>
                   <button
                     onClick={() => {
