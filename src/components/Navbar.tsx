@@ -238,13 +238,17 @@ export const Navbar: React.FC<Props> = ({
                 <button
                   onClick={() => {
                     sounds.playTap();
-                    handleNavClick('sponsors');
+                    if (onOpenRegister) {
+                      onOpenRegister();
+                    } else {
+                      window.open('/register', '_blank', 'noopener,noreferrer');
+                    }
                   }}
                   className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 lg:px-4 py-1.5 rounded-xl shimmer-btn text-[#070A14] text-xs lg:text-[13px] font-extrabold shadow-[0_2px_14px_rgba(212,175,55,0.35)] btn-sheen-sweep group whitespace-nowrap shrink-0 border border-[#FAF5EF]/40 cursor-pointer min-h-[34px] sm:min-h-[36px]"
+                  title="Open Official Aequitas MUN Summit 2026 Registration Portal"
                 >
                   <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-current shrink-0" />
-                  <span className="hidden xs:inline whitespace-nowrap">Partner With Us</span>
-                  <span className="xs:hidden">Partner</span>
+                  <span className="whitespace-nowrap">Register</span>
                   <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 group-hover:translate-x-0.5 transition-transform shrink-0" />
                 </button>
               </MagneticElement>
