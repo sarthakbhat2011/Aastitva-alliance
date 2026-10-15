@@ -402,6 +402,9 @@ export const SponsorsPage: React.FC<Props> = ({
                 <p className="text-sm sm:text-lg text-[#C4BBA3] font-mono mt-3 tracking-wide">
                   29–30 October 2026 | Radisson Blu Hotel, Jammu
                 </p>
+                <p className="text-[11px] sm:text-xs font-mono text-[#D4AF37]/90 italic mt-1">
+                  * Subject to change under force Majeure or administrative factors.
+                </p>
               </div>
             </AnimatedBox>
 
@@ -531,6 +534,9 @@ export const SponsorsPage: React.FC<Props> = ({
                 </h2>
                 <p className="text-xs sm:text-sm text-[#C4BBA3] font-mono">
                   Radisson Blu Hotel, Jammu — Jammu & Kashmir's landmark hospitality address.
+                </p>
+                <p className="text-[11px] sm:text-xs font-mono text-[#D4AF37]/90 italic pt-1">
+                  * Subject to change under force Majeure or administrative factors.
                 </p>
               </div>
             </AnimatedBox>
@@ -1859,9 +1865,12 @@ export const SponsorsPage: React.FC<Props> = ({
       </aside>
 
       {/* 6. Footer Legal & Attribution */}
-      <footer className="relative z-10 py-6 text-center text-xs font-mono text-[#A39B88] border-t border-[#D4AF37]/15 mt-8">
+      <footer className="relative z-10 py-6 text-center text-xs font-mono text-[#A39B88] border-t border-[#D4AF37]/15 mt-8 space-y-1">
         <p>
           Aequitas Summit 2026 © Presented by Aastitva Alliances • Radisson Blu Hotel, Jammu
+        </p>
+        <p className="text-[10px] text-[#D4AF37]/80 italic">
+          * Venue is subject to change under force Majeure or administrative factors.
         </p>
       </footer>
     </div>

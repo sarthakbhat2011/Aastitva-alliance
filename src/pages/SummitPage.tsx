@@ -352,6 +352,9 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
                 <p className="text-xs sm:text-base text-[#DDD6FE] leading-relaxed max-w-2xl mx-auto">
                   The official five-star home of Aequitas Summit 2026. Featuring over 40,000 sq ft of majestic convention halls, acoustic committee chambers, and luxury residential delegate rooms.
                 </p>
+                <p className="text-[11px] sm:text-xs font-mono text-[#D4AF37] italic tracking-wide">
+                  * Subject to change under force Majeure or administrative factors.
+                </p>
               </div>
 
               {/* ENLARGED PAGE-CENTRIC SPOTLIGHT STAGE */}
@@ -429,6 +432,9 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
                       </h3>
                       <p className="text-xs sm:text-sm text-[#DDD6FE] leading-relaxed">
                         {venuePhotos[spotlightIndex].desc}
+                      </p>
+                      <p className="text-[10px] sm:text-[11px] font-mono text-[#D4AF37]/90 italic pt-0.5">
+                        * Subject to change under force Majeure or administrative factors.
                       </p>
                     </div>
 
@@ -518,6 +524,11 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
                   <p className="text-[11px] text-[#DDD6FE]/70">Luxury Rooms &amp; Dining</p>
                 </div>
               </div>
+              <div className="text-center pt-2">
+                <p className="text-[11px] sm:text-xs font-mono text-[#DDD6FE]/80 italic">
+                  Note: Official summit venue is subject to change under force Majeure or administrative factors.
+                </p>
+              </div>
             </section>
           </ScrollReveal>
         </CinematicScene>
@@ -535,9 +546,14 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
               <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#D4AF37]/10 rounded-full blur-3xl pointer-events-none" />
 
               <div className="relative z-10 max-w-3xl mx-auto space-y-5">
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#581C87]/40 border border-[#C084FC]/50 text-[#E9D5FF] text-xs font-mono font-bold uppercase tracking-wider shadow-sm">
-                  <Sparkles className="w-3.5 h-3.5 animate-pulse text-[#D4AF37]" />
-                  <span>Official Allocation Gateway • Radisson Blu Hotel Jammu</span>
+                <div className="space-y-2">
+                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#581C87]/40 border border-[#C084FC]/50 text-[#E9D5FF] text-xs font-mono font-bold uppercase tracking-wider shadow-sm">
+                    <Sparkles className="w-3.5 h-3.5 animate-pulse text-[#D4AF37]" />
+                    <span>Official Allocation Gateway • Radisson Blu Hotel Jammu</span>
+                  </div>
+                  <p className="text-[10px] sm:text-xs font-mono text-[#D4AF37]/90 italic">
+                    * Venue allocation subject to change under force Majeure or administrative factors.
+                  </p>
                 </div>
 
                 <h2 className="text-3xl sm:text-5xl lg:text-6xl font-cormorant font-bold text-[#FAF5EF] leading-tight">
@@ -680,6 +696,9 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
                         <h3 className="text-xl sm:text-2xl font-cormorant font-bold text-[#FAF5EF]">
                           {venue.title}
                         </h3>
+                        <span className="text-[10px] font-mono text-[#DDD6FE]/70 italic block pt-0.5">
+                          * Subject to change under force Majeure or administrative factors.
+                        </span>
                       </div>
                       <button
                         onClick={() => setActiveVenuePhoto(null)}

@@ -24,24 +24,12 @@ import { SponsorsPage } from './pages/SponsorsPage';
 import { FAQPage } from './pages/FAQPage';
 import { AequitasRegistrationPage } from './pages/AequitasRegistrationPage';
 import { BlogsPage } from './pages/BlogsPage';
-import { ComingSoonScreen } from './components/ComingSoonScreen';
 
-const checkSiteUnlocked = () => {
+const isOsRequested = () => {
   if (typeof window === 'undefined') return false;
   const search = window.location.search.toLowerCase();
-  const path = window.location.pathname.toLowerCase();
-  if (
-    search.includes('dev=bhatsarthakunrivalledunion2011,2001') ||
-    search.includes('dev=true') ||
-    search.includes('dev=preview') ||
-    search.includes('unlock=true') ||
-    search.includes('mailbox') ||
-    path.startsWith('/mailbox')
-  ) {
-    sessionStorage.setItem('astitva_site_unlocked', 'true');
-    return true;
-  }
-  return sessionStorage.getItem('astitva_site_unlocked') === 'true';
+  const hash = window.location.hash.toLowerCase();
+  return search.includes('mode=os') || search.includes('os=true') || hash === '#os';
 };
 
 const checkMailboxRequested = () => {
@@ -117,10 +105,9 @@ const isBlogsUrl = () => {
 };
 
 export default function App() {
-  const [isSiteUnlocked, setIsSiteUnlocked] = useState<boolean>(checkSiteUnlocked);
   const [isStandaloneRegister, setIsStandaloneRegister] = useState(isRegistrationUrl);
   const [isStandaloneSponsors, setIsStandaloneSponsors] = useState(isSponsorshipUrl);
-  const [osMode, setOsMode] = useState(true); // Boots into Astitva OS initially
+  const [osMode, setOsMode] = useState<boolean>(isOsRequested); // Defaults to main website homepage
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [summitConfig, setSummitConfig] = useState<SummitConfig>(INITIAL_SUMMIT_CONFIG);
 
@@ -146,14 +133,12 @@ export default function App() {
 
   const handleNavigate = (page: Page) => {
     setCurrentPage(page);
-    setAnalytics((prev) => ({ ...prev, pageViews: prev.pageViews + 1 }));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Lock body & document scroll when in OS Mode to prevent background web app from leaking on mobile scroll
-  // (Strictly bypassed on standalone registration portal and Coming Soon screen to allow full natural scrolling)
   useEffect(() => {
-    if (isStandaloneRegister || isStandaloneSponsors || !isSiteUnlocked) {
+    if (isStandaloneRegister || isStandaloneSponsors) {
       document.body.style.overflow = 'auto';
       document.documentElement.style.overflow = 'auto';
       document.body.style.touchAction = 'auto';
@@ -175,7 +160,7 @@ export default function App() {
       document.documentElement.style.overflow = '';
       document.body.style.touchAction = '';
     };
-  }, [osMode, isStandaloneRegister, isStandaloneSponsors, isSiteUnlocked]);
+  }, [osMode, isStandaloneRegister, isStandaloneSponsors]);
 
   // Deep link & route listener for standalone registration portal & sponsorships
   useEffect(() => {
@@ -203,17 +188,7 @@ export default function App() {
     window.open('/register', '_blank', 'noopener,noreferrer');
   };
 
-  // Listen for site re-lock command
-  useEffect(() => {
-    const handleLock = () => {
-      sessionStorage.removeItem('astitva_site_unlocked');
-      setIsSiteUnlocked(false);
-    };
-    window.addEventListener('astitva_lock_site', handleLock);
-    return () => window.removeEventListener('astitva_lock_site', handleLock);
-  }, []);
-
-  // Dedicated Autonomous Registration Portal (Exception: never blocked by Coming Soon)
+  // Dedicated Autonomous Registration Portal
   if (isStandaloneRegister) {
     return (
       <ThemeProvider>
@@ -222,7 +197,7 @@ export default function App() {
     );
   }
 
-  // Dedicated Autonomous Sponsorship Proposal Portal (Exception: never blocked by Coming Soon for approaching firms)
+  // Dedicated Autonomous Sponsorship Proposal Portal
   if (isStandaloneSponsors) {
     return (
       <ThemeProvider>
@@ -233,30 +208,10 @@ export default function App() {
               window.location.href = '/';
             } else {
               setIsStandaloneSponsors(false);
-              setIsSiteUnlocked(true);
               handleEnterSiteFromOS(page);
             }
           }}
           onOpenRegister={handleOpenRegisterPortal}
-        />
-      </ThemeProvider>
-    );
-  }
-
-  // Pre-Launch Gate Screen (Coming Soon with buzz, quotes, countdown, and hidden developer gate)
-  if (!isSiteUnlocked) {
-    return (
-      <ThemeProvider>
-        <ComingSoonScreen
-          onUnlock={() => setIsSiteUnlocked(true)}
-          onOpenDevMailbox={() => setDevMailboxOpen(true)}
-          onOpenRegister={handleOpenRegisterPortal}
-          onOpenSponsors={() => setIsStandaloneSponsors(true)}
-          countdown={countdown}
-        />
-        <DeveloperMailboxModal
-          isOpen={devMailboxOpen}
-          onClose={() => setDevMailboxOpen(false)}
         />
       </ThemeProvider>
     );
