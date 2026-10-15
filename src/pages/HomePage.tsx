@@ -396,13 +396,10 @@ export const HomePage: React.FC<Props> = ({ onNavigate, summitConfig, countdown,
                   <button
                     onClick={() => {
                       sounds.playTap();
-                      if (onOpenRegister) {
-                        onOpenRegister();
-                      } else {
-                        onNavigate('summit');
-                      }
+                      onNavigate('sponsors');
                     }}
                     className="w-full sm:w-auto px-7 py-3.5 rounded-xl shimmer-btn text-[#050811] text-sm font-bold shadow-[0_6px_25px_rgba(232,165,62,0.35)] btn-sheen-sweep group flex items-center justify-center gap-2 cursor-pointer min-h-[44px]"
+                    title="View Sponsorship Proposal & Partnership Opportunities"
                   >
                     <span>Partner With Us</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

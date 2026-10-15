@@ -153,13 +153,10 @@ export const Footer: React.FC<Props> = ({ onNavigate, onOpenDevMailbox, onOpenRe
               <button
                 onClick={() => {
                   sounds.playTap();
-                  if (onOpenRegister) {
-                    onOpenRegister();
-                  } else {
-                    handleLinkClick('summit');
-                  }
+                  handleLinkClick('sponsors');
                 }}
                 className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#EAE0C8] to-[#E8A53E] text-[#050811] font-bold text-xs shadow-md hover:brightness-110 active:scale-95 transition-all inline-flex items-center gap-1.5 btn-sheen-sweep cursor-pointer"
+                title="View Sponsorship Proposal & Partnership Opportunities"
               >
                 <span>Partner With Us</span>
               </button>
