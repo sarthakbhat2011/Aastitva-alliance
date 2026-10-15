@@ -129,17 +129,6 @@ export const Navbar: React.FC<Props> = ({
               </MagneticElement>
             )}
 
-            <MagneticElement strength={0.2}>
-              <a
-                href="https://aquitas-aastitva11.onrender.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hidden md:flex items-center gap-1 text-[#D4AF37] hover:text-[#FAF5EF] transition-colors font-medium smooth-button-hover group px-2 py-0.5 rounded-lg"
-              >
-                <span>Aequitas Site</span>
-                <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </a>
-            </MagneticElement>
 
             {/* Direct Link to Standalone Registration Portal (New Tab) */}
             <MagneticElement strength={0.25}>
