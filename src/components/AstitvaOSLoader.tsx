@@ -478,7 +478,7 @@ export const AstitvaOSLoader: React.FC<Props> = ({ onEnterSite, onOpenRegister, 
                     >
                       <div className="flex items-center justify-between">
                         <span className="text-[10.5px] sm:text-xs font-bold text-[#FAF5EF]">{c.code}</span>
-                        <span className="text-[8.5px] sm:text-[10px] text-[#D4AF37] font-mono">{c.seats} Seats</span>
+                        <span className="text-[8.5px] sm:text-[10px] text-emerald-400 font-mono">Registration Open</span>
                       </div>
                       <p className="text-[9px] sm:text-[10px] text-[#C4BBA3] line-clamp-1 italic">"{c.agenda}"</p>
                     </div>

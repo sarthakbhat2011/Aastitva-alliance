@@ -107,7 +107,7 @@ const isBlogsUrl = () => {
 export default function App() {
   const [isStandaloneRegister, setIsStandaloneRegister] = useState(isRegistrationUrl);
   const [isStandaloneSponsors, setIsStandaloneSponsors] = useState(isSponsorshipUrl);
-  const [osMode, setOsMode] = useState<boolean>(isOsRequested); // Defaults to main website homepage
+  const [osMode, setOsMode] = useState<boolean>(true); // Boots into Astitva OS loading animation & interface first
   const [currentPage, setCurrentPage] = useState<Page>('home');
   const [summitConfig, setSummitConfig] = useState<SummitConfig>(INITIAL_SUMMIT_CONFIG);
 
