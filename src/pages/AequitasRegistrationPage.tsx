@@ -922,6 +922,17 @@ export const AequitasRegistrationPage: React.FC = () => {
 
           {/* Right Security & Sound Controls */}
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* Direct Switcher to Prom Night, Recreational Activities & Special Events */}
+            <a
+              href="/events-register"
+              onClick={() => sounds.playTap()}
+              className="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#16203B] border border-[#C084FC]/40 text-[#E9D5FF] hover:bg-[#A855F7] hover:text-white transition-all font-mono text-[10.5px] cursor-pointer shadow-sm"
+              title="Register for Prom Night, Recreational Activities & Special Events"
+            >
+              <span>Prom &amp; Events</span>
+              <ArrowRight className="w-3 h-3" />
+            </a>
+
             <button
               type="button"
               onClick={() => setDevMailboxOpen(true)}
@@ -1129,6 +1140,17 @@ export const AequitasRegistrationPage: React.FC = () => {
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </button>
                   </div>
+                </div>
+
+                {/* Switcher to Prom Night, Recreational Tournaments & Special Events */}
+                <div className="pt-4 border-t border-[#D4AF37]/20 text-center">
+                  <a
+                    href="/events-register"
+                    className="inline-flex items-center gap-2 text-xs font-mono text-[#C084FC] hover:text-[#FAF5EF] transition-colors py-2 px-4 rounded-full bg-[#190D2E]/80 border border-[#A855F7]/35 hover:border-[#C084FC]"
+                  >
+                    <span>Looking to register for <strong>Prom Night</strong>, <strong>Recreational Activities</strong>, or <strong>MUN Got Latent</strong>?</span>
+                    <strong className="underline underline-offset-4 flex items-center gap-1">Register for Events Here ↗</strong>
+                  </a>
                 </div>
               </div>
             </motion.div>

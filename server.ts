@@ -17,6 +17,7 @@ import {
   securityHeadersMiddleware,
   corsMiddleware,
   validateRegistrationPayload,
+  validateEventRegistrationPayload,
   validateContactPayload,
   sanitizeForLog,
   isValidSafeId,
@@ -441,6 +442,83 @@ async function startServer() {
       timestamp: nowTime,
       googleFormSynced,
       message: 'Registration received securely and queued for Executive Board verification.',
+    });
+  });
+
+  // Dedicated Secure Event Registration Endpoint (Prom Night, Recreational Activities & Special Events)
+  app.post('/api/register-event', registrationRateLimiter, async (req, res) => {
+    const validation = validateEventRegistrationPayload(req.body);
+    if (!validation.isValid || !validation.data) {
+      return res.status(400).json({
+        success: false,
+        error: 'Validation failed. Please verify the submitted information.',
+        validationErrors: validation.errors,
+      });
+    }
+
+    const clean = validation.data;
+    const mails = readMailbox();
+
+    const trackingId = `ACT-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const nowTime = new Date().toLocaleString('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    });
+
+    const isSpecial = clean.category === 'special';
+    const isProm = clean.category === 'prom';
+
+    const messageLines = [
+      `[EVENT ENROLMENT - ${trackingId}]`,
+      `Participant Name: ${clean.fullName}`,
+      `Category: ${clean.categoryLabel}`,
+      `Event / Package: ${clean.selectionTitle}`,
+      `Email: ${clean.email}`,
+      `Phone: ${clean.phone}`,
+      `Institution: ${clean.institution}`,
+    ];
+
+    if (clean.age) {
+      messageLines.push(`Age: ${clean.age} yrs${isProm ? ' (18+ College / UG Verified)' : ''}`);
+    }
+
+    messageLines.push(`Fee: ${clean.formattedPrice}`);
+    if (clean.transactionId) {
+      messageLines.push(`Transaction / UTR ID: ${clean.transactionId}`);
+    } else if (isSpecial) {
+      messageLines.push(`Registration Type: 100% Free Entry`);
+    }
+
+    if (clean.talentDescription) {
+      messageLines.push(`Talent Showcase Pitch:\n${clean.talentDescription}`);
+    }
+
+    const newMailboxEntry = {
+      id: trackingId,
+      timestamp: nowTime,
+      schoolName: clean.institution,
+      contactPerson: `${clean.fullName}${clean.age ? ` (${clean.age} yrs)` : ''}`,
+      email: clean.email,
+      phone: clean.phone,
+      eventType: `${clean.categoryLabel}: ${clean.selectionTitle} [${clean.formattedPrice}]`,
+      preferredDate: '2026-10-29',
+      message: messageLines.join('\n'),
+      status: 'New',
+    };
+
+    mails.unshift(newMailboxEntry);
+    writeMailboxAtomic(mails);
+
+    console.log(
+      `[Event Registration] Recorded ${trackingId} for ${sanitizeForLog(clean.fullName)} (${clean.categoryLabel}: ${clean.selectionTitle})`
+    );
+
+    res.status(201).json({
+      success: true,
+      trackingId,
+      timestamp: nowTime,
+      message: 'Event registration confirmed securely.',
     });
   });
 

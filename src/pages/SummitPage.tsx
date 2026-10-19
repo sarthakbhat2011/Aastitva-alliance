@@ -619,6 +619,18 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
                     <span>Quick Registration Modal</span>
                     <ExternalLink className="w-4 h-4 text-[#D4AF37]" />
                   </button>
+
+                  <a
+                    href="/events-register"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => sounds.playTap()}
+                    className="px-6 py-4 rounded-2xl bg-[#2E1065]/70 hover:bg-[#3B0764] border border-[#C084FC]/50 text-[#E9D5FF] text-xs sm:text-sm font-semibold transition-all inline-flex items-center gap-2 cursor-pointer shadow-md"
+                  >
+                    <Sparkles className="w-4 h-4 text-[#FDE047]" />
+                    <span>Prom Night &amp; Events Portal</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </a>
                 </div>
               </div>
             </section>

@@ -353,6 +353,130 @@ export function validateRegistrationPayload(body: any): {
   };
 }
 
+export interface CleanEventRegistration {
+  category: 'prom' | 'recreational' | 'special';
+  categoryLabel: string;
+  selectionId: string;
+  selectionTitle: string;
+  price: number;
+  formattedPrice: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  institution: string;
+  age?: number;
+  talentDescription?: string;
+  transactionId?: string;
+  agreedToTerms?: boolean;
+}
+
+export function validateEventRegistrationPayload(body: any): {
+  isValid: boolean;
+  errors: Record<string, string>;
+  data?: CleanEventRegistration;
+} {
+  const errors: Record<string, string> = {};
+
+  if (!body || typeof body !== 'object') {
+    return { isValid: false, errors: { general: 'Invalid JSON request payload.' } };
+  }
+
+  const category =
+    body.category === 'prom' || body.category === 'recreational' || body.category === 'special'
+      ? body.category
+      : 'prom';
+
+  const categoryLabel =
+    sanitizeString(body.categoryLabel, 80) ||
+    (category === 'prom'
+      ? 'Prom Night'
+      : category === 'recreational'
+      ? 'Recreational Activities'
+      : 'Special Event: MUN got Latent');
+
+  const selectionId = sanitizeString(body.selectionId, 80) || 'default';
+  const selectionTitle = sanitizeString(body.selectionTitle, 120) || 'Event Access';
+  const price = typeof body.price === 'number' ? body.price : 0;
+  const formattedPrice =
+    sanitizeString(body.formattedPrice, 30) || (price === 0 ? 'FREE' : `₹${price}`);
+
+  const fullName = sanitizeString(body.fullName, 100);
+  if (!fullName || fullName.length < 3) {
+    errors.fullName = 'Full legal name must be at least 3 characters.';
+  }
+
+  const email = sanitizeString(body.email, 254).toLowerCase();
+  if (!isValidEmail(email)) {
+    errors.email = 'A valid email address is required.';
+  }
+
+  const phone = sanitizeString(body.phone, 60);
+  if (!isValidPhone(phone)) {
+    errors.phone = 'A valid phone number with at least 10 digits is required.';
+  }
+
+  const institution = sanitizeString(body.institution, 150);
+  if (!institution || institution.length < 2) {
+    errors.institution = 'Institution / College / School name is required.';
+  }
+
+  let age: number | undefined = undefined;
+  if (category === 'prom') {
+    const rawAge = parseInt(String(body.age), 10);
+    if (isNaN(rawAge) || rawAge < 18) {
+      errors.age = 'Prom Night is strictly 18+ for college & undergraduate students.';
+    } else {
+      age = rawAge;
+    }
+  } else if (body.age !== undefined && body.age !== null && String(body.age).trim() !== '') {
+    const rawAge = parseInt(String(body.age), 10);
+    if (!isNaN(rawAge) && rawAge > 0 && rawAge < 120) {
+      age = rawAge;
+    }
+  }
+
+  let talentDescription: string | undefined = undefined;
+  if (category === 'special') {
+    talentDescription = sanitizeString(body.talentDescription, 2000);
+    if (!talentDescription || talentDescription.trim().length < 5) {
+      errors.talentDescription = 'Please describe the talent you will showcase.';
+    }
+  }
+
+  let transactionId: string | undefined = undefined;
+  if (price > 0) {
+    transactionId = sanitizeString(body.transactionId, 64);
+    if (!transactionId || transactionId.length < 5) {
+      errors.transactionId = 'Please enter your Transaction / UTR ID for verification.';
+    }
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return { isValid: false, errors };
+  }
+
+  return {
+    isValid: true,
+    errors: {},
+    data: {
+      category,
+      categoryLabel,
+      selectionId,
+      selectionTitle,
+      price,
+      formattedPrice,
+      fullName,
+      email,
+      phone,
+      institution,
+      age,
+      talentDescription,
+      transactionId,
+      agreedToTerms: Boolean(body.agreedToTerms),
+    },
+  };
+}
+
 export interface CleanContact {
   schoolName: string;
   contactPerson: string;

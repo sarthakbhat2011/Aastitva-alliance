@@ -50,6 +50,7 @@ __export(security_exports, {
   sanitizeString: () => sanitizeString,
   securityHeadersMiddleware: () => securityHeadersMiddleware,
   validateContactPayload: () => validateContactPayload,
+  validateEventRegistrationPayload: () => validateEventRegistrationPayload,
   validateRegistrationPayload: () => validateRegistrationPayload,
   verifyAdminToken: () => verifyAdminToken,
   verifyPasscodeConstantTime: () => verifyPasscodeConstantTime
@@ -240,6 +241,85 @@ function validateRegistrationPayload(body) {
       transactionId: transactionId || void 0,
       agreedToTerms,
       hasAccommodation: Boolean(body.hasAccommodation)
+    }
+  };
+}
+function validateEventRegistrationPayload(body) {
+  const errors = {};
+  if (!body || typeof body !== "object") {
+    return { isValid: false, errors: { general: "Invalid JSON request payload." } };
+  }
+  const category = body.category === "prom" || body.category === "recreational" || body.category === "special" ? body.category : "prom";
+  const categoryLabel = sanitizeString(body.categoryLabel, 80) || (category === "prom" ? "Prom Night" : category === "recreational" ? "Recreational Activities" : "Special Event: MUN got Latent");
+  const selectionId = sanitizeString(body.selectionId, 80) || "default";
+  const selectionTitle = sanitizeString(body.selectionTitle, 120) || "Event Access";
+  const price = typeof body.price === "number" ? body.price : 0;
+  const formattedPrice = sanitizeString(body.formattedPrice, 30) || (price === 0 ? "FREE" : `\u20B9${price}`);
+  const fullName = sanitizeString(body.fullName, 100);
+  if (!fullName || fullName.length < 3) {
+    errors.fullName = "Full legal name must be at least 3 characters.";
+  }
+  const email = sanitizeString(body.email, 254).toLowerCase();
+  if (!isValidEmail(email)) {
+    errors.email = "A valid email address is required.";
+  }
+  const phone = sanitizeString(body.phone, 60);
+  if (!isValidPhone(phone)) {
+    errors.phone = "A valid phone number with at least 10 digits is required.";
+  }
+  const institution = sanitizeString(body.institution, 150);
+  if (!institution || institution.length < 2) {
+    errors.institution = "Institution / College / School name is required.";
+  }
+  let age = void 0;
+  if (category === "prom") {
+    const rawAge = parseInt(String(body.age), 10);
+    if (isNaN(rawAge) || rawAge < 18) {
+      errors.age = "Prom Night is strictly 18+ for college & undergraduate students.";
+    } else {
+      age = rawAge;
+    }
+  } else if (body.age !== void 0 && body.age !== null && String(body.age).trim() !== "") {
+    const rawAge = parseInt(String(body.age), 10);
+    if (!isNaN(rawAge) && rawAge > 0 && rawAge < 120) {
+      age = rawAge;
+    }
+  }
+  let talentDescription = void 0;
+  if (category === "special") {
+    talentDescription = sanitizeString(body.talentDescription, 2e3);
+    if (!talentDescription || talentDescription.trim().length < 5) {
+      errors.talentDescription = "Please describe the talent you will showcase.";
+    }
+  }
+  let transactionId = void 0;
+  if (price > 0) {
+    transactionId = sanitizeString(body.transactionId, 64);
+    if (!transactionId || transactionId.length < 5) {
+      errors.transactionId = "Please enter your Transaction / UTR ID for verification.";
+    }
+  }
+  if (Object.keys(errors).length > 0) {
+    return { isValid: false, errors };
+  }
+  return {
+    isValid: true,
+    errors: {},
+    data: {
+      category,
+      categoryLabel,
+      selectionId,
+      selectionTitle,
+      price,
+      formattedPrice,
+      fullName,
+      email,
+      phone,
+      institution,
+      age,
+      talentDescription,
+      transactionId,
+      agreedToTerms: Boolean(body.agreedToTerms)
     }
   };
 }
@@ -758,6 +838,71 @@ ${clean.statement || "Standard Application"}`,
       timestamp: nowTime,
       googleFormSynced,
       message: "Registration received securely and queued for Executive Board verification."
+    });
+  });
+  app.post("/api/register-event", registrationRateLimiter, async (req, res) => {
+    const validation = validateEventRegistrationPayload(req.body);
+    if (!validation.isValid || !validation.data) {
+      return res.status(400).json({
+        success: false,
+        error: "Validation failed. Please verify the submitted information.",
+        validationErrors: validation.errors
+      });
+    }
+    const clean = validation.data;
+    const mails = readMailbox();
+    const trackingId = `ACT-2026-${Math.floor(1e3 + Math.random() * 9e3)}`;
+    const nowTime = (/* @__PURE__ */ new Date()).toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      dateStyle: "medium",
+      timeStyle: "short"
+    });
+    const isSpecial = clean.category === "special";
+    const isProm = clean.category === "prom";
+    const messageLines = [
+      `[EVENT ENROLMENT - ${trackingId}]`,
+      `Participant Name: ${clean.fullName}`,
+      `Category: ${clean.categoryLabel}`,
+      `Event / Package: ${clean.selectionTitle}`,
+      `Email: ${clean.email}`,
+      `Phone: ${clean.phone}`,
+      `Institution: ${clean.institution}`
+    ];
+    if (clean.age) {
+      messageLines.push(`Age: ${clean.age} yrs${isProm ? " (18+ College / UG Verified)" : ""}`);
+    }
+    messageLines.push(`Fee: ${clean.formattedPrice}`);
+    if (clean.transactionId) {
+      messageLines.push(`Transaction / UTR ID: ${clean.transactionId}`);
+    } else if (isSpecial) {
+      messageLines.push(`Registration Type: 100% Free Entry`);
+    }
+    if (clean.talentDescription) {
+      messageLines.push(`Talent Showcase Pitch:
+${clean.talentDescription}`);
+    }
+    const newMailboxEntry = {
+      id: trackingId,
+      timestamp: nowTime,
+      schoolName: clean.institution,
+      contactPerson: `${clean.fullName}${clean.age ? ` (${clean.age} yrs)` : ""}`,
+      email: clean.email,
+      phone: clean.phone,
+      eventType: `${clean.categoryLabel}: ${clean.selectionTitle} [${clean.formattedPrice}]`,
+      preferredDate: "2026-10-29",
+      message: messageLines.join("\n"),
+      status: "New"
+    };
+    mails.unshift(newMailboxEntry);
+    writeMailboxAtomic(mails);
+    console.log(
+      `[Event Registration] Recorded ${trackingId} for ${sanitizeForLog(clean.fullName)} (${clean.categoryLabel}: ${clean.selectionTitle})`
+    );
+    res.status(201).json({
+      success: true,
+      trackingId,
+      timestamp: nowTime,
+      message: "Event registration confirmed securely."
     });
   });
   app.get("/api/mailbox", requireAdminAuth, async (req, res) => {

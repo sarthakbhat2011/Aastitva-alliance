@@ -23,6 +23,7 @@ import { SummitPage } from './pages/SummitPage';
 import { SponsorsPage } from './pages/SponsorsPage';
 import { FAQPage } from './pages/FAQPage';
 import { AequitasRegistrationPage } from './pages/AequitasRegistrationPage';
+import { EventsRegistrationPage } from './pages/EventsRegistrationPage';
 import { BlogsPage } from './pages/BlogsPage';
 
 const isOsRequested = () => {
@@ -46,8 +47,33 @@ const checkMailboxRequested = () => {
   );
 };
 
+const isEventsRegistrationUrl = () => {
+  if (typeof window === 'undefined') return false;
+  const path = window.location.pathname.toLowerCase();
+  const search = window.location.search.toLowerCase();
+  const hash = window.location.hash.toLowerCase();
+
+  return (
+    path.startsWith('/events-register') ||
+    path.startsWith('/events-registration') ||
+    path.startsWith('/events') ||
+    path.startsWith('/register-events') ||
+    path.startsWith('/prom') ||
+    path.startsWith('/recreation') ||
+    search.includes('mode=events') ||
+    search.includes('tab=events') ||
+    search.includes('page=events') ||
+    search.includes('form=events') ||
+    hash === '#events-register' ||
+    hash === '#events-registration' ||
+    hash === '#events' ||
+    hash === '#prom'
+  );
+};
+
 const isRegistrationUrl = () => {
   if (typeof window === 'undefined') return false;
+  if (isEventsRegistrationUrl()) return false;
   const path = window.location.pathname.toLowerCase();
   const search = window.location.search.toLowerCase();
   const hash = window.location.hash.toLowerCase();
@@ -105,6 +131,7 @@ const isBlogsUrl = () => {
 };
 
 export default function App() {
+  const [isStandaloneEventsRegister, setIsStandaloneEventsRegister] = useState(isEventsRegistrationUrl);
   const [isStandaloneRegister, setIsStandaloneRegister] = useState(isRegistrationUrl);
   const [isStandaloneSponsors, setIsStandaloneSponsors] = useState(isSponsorshipUrl);
   const [osMode, setOsMode] = useState<boolean>(true); // Boots into Astitva OS loading animation & interface first
@@ -138,7 +165,7 @@ export default function App() {
 
   // Lock body & document scroll when in OS Mode to prevent background web app from leaking on mobile scroll
   useEffect(() => {
-    if (isStandaloneRegister || isStandaloneSponsors) {
+    if (isStandaloneRegister || isStandaloneEventsRegister || isStandaloneSponsors) {
       document.body.style.overflow = 'auto';
       document.documentElement.style.overflow = 'auto';
       document.body.style.touchAction = 'auto';
@@ -160,11 +187,12 @@ export default function App() {
       document.documentElement.style.overflow = '';
       document.body.style.touchAction = '';
     };
-  }, [osMode, isStandaloneRegister, isStandaloneSponsors]);
+  }, [osMode, isStandaloneRegister, isStandaloneEventsRegister, isStandaloneSponsors]);
 
   // Deep link & route listener for standalone registration portal & sponsorships
   useEffect(() => {
     const handleLocationChange = () => {
+      setIsStandaloneEventsRegister(isEventsRegistrationUrl());
       setIsStandaloneRegister(isRegistrationUrl());
       setIsStandaloneSponsors(isSponsorshipUrl());
       if (checkMailboxRequested()) {
@@ -187,6 +215,15 @@ export default function App() {
   const handleOpenRegisterPortal = () => {
     window.open('/register', '_blank', 'noopener,noreferrer');
   };
+
+  // Dedicated Autonomous Events Registration Portal (Prom Night, Recreational Activities & Special Events)
+  if (isStandaloneEventsRegister) {
+    return (
+      <ThemeProvider>
+        <EventsRegistrationPage />
+      </ThemeProvider>
+    );
+  }
 
   // Dedicated Autonomous Registration Portal
   if (isStandaloneRegister) {

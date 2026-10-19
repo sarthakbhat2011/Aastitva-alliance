@@ -788,3 +788,53 @@ export async function fetchServerSheetConfig(): Promise<string> {
   return getLinkedSheetUrl();
 }
 
+export interface EventRegistrationPayload {
+  category: 'prom' | 'recreational' | 'special';
+  categoryLabel: string;
+  selectionId: string;
+  selectionTitle: string;
+  price: number;
+  formattedPrice: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  institution: string;
+  age?: number;
+  talentDescription?: string;
+  transactionId?: string;
+  agreedToTerms?: boolean;
+}
+
+export async function submitEventRegistrationToServer(
+  payload: EventRegistrationPayload
+): Promise<{ success: boolean; trackingId?: string; timestamp?: string; error?: string }> {
+  try {
+    const res = await fetch('/api/register-event', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+    if (res.ok && data.success) {
+      return {
+        success: true,
+        trackingId: data.trackingId,
+        timestamp: data.timestamp,
+      };
+    }
+    return {
+      success: false,
+      error: data.error || 'Failed to submit event registration.',
+    };
+  } catch (err: any) {
+    console.warn('[Event Registration Dispatch Error]:', err);
+    return {
+      success: false,
+      error: err?.message || 'Network error communicating with registration server.',
+    };
+  }
+}
+

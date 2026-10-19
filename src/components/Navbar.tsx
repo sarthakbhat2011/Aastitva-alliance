@@ -130,6 +130,21 @@ export const Navbar: React.FC<Props> = ({
             )}
 
 
+            {/* Direct Link to Prom Night & Events Registration */}
+            <MagneticElement strength={0.25}>
+              <a
+                href="/events-register"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => sounds.playTap()}
+                className="hidden md:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#A855F7]/20 border border-[#A855F7]/50 text-[#E9D5FF] hover:bg-[#A855F7] hover:text-white transition-all font-mono font-bold text-[10px] sm:text-[11px] shadow-sm cursor-pointer"
+                title="Register for Prom Night, Recreational Tournaments & MUN Got Latent in New Tab"
+              >
+                <span>Prom &amp; Events</span>
+                <ArrowUpRight className="w-2.5 h-2.5" />
+              </a>
+            </MagneticElement>
+
             {/* Direct Link to Standalone Registration Portal (New Tab) */}
             <MagneticElement strength={0.25}>
               <a
@@ -343,6 +358,21 @@ export const Navbar: React.FC<Props> = ({
                 >
                   <Sparkles className="w-3.5 h-3.5 fill-current" />
                   <span>Register for Summit 2026 (New Tab)</span>
+                  <ArrowUpRight className="w-4 h-4" />
+                </a>
+
+                <a
+                  href="/events-register"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => {
+                    sounds.playTap();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#7C3AED] via-[#9333EA] to-[#C084FC] text-white font-extrabold text-center text-xs shadow-lg min-h-[44px] flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Sparkles className="w-3.5 h-3.5 fill-current" />
+                  <span>Register for Prom &amp; Events (New Tab)</span>
                   <ArrowUpRight className="w-4 h-4" />
                 </a>
 
