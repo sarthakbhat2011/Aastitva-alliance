@@ -750,9 +750,9 @@ async function startServer() {
         if (id === "ludo") return "\u2022 Unisex: LUDO (\u20B9199)";
         if (id === "mafia") return "\u2022 Unisex: MAFIA (\u20B9199)";
         if (id.includes("treasure")) return "\u2022 Unisex: TREASURE HUNT (\u20B9199)";
-        if (id.includes("damsh")) return "\u2022 Unisex: DAMSHARAJ (\u20B9199)";
+        if (id.includes("charade") || id.includes("damsh") || id.includes("dumb")) return "\u2022 Unisex:  DUMB CHARADES (\u20B9199)";
         if (id === "chess") return "\u2022 Unisex: CHESS (\u20B9199)";
-        if (id.includes("brush") || id.includes("hair") || id.includes("diy")) return "\u2022 Exclusively for Girls: Hair brush DIY activity (\u20B9199)";
+        if (id.includes("vanity") || id.includes("rapunzel") || id.includes("brush") || id.includes("hair") || id.includes("diy")) return "\u2022 Exclusively for Girls: Rapunzel's vanity (\u20B9199)";
         if (id.includes("minute") || id.includes("win")) return "\u2022 Exclusively for Boys: Minute to Win it challenge (\u20B9199)";
         return "\u2022 Unisex: BGMI (\u20B9199)";
       };

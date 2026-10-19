@@ -597,9 +597,9 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
             if (id === 'ludo') return '• Unisex: LUDO (₹199)';
             if (id === 'mafia') return '• Unisex: MAFIA (₹199)';
             if (id.includes('treasure')) return '• Unisex: TREASURE HUNT (₹199)';
-            if (id.includes('damsh')) return '• Unisex: DAMSHARAJ (₹199)';
+            if (id.includes('charade') || id.includes('damsh') || id.includes('dumb')) return '• Unisex:  DUMB CHARADES (₹199)';
             if (id === 'chess') return '• Unisex: CHESS (₹199)';
-            if (id.includes('brush') || id.includes('hair') || id.includes('diy')) return '• Exclusively for Girls: Hair brush DIY activity (₹199)';
+            if (id.includes('vanity') || id.includes('rapunzel') || id.includes('brush') || id.includes('hair') || id.includes('diy')) return "• Exclusively for Girls: Rapunzel's vanity (₹199)";
             if (id.includes('minute') || id.includes('win')) return '• Exclusively for Boys: Minute to Win it challenge (₹199)';
             return '• Unisex: BGMI (₹199)';
           };
@@ -935,7 +935,7 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
                           Unisex Activities:
                         </div>
                         <div className="flex flex-wrap gap-1.5">
-                          {['BGMI', 'FREE FIRE', 'LUDO', 'MAFIA', 'TREASURE HUNT', 'DAMSHARAJ', 'CHESS'].map(
+                          {['BGMI', 'FREE FIRE', 'LUDO', 'MAFIA', 'TREASURE HUNT', 'DUMB CHARADES', 'CHESS'].map(
                             (act) => (
                               <span
                                 key={act}
@@ -955,7 +955,7 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
                           <span>Exclusively for girls:</span>
                         </div>
                         <div className="p-2 rounded-xl bg-pink-950/30 border border-pink-500/30 text-[11px] font-mono text-pink-200">
-                          Hair brush DIY activity
+                          Rapunzel's vanity
                         </div>
                       </div>
 

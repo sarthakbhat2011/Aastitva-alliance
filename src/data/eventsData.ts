@@ -48,7 +48,7 @@ export const PROM_ACTIVITIES = [
   'Unseen Encounter (Leap of Faith)',
   'Truth or Dare',
   'Jar of Dreams',
-  'Musical chair',
+  'Musical chairs',
   'Egyptian wrap',
 ];
 
@@ -100,8 +100,8 @@ export const RECREATIONAL_ACTIVITIES: RecreationalActivity[] = [
     description: 'Cryptic riddle-solving across the venue to discover the secret conclave artifact first.',
   },
   {
-    id: 'damsharaj',
-    name: 'DAMSHARAJ',
+    id: 'dumb-charades',
+    name: 'DUMB CHARADES',
     category: 'unisex',
     categoryLabel: 'Unisex',
     price: 199,
@@ -120,8 +120,8 @@ export const RECREATIONAL_ACTIVITIES: RecreationalActivity[] = [
 
   // Exclusively for girls
   {
-    id: 'hair-brush-diy',
-    name: 'Hair brush DIY activity',
+    id: 'rapunzels-vanity',
+    name: "Rapunzel's vanity",
     category: 'girls',
     categoryLabel: 'Exclusively for girls',
     price: 199,

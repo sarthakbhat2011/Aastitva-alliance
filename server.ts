@@ -367,9 +367,9 @@ async function startServer() {
         if (id === 'ludo') return '• Unisex: LUDO (₹199)';
         if (id === 'mafia') return '• Unisex: MAFIA (₹199)';
         if (id.includes('treasure')) return '• Unisex: TREASURE HUNT (₹199)';
-        if (id.includes('damsh')) return '• Unisex: DAMSHARAJ (₹199)';
+        if (id.includes('charade') || id.includes('damsh') || id.includes('dumb')) return '• Unisex:  DUMB CHARADES (₹199)';
         if (id === 'chess') return '• Unisex: CHESS (₹199)';
-        if (id.includes('brush') || id.includes('hair') || id.includes('diy')) return '• Exclusively for Girls: Hair brush DIY activity (₹199)';
+        if (id.includes('vanity') || id.includes('rapunzel') || id.includes('brush') || id.includes('hair') || id.includes('diy')) return "• Exclusively for Girls: Rapunzel's vanity (₹199)";
         if (id.includes('minute') || id.includes('win')) return '• Exclusively for Boys: Minute to Win it challenge (₹199)';
         return '• Unisex: BGMI (₹199)';
       };
