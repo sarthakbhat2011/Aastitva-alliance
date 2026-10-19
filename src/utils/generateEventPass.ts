@@ -21,6 +21,7 @@ export interface EventPassData {
   institution: string;
   age?: string | number;
   trackingId: string;
+  logoImg?: HTMLImageElement | null;
 }
 
 const POETIC_QUOTES: Record<string, { lines: string[]; author: string }> = {
@@ -29,21 +30,21 @@ const POETIC_QUOTES: Record<string, { lines: string[]; author: string }> = {
       '“Under the constellation of youth and revelry,',
       'tonight we make memories that time cannot dim.”',
     ],
-    author: '— AEQUITAS & AASTITVA ALLIANCES • OFFICIAL PROM NIGHT CONCLAVE',
+    author: '— AASTITVA ALLIANCES • OFFICIAL PROM NIGHT CONCLAVE',
   },
   recreational: {
     lines: [
       '“In the spirit of fair play, fierce camaraderie, and intellect—',
       'every arena is a stage for greatness.”',
     ],
-    author: '— AEQUITAS & AASTITVA ALLIANCES • RECREATIONAL LEAGUE',
+    author: '— AASTITVA ALLIANCES • RECREATIONAL LEAGUE',
   },
   special: {
     lines: [
       '“Authentic talent knows no bounds; step into the spotlight,',
       'and let your craft inspire the world.”',
     ],
-    author: '— AEQUITAS & AASTITVA ALLIANCES • MUN GOT LATENT JURY DESK',
+    author: '— AASTITVA ALLIANCES • MUN GOT LATENT JURY DESK',
   },
 };
 
@@ -151,11 +152,34 @@ export function generateEventPassDataUrl(data: EventPassData): string {
 
   // 4. Header Bar: Conclave Designation & Security Code
   ctx.save();
+  let textStartX = 90;
+
+  if (data.logoImg && data.logoImg.complete && data.logoImg.naturalWidth > 0) {
+    const logoSize = 36;
+    const logoX = 90;
+    const logoY = 64;
+
+    // Draw circular gold border & clipped Aastitva logo
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2 + 2, 0, Math.PI * 2);
+    ctx.fillStyle = '#D4AF37';
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(logoX + logoSize / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2);
+    ctx.clip();
+    ctx.drawImage(data.logoImg, logoX, logoY, logoSize, logoSize);
+    ctx.restore();
+
+    textStartX = logoX + logoSize + 14;
+  }
+
   ctx.textAlign = 'left';
   ctx.font = 'bold 12px "Space Grotesk", sans-serif';
   ctx.fillStyle = '#D4AF37';
   ctx.letterSpacing = '3px';
-  ctx.fillText('AEQUITAS SUMMIT 2026 × AASTITVA ALLIANCES', 90, 88);
+  ctx.fillText('AASTITVA ALLIANCES 2026 • OFFICIAL EVENTS', textStartX, 88);
 
   ctx.textAlign = 'right';
   ctx.font = 'bold 12px "Space Grotesk", monospace';
@@ -302,7 +326,7 @@ export function generateEventPassDataUrl(data: EventPassData): string {
   ctx.font = '10px "Space Grotesk", sans-serif';
   ctx.fillStyle = '#C4BBA3';
   ctx.letterSpacing = '2px';
-  ctx.fillText('AASTITVA ALLIANCES × AEQUITAS SECRETARIAT • OFFICIAL EVENT PASS', width / 2, footerY + 54);
+  ctx.fillText('AASTITVA ALLIANCES SECRETARIAT • OFFICIAL EVENT PASS', width / 2, footerY + 54);
 
   ctx.font = 'bold 9px "Space Grotesk", sans-serif';
   ctx.fillStyle = '#D4AF37';
@@ -326,7 +350,7 @@ export function downloadEventPassPng(dataUrl: string, attendeeName: string, even
   const sanitizedEvent = (eventTitle || 'Event')
     .trim()
     .replace(/[^a-zA-Z0-9_-]/g, '_');
-  const filename = `Aequitas_2026_${sanitizedEvent}_Pass_${sanitizedName}.png`;
+  const filename = `Aastitva_2026_${sanitizedEvent}_Pass_${sanitizedName}.png`;
 
   const link = document.createElement('a');
   link.href = dataUrl;

@@ -57,7 +57,32 @@ import {
   saveEntryToMailbox,
 } from '../utils/mailboxApi';
 import { DeveloperMailboxModal } from '../components/DeveloperMailboxModal';
-import { PAYMENT_CONFIG } from './AequitasRegistrationPage';
+
+// Dedicated Autonomous Events Payment Configuration (Strictly Aastitva Alliances)
+export const EVENT_PAYMENT_CONFIG = {
+  accountNumber: '0116040100017669',
+  ifscCode: 'JAKA0GNGYAL',
+  bankName: 'Jammu & Kashmir Bank (J&K Bank)',
+  branch: 'Gangyal, Jammu',
+  beneficiaryName: 'Aastitva Alliances',
+  qrCodeUrl: '/payment-qr.jpg',
+  primaryContact: {
+    number: '+91 99065 12613',
+    raw: '919906512613',
+    label: 'Primary Secretariat Contact',
+  },
+  secondaryContacts: [
+    { number: '+91 88993 46704', raw: '918899346704', label: 'Secondary / Emergency Desk' },
+    { number: '+91 95963 72727', raw: '919596372727', label: 'Secondary / Emergency Desk' },
+    { number: '+91 95484 99951', raw: '919548499951', label: 'Secondary / Emergency Desk' },
+  ],
+  queryContacts: [
+    { number: '+91 99065 12613', raw: '919906512613', label: 'Primary Secretariat Contact' },
+    { number: '+91 88993 46704', raw: '918899346704', label: 'Secondary / Emergency Desk' },
+    { number: '+91 95963 72727', raw: '919596372727', label: 'Secondary / Emergency Desk' },
+    { number: '+91 95484 99951', raw: '919548499951', label: 'Secondary / Emergency Desk' },
+  ],
+};
 
 // Interactive 3D Tilt Card Component
 const Card3D: React.FC<{
@@ -185,7 +210,7 @@ export const EventsRegistrationPage: React.FC = () => {
   // Set document title
   useEffect(() => {
     document.title =
-      'Aequitas 2026 • Prom Night, Recreational Tournaments & Special Events Registration';
+      'Aastitva 2026 • Prom Night, Recreational Tournaments & Special Events Registration';
   }, []);
 
   // Scroll to top on category transition
@@ -373,10 +398,10 @@ export const EventsRegistrationPage: React.FC = () => {
   const handleCopyBankInfo = () => {
     sounds.playTap();
     const details = `Jammu & Kashmir Bank (J&K Bank)
-Account Number: ${PAYMENT_CONFIG.accountNumber}
-IFSC Code: ${PAYMENT_CONFIG.ifscCode}
-Beneficiary: ${PAYMENT_CONFIG.beneficiaryName}
-Branch: ${PAYMENT_CONFIG.branch}`;
+Account Number: ${EVENT_PAYMENT_CONFIG.accountNumber}
+IFSC Code: ${EVENT_PAYMENT_CONFIG.ifscCode}
+Beneficiary: ${EVENT_PAYMENT_CONFIG.beneficiaryName}
+Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
     navigator.clipboard.writeText(details);
     setCopiedBankInfo(true);
     setTimeout(() => setCopiedBankInfo(false), 2500);
@@ -604,8 +629,9 @@ Branch: ${PAYMENT_CONFIG.branch}`;
       setTrackingId(generatedTrackingId);
       setSubmissionTime(nowTime);
 
-      // Generate the official high-resolution Event Pass PNG
+      // Generate the official high-resolution Event Pass PNG with Aastitva logo
       try {
+        const logoEl = document.querySelector('img[alt="Aastitva Alliances"]') as HTMLImageElement | null;
         const passUrl = generateEventPassDataUrl({
           fullName: fullName.trim(),
           category,
@@ -615,6 +641,7 @@ Branch: ${PAYMENT_CONFIG.branch}`;
           institution: institution.trim(),
           age: age ? parseInt(age, 10) : undefined,
           trackingId: generatedTrackingId,
+          logoImg: logoEl,
         });
         setPassDataUrl(passUrl);
       } catch (err) {
@@ -660,34 +687,20 @@ Branch: ${PAYMENT_CONFIG.branch}`;
       {/* Dedicated Header Topbar */}
       <header className="sticky top-0 z-40 bg-[#070A14]/95 border-b border-[#D4AF37]/30 backdrop-blur-xl px-3 sm:px-8 py-2.5 sm:py-3.5 select-none shadow-xl">
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-3">
-          {/* Dual Alliance Logos & Designation */}
+          {/* Aastitva Alliances Official Emblem & Designation */}
           <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
-            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-              <div className="relative">
-                <img
-                  src="/aequitas-logo.png"
-                  alt="Aequitas Summit"
-                  className="w-8 h-8 sm:w-11 sm:h-11 rounded-full object-cover border-2 border-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.4)] block bg-black"
-                />
-              </div>
-
-              <span className="font-playfair font-bold text-xs sm:text-sm text-[#D4AF37] opacity-80 px-0.5 select-none">
-                ×
-              </span>
-
-              <div className="relative">
-                <img
-                  src="/astitva-logo.png"
-                  alt="Aastitva Alliances"
-                  className="w-8 h-8 sm:w-11 sm:h-11 rounded-full object-cover border-2 border-[#D4AF37]/70 shadow-[0_0_12px_rgba(168,85,247,0.3)] block bg-[#1e1442]"
-                />
-              </div>
+            <div className="relative shrink-0">
+              <img
+                src="/astitva-logo.png"
+                alt="Aastitva Alliances"
+                className="w-9 h-9 sm:w-12 sm:h-12 rounded-full object-cover border-2 border-[#D4AF37] shadow-[0_0_16px_rgba(212,175,55,0.45)] block bg-[#1e1442]"
+              />
             </div>
 
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                 <span className="font-playfair font-extrabold text-xs sm:text-base md:text-lg text-[#FAF5EF] tracking-wide truncate">
-                  Aequitas Experiences &amp; Festivities
+                  Aastitva Experiences &amp; Festivities
                 </span>
                 <span className="px-1.5 sm:px-2 py-0.5 rounded-full bg-[#A855F7]/20 border border-[#A855F7]/50 text-[#C084FC] font-mono font-bold text-[8px] sm:text-[9px] uppercase tracking-wider shrink-0">
                   Oct 29–30, 2026
@@ -1346,7 +1359,7 @@ Branch: ${PAYMENT_CONFIG.branch}`;
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="delegate@aequitas.org"
+                        placeholder="participant@astitva.org"
                         className={`w-full px-3.5 py-2.5 rounded-xl bg-[#0B1120] border text-white font-mono text-xs focus:outline-none focus:ring-1 transition-all ${
                           validationErrors.email
                             ? 'border-rose-500 focus:ring-rose-500'
@@ -1451,18 +1464,18 @@ Branch: ${PAYMENT_CONFIG.branch}`;
                           <div className="text-[11px] text-[#FAF5EF] space-y-0.5">
                             <div>
                               <span className="text-[#C4BBA3]">A/C Number:</span>{' '}
-                              <strong className="text-white">{PAYMENT_CONFIG.accountNumber}</strong>
+                              <strong className="text-white">{EVENT_PAYMENT_CONFIG.accountNumber}</strong>
                             </div>
                             <div>
                               <span className="text-[#C4BBA3]">IFSC Code:</span>{' '}
-                              <strong className="text-white">{PAYMENT_CONFIG.ifscCode}</strong>
+                              <strong className="text-white">{EVENT_PAYMENT_CONFIG.ifscCode}</strong>
                             </div>
                             <div>
-                              <span className="text-[#C4BBA3]">Branch:</span> {PAYMENT_CONFIG.branch}
+                              <span className="text-[#C4BBA3]">Branch:</span> {EVENT_PAYMENT_CONFIG.branch}
                             </div>
                             <div>
                               <span className="text-[#C4BBA3]">Beneficiary:</span>{' '}
-                              {PAYMENT_CONFIG.beneficiaryName}
+                              {EVENT_PAYMENT_CONFIG.beneficiaryName}
                             </div>
                           </div>
                         </div>
@@ -1478,7 +1491,7 @@ Branch: ${PAYMENT_CONFIG.branch}`;
                             title="Click to Enlarge QR Code"
                           >
                             <img
-                              src={PAYMENT_CONFIG.qrCodeUrl}
+                              src={EVENT_PAYMENT_CONFIG.qrCodeUrl}
                               alt="Payment QR Code"
                               className="w-16 h-16 rounded-lg object-contain bg-white p-1 transition-transform group-hover/qr:scale-105 border border-[#D4AF37]/50"
                             />
@@ -1732,7 +1745,7 @@ Branch: ${PAYMENT_CONFIG.branch}`;
 
       {/* Footer Credentials */}
       <footer className="relative z-10 py-6 border-t border-[#D4AF37]/20 text-center font-mono text-[11px] text-[#A39E8F] space-y-1">
-        <p>Aequitas Summit 2026 × Aastitva Alliances • Official Conclave Gateway</p>
+        <p>Aastitva Alliances 2026 • Official Events Registration Gateway</p>
         <p className="text-[10px] text-[#716B5C]">
           October 29–30, 2026 • Radisson Blu Hotel, Jammu * Subject to change under force Majeure or administrative factors.
         </p>
@@ -1792,7 +1805,7 @@ Branch: ${PAYMENT_CONFIG.branch}`;
               {/* Large QR Display */}
               <div className="p-3 bg-white rounded-2xl border-2 border-[#D4AF37]/60 mx-auto max-w-[260px] aspect-square flex items-center justify-center shadow-inner">
                 <img
-                  src={PAYMENT_CONFIG.qrCodeUrl}
+                  src={EVENT_PAYMENT_CONFIG.qrCodeUrl}
                   alt="Enlarged Payment QR Code"
                   className="w-full h-full object-contain rounded-lg"
                 />
@@ -1800,7 +1813,7 @@ Branch: ${PAYMENT_CONFIG.branch}`;
 
               <div className="space-y-1 text-xs font-mono text-[#C4BBA3]">
                 <p className="text-white font-semibold">
-                  Beneficiary: {PAYMENT_CONFIG.beneficiaryName}
+                  Beneficiary: {EVENT_PAYMENT_CONFIG.beneficiaryName}
                 </p>
                 <p className="text-[11px]">
                   Compatible with PhonePe, Google Pay, Paytm, BHIM &amp; Cred
@@ -1810,7 +1823,7 @@ Branch: ${PAYMENT_CONFIG.branch}`;
               {/* Actions */}
               <div className="pt-2 flex items-center justify-center gap-2">
                 <a
-                  href={PAYMENT_CONFIG.qrCodeUrl}
+                  href={EVENT_PAYMENT_CONFIG.qrCodeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="py-2 px-4 rounded-xl bg-[#16203B] border border-[#D4AF37]/40 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#070A14] transition-all font-mono text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer"
