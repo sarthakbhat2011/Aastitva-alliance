@@ -41,6 +41,9 @@ import {
   Landmark,
   Hotel,
   Building,
+  ZoomIn,
+  Maximize2,
+  X,
 } from 'lucide-react';
 import { COMMITTEES, INITIAL_SUMMIT_CONFIG } from '../data';
 import { sounds } from '../utils/soundEffects';
@@ -216,6 +219,8 @@ export const AequitasRegistrationPage: React.FC = () => {
     }
     return null;
   });
+
+  const [qrModalOpen, setQrModalOpen] = useState(false);
 
   // Ensure document-level scrolling is fully unlocked on the registration portal
   useEffect(() => {
@@ -2075,12 +2080,22 @@ export const AequitasRegistrationPage: React.FC = () => {
                             </p>
 
                             {/* QR Image Box */}
-                            <div className="relative p-2.5 rounded-2xl bg-white border-2 border-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.3)] max-w-[210px] w-full aspect-square flex items-center justify-center overflow-hidden">
+                            <div
+                              onClick={() => {
+                                sounds.playTap();
+                                setQrModalOpen(true);
+                              }}
+                              className="relative p-2.5 rounded-2xl bg-white border-2 border-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.3)] max-w-[210px] w-full aspect-square flex items-center justify-center overflow-hidden cursor-pointer group/qr"
+                              title="Click to Enlarge QR Code"
+                            >
                               <img
                                 src={PAYMENT_CONFIG.qrCodeUrl}
                                 alt="Aequitas Residential Payment QR Code"
-                                className="w-full h-full object-contain rounded-xl"
+                                className="w-full h-full object-contain rounded-xl transition-transform group-hover/qr:scale-105"
                               />
+                              <div className="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center opacity-0 group-hover/qr:opacity-100 transition-opacity">
+                                <ZoomIn className="w-6 h-6 text-white drop-shadow" />
+                              </div>
                             </div>
 
                             <div className="space-y-1">
@@ -2095,15 +2110,29 @@ export const AequitasRegistrationPage: React.FC = () => {
                               </div>
                             </div>
 
-                            <a
-                              href={PAYMENT_CONFIG.qrCodeUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1.5 text-xs text-[#D4AF37] hover:underline font-mono"
-                            >
-                              <ExternalLink className="w-3.5 h-3.5" />
-                              <span>Open Full Size QR Code</span>
-                            </a>
+                            <div className="flex items-center gap-3 pt-1">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  sounds.playTap();
+                                  setQrModalOpen(true);
+                                }}
+                                className="inline-flex items-center gap-1.5 text-xs text-[#D4AF37] hover:text-[#FAF5EF] font-mono font-bold underline underline-offset-4 cursor-pointer"
+                              >
+                                <Maximize2 className="w-3.5 h-3.5" />
+                                <span>Enlarge QR Code</span>
+                              </button>
+                              <span className="text-[#D4AF37]/40">•</span>
+                              <a
+                                href={PAYMENT_CONFIG.qrCodeUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-[11px] text-[#C4BBA3] hover:text-white font-mono"
+                              >
+                                <ExternalLink className="w-3 h-3" />
+                                <span>New Tab</span>
+                              </a>
+                            </div>
                           </div>
 
                           {/* Channel 2: Direct Bank Transfer (NEFT / IMPS / RTGS) */}
@@ -2432,12 +2461,22 @@ export const AequitasRegistrationPage: React.FC = () => {
                             </p>
 
                             {/* QR Image Box */}
-                            <div className="relative p-2.5 rounded-2xl bg-white border-2 border-[#D4AF37] shadow-[0_0_25px_rgba(212,175,55,0.25)] max-w-[210px] w-full aspect-square flex items-center justify-center overflow-hidden">
+                            <div
+                              onClick={() => {
+                                sounds.playTap();
+                                setQrModalOpen(true);
+                              }}
+                              className="relative p-2.5 rounded-2xl bg-white border-2 border-[#D4AF37] shadow-[0_0_25px_rgba(212,175,55,0.25)] max-w-[210px] w-full aspect-square flex items-center justify-center overflow-hidden cursor-pointer group/qr"
+                              title="Click to Enlarge QR Code"
+                            >
                               <img
                                 src={PAYMENT_CONFIG.qrCodeUrl}
                                 alt="Aequitas Payment QR Code"
-                                className="w-full h-full object-contain rounded-xl"
+                                className="w-full h-full object-contain rounded-xl transition-transform group-hover/qr:scale-105"
                               />
+                              <div className="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center opacity-0 group-hover/qr:opacity-100 transition-opacity">
+                                <ZoomIn className="w-6 h-6 text-white drop-shadow" />
+                              </div>
                             </div>
 
                             <div className="space-y-1">
@@ -2449,15 +2488,29 @@ export const AequitasRegistrationPage: React.FC = () => {
                               </div>
                             </div>
 
-                            <a
-                              href={PAYMENT_CONFIG.qrCodeUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1.5 text-xs text-[#D4AF37] hover:underline font-mono"
-                            >
-                              <ExternalLink className="w-3.5 h-3.5" />
-                              <span>Open Full Size QR Code</span>
-                            </a>
+                            <div className="flex items-center gap-3 pt-1">
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  sounds.playTap();
+                                  setQrModalOpen(true);
+                                }}
+                                className="inline-flex items-center gap-1.5 text-xs text-[#D4AF37] hover:text-[#FAF5EF] font-mono font-bold underline underline-offset-4 cursor-pointer"
+                              >
+                                <Maximize2 className="w-3.5 h-3.5" />
+                                <span>Enlarge QR Code</span>
+                              </button>
+                              <span className="text-[#D4AF37]/40">•</span>
+                              <a
+                                href={PAYMENT_CONFIG.qrCodeUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-[11px] text-[#C4BBA3] hover:text-white font-mono"
+                              >
+                                <ExternalLink className="w-3 h-3" />
+                                <span>New Tab</span>
+                              </a>
+                            </div>
                           </div>
 
                           {/* Channel 2: Direct Bank Transfer (NEFT / IMPS / RTGS) */}
@@ -3042,6 +3095,93 @@ export const AequitasRegistrationPage: React.FC = () => {
         isOpen={devMailboxOpen}
         onClose={() => setDevMailboxOpen(false)}
       />
+
+      {/* Enlarged QR Code Lightbox Modal */}
+      <AnimatePresence>
+        {qrModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setQrModalOpen(false)}
+            className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 cursor-pointer"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-[#0A1020] border-2 border-[#D4AF37] rounded-3xl p-6 sm:p-8 max-w-sm w-full text-center relative shadow-[0_0_50px_rgba(212,175,55,0.4)] cursor-default space-y-4"
+            >
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  sounds.playTap();
+                  setQrModalOpen(false);
+                }}
+                className="absolute top-4 right-4 p-2 rounded-full bg-[#16203B] text-[#C4BBA3] hover:text-white hover:bg-[#D4AF37] hover:text-[#070A14] transition-all cursor-pointer"
+                aria-label="Close QR Modal"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] font-mono text-[10px] font-bold uppercase tracking-wider">
+                  <QrCode className="w-3 h-3" />
+                  <span>Official UPI Payment QR</span>
+                </div>
+                <h3 className="text-lg font-playfair font-bold text-white">
+                  Scan to Pay
+                </h3>
+                <p className="text-xs font-mono text-[#D4AF37] font-extrabold">
+                  {hasAccommodation
+                    ? 'Residential Delegate Package: ₹4,999'
+                    : 'Standard Delegate Pass: ₹1,999'}
+                </p>
+              </div>
+
+              {/* Large QR Display */}
+              <div className="p-3 bg-white rounded-2xl border-2 border-[#D4AF37]/60 mx-auto max-w-[260px] aspect-square flex items-center justify-center shadow-inner">
+                <img
+                  src={PAYMENT_CONFIG.qrCodeUrl}
+                  alt="Enlarged Payment QR Code"
+                  className="w-full h-full object-contain rounded-lg"
+                />
+              </div>
+
+              <div className="space-y-1 text-xs font-mono text-[#C4BBA3]">
+                <p className="text-white font-semibold">
+                  Beneficiary: {PAYMENT_CONFIG.beneficiaryName}
+                </p>
+                <p className="text-[11px]">
+                  Compatible with PhonePe, Google Pay, Paytm, BHIM &amp; Cred
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className="pt-2 flex items-center justify-center gap-2">
+                <a
+                  href={PAYMENT_CONFIG.qrCodeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="py-2 px-4 rounded-xl bg-[#16203B] border border-[#D4AF37]/40 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#070A14] transition-all font-mono text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Open Full Resolution</span>
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setQrModalOpen(false)}
+                  className="py-2 px-4 rounded-xl bg-[#D4AF37] text-[#070A14] font-mono text-xs font-bold hover:bg-[#F3E5AB] transition-all cursor-pointer"
+                >
+                  Done
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

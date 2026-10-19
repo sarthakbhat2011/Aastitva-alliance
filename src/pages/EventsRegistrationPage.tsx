@@ -34,6 +34,9 @@ import {
   Phone,
   Mail,
   Building,
+  ZoomIn,
+  Maximize2,
+  X,
 } from 'lucide-react';
 import { sounds } from '../utils/soundEffects';
 import {
@@ -158,6 +161,7 @@ export const EventsRegistrationPage: React.FC = () => {
   const [submissionTime, setSubmissionTime] = useState('');
   const [passDataUrl, setPassDataUrl] = useState('');
   const [copiedBankInfo, setCopiedBankInfo] = useState(false);
+  const [qrModalOpen, setQrModalOpen] = useState(false);
 
   // Sound & Modals
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -1209,7 +1213,7 @@ Branch: ${PAYMENT_CONFIG.branch}`;
                           type="text"
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
-                          placeholder="e.g. Sarthak Bhat"
+                          placeholder="e.g. Aarav Sharma"
                           className={`w-full px-3.5 py-2.5 rounded-xl bg-[#0B1120] border text-white font-mono text-xs focus:outline-none focus:ring-1 transition-all ${
                             validationErrors.fullName
                               ? 'border-rose-500 focus:ring-rose-500'
@@ -1409,16 +1413,39 @@ Branch: ${PAYMENT_CONFIG.branch}`;
 
                         {/* QR Code */}
                         <div className="flex items-center gap-3 p-3 rounded-xl bg-[#10172B] border border-[#D4AF37]/25">
-                          <img
-                            src={PAYMENT_CONFIG.qrCodeUrl}
-                            alt="Payment QR Code"
-                            className="w-16 h-16 rounded-lg object-contain bg-white p-1 shrink-0"
-                          />
-                          <div className="text-[11px] font-mono space-y-1">
+                          <div
+                            onClick={() => {
+                              sounds.playTap();
+                              setQrModalOpen(true);
+                            }}
+                            className="relative group/qr cursor-pointer shrink-0"
+                            title="Click to Enlarge QR Code"
+                          >
+                            <img
+                              src={PAYMENT_CONFIG.qrCodeUrl}
+                              alt="Payment QR Code"
+                              className="w-16 h-16 rounded-lg object-contain bg-white p-1 transition-transform group-hover/qr:scale-105 border border-[#D4AF37]/50"
+                            />
+                            <div className="absolute inset-0 bg-black/40 rounded-lg flex items-center justify-center opacity-0 group-hover/qr:opacity-100 transition-opacity">
+                              <ZoomIn className="w-4 h-4 text-white drop-shadow" />
+                            </div>
+                          </div>
+                          <div className="text-[11px] font-mono space-y-1 min-w-0">
                             <span className="text-white font-bold block">Scan &amp; Pay via UPI</span>
                             <span className="text-[#C4BBA3] block text-[10px]">
                               Supports GPay, PhonePe, Paytm &amp; all UPI banking apps.
                             </span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                sounds.playTap();
+                                setQrModalOpen(true);
+                              }}
+                              className="inline-flex items-center gap-1.5 text-[10.5px] font-bold text-[#D4AF37] hover:text-[#FAF5EF] underline underline-offset-2 transition-colors cursor-pointer pt-0.5"
+                            >
+                              <Maximize2 className="w-3 h-3" />
+                              <span>Enlarge QR Code</span>
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -1660,6 +1687,93 @@ Branch: ${PAYMENT_CONFIG.branch}`;
         isOpen={devMailboxOpen}
         onClose={() => setDevMailboxOpen(false)}
       />
+
+      {/* Enlarged QR Code Lightbox Modal */}
+      <AnimatePresence>
+        {qrModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setQrModalOpen(false)}
+            className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 cursor-pointer"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-[#0A1020] border-2 border-[#D4AF37] rounded-3xl p-6 sm:p-8 max-w-sm w-full text-center relative shadow-[0_0_50px_rgba(212,175,55,0.4)] cursor-default space-y-4"
+            >
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  sounds.playTap();
+                  setQrModalOpen(false);
+                }}
+                className="absolute top-4 right-4 p-2 rounded-full bg-[#16203B] text-[#C4BBA3] hover:text-white hover:bg-[#D4AF37] hover:text-[#070A14] transition-all cursor-pointer"
+                aria-label="Close QR Modal"
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] font-mono text-[10px] font-bold uppercase tracking-wider">
+                  <QrCode className="w-3 h-3" />
+                  <span>Official UPI Payment QR</span>
+                </div>
+                <h3 className="text-lg font-playfair font-bold text-white">
+                  Scan to Pay
+                </h3>
+                <p className="text-xs font-mono text-[#D4AF37] font-extrabold">
+                  {selectedCategory === 'prom'
+                    ? `Prom Night: ${selectedPromPackage.name} (${selectedPromPackage.formattedPrice})`
+                    : `Recreational: ${selectedActivity.name} (${selectedActivity.formattedPrice})`}
+                </p>
+              </div>
+
+              {/* Large QR Display */}
+              <div className="p-3 bg-white rounded-2xl border-2 border-[#D4AF37]/60 mx-auto max-w-[260px] aspect-square flex items-center justify-center shadow-inner">
+                <img
+                  src={PAYMENT_CONFIG.qrCodeUrl}
+                  alt="Enlarged Payment QR Code"
+                  className="w-full h-full object-contain rounded-lg"
+                />
+              </div>
+
+              <div className="space-y-1 text-xs font-mono text-[#C4BBA3]">
+                <p className="text-white font-semibold">
+                  Beneficiary: {PAYMENT_CONFIG.beneficiaryName}
+                </p>
+                <p className="text-[11px]">
+                  Compatible with PhonePe, Google Pay, Paytm, BHIM &amp; Cred
+                </p>
+              </div>
+
+              {/* Actions */}
+              <div className="pt-2 flex items-center justify-center gap-2">
+                <a
+                  href={PAYMENT_CONFIG.qrCodeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="py-2 px-4 rounded-xl bg-[#16203B] border border-[#D4AF37]/40 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#070A14] transition-all font-mono text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Open Full Resolution</span>
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setQrModalOpen(false)}
+                  className="py-2 px-4 rounded-xl bg-[#D4AF37] text-[#070A14] font-mono text-xs font-bold hover:bg-[#F3E5AB] transition-all cursor-pointer"
+                >
+                  Done
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
