@@ -807,7 +807,7 @@ export interface EventRegistrationPayload {
 
 export async function submitEventRegistrationToServer(
   payload: EventRegistrationPayload
-): Promise<{ success: boolean; trackingId?: string; timestamp?: string; error?: string }> {
+): Promise<{ success: boolean; trackingId?: string; timestamp?: string; googleFormSynced?: boolean; error?: string }> {
   try {
     const res = await fetch('/api/register-event', {
       method: 'POST',
@@ -823,6 +823,7 @@ export async function submitEventRegistrationToServer(
         success: true,
         trackingId: data.trackingId,
         timestamp: data.timestamp,
+        googleFormSynced: Boolean(data.googleFormSynced),
       };
     }
     return {
