@@ -23,17 +23,26 @@ export interface EventPassData {
   trackingId: string;
 }
 
-const POETIC_QUOTES: Record<string, { quote: string; author: string }> = {
+const POETIC_QUOTES: Record<string, { lines: string[]; author: string }> = {
   prom: {
-    quote: '“Under the constellation of youth and revelry, tonight we make memories that time cannot dim.”',
+    lines: [
+      '“Under the constellation of youth and revelry,',
+      'tonight we make memories that time cannot dim.”',
+    ],
     author: '— AEQUITAS & AASTITVA ALLIANCES • OFFICIAL PROM NIGHT CONCLAVE',
   },
   recreational: {
-    quote: '“In the spirit of fair play, fierce camaraderie, and intellect—every arena is a stage for greatness.”',
+    lines: [
+      '“In the spirit of fair play, fierce camaraderie, and intellect—',
+      'every arena is a stage for greatness.”',
+    ],
     author: '— AEQUITAS & AASTITVA ALLIANCES • RECREATIONAL LEAGUE',
   },
   special: {
-    quote: '“Authentic talent knows no bounds; step into the spotlight and let your craft inspire the world.”',
+    lines: [
+      '“Authentic talent knows no bounds; step into the spotlight,',
+      'and let your craft inspire the world.”',
+    ],
     author: '— AEQUITAS & AASTITVA ALLIANCES • MUN GOT LATENT JURY DESK',
   },
 };
@@ -255,17 +264,23 @@ export function generateEventPassDataUrl(data: EventPassData): string {
 
   const selectedQuote = POETIC_QUOTES[data.category] || POETIC_QUOTES.prom;
 
-  ctx.font = 'italic 19px "Cormorant Garamond", "Playfair Display", serif';
+  ctx.font = 'italic 20px "Cormorant Garamond", "Playfair Display", serif';
   ctx.fillStyle = '#FFF5DC';
   ctx.shadowColor = 'rgba(212, 175, 55, 0.3)';
   ctx.shadowBlur = 8;
-  ctx.fillText(selectedQuote.quote, width / 2, quoteY + 75);
+
+  if (selectedQuote.lines && selectedQuote.lines.length >= 2) {
+    ctx.fillText(selectedQuote.lines[0], width / 2, quoteY + 68);
+    ctx.fillText(selectedQuote.lines[1], width / 2, quoteY + 98);
+  } else if (selectedQuote.lines && selectedQuote.lines.length === 1) {
+    ctx.fillText(selectedQuote.lines[0], width / 2, quoteY + 82);
+  }
   ctx.shadowBlur = 0;
 
   ctx.font = 'bold 10px "Space Grotesk", sans-serif';
   ctx.fillStyle = 'rgba(212, 175, 55, 0.85)';
   ctx.letterSpacing = '3px';
-  ctx.fillText(selectedQuote.author, width / 2, quoteY + 125);
+  ctx.fillText(selectedQuote.author, width / 2, quoteY + 134);
   ctx.restore();
 
   // 8. Footer Bar
