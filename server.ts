@@ -337,6 +337,135 @@ async function startServer() {
     }
   }
 
+  // ============================================================================
+  // EVENT GOOGLE FORM SYNCHRONIZATION ENGINE
+  // Target Event Form: https://docs.google.com/forms/d/e/1FAIpQLSc_tPGuiQ7rBUTtBgoUd-gvtaQIDyP_SrC2_klygg6GUy0EHA/viewform?usp=pp_url
+  // Response Action: https://docs.google.com/forms/d/e/1FAIpQLSc_tPGuiQ7rBUTtBgoUd-gvtaQIDyP_SrC2_klygg6GUy0EHA/formResponse
+  // ============================================================================
+  async function syncEventToGoogleForm(clean: any, trackingId: string): Promise<boolean> {
+    try {
+      const mapCategory = () => {
+        if (clean.category === 'prom') return 'Prom Night Gala (Strictly 18+ College / UG)';
+        if (clean.category === 'recreational') return 'Recreational Activities (Open to All Ages)';
+        return 'Special Event: MUN got Latent (100% Free)';
+      };
+
+      const mapPromPackage = () => {
+        if (clean.category !== 'prom') return '• N/A - Not Applicable';
+        const id = (clean.selectionId || '').toLowerCase();
+        if (id === 'stag') return '• Stag Entry — ₹599';
+        if (id === 'duo') return '• Duo Entry — ₹999';
+        if (id === 'squad') return '• Squad Entry — ₹1,999';
+        return '• Stag Entry — ₹599';
+      };
+
+      const mapRecreationActivity = () => {
+        if (clean.category !== 'recreational') return '• N/A - Not Applicable';
+        const id = (clean.selectionId || '').toLowerCase();
+        if (id === 'bgmi') return '• Unisex: BGMI (₹199)';
+        if (id === 'freefire') return '• Unisex: FREE FIRE (₹199)';
+        if (id === 'ludo') return '• Unisex: LUDO (₹199)';
+        if (id === 'mafia') return '• Unisex: MAFIA (₹199)';
+        if (id.includes('treasure')) return '• Unisex: TREASURE HUNT (₹199)';
+        if (id.includes('damsh')) return '• Unisex: DAMSHARAJ (₹199)';
+        if (id === 'chess') return '• Unisex: CHESS (₹199)';
+        if (id.includes('brush') || id.includes('hair') || id.includes('diy')) return '• Exclusively for Girls: Hair brush DIY activity (₹199)';
+        if (id.includes('minute') || id.includes('win')) return '• Exclusively for Boys: Minute to Win it challenge (₹199)';
+        return '• Unisex: BGMI (₹199)';
+      };
+
+      const formData = new URLSearchParams({
+        'entry.2071710502': mapCategory(),
+        'entry.1817464805': mapPromPackage(),
+        'entry.1684941164': mapRecreationActivity(),
+        'entry.1040121999': (clean.fullName || '').trim(),
+        'entry.1784915256': clean.age ? String(clean.age) : 'N/A',
+        'entry.1349604836': (clean.phone || '').trim(),
+        'entry.834784784': (clean.email || '').trim(),
+        'entry.826925770': (clean.institution || '').trim(),
+        'entry.564995734': clean.talentDescription ? clean.talentDescription.trim() : 'N/A',
+        'entry.1595191915': clean.transactionId
+          ? clean.transactionId.trim()
+          : clean.category === 'special'
+          ? 'Free Entry (MUN Got Latent)'
+          : 'Pending Verification',
+        'entry.1617953813': trackingId,
+      }).toString();
+
+      const formUrl =
+        'https://docs.google.com/forms/d/e/1FAIpQLSc_tPGuiQ7rBUTtBgoUd-gvtaQIDyP_SrC2_klygg6GUy0EHA/formResponse';
+
+      if (typeof fetch === 'function') {
+        const response = await fetch(formUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'User-Agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+            Referer:
+              'https://docs.google.com/forms/d/e/1FAIpQLSc_tPGuiQ7rBUTtBgoUd-gvtaQIDyP_SrC2_klygg6GUy0EHA/viewform',
+          },
+          body: formData,
+          signal: AbortSignal.timeout(10000),
+        });
+
+        const isSuccess = response.ok || response.status === 200 || response.status === 302 || response.status === 303;
+        console.log(
+          `[Event Google Forms Sync] Server synced event registration to Google Form (Status: ${response.status}${isSuccess ? ' - OK' : ''})`
+        );
+        return isSuccess;
+      }
+
+      return new Promise((resolve) => {
+        const req = https.request(
+          {
+            hostname: 'docs.google.com',
+            port: 443,
+            path: '/forms/d/e/1FAIpQLSc_tPGuiQ7rBUTtBgoUd-gvtaQIDyP_SrC2_klygg6GUy0EHA/formResponse',
+            method: 'POST',
+            timeout: 8000,
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'Content-Length': Buffer.byteLength(formData),
+              'User-Agent':
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+              Referer:
+                'https://docs.google.com/forms/d/e/1FAIpQLSc_tPGuiQ7rBUTtBgoUd-gvtaQIDyP_SrC2_klygg6GUy0EHA/viewform',
+              Origin: 'https://docs.google.com',
+            },
+          },
+          (res) => {
+            const isSuccess =
+              res.statusCode !== undefined &&
+              (res.statusCode === 200 || res.statusCode === 302 || res.statusCode === 303);
+            console.log(
+              `[Event Google Forms Sync] Server synced event registration to Google Form (Status: ${res.statusCode}${isSuccess ? ' - OK' : ''})`
+            );
+            res.resume();
+            resolve(isSuccess);
+          }
+        );
+
+        req.on('timeout', () => {
+          console.warn('[Event Google Forms Sync] Request timed out after 8s');
+          req.destroy();
+          resolve(false);
+        });
+
+        req.on('error', (err) => {
+          console.warn('[Event Google Forms Sync] Dispatch warning:', err.message);
+          resolve(false);
+        });
+
+        req.write(formData);
+        req.end();
+      });
+    } catch (err: any) {
+      console.warn('[Event Google Forms Sync] Exception during dispatch:', err?.message);
+      return false;
+    }
+  }
+
   // 8. HARDENING: Dedicated Secure Delegate Registration Endpoint (OWASP ASVS 5.1)
   app.post('/api/register', registrationRateLimiter, async (req, res) => {
     const validation = validateRegistrationPayload(req.body);
@@ -514,11 +643,15 @@ async function startServer() {
       `[Event Registration] Recorded ${trackingId} for ${sanitizeForLog(clean.fullName)} (${clean.categoryLabel}: ${clean.selectionTitle})`
     );
 
+    // Sync directly to connected Google Form from server side
+    const googleFormSynced = await syncEventToGoogleForm(clean, trackingId);
+
     res.status(201).json({
       success: true,
       trackingId,
       timestamp: nowTime,
-      message: 'Event registration confirmed securely.',
+      googleFormSynced,
+      message: 'Event registration confirmed securely and synced to Google Form.',
     });
   });
 

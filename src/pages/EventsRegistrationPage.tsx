@@ -538,6 +538,62 @@ Branch: ${PAYMENT_CONFIG.branch}`;
         status: 'New' as const,
       };
       await saveEntryToMailbox(localEntry);
+
+      // 3. Direct client-side Google Form dispatch fallback
+      try {
+        const mapCategory = () => {
+          if (category === 'prom') return 'Prom Night Gala (Strictly 18+ College / UG)';
+          if (category === 'recreational') return 'Recreational Activities (Open to All Ages)';
+          return 'Special Event: MUN got Latent (100% Free)';
+        };
+
+        const mapPromPackage = () => {
+          if (category !== 'prom') return '• N/A - Not Applicable';
+          const id = (payload.selectionId || '').toLowerCase();
+          if (id === 'stag') return '• Stag Entry — ₹599';
+          if (id === 'duo') return '• Duo Entry — ₹999';
+          if (id === 'squad') return '• Squad Entry — ₹1,999';
+          return '• Stag Entry — ₹599';
+        };
+
+        const mapRecreationActivity = () => {
+          if (category !== 'recreational') return '• N/A - Not Applicable';
+          const id = (payload.selectionId || '').toLowerCase();
+          if (id === 'bgmi') return '• Unisex: BGMI (₹199)';
+          if (id === 'freefire') return '• Unisex: FREE FIRE (₹199)';
+          if (id === 'ludo') return '• Unisex: LUDO (₹199)';
+          if (id === 'mafia') return '• Unisex: MAFIA (₹199)';
+          if (id.includes('treasure')) return '• Unisex: TREASURE HUNT (₹199)';
+          if (id.includes('damsh')) return '• Unisex: DAMSHARAJ (₹199)';
+          if (id === 'chess') return '• Unisex: CHESS (₹199)';
+          if (id.includes('brush') || id.includes('hair') || id.includes('diy')) return '• Exclusively for Girls: Hair brush DIY activity (₹199)';
+          if (id.includes('minute') || id.includes('win')) return '• Exclusively for Boys: Minute to Win it challenge (₹199)';
+          return '• Unisex: BGMI (₹199)';
+        };
+
+        const googleFormData = new URLSearchParams({
+          'entry.2071710502': mapCategory(),
+          'entry.1817464805': mapPromPackage(),
+          'entry.1684941164': mapRecreationActivity(),
+          'entry.1040121999': payload.fullName,
+          'entry.1784915256': payload.age ? String(payload.age) : 'N/A',
+          'entry.1349604836': payload.phone,
+          'entry.834784784': payload.email,
+          'entry.826925770': payload.institution,
+          'entry.564995734': payload.talentDescription || 'N/A',
+          'entry.1595191915': payload.transactionId || (category === 'special' ? 'Free Entry (MUN Got Latent)' : 'Pending Verification'),
+          'entry.1617953813': generatedTrackingId,
+        });
+
+        fetch('https://docs.google.com/forms/d/e/1FAIpQLSc_tPGuiQ7rBUTtBgoUd-gvtaQIDyP_SrC2_klygg6GUy0EHA/formResponse', {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: googleFormData.toString(),
+        }).catch(() => {});
+      } catch (e) {}
     } catch (err) {
       console.warn('Registration dispatch local recovery:', err);
     }

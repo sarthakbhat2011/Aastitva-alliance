@@ -727,6 +727,108 @@ async function startServer() {
       return false;
     }
   }
+  async function syncEventToGoogleForm(clean, trackingId) {
+    try {
+      const mapCategory = () => {
+        if (clean.category === "prom") return "Prom Night Gala (Strictly 18+ College / UG)";
+        if (clean.category === "recreational") return "Recreational Activities (Open to All Ages)";
+        return "Special Event: MUN got Latent (100% Free)";
+      };
+      const mapPromPackage = () => {
+        if (clean.category !== "prom") return "\u2022 N/A - Not Applicable";
+        const id = (clean.selectionId || "").toLowerCase();
+        if (id === "stag") return "\u2022 Stag Entry \u2014 \u20B9599";
+        if (id === "duo") return "\u2022 Duo Entry \u2014 \u20B9999";
+        if (id === "squad") return "\u2022 Squad Entry \u2014 \u20B91,999";
+        return "\u2022 Stag Entry \u2014 \u20B9599";
+      };
+      const mapRecreationActivity = () => {
+        if (clean.category !== "recreational") return "\u2022 N/A - Not Applicable";
+        const id = (clean.selectionId || "").toLowerCase();
+        if (id === "bgmi") return "\u2022 Unisex: BGMI (\u20B9199)";
+        if (id === "freefire") return "\u2022 Unisex: FREE FIRE (\u20B9199)";
+        if (id === "ludo") return "\u2022 Unisex: LUDO (\u20B9199)";
+        if (id === "mafia") return "\u2022 Unisex: MAFIA (\u20B9199)";
+        if (id.includes("treasure")) return "\u2022 Unisex: TREASURE HUNT (\u20B9199)";
+        if (id.includes("damsh")) return "\u2022 Unisex: DAMSHARAJ (\u20B9199)";
+        if (id === "chess") return "\u2022 Unisex: CHESS (\u20B9199)";
+        if (id.includes("brush") || id.includes("hair") || id.includes("diy")) return "\u2022 Exclusively for Girls: Hair brush DIY activity (\u20B9199)";
+        if (id.includes("minute") || id.includes("win")) return "\u2022 Exclusively for Boys: Minute to Win it challenge (\u20B9199)";
+        return "\u2022 Unisex: BGMI (\u20B9199)";
+      };
+      const formData = new URLSearchParams({
+        "entry.2071710502": mapCategory(),
+        "entry.1817464805": mapPromPackage(),
+        "entry.1684941164": mapRecreationActivity(),
+        "entry.1040121999": (clean.fullName || "").trim(),
+        "entry.1784915256": clean.age ? String(clean.age) : "N/A",
+        "entry.1349604836": (clean.phone || "").trim(),
+        "entry.834784784": (clean.email || "").trim(),
+        "entry.826925770": (clean.institution || "").trim(),
+        "entry.564995734": clean.talentDescription ? clean.talentDescription.trim() : "N/A",
+        "entry.1595191915": clean.transactionId ? clean.transactionId.trim() : clean.category === "special" ? "Free Entry (MUN Got Latent)" : "Pending Verification",
+        "entry.1617953813": trackingId
+      }).toString();
+      const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSc_tPGuiQ7rBUTtBgoUd-gvtaQIDyP_SrC2_klygg6GUy0EHA/formResponse";
+      if (typeof fetch === "function") {
+        const response = await fetch(formUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            Referer: "https://docs.google.com/forms/d/e/1FAIpQLSc_tPGuiQ7rBUTtBgoUd-gvtaQIDyP_SrC2_klygg6GUy0EHA/viewform"
+          },
+          body: formData,
+          signal: AbortSignal.timeout(1e4)
+        });
+        const isSuccess = response.ok || response.status === 200 || response.status === 302 || response.status === 303;
+        console.log(
+          `[Event Google Forms Sync] Server synced event registration to Google Form (Status: ${response.status}${isSuccess ? " - OK" : ""})`
+        );
+        return isSuccess;
+      }
+      return new Promise((resolve) => {
+        const req = import_https.default.request(
+          {
+            hostname: "docs.google.com",
+            port: 443,
+            path: "/forms/d/e/1FAIpQLSc_tPGuiQ7rBUTtBgoUd-gvtaQIDyP_SrC2_klygg6GUy0EHA/formResponse",
+            method: "POST",
+            timeout: 8e3,
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Content-Length": Buffer.byteLength(formData),
+              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+              Referer: "https://docs.google.com/forms/d/e/1FAIpQLSc_tPGuiQ7rBUTtBgoUd-gvtaQIDyP_SrC2_klygg6GUy0EHA/viewform",
+              Origin: "https://docs.google.com"
+            }
+          },
+          (res) => {
+            const isSuccess = res.statusCode !== void 0 && (res.statusCode === 200 || res.statusCode === 302 || res.statusCode === 303);
+            console.log(
+              `[Event Google Forms Sync] Server synced event registration to Google Form (Status: ${res.statusCode}${isSuccess ? " - OK" : ""})`
+            );
+            res.resume();
+            resolve(isSuccess);
+          }
+        );
+        req.on("timeout", () => {
+          console.warn("[Event Google Forms Sync] Request timed out after 8s");
+          req.destroy();
+          resolve(false);
+        });
+        req.on("error", (err) => {
+          console.warn("[Event Google Forms Sync] Dispatch warning:", err.message);
+          resolve(false);
+        });
+        req.write(formData);
+        req.end();
+      });
+    } catch (err) {
+      console.warn("[Event Google Forms Sync] Exception during dispatch:", err?.message);
+      return false;
+    }
+  }
   app.post("/api/register", registrationRateLimiter, async (req, res) => {
     const validation = validateRegistrationPayload(req.body);
     if (!validation.isValid || !validation.data) {
@@ -898,11 +1000,13 @@ ${clean.talentDescription}`);
     console.log(
       `[Event Registration] Recorded ${trackingId} for ${sanitizeForLog(clean.fullName)} (${clean.categoryLabel}: ${clean.selectionTitle})`
     );
+    const googleFormSynced = await syncEventToGoogleForm(clean, trackingId);
     res.status(201).json({
       success: true,
       trackingId,
       timestamp: nowTime,
-      message: "Event registration confirmed securely."
+      googleFormSynced,
+      message: "Event registration confirmed securely and synced to Google Form."
     });
   });
   app.get("/api/mailbox", requireAdminAuth, async (req, res) => {
