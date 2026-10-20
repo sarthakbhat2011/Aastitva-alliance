@@ -735,16 +735,14 @@ async function startServer() {
       return false;
     }
   }
-  let cachedSquadEntryId = null;
-  let lastSquadCheck = 0;
-  async function resolveSquadEntryId() {
-    if (cachedSquadEntryId) return cachedSquadEntryId;
-    if (process.env.GOOGLE_FORM_ENTRY_SQUAD_MEMBERS) {
-      cachedSquadEntryId = process.env.GOOGLE_FORM_ENTRY_SQUAD_MEMBERS;
-      return cachedSquadEntryId;
+  let cachedSquadEntryId = "1147579479";
+  let cachedLiveRecreationOptions = [];
+  let lastMetadataCheck = 0;
+  async function resolveLiveFormMetadata() {
+    if (Date.now() - lastMetadataCheck < 3e4 && cachedLiveRecreationOptions.length > 0) {
+      return { squadId: cachedSquadEntryId, recreationOptions: cachedLiveRecreationOptions };
     }
-    if (Date.now() - lastSquadCheck < 15e3) return null;
-    lastSquadCheck = Date.now();
+    lastMetadataCheck = Date.now();
     try {
       const res = await fetch(
         "https://docs.google.com/forms/d/e/1FAIpQLSc_tPGuiQ7rBUTtBgoUd-gvtaQIDyP_SrC2_klygg6GUy0EHA/viewform",
@@ -760,20 +758,23 @@ async function startServer() {
           const entryId = q[4]?.[0]?.[0];
           if (entryId && (title.includes("squad") || title.includes("duo") || title.includes("teammate") || title.includes("partner") || title.includes("member") && !title.includes("number"))) {
             cachedSquadEntryId = String(entryId);
-            console.log(
-              `[Google Form Sync] Auto-detected Squad/Duo Question: entry.${cachedSquadEntryId} ("${q[1]}")`
-            );
-            return cachedSquadEntryId;
+          }
+          if (title.includes("recreational")) {
+            const rawOpts = q[4]?.[0]?.[1];
+            if (Array.isArray(rawOpts)) {
+              cachedLiveRecreationOptions = rawOpts.map((o) => String(o[0]));
+            }
           }
         }
       }
     } catch (err) {
-      console.warn("[Google Form Sync] Notice resolving squad entry ID:", err?.message);
+      console.warn("[Google Form Sync] Notice resolving live form metadata:", err?.message);
     }
-    return null;
+    return { squadId: cachedSquadEntryId, recreationOptions: cachedLiveRecreationOptions };
   }
   async function syncEventToGoogleForm(clean, trackingId) {
     try {
+      const { squadId, recreationOptions } = await resolveLiveFormMetadata();
       const mapCategory = () => {
         if (clean.category === "prom") return "Prom Night Gala (Strictly 18+ College / UG)";
         if (clean.category === "recreational") return "Recreational Activities (Open to All Ages)";
@@ -792,39 +793,46 @@ async function startServer() {
         const id = (clean.selectionId || "").toLowerCase();
         const isSquad = id.includes("squad");
         const isDuo = id.includes("duo");
+        const findOpt = (predicate, fallback) => {
+          if (recreationOptions && recreationOptions.length > 0) {
+            const found = recreationOptions.find(predicate);
+            if (found) return found;
+          }
+          return fallback;
+        };
         if (id.includes("bgmi")) {
-          if (isSquad) return "\u2022 Unisex: BGMI \u2014 Squad (\u20B9800)";
-          if (isDuo) return "\u2022 Unisex: BGMI \u2014 Duo (\u20B9450)";
-          return "\u2022 Unisex: BGMI \u2014 Individual (\u20B9250)";
+          if (isSquad) return findOpt((o) => o.includes("BGMI") && o.includes("Squad"), "\u2022 Unisex: BGMI \u2014 Squad (\u20B9800)");
+          if (isDuo) return findOpt((o) => o.includes("BGMI") && o.includes("Duo"), "\u2022 Unisex: BGMI \u2014 Duo (\u20B9450)");
+          return findOpt((o) => o.includes("BGMI") && (o.includes("Individual") || o.includes("Solo")), "\u2022 Unisex: BGMI \u2014 Individual (\u20B9250)");
         }
         if (id.includes("freefire")) {
-          if (isSquad) return "\u2022 Unisex: FREE FIRE \u2014 Squad (\u20B9800)";
-          if (isDuo) return "\u2022 Unisex: FREE FIRE \u2014 Duo (\u20B9450)";
-          return "\u2022 Unisex: FREE FIRE \u2014 Individual (\u20B9250)";
+          if (isSquad) return findOpt((o) => o.includes("FREE FIRE") && o.includes("Squad"), "\u2022 Unisex: FREE FIRE \u2014 Squad (\u20B9800)");
+          if (isDuo) return findOpt((o) => o.includes("FREE FIRE") && o.includes("Duo"), "\u2022 Unisex: FREE FIRE \u2014 Duo (\u20B9450)");
+          return findOpt((o) => o.includes("FREE FIRE") && (o.includes("Individual") || o.includes("Solo")), "\u2022 Unisex: FREE FIRE \u2014 Individual (\u20B9250)");
         }
         if (id.includes("ludo")) {
-          if (isSquad) return "\u2022 Unisex: LUDO \u2014 Squad (\u20B9800)";
-          if (isDuo) return "\u2022 Unisex: LUDO \u2014 Duo (\u20B9450)";
-          return "\u2022 Unisex: LUDO \u2014 Individual (\u20B9250)";
+          if (isSquad) return findOpt((o) => o.includes("LUDO") && o.includes("Squad"), "\u2022 Unisex: LUDO \u2014 Squad (\u20B9800)");
+          if (isDuo) return findOpt((o) => o.includes("LUDO") && o.includes("Duo"), "\u2022 Unisex: LUDO \u2014 Duo (\u20B9450)");
+          return findOpt((o) => o.includes("LUDO") && (o.includes("Individual") || o.includes("Solo")), "\u2022 Unisex: LUDO \u2014 Individual (\u20B9250)");
         }
         if (id.includes("mafia")) {
-          if (isSquad) return "\u2022 Unisex: MAFIA \u2014 Squad (\u20B9800)";
-          if (isDuo) return "\u2022 Unisex: MAFIA \u2014 Duo (\u20B9450)";
-          return "\u2022 Unisex: MAFIA \u2014 Individual (\u20B9250)";
+          if (isSquad) return findOpt((o) => o.includes("MAFIA") && o.includes("Squad"), "\u2022 Unisex: MAFIA \u2014 Squad (\u20B9800)");
+          if (isDuo) return findOpt((o) => o.includes("MAFIA") && o.includes("Duo"), "\u2022 Unisex: MAFIA \u2014 Duo (\u20B9450)");
+          return findOpt((o) => o.includes("MAFIA") && (o.includes("Individual") || o.includes("Solo")), "\u2022 Unisex: MAFIA \u2014 Individual (\u20B9250)");
         }
-        if (id.includes("treasure")) return "\u2022 Unisex: TREASURE HUNT (\u20B9200)";
-        if (id.includes("charade") || id.includes("damsh") || id.includes("dumb")) return "\u2022 Unisex: DUMB CHARADES (\u20B9200)";
-        if (id === "chess") return "\u2022 Unisex: CHESS (\u20B9200)";
-        if (id.includes("vanity") || id.includes("rapunzel") || id.includes("brush") || id.includes("hair") || id.includes("diy")) return "\u2022 Exclusively for Girls: Rapunzel's vanity (\u20B9200)";
-        if (id.includes("minute") || id.includes("win")) return "\u2022 Exclusively for Boys: Minute to Win it challenge (\u20B9200)";
+        if (id.includes("treasure")) return findOpt((o) => o.includes("TREASURE"), "\u2022 Unisex: TREASURE HUNT (\u20B9199)");
+        if (id.includes("charade") || id.includes("damsh") || id.includes("dumb")) return findOpt((o) => o.includes("CHARADE"), "\u2022 Unisex:  DUMB CHARADES (\u20B9199)");
+        if (id === "chess") return findOpt((o) => o.includes("CHESS"), "\u2022 Unisex: CHESS (\u20B9199)");
+        if (id.includes("vanity") || id.includes("rapunzel") || id.includes("brush") || id.includes("hair") || id.includes("diy")) return findOpt((o) => o.toLowerCase().includes("rapunzel") || o.toLowerCase().includes("vanity"), "\u2022 Exclusively for Girls: Rapunzel's vanity (\u20B9199)");
+        if (id.includes("minute") || id.includes("win")) return findOpt((o) => o.toLowerCase().includes("minute"), "\u2022 Exclusively for Boys: Minute to Win it challenge (\u20B9199)");
         return "\u2022 Unisex: BGMI \u2014 Individual (\u20B9250)";
       };
-      const squadEntryId = await resolveSquadEntryId();
       const formPayload = {
         "entry.2071710502": mapCategory(),
         "entry.1817464805": mapPromPackage(),
         "entry.1684941164": mapRecreationActivity(),
         "entry.1040121999": (clean.fullName || "").trim(),
+        "entry.1147579479": clean.squadMembers ? clean.squadMembers.trim() : "N/A - Solo Entry",
         "entry.1784915256": clean.age ? String(clean.age) : "N/A",
         "entry.1349604836": (clean.phone || "").trim(),
         "entry.834784784": (clean.email || "").trim(),
@@ -833,8 +841,8 @@ async function startServer() {
         "entry.1595191915": clean.transactionId ? clean.transactionId.trim() : clean.category === "special" ? "Free Entry (MUN Got Latent)" : "Pending Verification",
         "entry.1617953813": trackingId
       };
-      if (squadEntryId) {
-        formPayload[`entry.${squadEntryId}`] = clean.squadMembers ? clean.squadMembers.trim() : "N/A - Solo Entry";
+      if (squadId && squadId !== "1147579479") {
+        formPayload[`entry.${squadId}`] = clean.squadMembers ? clean.squadMembers.trim() : "N/A - Solo Entry";
       }
       const formData = new URLSearchParams(formPayload).toString();
       const formUrl = "https://docs.google.com/forms/d/e/1FAIpQLSc_tPGuiQ7rBUTtBgoUd-gvtaQIDyP_SrC2_klygg6GUy0EHA/formResponse";

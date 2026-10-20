@@ -342,17 +342,15 @@ async function startServer() {
   // Target Event Form: https://docs.google.com/forms/d/e/1FAIpQLSc_tPGuiQ7rBUTtBgoUd-gvtaQIDyP_SrC2_klygg6GUy0EHA/viewform?usp=pp_url
   // Response Action: https://docs.google.com/forms/d/e/1FAIpQLSc_tPGuiQ7rBUTtBgoUd-gvtaQIDyP_SrC2_klygg6GUy0EHA/formResponse
   // ============================================================================
-  let cachedSquadEntryId: string | null = null;
-  let lastSquadCheck = 0;
+  let cachedSquadEntryId: string = '1147579479';
+  let cachedLiveRecreationOptions: string[] = [];
+  let lastMetadataCheck = 0;
 
-  async function resolveSquadEntryId(): Promise<string | null> {
-    if (cachedSquadEntryId) return cachedSquadEntryId;
-    if (process.env.GOOGLE_FORM_ENTRY_SQUAD_MEMBERS) {
-      cachedSquadEntryId = process.env.GOOGLE_FORM_ENTRY_SQUAD_MEMBERS;
-      return cachedSquadEntryId;
+  async function resolveLiveFormMetadata(): Promise<{ squadId: string; recreationOptions: string[] }> {
+    if (Date.now() - lastMetadataCheck < 30000 && cachedLiveRecreationOptions.length > 0) {
+      return { squadId: cachedSquadEntryId, recreationOptions: cachedLiveRecreationOptions };
     }
-    if (Date.now() - lastSquadCheck < 15000) return null;
-    lastSquadCheck = Date.now();
+    lastMetadataCheck = Date.now();
     try {
       const res = await fetch(
         'https://docs.google.com/forms/d/e/1FAIpQLSc_tPGuiQ7rBUTtBgoUd-gvtaQIDyP_SrC2_klygg6GUy0EHA/viewform',
@@ -375,21 +373,25 @@ async function startServer() {
               (title.includes('member') && !title.includes('number')))
           ) {
             cachedSquadEntryId = String(entryId);
-            console.log(
-              `[Google Form Sync] Auto-detected Squad/Duo Question: entry.${cachedSquadEntryId} ("${q[1]}")`
-            );
-            return cachedSquadEntryId;
+          }
+          if (title.includes('recreational')) {
+            const rawOpts = q[4]?.[0]?.[1];
+            if (Array.isArray(rawOpts)) {
+              cachedLiveRecreationOptions = rawOpts.map((o: any) => String(o[0]));
+            }
           }
         }
       }
     } catch (err: any) {
-      console.warn('[Google Form Sync] Notice resolving squad entry ID:', err?.message);
+      console.warn('[Google Form Sync] Notice resolving live form metadata:', err?.message);
     }
-    return null;
+    return { squadId: cachedSquadEntryId, recreationOptions: cachedLiveRecreationOptions };
   }
 
   async function syncEventToGoogleForm(clean: any, trackingId: string): Promise<boolean> {
     try {
+      const { squadId, recreationOptions } = await resolveLiveFormMetadata();
+
       const mapCategory = () => {
         if (clean.category === 'prom') return 'Prom Night Gala (Strictly 18+ College / UG)';
         if (clean.category === 'recreational') return 'Recreational Activities (Open to All Ages)';
@@ -411,40 +413,48 @@ async function startServer() {
         const isSquad = id.includes('squad');
         const isDuo = id.includes('duo');
 
+        const findOpt = (predicate: (opt: string) => boolean, fallback: string) => {
+          if (recreationOptions && recreationOptions.length > 0) {
+            const found = recreationOptions.find(predicate);
+            if (found) return found;
+          }
+          return fallback;
+        };
+
         if (id.includes('bgmi')) {
-          if (isSquad) return '• Unisex: BGMI — Squad (₹800)';
-          if (isDuo) return '• Unisex: BGMI — Duo (₹450)';
-          return '• Unisex: BGMI — Individual (₹250)';
+          if (isSquad) return findOpt((o) => o.includes('BGMI') && o.includes('Squad'), '• Unisex: BGMI — Squad (₹800)');
+          if (isDuo) return findOpt((o) => o.includes('BGMI') && o.includes('Duo'), '• Unisex: BGMI — Duo (₹450)');
+          return findOpt((o) => o.includes('BGMI') && (o.includes('Individual') || o.includes('Solo')), '• Unisex: BGMI — Individual (₹250)');
         }
         if (id.includes('freefire')) {
-          if (isSquad) return '• Unisex: FREE FIRE — Squad (₹800)';
-          if (isDuo) return '• Unisex: FREE FIRE — Duo (₹450)';
-          return '• Unisex: FREE FIRE — Individual (₹250)';
+          if (isSquad) return findOpt((o) => o.includes('FREE FIRE') && o.includes('Squad'), '• Unisex: FREE FIRE — Squad (₹800)');
+          if (isDuo) return findOpt((o) => o.includes('FREE FIRE') && o.includes('Duo'), '• Unisex: FREE FIRE — Duo (₹450)');
+          return findOpt((o) => o.includes('FREE FIRE') && (o.includes('Individual') || o.includes('Solo')), '• Unisex: FREE FIRE — Individual (₹250)');
         }
         if (id.includes('ludo')) {
-          if (isSquad) return '• Unisex: LUDO — Squad (₹800)';
-          if (isDuo) return '• Unisex: LUDO — Duo (₹450)';
-          return '• Unisex: LUDO — Individual (₹250)';
+          if (isSquad) return findOpt((o) => o.includes('LUDO') && o.includes('Squad'), '• Unisex: LUDO — Squad (₹800)');
+          if (isDuo) return findOpt((o) => o.includes('LUDO') && o.includes('Duo'), '• Unisex: LUDO — Duo (₹450)');
+          return findOpt((o) => o.includes('LUDO') && (o.includes('Individual') || o.includes('Solo')), '• Unisex: LUDO — Individual (₹250)');
         }
         if (id.includes('mafia')) {
-          if (isSquad) return '• Unisex: MAFIA — Squad (₹800)';
-          if (isDuo) return '• Unisex: MAFIA — Duo (₹450)';
-          return '• Unisex: MAFIA — Individual (₹250)';
+          if (isSquad) return findOpt((o) => o.includes('MAFIA') && o.includes('Squad'), '• Unisex: MAFIA — Squad (₹800)');
+          if (isDuo) return findOpt((o) => o.includes('MAFIA') && o.includes('Duo'), '• Unisex: MAFIA — Duo (₹450)');
+          return findOpt((o) => o.includes('MAFIA') && (o.includes('Individual') || o.includes('Solo')), '• Unisex: MAFIA — Individual (₹250)');
         }
-        if (id.includes('treasure')) return '• Unisex: TREASURE HUNT (₹200)';
-        if (id.includes('charade') || id.includes('damsh') || id.includes('dumb')) return '• Unisex: DUMB CHARADES (₹200)';
-        if (id === 'chess') return '• Unisex: CHESS (₹200)';
-        if (id.includes('vanity') || id.includes('rapunzel') || id.includes('brush') || id.includes('hair') || id.includes('diy')) return "• Exclusively for Girls: Rapunzel's vanity (₹200)";
-        if (id.includes('minute') || id.includes('win')) return '• Exclusively for Boys: Minute to Win it challenge (₹200)';
+        if (id.includes('treasure')) return findOpt((o) => o.includes('TREASURE'), '• Unisex: TREASURE HUNT (₹199)');
+        if (id.includes('charade') || id.includes('damsh') || id.includes('dumb')) return findOpt((o) => o.includes('CHARADE'), '• Unisex:  DUMB CHARADES (₹199)');
+        if (id === 'chess') return findOpt((o) => o.includes('CHESS'), '• Unisex: CHESS (₹199)');
+        if (id.includes('vanity') || id.includes('rapunzel') || id.includes('brush') || id.includes('hair') || id.includes('diy')) return findOpt((o) => o.toLowerCase().includes('rapunzel') || o.toLowerCase().includes('vanity'), "• Exclusively for Girls: Rapunzel's vanity (₹199)");
+        if (id.includes('minute') || id.includes('win')) return findOpt((o) => o.toLowerCase().includes('minute'), '• Exclusively for Boys: Minute to Win it challenge (₹199)');
         return '• Unisex: BGMI — Individual (₹250)';
       };
 
-      const squadEntryId = await resolveSquadEntryId();
       const formPayload: Record<string, string> = {
         'entry.2071710502': mapCategory(),
         'entry.1817464805': mapPromPackage(),
         'entry.1684941164': mapRecreationActivity(),
         'entry.1040121999': (clean.fullName || '').trim(),
+        'entry.1147579479': clean.squadMembers ? clean.squadMembers.trim() : 'N/A - Solo Entry',
         'entry.1784915256': clean.age ? String(clean.age) : 'N/A',
         'entry.1349604836': (clean.phone || '').trim(),
         'entry.834784784': (clean.email || '').trim(),
@@ -458,8 +468,8 @@ async function startServer() {
         'entry.1617953813': trackingId,
       };
 
-      if (squadEntryId) {
-        formPayload[`entry.${squadEntryId}`] = clean.squadMembers
+      if (squadId && squadId !== '1147579479') {
+        formPayload[`entry.${squadId}`] = clean.squadMembers
           ? clean.squadMembers.trim()
           : 'N/A - Solo Entry';
       }

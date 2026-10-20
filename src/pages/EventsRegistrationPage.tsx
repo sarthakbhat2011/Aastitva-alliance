@@ -694,11 +694,11 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
               if (isDuo) return '• Unisex: MAFIA — Duo (₹450)';
               return '• Unisex: MAFIA — Individual (₹250)';
             }
-            if (id.includes('treasure')) return '• Unisex: TREASURE HUNT (₹200)';
-            if (id.includes('charade') || id.includes('damsh') || id.includes('dumb')) return '• Unisex: DUMB CHARADES (₹200)';
-            if (id === 'chess') return '• Unisex: CHESS (₹200)';
-            if (id.includes('vanity') || id.includes('rapunzel') || id.includes('brush') || id.includes('hair') || id.includes('diy')) return "• Exclusively for Girls: Rapunzel's vanity (₹200)";
-            if (id.includes('minute') || id.includes('win')) return '• Exclusively for Boys: Minute to Win it challenge (₹200)';
+            if (id.includes('treasure')) return '• Unisex: TREASURE HUNT (₹199)';
+            if (id.includes('charade') || id.includes('damsh') || id.includes('dumb')) return '• Unisex:  DUMB CHARADES (₹199)';
+            if (id === 'chess') return '• Unisex: CHESS (₹199)';
+            if (id.includes('vanity') || id.includes('rapunzel') || id.includes('brush') || id.includes('hair') || id.includes('diy')) return "• Exclusively for Girls: Rapunzel's vanity (₹199)";
+            if (id.includes('minute') || id.includes('win')) return '• Exclusively for Boys: Minute to Win it challenge (₹199)';
             return '• Unisex: BGMI — Individual (₹250)';
           };
 
@@ -707,6 +707,7 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
             'entry.1817464805': mapPromPackage(),
             'entry.1684941164': mapRecreationActivity(),
             'entry.1040121999': payload.fullName,
+            'entry.1147579479': payload.squadMembers || 'N/A - Solo Entry',
             'entry.1784915256': payload.age ? String(payload.age) : 'N/A',
             'entry.1349604836': payload.phone,
             'entry.834784784': payload.email,
