@@ -7,11 +7,44 @@ export interface PromPackage {
   description: string;
 }
 
+export interface RecreationalPackageTier {
+  id: 'individual' | 'duo' | 'squad';
+  name: string;
+  price: number;
+  formattedPrice: string;
+  badge: string;
+}
+
+export const RECREATIONAL_TIERS: RecreationalPackageTier[] = [
+  {
+    id: 'individual',
+    name: 'Individual Entry',
+    price: 250,
+    formattedPrice: '₹250',
+    badge: 'Solo Player',
+  },
+  {
+    id: 'duo',
+    name: 'Duo Entry',
+    price: 450,
+    formattedPrice: '₹450',
+    badge: 'Pair (2 Players)',
+  },
+  {
+    id: 'squad',
+    name: 'Squad Entry',
+    price: 800,
+    formattedPrice: '₹800',
+    badge: 'Squad (Up to 4 Players)',
+  },
+];
+
 export interface RecreationalActivity {
   id: string;
   name: string;
   category: 'unisex' | 'girls' | 'boys';
   categoryLabel: string;
+  hasTiers?: boolean;
   price: number;
   formattedPrice: string;
   description: string;
@@ -53,50 +86,57 @@ export const PROM_ACTIVITIES = [
 ];
 
 export const RECREATIONAL_ACTIVITIES: RecreationalActivity[] = [
-  // Unisex Activities
+  // Unisex Activities with Tiered Packages (Individual ₹250 / Duo ₹450 / Squad ₹800)
   {
     id: 'bgmi',
     name: 'BGMI',
     category: 'unisex',
     categoryLabel: 'Unisex',
-    price: 199,
-    formattedPrice: '₹199',
-    description: 'Competitive Battlegrounds Mobile India battle royale tournament with intense tactical combat.',
+    hasTiers: true,
+    price: 250,
+    formattedPrice: 'From ₹250',
+    description: 'Competitive Battlegrounds Mobile India tournament with Solo (₹250), Duo (₹450), and Squad (₹800) brackets.',
   },
   {
     id: 'freefire',
     name: 'FREE FIRE',
     category: 'unisex',
     categoryLabel: 'Unisex',
-    price: 199,
-    formattedPrice: '₹199',
-    description: 'High-octane Free Fire survival clash testing reaction time and squad synchronization.',
+    hasTiers: true,
+    price: 250,
+    formattedPrice: 'From ₹250',
+    description: 'High-octane Free Fire survival clash with Solo (₹250), Duo (₹450), and Squad (₹800) brackets.',
   },
   {
     id: 'ludo',
     name: 'LUDO',
     category: 'unisex',
     categoryLabel: 'Unisex',
-    price: 199,
-    formattedPrice: '₹199',
-    description: 'Fast-paced strategic board game showdown with cut-throat rolls and bracket knockout.',
+    hasTiers: true,
+    price: 250,
+    formattedPrice: 'From ₹250',
+    description: 'Fast-paced strategic board game showdown with Solo (₹250), Duo (₹450), and Squad (₹800) brackets.',
   },
   {
     id: 'mafia',
     name: 'MAFIA',
     category: 'unisex',
     categoryLabel: 'Unisex',
-    price: 199,
-    formattedPrice: '₹199',
-    description: 'Ultimate social deduction, deception, psychological bluffing, and investigative challenge.',
+    hasTiers: true,
+    price: 250,
+    formattedPrice: 'From ₹250',
+    description: 'Ultimate social deduction and deception battle with Solo (₹250), Duo (₹450), and Squad (₹800) brackets.',
   },
+
+  // Flat ₹200 Activities
   {
     id: 'treasure-hunt',
     name: 'TREASURE HUNT',
     category: 'unisex',
     categoryLabel: 'Unisex',
-    price: 199,
-    formattedPrice: '₹199',
+    hasTiers: false,
+    price: 200,
+    formattedPrice: '₹200',
     description: 'Cryptic riddle-solving across the venue to discover the secret conclave artifact first.',
   },
   {
@@ -104,8 +144,9 @@ export const RECREATIONAL_ACTIVITIES: RecreationalActivity[] = [
     name: 'DUMB CHARADES',
     category: 'unisex',
     categoryLabel: 'Unisex',
-    price: 199,
-    formattedPrice: '₹199',
+    hasTiers: false,
+    price: 200,
+    formattedPrice: '₹200',
     description: 'Expressive charades contest requiring silent acting, high speed guessing, and cinematic knowledge.',
   },
   {
@@ -113,30 +154,33 @@ export const RECREATIONAL_ACTIVITIES: RecreationalActivity[] = [
     name: 'CHESS',
     category: 'unisex',
     categoryLabel: 'Unisex',
-    price: 199,
-    formattedPrice: '₹199',
+    hasTiers: false,
+    price: 200,
+    formattedPrice: '₹200',
     description: 'Classic blitz & rapid cerebral grandmaster tournament across opening strategies and endgames.',
   },
 
-  // Exclusively for girls
+  // Exclusively for girls (Flat ₹200)
   {
     id: 'rapunzels-vanity',
     name: "Rapunzel's vanity",
     category: 'girls',
     categoryLabel: 'Exclusively for girls',
-    price: 199,
-    formattedPrice: '₹199',
+    hasTiers: false,
+    price: 200,
+    formattedPrice: '₹200',
     description: 'Creative styling, aesthetic customization, and hands-on artistic crafting workshop.',
   },
 
-  // Exclusively for boys
+  // Exclusively for boys (Flat ₹200)
   {
     id: 'minute-to-win-it',
     name: 'Minute to Win it challenge',
     category: 'boys',
     categoryLabel: 'Exclusively for boys',
-    price: 199,
-    formattedPrice: '₹199',
+    hasTiers: false,
+    price: 200,
+    formattedPrice: '₹200',
     description: 'High-adrenaline 60-second dexterity, balance, and reflex showdown with eliminations.',
   },
 ];

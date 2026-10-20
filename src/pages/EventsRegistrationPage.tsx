@@ -43,9 +43,11 @@ import {
   PROM_PACKAGES,
   PROM_ACTIVITIES,
   RECREATIONAL_ACTIVITIES,
+  RECREATIONAL_TIERS,
   SPECIAL_EVENT,
   PromPackage,
   RecreationalActivity,
+  RecreationalPackageTier,
 } from '../data/eventsData';
 import {
   generateEventPassDataUrl,
@@ -167,6 +169,7 @@ export const EventsRegistrationPage: React.FC = () => {
   // Selected sub-item
   const [selectedPromPackage, setSelectedPromPackage] = useState<PromPackage>(PROM_PACKAGES[0]);
   const [selectedActivity, setSelectedActivity] = useState<RecreationalActivity>(RECREATIONAL_ACTIVITIES[0]);
+  const [selectedRecreationalTier, setSelectedRecreationalTier] = useState<RecreationalPackageTier>(RECREATIONAL_TIERS[0]);
 
   // Form inputs
   const [fullName, setFullName] = useState('');
@@ -508,10 +511,17 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
       formattedPrice = selectedPromPackage.formattedPrice;
     } else if (category === 'recreational') {
       categoryLabel = 'Recreational Activities';
-      selectionId = selectedActivity.id;
-      selectionTitle = selectedActivity.name;
-      price = selectedActivity.price;
-      formattedPrice = selectedActivity.formattedPrice;
+      if (selectedActivity.hasTiers) {
+        selectionId = `${selectedActivity.id}_${selectedRecreationalTier.id}`;
+        selectionTitle = `${selectedActivity.name} (${selectedRecreationalTier.name})`;
+        price = selectedRecreationalTier.price;
+        formattedPrice = selectedRecreationalTier.formattedPrice;
+      } else {
+        selectionId = selectedActivity.id;
+        selectionTitle = selectedActivity.name;
+        price = 200;
+        formattedPrice = '₹200';
+      }
     } else {
       categoryLabel = 'Special Event: MUN got Latent';
       selectionId = SPECIAL_EVENT.id;
@@ -592,16 +602,35 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
           const mapRecreationActivity = () => {
             if (category !== 'recreational') return '• N/A - Not Applicable';
             const id = (payload.selectionId || '').toLowerCase();
-            if (id === 'bgmi') return '• Unisex: BGMI (₹199)';
-            if (id === 'freefire') return '• Unisex: FREE FIRE (₹199)';
-            if (id === 'ludo') return '• Unisex: LUDO (₹199)';
-            if (id === 'mafia') return '• Unisex: MAFIA (₹199)';
-            if (id.includes('treasure')) return '• Unisex: TREASURE HUNT (₹199)';
-            if (id.includes('charade') || id.includes('damsh') || id.includes('dumb')) return '• Unisex:  DUMB CHARADES (₹199)';
-            if (id === 'chess') return '• Unisex: CHESS (₹199)';
-            if (id.includes('vanity') || id.includes('rapunzel') || id.includes('brush') || id.includes('hair') || id.includes('diy')) return "• Exclusively for Girls: Rapunzel's vanity (₹199)";
-            if (id.includes('minute') || id.includes('win')) return '• Exclusively for Boys: Minute to Win it challenge (₹199)';
-            return '• Unisex: BGMI (₹199)';
+            const isSquad = id.includes('squad');
+            const isDuo = id.includes('duo');
+
+            if (id.includes('bgmi')) {
+              if (isSquad) return '• Unisex: BGMI — Squad (₹800)';
+              if (isDuo) return '• Unisex: BGMI — Duo (₹450)';
+              return '• Unisex: BGMI — Individual (₹250)';
+            }
+            if (id.includes('freefire')) {
+              if (isSquad) return '• Unisex: FREE FIRE — Squad (₹800)';
+              if (isDuo) return '• Unisex: FREE FIRE — Duo (₹450)';
+              return '• Unisex: FREE FIRE — Individual (₹250)';
+            }
+            if (id.includes('ludo')) {
+              if (isSquad) return '• Unisex: LUDO — Squad (₹800)';
+              if (isDuo) return '• Unisex: LUDO — Duo (₹450)';
+              return '• Unisex: LUDO — Individual (₹250)';
+            }
+            if (id.includes('mafia')) {
+              if (isSquad) return '• Unisex: MAFIA — Squad (₹800)';
+              if (isDuo) return '• Unisex: MAFIA — Duo (₹450)';
+              return '• Unisex: MAFIA — Individual (₹250)';
+            }
+            if (id.includes('treasure')) return '• Unisex: TREASURE HUNT (₹200)';
+            if (id.includes('charade') || id.includes('damsh') || id.includes('dumb')) return '• Unisex: DUMB CHARADES (₹200)';
+            if (id === 'chess') return '• Unisex: CHESS (₹200)';
+            if (id.includes('vanity') || id.includes('rapunzel') || id.includes('brush') || id.includes('hair') || id.includes('diy')) return "• Exclusively for Girls: Rapunzel's vanity (₹200)";
+            if (id.includes('minute') || id.includes('win')) return '• Exclusively for Boys: Minute to Win it challenge (₹200)';
+            return '• Unisex: BGMI — Individual (₹250)';
           };
 
           const googleFormData = new URLSearchParams({
@@ -671,6 +700,9 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
     isSubmittingRef.current = false;
     sounds.playTap();
     setSelectedCategory(null);
+    setSelectedPromPackage(PROM_PACKAGES[0]);
+    setSelectedActivity(RECREATIONAL_ACTIVITIES[0]);
+    setSelectedRecreationalTier(RECREATIONAL_TIERS[0]);
     setFullName('');
     setEmail('');
     setPhone('');
@@ -921,21 +953,48 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
                       </p>
                     </div>
 
-                    {/* Flat Price Badge */}
+                    {/* Entry Fee Badge */}
                     <div className="p-2.5 rounded-xl bg-[#0284C7]/15 border border-[#0284C7]/40 flex items-center justify-between">
-                      <span className="text-[11px] font-mono text-[#E0F2FE]">Entry Fee per Activity:</span>
-                      <span className="text-base font-mono font-extrabold text-[#38BDF8]">₹199 each</span>
+                      <span className="text-[11px] font-mono text-[#E0F2FE]">Entry Pricing:</span>
+                      <span className="text-xs sm:text-sm font-mono font-extrabold text-[#38BDF8]">Starting from ₹200</span>
                     </div>
 
                     {/* Activities Categorized */}
                     <div className="space-y-3 pt-1">
-                      {/* Unisex */}
+                      {/* Tiered Esports & Board/Card Games Banner */}
+                      <div className="p-2.5 rounded-xl bg-[#071324] border border-[#0284C7]/35 text-xs font-mono space-y-1.5">
+                        <div className="flex items-center justify-between flex-wrap gap-1">
+                          <span className="text-[10px] uppercase font-bold text-[#38BDF8]">
+                            BGMI • FREE FIRE • LUDO • MAFIA
+                          </span>
+                          <span className="text-[9px] uppercase font-mono px-1.5 py-0.5 rounded bg-[#0284C7]/20 text-[#38BDF8] border border-[#0284C7]/40 font-bold">
+                            Tiered Packages
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-1.5 text-center pt-0.5">
+                          <div className="p-1 rounded-lg bg-[#09172B] border border-[#0284C7]/20">
+                            <span className="text-[9px] text-[#BAE6FD] block">Individual</span>
+                            <strong className="text-white text-xs">₹250</strong>
+                          </div>
+                          <div className="p-1 rounded-lg bg-[#09172B] border border-[#0284C7]/20">
+                            <span className="text-[9px] text-[#BAE6FD] block">Duo</span>
+                            <strong className="text-white text-xs">₹450</strong>
+                          </div>
+                          <div className="p-1 rounded-lg bg-[#09172B] border border-[#0284C7]/20">
+                            <span className="text-[9px] text-[#BAE6FD] block">Squad</span>
+                            <strong className="text-[#38BDF8] text-xs">₹800</strong>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Other Unisex Activities */}
                       <div className="space-y-1.5">
-                        <div className="text-[10px] font-mono uppercase tracking-wider text-[#38BDF8] font-bold">
-                          Unisex Activities:
+                        <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-[#38BDF8] font-bold">
+                          <span>Other Activities:</span>
+                          <span className="text-[#FDE047] font-extrabold">₹200 each</span>
                         </div>
                         <div className="flex flex-wrap gap-1.5">
-                          {['BGMI', 'FREE FIRE', 'LUDO', 'MAFIA', 'TREASURE HUNT', 'DUMB CHARADES', 'CHESS'].map(
+                          {['TREASURE HUNT', 'DUMB CHARADES', 'CHESS'].map(
                             (act) => (
                               <span
                                 key={act}
@@ -950,9 +1009,12 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
 
                       {/* Exclusively for Girls */}
                       <div className="space-y-1">
-                        <div className="text-[10px] font-mono uppercase tracking-wider text-pink-400 font-bold flex items-center gap-1">
-                          <Heart className="w-3 h-3 text-pink-400" />
-                          <span>Exclusively for girls:</span>
+                        <div className="text-[10px] font-mono uppercase tracking-wider text-pink-400 font-bold flex items-center justify-between">
+                          <span className="flex items-center gap-1">
+                            <Heart className="w-3 h-3 text-pink-400" />
+                            <span>Exclusively for girls:</span>
+                          </span>
+                          <span className="text-pink-300 font-bold">₹200</span>
                         </div>
                         <div className="p-2 rounded-xl bg-pink-950/30 border border-pink-500/30 text-[11px] font-mono text-pink-200">
                           Rapunzel's vanity
@@ -961,9 +1023,12 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
 
                       {/* Exclusively for Boys */}
                       <div className="space-y-1">
-                        <div className="text-[10px] font-mono uppercase tracking-wider text-amber-400 font-bold flex items-center gap-1">
-                          <Flame className="w-3 h-3 text-amber-400" />
-                          <span>Exclusively for boys:</span>
+                        <div className="text-[10px] font-mono uppercase tracking-wider text-amber-400 font-bold flex items-center justify-between">
+                          <span className="flex items-center gap-1">
+                            <Flame className="w-3 h-3 text-amber-400" />
+                            <span>Exclusively for boys:</span>
+                          </span>
+                          <span className="text-amber-300 font-bold">₹200</span>
                         </div>
                         <div className="p-2 rounded-xl bg-amber-950/30 border border-amber-500/30 text-[11px] font-mono text-amber-200">
                           Minute to Win it challenge
@@ -1116,7 +1181,7 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
                     {selectedCategory === 'prom'
                       ? `Prom Night • ${selectedPromPackage.name} (${selectedPromPackage.formattedPrice})`
                       : selectedCategory === 'recreational'
-                      ? `Recreation • ${selectedActivity.name} (${selectedActivity.formattedPrice})`
+                      ? `Recreation • ${selectedActivity.name}${selectedActivity.hasTiers ? ` (${selectedRecreationalTier.name} — ${selectedRecreationalTier.formattedPrice})` : ` (${selectedActivity.formattedPrice})`}`
                       : `Special Event • MUN got Latent (FREE)`}
                   </span>
                 </div>
@@ -1218,14 +1283,14 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
                     <div className="p-3 rounded-2xl bg-sky-950/40 border border-sky-500/40 text-sky-200 text-xs font-mono leading-relaxed flex items-center gap-2.5">
                       <Sparkles className="w-4 h-4 text-sky-400 shrink-0" />
                       <span>
-                        <strong>Open to All:</strong> There is no age limit for recreational activities. Each activity entry is <strong>₹199</strong>.
+                        <strong>Open to All:</strong> There is no age limit for recreational activities. <strong>BGMI</strong>, <strong>FREE FIRE</strong>, <strong>LUDO</strong>, and <strong>MAFIA</strong> feature Individual (₹250), Duo (₹450), and Squad (₹800) packages. All other activities are <strong>₹200 flat</strong>.
                       </span>
                     </div>
 
                     {/* Activity Selector */}
                     <div className="space-y-2">
                       <label className="block text-xs font-mono font-bold text-[#D4AF37] uppercase tracking-wider">
-                        Select Your Recreational Activity (₹199):
+                        Select Your Recreational Activity:
                       </label>
                       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
                         {RECREATIONAL_ACTIVITIES.map((act) => {
@@ -1246,25 +1311,75 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
                               <div className="flex items-center justify-between">
                                 <span className="font-bold text-white text-xs">{act.name}</span>
                                 <span className="font-mono font-extrabold text-[#38BDF8] text-xs">
-                                  {act.formattedPrice}
+                                  {act.hasTiers ? 'From ₹250' : act.formattedPrice}
                                 </span>
                               </div>
                               <span
                                 className={`text-[9.5px] font-mono mt-1 ${
-                                  act.category === 'girls'
+                                  act.hasTiers
+                                    ? 'text-[#38BDF8] font-bold'
+                                    : act.category === 'girls'
                                     ? 'text-pink-300 font-bold'
                                     : act.category === 'boys'
                                     ? 'text-amber-300 font-bold'
                                     : 'text-[#C4BBA3]'
                                 }`}
                               >
-                                {act.categoryLabel}
+                                {act.hasTiers ? 'Tiered Packages' : act.categoryLabel}
                               </span>
                             </div>
                           );
                         })}
                       </div>
                     </div>
+
+                    {/* Tier Package Selector for BGMI, FREE FIRE, LUDO, MAFIA */}
+                    {selectedActivity.hasTiers && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="p-4 rounded-2xl bg-[#09172B]/90 border-2 border-[#0284C7]/50 space-y-3 shadow-lg"
+                      >
+                        <div className="flex items-center justify-between">
+                          <label className="block text-xs font-mono font-bold text-[#38BDF8] uppercase tracking-wider">
+                            Choose {selectedActivity.name} Package Tier:
+                          </label>
+                          <span className="text-[10px] font-mono text-[#BAE6FD] bg-[#0284C7]/30 px-2.5 py-0.5 rounded-full border border-[#0284C7]/50 font-semibold">
+                            Solo • Duo • Squad
+                          </span>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                          {RECREATIONAL_TIERS.map((tier) => {
+                            const isSelected = selectedRecreationalTier.id === tier.id;
+                            return (
+                              <div
+                                key={tier.id}
+                                onClick={() => {
+                                  sounds.playTap();
+                                  setSelectedRecreationalTier(tier);
+                                }}
+                                className={`p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between ${
+                                  isSelected
+                                    ? 'bg-[#0284C7]/35 border-[#38BDF8] shadow-[0_0_15px_rgba(56,189,248,0.4)]'
+                                    : 'bg-[#101F38] border-[#0284C7]/30 hover:border-[#38BDF8]/60'
+                                }`}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <span className="font-bold text-white text-xs">{tier.name}</span>
+                                  <span className="font-mono font-extrabold text-[#FDE047] text-sm">
+                                    {tier.formattedPrice}
+                                  </span>
+                                </div>
+                                <span className="text-[10px] text-[#BAE6FD] font-mono mt-1">
+                                  {tier.badge}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </motion.div>
+                    )}
                   </div>
                 )}
 
@@ -1452,7 +1567,9 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
                           Payable Amount:{' '}
                           {selectedCategory === 'prom'
                             ? selectedPromPackage.formattedPrice
-                            : selectedActivity.formattedPrice}
+                            : selectedActivity.hasTiers
+                            ? selectedRecreationalTier.formattedPrice
+                            : '₹200'}
                         </span>
                       </div>
 
@@ -1663,7 +1780,7 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
                     {selectedCategory === 'prom'
                       ? selectedPromPackage.name
                       : selectedCategory === 'recreational'
-                      ? selectedActivity.name
+                      ? (selectedActivity.hasTiers ? `${selectedActivity.name} (${selectedRecreationalTier.name})` : selectedActivity.name)
                       : SPECIAL_EVENT.name}
                   </span>
                 </div>
@@ -1710,7 +1827,7 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
                           selectedCategory === 'prom'
                             ? 'Prom_Night'
                             : selectedCategory === 'recreational'
-                            ? selectedActivity.name
+                            ? (selectedActivity.hasTiers ? `${selectedActivity.name}_${selectedRecreationalTier.id}` : selectedActivity.name)
                             : 'MUN_Got_Latent'
                         )
                       }
@@ -1809,7 +1926,7 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
                 <p className="text-xs font-mono text-[#D4AF37] font-extrabold">
                   {selectedCategory === 'prom'
                     ? `Prom Night: ${selectedPromPackage.name} (${selectedPromPackage.formattedPrice})`
-                    : `Recreational: ${selectedActivity.name} (${selectedActivity.formattedPrice})`}
+                    : `Recreational: ${selectedActivity.name}${selectedActivity.hasTiers ? ` (${selectedRecreationalTier.name} — ${selectedRecreationalTier.formattedPrice})` : ' (₹200)'}`}
                 </p>
               </div>
 

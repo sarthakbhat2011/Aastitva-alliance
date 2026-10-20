@@ -745,16 +745,34 @@ async function startServer() {
       const mapRecreationActivity = () => {
         if (clean.category !== "recreational") return "\u2022 N/A - Not Applicable";
         const id = (clean.selectionId || "").toLowerCase();
-        if (id === "bgmi") return "\u2022 Unisex: BGMI (\u20B9199)";
-        if (id === "freefire") return "\u2022 Unisex: FREE FIRE (\u20B9199)";
-        if (id === "ludo") return "\u2022 Unisex: LUDO (\u20B9199)";
-        if (id === "mafia") return "\u2022 Unisex: MAFIA (\u20B9199)";
-        if (id.includes("treasure")) return "\u2022 Unisex: TREASURE HUNT (\u20B9199)";
-        if (id.includes("charade") || id.includes("damsh") || id.includes("dumb")) return "\u2022 Unisex:  DUMB CHARADES (\u20B9199)";
-        if (id === "chess") return "\u2022 Unisex: CHESS (\u20B9199)";
-        if (id.includes("vanity") || id.includes("rapunzel") || id.includes("brush") || id.includes("hair") || id.includes("diy")) return "\u2022 Exclusively for Girls: Rapunzel's vanity (\u20B9199)";
-        if (id.includes("minute") || id.includes("win")) return "\u2022 Exclusively for Boys: Minute to Win it challenge (\u20B9199)";
-        return "\u2022 Unisex: BGMI (\u20B9199)";
+        const isSquad = id.includes("squad");
+        const isDuo = id.includes("duo");
+        if (id.includes("bgmi")) {
+          if (isSquad) return "\u2022 Unisex: BGMI \u2014 Squad (\u20B9800)";
+          if (isDuo) return "\u2022 Unisex: BGMI \u2014 Duo (\u20B9450)";
+          return "\u2022 Unisex: BGMI \u2014 Individual (\u20B9250)";
+        }
+        if (id.includes("freefire")) {
+          if (isSquad) return "\u2022 Unisex: FREE FIRE \u2014 Squad (\u20B9800)";
+          if (isDuo) return "\u2022 Unisex: FREE FIRE \u2014 Duo (\u20B9450)";
+          return "\u2022 Unisex: FREE FIRE \u2014 Individual (\u20B9250)";
+        }
+        if (id.includes("ludo")) {
+          if (isSquad) return "\u2022 Unisex: LUDO \u2014 Squad (\u20B9800)";
+          if (isDuo) return "\u2022 Unisex: LUDO \u2014 Duo (\u20B9450)";
+          return "\u2022 Unisex: LUDO \u2014 Individual (\u20B9250)";
+        }
+        if (id.includes("mafia")) {
+          if (isSquad) return "\u2022 Unisex: MAFIA \u2014 Squad (\u20B9800)";
+          if (isDuo) return "\u2022 Unisex: MAFIA \u2014 Duo (\u20B9450)";
+          return "\u2022 Unisex: MAFIA \u2014 Individual (\u20B9250)";
+        }
+        if (id.includes("treasure")) return "\u2022 Unisex: TREASURE HUNT (\u20B9200)";
+        if (id.includes("charade") || id.includes("damsh") || id.includes("dumb")) return "\u2022 Unisex: DUMB CHARADES (\u20B9200)";
+        if (id === "chess") return "\u2022 Unisex: CHESS (\u20B9200)";
+        if (id.includes("vanity") || id.includes("rapunzel") || id.includes("brush") || id.includes("hair") || id.includes("diy")) return "\u2022 Exclusively for Girls: Rapunzel's vanity (\u20B9200)";
+        if (id.includes("minute") || id.includes("win")) return "\u2022 Exclusively for Boys: Minute to Win it challenge (\u20B9200)";
+        return "\u2022 Unisex: BGMI \u2014 Individual (\u20B9250)";
       };
       const formData = new URLSearchParams({
         "entry.2071710502": mapCategory(),

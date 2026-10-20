@@ -362,16 +362,35 @@ async function startServer() {
       const mapRecreationActivity = () => {
         if (clean.category !== 'recreational') return '• N/A - Not Applicable';
         const id = (clean.selectionId || '').toLowerCase();
-        if (id === 'bgmi') return '• Unisex: BGMI (₹199)';
-        if (id === 'freefire') return '• Unisex: FREE FIRE (₹199)';
-        if (id === 'ludo') return '• Unisex: LUDO (₹199)';
-        if (id === 'mafia') return '• Unisex: MAFIA (₹199)';
-        if (id.includes('treasure')) return '• Unisex: TREASURE HUNT (₹199)';
-        if (id.includes('charade') || id.includes('damsh') || id.includes('dumb')) return '• Unisex:  DUMB CHARADES (₹199)';
-        if (id === 'chess') return '• Unisex: CHESS (₹199)';
-        if (id.includes('vanity') || id.includes('rapunzel') || id.includes('brush') || id.includes('hair') || id.includes('diy')) return "• Exclusively for Girls: Rapunzel's vanity (₹199)";
-        if (id.includes('minute') || id.includes('win')) return '• Exclusively for Boys: Minute to Win it challenge (₹199)';
-        return '• Unisex: BGMI (₹199)';
+        const isSquad = id.includes('squad');
+        const isDuo = id.includes('duo');
+
+        if (id.includes('bgmi')) {
+          if (isSquad) return '• Unisex: BGMI — Squad (₹800)';
+          if (isDuo) return '• Unisex: BGMI — Duo (₹450)';
+          return '• Unisex: BGMI — Individual (₹250)';
+        }
+        if (id.includes('freefire')) {
+          if (isSquad) return '• Unisex: FREE FIRE — Squad (₹800)';
+          if (isDuo) return '• Unisex: FREE FIRE — Duo (₹450)';
+          return '• Unisex: FREE FIRE — Individual (₹250)';
+        }
+        if (id.includes('ludo')) {
+          if (isSquad) return '• Unisex: LUDO — Squad (₹800)';
+          if (isDuo) return '• Unisex: LUDO — Duo (₹450)';
+          return '• Unisex: LUDO — Individual (₹250)';
+        }
+        if (id.includes('mafia')) {
+          if (isSquad) return '• Unisex: MAFIA — Squad (₹800)';
+          if (isDuo) return '• Unisex: MAFIA — Duo (₹450)';
+          return '• Unisex: MAFIA — Individual (₹250)';
+        }
+        if (id.includes('treasure')) return '• Unisex: TREASURE HUNT (₹200)';
+        if (id.includes('charade') || id.includes('damsh') || id.includes('dumb')) return '• Unisex: DUMB CHARADES (₹200)';
+        if (id === 'chess') return '• Unisex: CHESS (₹200)';
+        if (id.includes('vanity') || id.includes('rapunzel') || id.includes('brush') || id.includes('hair') || id.includes('diy')) return "• Exclusively for Girls: Rapunzel's vanity (₹200)";
+        if (id.includes('minute') || id.includes('win')) return '• Exclusively for Boys: Minute to Win it challenge (₹200)';
+        return '• Unisex: BGMI — Individual (₹250)';
       };
 
       const formData = new URLSearchParams({
