@@ -367,6 +367,10 @@ export interface CleanEventRegistration {
   age?: number;
   talentDescription?: string;
   transactionId?: string;
+  squadMembers?: string;
+  member2Name?: string;
+  member3Name?: string;
+  member4Name?: string;
   agreedToTerms?: boolean;
 }
 
@@ -451,6 +455,11 @@ export function validateEventRegistrationPayload(body: any): {
     }
   }
 
+  const squadMembers = sanitizeString(body.squadMembers, 400);
+  const member2Name = sanitizeString(body.member2Name, 100);
+  const member3Name = sanitizeString(body.member3Name, 100);
+  const member4Name = sanitizeString(body.member4Name, 100);
+
   if (Object.keys(errors).length > 0) {
     return { isValid: false, errors };
   }
@@ -472,6 +481,10 @@ export function validateEventRegistrationPayload(body: any): {
       age,
       talentDescription,
       transactionId,
+      squadMembers,
+      member2Name,
+      member3Name,
+      member4Name,
       agreedToTerms: Boolean(body.agreedToTerms),
     },
   };

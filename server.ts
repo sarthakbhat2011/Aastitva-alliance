@@ -342,6 +342,52 @@ async function startServer() {
   // Target Event Form: https://docs.google.com/forms/d/e/1FAIpQLSc_tPGuiQ7rBUTtBgoUd-gvtaQIDyP_SrC2_klygg6GUy0EHA/viewform?usp=pp_url
   // Response Action: https://docs.google.com/forms/d/e/1FAIpQLSc_tPGuiQ7rBUTtBgoUd-gvtaQIDyP_SrC2_klygg6GUy0EHA/formResponse
   // ============================================================================
+  let cachedSquadEntryId: string | null = null;
+  let lastSquadCheck = 0;
+
+  async function resolveSquadEntryId(): Promise<string | null> {
+    if (cachedSquadEntryId) return cachedSquadEntryId;
+    if (process.env.GOOGLE_FORM_ENTRY_SQUAD_MEMBERS) {
+      cachedSquadEntryId = process.env.GOOGLE_FORM_ENTRY_SQUAD_MEMBERS;
+      return cachedSquadEntryId;
+    }
+    if (Date.now() - lastSquadCheck < 15000) return null;
+    lastSquadCheck = Date.now();
+    try {
+      const res = await fetch(
+        'https://docs.google.com/forms/d/e/1FAIpQLSc_tPGuiQ7rBUTtBgoUd-gvtaQIDyP_SrC2_klygg6GUy0EHA/viewform',
+        { signal: AbortSignal.timeout(5000) }
+      );
+      const html = await res.text();
+      const match = html.match(/FB_PUBLIC_LOAD_DATA_\s*=\s*(.*?);<\/script>/s);
+      if (match) {
+        const parsed = JSON.parse(match[1]);
+        const questions = parsed[1][1];
+        for (const q of questions) {
+          const title = (q[1] || '').toLowerCase();
+          const entryId = q[4]?.[0]?.[0];
+          if (
+            entryId &&
+            (title.includes('squad') ||
+              title.includes('duo') ||
+              title.includes('teammate') ||
+              title.includes('partner') ||
+              (title.includes('member') && !title.includes('number')))
+          ) {
+            cachedSquadEntryId = String(entryId);
+            console.log(
+              `[Google Form Sync] Auto-detected Squad/Duo Question: entry.${cachedSquadEntryId} ("${q[1]}")`
+            );
+            return cachedSquadEntryId;
+          }
+        }
+      }
+    } catch (err: any) {
+      console.warn('[Google Form Sync] Notice resolving squad entry ID:', err?.message);
+    }
+    return null;
+  }
+
   async function syncEventToGoogleForm(clean: any, trackingId: string): Promise<boolean> {
     try {
       const mapCategory = () => {
@@ -393,7 +439,8 @@ async function startServer() {
         return '• Unisex: BGMI — Individual (₹250)';
       };
 
-      const formData = new URLSearchParams({
+      const squadEntryId = await resolveSquadEntryId();
+      const formPayload: Record<string, string> = {
         'entry.2071710502': mapCategory(),
         'entry.1817464805': mapPromPackage(),
         'entry.1684941164': mapRecreationActivity(),
@@ -409,7 +456,15 @@ async function startServer() {
           ? 'Free Entry (MUN Got Latent)'
           : 'Pending Verification',
         'entry.1617953813': trackingId,
-      }).toString();
+      };
+
+      if (squadEntryId) {
+        formPayload[`entry.${squadEntryId}`] = clean.squadMembers
+          ? clean.squadMembers.trim()
+          : 'N/A - Solo Entry';
+      }
+
+      const formData = new URLSearchParams(formPayload).toString();
 
       const formUrl =
         'https://docs.google.com/forms/d/e/1FAIpQLSc_tPGuiQ7rBUTtBgoUd-gvtaQIDyP_SrC2_klygg6GUy0EHA/formResponse';
@@ -626,6 +681,10 @@ async function startServer() {
       `Phone: ${clean.phone}`,
       `Institution: ${clean.institution}`,
     ];
+
+    if (clean.squadMembers && clean.squadMembers !== 'N/A - Solo Entry') {
+      messageLines.push(`Squad / Duo Roster: ${clean.squadMembers}`);
+    }
 
     if (clean.age) {
       messageLines.push(`Age: ${clean.age} yrs${isProm ? ' (18+ College / UG Verified)' : ''}`);

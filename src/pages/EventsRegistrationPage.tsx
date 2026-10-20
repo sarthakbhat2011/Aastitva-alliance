@@ -179,7 +179,19 @@ export const EventsRegistrationPage: React.FC = () => {
   const [age, setAge] = useState<string>('');
   const [talentDescription, setTalentDescription] = useState('');
   const [transactionId, setTransactionId] = useState('');
+  const [member2Name, setMember2Name] = useState('');
+  const [member3Name, setMember3Name] = useState('');
+  const [member4Name, setMember4Name] = useState('');
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+
+  // Dynamic Duo / Squad computation across Prom Night and Tiered Esports
+  const isDuo =
+    (selectedCategory === 'prom' && selectedPromPackage.id === 'duo') ||
+    (selectedCategory === 'recreational' && selectedActivity.hasTiers && selectedRecreationalTier.id === 'duo');
+
+  const isSquad =
+    (selectedCategory === 'prom' && selectedPromPackage.id === 'squad') ||
+    (selectedCategory === 'recreational' && selectedActivity.hasTiers && selectedRecreationalTier.id === 'squad');
 
   // Validation & UI State
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
@@ -222,6 +234,18 @@ export const EventsRegistrationPage: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setValidationErrors({});
   }, [selectedCategory]);
+
+  // Clear specific squad errors when tier / package changes
+  useEffect(() => {
+    setValidationErrors((prev) => {
+      if (!prev.member2Name && !prev.member3Name && !prev.member4Name) return prev;
+      const next = { ...prev };
+      delete next.member2Name;
+      delete next.member3Name;
+      delete next.member4Name;
+      return next;
+    });
+  }, [selectedCategory, selectedPromPackage, selectedActivity, selectedRecreationalTier]);
 
   // Dynamic Galactic Starfield & Lightning Gaze Atmosphere Canvas
   useEffect(() => {
@@ -476,6 +500,36 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
       }
     }
 
+    // Duo Validation: Ensure partner full name is provided
+    if (isDuo) {
+      if (!member2Name.trim()) {
+        errors.member2Name = 'Partner / Member 2 full name is required for Duo registrations.';
+      } else if (member2Name.trim().length < 3) {
+        errors.member2Name = 'Partner name must be at least 3 characters.';
+      }
+    }
+
+    // Squad Validation: Ensure all 3 squad teammates' names are provided
+    if (isSquad) {
+      if (!member2Name.trim()) {
+        errors.member2Name = 'Teammate 2 full name is required for Squad registrations.';
+      } else if (member2Name.trim().length < 3) {
+        errors.member2Name = 'Teammate 2 name must be at least 3 characters.';
+      }
+
+      if (!member3Name.trim()) {
+        errors.member3Name = 'Teammate 3 full name is required for Squad registrations.';
+      } else if (member3Name.trim().length < 3) {
+        errors.member3Name = 'Teammate 3 name must be at least 3 characters.';
+      }
+
+      if (!member4Name.trim()) {
+        errors.member4Name = 'Teammate 4 full name is required for Squad registrations.';
+      } else if (member4Name.trim().length < 3) {
+        errors.member4Name = 'Teammate 4 name must be at least 3 characters.';
+      }
+    }
+
     if (!agreedToTerms) {
       errors.agreedToTerms = 'Please confirm that the submitted details are accurate.';
     }
@@ -530,6 +584,17 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
       formattedPrice = 'FREE';
     }
 
+    let squadMembersFormatted = 'N/A - Solo Entry';
+    let squadMembersPassText: string | undefined = undefined;
+
+    if (isDuo) {
+      squadMembersFormatted = `Member 2 (Partner): ${member2Name.trim()}`;
+      squadMembersPassText = `Partner: ${member2Name.trim()}`;
+    } else if (isSquad) {
+      squadMembersFormatted = `Member 2: ${member2Name.trim()} | Member 3: ${member3Name.trim()} | Member 4: ${member4Name.trim()}`;
+      squadMembersPassText = `M2: ${member2Name.trim()}, M3: ${member3Name.trim()}, M4: ${member4Name.trim()}`;
+    }
+
     const payload = {
       category,
       categoryLabel,
@@ -544,6 +609,10 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
       age: age ? parseInt(age, 10) : undefined,
       talentDescription: category === 'special' ? talentDescription.trim() : undefined,
       transactionId: price > 0 ? transactionId.trim() : undefined,
+      squadMembers: squadMembersFormatted,
+      member2Name: member2Name.trim() || undefined,
+      member3Name: member3Name.trim() || undefined,
+      member4Name: member4Name.trim() || undefined,
       agreedToTerms: true,
     };
 
@@ -575,7 +644,7 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
         phone: payload.phone,
         eventType: `${categoryLabel}: ${selectionTitle} [${formattedPrice}]`,
         preferredDate: '2026-10-29',
-        message: `[EVENT APPLICATION - ${generatedTrackingId}]\nParticipant Name: ${payload.fullName}\nEmail: ${payload.email}\nPhone: ${payload.phone}\nInstitution: ${payload.institution}\nCategory: ${categoryLabel}\nSelection: ${selectionTitle}\nFee: ${formattedPrice}\nTransaction / UTR ID: ${payload.transactionId || (category === 'special' ? 'Free Entry' : 'Pending')}${payload.talentDescription ? `\nTalent Showcase:\n${payload.talentDescription}` : ''}`,
+        message: `[EVENT APPLICATION - ${generatedTrackingId}]\nParticipant Name: ${payload.fullName}\nEmail: ${payload.email}\nPhone: ${payload.phone}\nInstitution: ${payload.institution}\nCategory: ${categoryLabel}\nSelection: ${selectionTitle}\nFee: ${formattedPrice}${isDuo || isSquad ? `\nSquad / Duo Members:\n${squadMembersFormatted}` : ''}\nTransaction / UTR ID: ${payload.transactionId || (category === 'special' ? 'Free Entry' : 'Pending')}${payload.talentDescription ? `\nTalent Showcase:\n${payload.talentDescription}` : ''}`,
         status: 'New' as const,
       };
       await saveEntryToMailbox(localEntry);
@@ -681,6 +750,7 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
           age: age ? parseInt(age, 10) : undefined,
           trackingId: generatedTrackingId,
           logoImg: logoEl,
+          teamMembers: squadMembersPassText,
         });
         setPassDataUrl(passUrl);
       } catch (err) {
@@ -1528,6 +1598,149 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
                     )}
                   </div>
 
+                  {/* DUO / SQUAD TEAMMATES INFORMATION */}
+                  {isDuo && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="p-4 sm:p-5 rounded-2xl bg-[#09172B]/90 border-2 border-[#38BDF8]/60 shadow-[0_0_20px_rgba(56,189,248,0.2)] space-y-3"
+                    >
+                      <div className="flex items-center justify-between gap-2 flex-wrap">
+                        <div className="flex items-center gap-2">
+                          <Users className="w-4 h-4 text-[#38BDF8]" />
+                          <span className="text-xs font-mono font-bold text-white uppercase tracking-wider">
+                            Duo Partner Details
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-[#38BDF8]/20 border border-[#38BDF8]/40 text-[#BAE6FD] font-semibold">
+                          2 Participants Entry
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-[#C4BBA3] font-mono leading-relaxed">
+                        You have selected a <strong className="text-white">Duo Package</strong> (
+                        {selectedCategory === 'prom'
+                          ? 'Prom Night Duo'
+                          : `${selectedActivity.name} Duo`}
+                        ). Member 1 is the primary registrant above. Please enter the full legal name of your partner (Member 2).
+                      </p>
+                      <div className="space-y-1.5 pt-1">
+                        <label className="block text-xs font-mono font-bold text-[#38BDF8] uppercase tracking-wider">
+                          Partner / Member 2 Full Name <span className="text-rose-400">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={member2Name}
+                          onChange={(e) => setMember2Name(e.target.value)}
+                          placeholder="e.g. Diya Sharma"
+                          className={`w-full px-3.5 py-2.5 rounded-xl bg-[#0B1120] border text-white font-mono text-xs focus:outline-none focus:ring-1 transition-all ${
+                            validationErrors.member2Name
+                              ? 'border-rose-500 focus:ring-rose-500'
+                              : 'border-[#38BDF8]/40 focus:border-[#38BDF8] focus:ring-[#38BDF8]'
+                          }`}
+                        />
+                        {validationErrors.member2Name && (
+                          <p className="text-[11px] text-rose-400 font-mono">
+                            {validationErrors.member2Name}
+                          </p>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {isSquad && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="p-4 sm:p-5 rounded-2xl bg-[#1E1138]/90 border-2 border-[#C084FC]/60 shadow-[0_0_20px_rgba(192,132,252,0.2)] space-y-3"
+                    >
+                      <div className="flex items-center justify-between gap-2 flex-wrap">
+                        <div className="flex items-center gap-2">
+                          <Users className="w-4 h-4 text-[#C084FC]" />
+                          <span className="text-xs font-mono font-bold text-white uppercase tracking-wider">
+                            Squad Roster / Teammates Details
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-[#C084FC]/20 border border-[#C084FC]/40 text-[#E9D5FF] font-semibold">
+                          4 Participants Squad
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-[#C4BBA3] font-mono leading-relaxed">
+                        You have selected a <strong className="text-white">Squad Package</strong> (
+                        {selectedCategory === 'prom'
+                          ? 'Prom Night Squad'
+                          : `${selectedActivity.name} Squad`}
+                        ). Member 1 (Lead) is the primary registrant above. Please enter the full legal names of your 3 squad teammates.
+                      </p>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                        <div className="space-y-1.5">
+                          <label className="block text-xs font-mono font-bold text-[#E9D5FF] uppercase tracking-wider">
+                            Teammate 2 Full Name <span className="text-rose-400">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={member2Name}
+                            onChange={(e) => setMember2Name(e.target.value)}
+                            placeholder="e.g. Rohan Verma"
+                            className={`w-full px-3.5 py-2.5 rounded-xl bg-[#0B1120] border text-white font-mono text-xs focus:outline-none focus:ring-1 transition-all ${
+                              validationErrors.member2Name
+                                ? 'border-rose-500 focus:ring-rose-500'
+                                : 'border-[#C084FC]/40 focus:border-[#C084FC] focus:ring-[#C084FC]'
+                            }`}
+                          />
+                          {validationErrors.member2Name && (
+                            <p className="text-[11px] text-rose-400 font-mono">
+                              {validationErrors.member2Name}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <label className="block text-xs font-mono font-bold text-[#E9D5FF] uppercase tracking-wider">
+                            Teammate 3 Full Name <span className="text-rose-400">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={member3Name}
+                            onChange={(e) => setMember3Name(e.target.value)}
+                            placeholder="e.g. Priya Gupta"
+                            className={`w-full px-3.5 py-2.5 rounded-xl bg-[#0B1120] border text-white font-mono text-xs focus:outline-none focus:ring-1 transition-all ${
+                              validationErrors.member3Name
+                                ? 'border-rose-500 focus:ring-rose-500'
+                                : 'border-[#C084FC]/40 focus:border-[#C084FC] focus:ring-[#C084FC]'
+                            }`}
+                          />
+                          {validationErrors.member3Name && (
+                            <p className="text-[11px] text-rose-400 font-mono">
+                              {validationErrors.member3Name}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <label className="block text-xs font-mono font-bold text-[#E9D5FF] uppercase tracking-wider">
+                            Teammate 4 Full Name <span className="text-rose-400">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            value={member4Name}
+                            onChange={(e) => setMember4Name(e.target.value)}
+                            placeholder="e.g. Kunal Singh"
+                            className={`w-full px-3.5 py-2.5 rounded-xl bg-[#0B1120] border text-white font-mono text-xs focus:outline-none focus:ring-1 transition-all ${
+                              validationErrors.member4Name
+                                ? 'border-rose-500 focus:ring-rose-500'
+                                : 'border-[#C084FC]/40 focus:border-[#C084FC] focus:ring-[#C084FC]'
+                            }`}
+                          />
+                          {validationErrors.member4Name && (
+                            <p className="text-[11px] text-rose-400 font-mono">
+                              {validationErrors.member4Name}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
                   {/* SPECIAL FIELD FOR "MUN got Latent": WHAT TALENT DO YOU THINK YOU CAN SHOWCASE */}
                   {selectedCategory === 'special' && (
                     <div className="space-y-1.5 pt-1">
@@ -1792,6 +2005,19 @@ Branch: ${EVENT_PAYMENT_CONFIG.branch}`;
                   <div className="flex justify-between border-b border-[#D4AF37]/15 pb-1.5">
                     <span className="text-[#C4BBA3]">Age:</span>
                     <span className="text-white">{age} years</span>
+                  </div>
+                )}
+                {(isDuo || isSquad) && (
+                  <div className="border-b border-[#D4AF37]/15 pb-2 pt-1 text-xs font-mono space-y-1">
+                    <span className="text-[#38BDF8] font-bold block uppercase text-[11px] text-left">
+                      {isDuo ? 'Duo Partner Roster' : 'Squad Roster'}:
+                    </span>
+                    <div className="text-white space-y-0.5 text-left pl-2 text-[11px]">
+                      <div>• Member 1 (Lead): {fullName}</div>
+                      <div>• Member 2: {member2Name}</div>
+                      {isSquad && member3Name && <div>• Member 3: {member3Name}</div>}
+                      {isSquad && member4Name && <div>• Member 4: {member4Name}</div>}
+                    </div>
                   </div>
                 )}
                 <div className="flex justify-between">

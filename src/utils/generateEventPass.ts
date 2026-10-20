@@ -22,6 +22,7 @@ export interface EventPassData {
   age?: string | number;
   trackingId: string;
   logoImg?: HTMLImageElement | null;
+  teamMembers?: string;
 }
 
 const POETIC_QUOTES: Record<string, { lines: string[]; author: string }> = {
@@ -257,8 +258,12 @@ export function generateEventPassDataUrl(data: EventPassData): string {
   };
 
   drawAttrCard(leftX, 'INSTITUTION / COLLEGE / SCHOOL', data.institution);
-  const metaLabel = data.age ? `PARTICIPANT AGE: ${data.age} YRS` : 'OPEN DIVISION';
-  drawAttrCard(rightX, 'CATEGORY STATUS / ACCESS TIER', metaLabel);
+  const metaLabel = data.teamMembers
+    ? `ROSTER: ${data.teamMembers.length > 28 ? data.teamMembers.slice(0, 26) + '...' : data.teamMembers}`
+    : data.age
+    ? `PARTICIPANT AGE: ${data.age} YRS`
+    : 'OPEN DIVISION';
+  drawAttrCard(rightX, data.teamMembers ? 'SQUAD / DUO ROSTER' : 'CATEGORY STATUS / ACCESS TIER', metaLabel);
 
   // 7. Poetic Conclave Creed
   ctx.save();

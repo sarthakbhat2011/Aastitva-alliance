@@ -802,6 +802,10 @@ export interface EventRegistrationPayload {
   age?: number;
   talentDescription?: string;
   transactionId?: string;
+  squadMembers?: string;
+  member2Name?: string;
+  member3Name?: string;
+  member4Name?: string;
   agreedToTerms?: boolean;
 }
 
