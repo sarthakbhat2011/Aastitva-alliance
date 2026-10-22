@@ -997,11 +997,11 @@ Institution: ${clean.institution}
 Academic Division: ${clean.grade}
 Prior MUN Experience: ${clean.priorExperience}
 Honors / Accolades: ${clean.priorAccolades || "None"}
-Accommodation Track: ${clean.hasAccommodation ? "YES (Residential Package - \u20B95,999)" : "NO (Standard Pass - \u20B92,499)"}
+Accommodation Track: ${clean.hasAccommodation ? "YES (Residential Package - \u20B95,999)" : "NO (Standard Pass - \u20B93,000)"}
 1st Choice Committee: ${clean.firstChoiceCommittee} (Preferred: ${clean.firstChoicePortfolio})
 2nd Choice Committee: ${clean.secondChoiceCommittee || "None"} (Preferred: ${clean.secondChoicePortfolio || "None"})
 3rd Choice Committee: ${clean.thirdChoiceCommittee || "None"} (Preferred: ${clean.thirdChoicePortfolio || "None"})
-Fee Status: ${clean.hasAccommodation ? "\u20B95,999 (Residential Delegate Remittance Recorded)" : "\u20B92,499 (Delegate Remittance Recorded)"}
+Fee Status: ${clean.hasAccommodation ? "\u20B95,999 (Residential Delegate Remittance Recorded)" : "\u20B93,000 (Delegate Remittance Recorded)"}
 Transaction / UTR ID: ${clean.transactionId || "Pending Verification"}
 Statement of Purpose:
 ${clean.statement || "Standard Application"}`,
@@ -1314,7 +1314,7 @@ Honors / Accolades: ${accolades}
 1st Choice Committee: ${comm1} (Preferred: ${port1})
 2nd Choice Committee: ${comm2} (Preferred: ${port2})
 3rd Choice Committee: ${comm3} (Preferred: ${port3})
-Fee Status: \u20B92,499 (Delegate Remittance Recorded)
+Fee Status: \u20B93,000 (Delegate Remittance Recorded)
 Transaction / UTR ID: ${utrCode || "Verified (Google Forms Sync)"}
 Statement of Purpose:
 ${statement}`,
@@ -1476,7 +1476,7 @@ Honors / Accolades: ${accolades}
 1st Choice Committee: ${comm1} (Preferred: ${port1})
 2nd Choice Committee: ${comm2} (Preferred: ${port2})
 3rd Choice Committee: ${comm3} (Preferred: ${port3})
-Fee Status: \u20B92,499 (Delegate Remittance Recorded)
+Fee Status: \u20B93,000 (Delegate Remittance Recorded)
 Transaction / UTR ID: ${utrCode || "Verified (Google Forms Webhook)"}
 Statement of Purpose:
 ${statement}`,

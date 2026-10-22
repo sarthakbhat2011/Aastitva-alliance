@@ -634,7 +634,7 @@ async function startServer() {
         ? `Aequitas 2026 Delegate (With Accommodation): ${clean.firstChoiceCommittee} [${clean.firstChoicePortfolio}]`
         : `Aequitas 2026 Delegate: ${clean.firstChoiceCommittee} [${clean.firstChoicePortfolio}]`,
       preferredDate: '2026-10-29',
-      message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${clean.fullName}\nEmail: ${clean.email}\nPhone: ${clean.phone}\nInstitution: ${clean.institution}\nAcademic Division: ${clean.grade}\nPrior MUN Experience: ${clean.priorExperience}\nHonors / Accolades: ${clean.priorAccolades || 'None'}\nAccommodation Track: ${clean.hasAccommodation ? 'YES (Residential Package - ₹5,999)' : 'NO (Standard Pass - ₹2,499)'}\n1st Choice Committee: ${clean.firstChoiceCommittee} (Preferred: ${clean.firstChoicePortfolio})\n2nd Choice Committee: ${clean.secondChoiceCommittee || 'None'} (Preferred: ${clean.secondChoicePortfolio || 'None'})\n3rd Choice Committee: ${clean.thirdChoiceCommittee || 'None'} (Preferred: ${clean.thirdChoicePortfolio || 'None'})\nFee Status: ${clean.hasAccommodation ? '₹5,999 (Residential Delegate Remittance Recorded)' : '₹2,499 (Delegate Remittance Recorded)'}\nTransaction / UTR ID: ${clean.transactionId || 'Pending Verification'}\nStatement of Purpose:\n${clean.statement || 'Standard Application'}`,
+      message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${clean.fullName}\nEmail: ${clean.email}\nPhone: ${clean.phone}\nInstitution: ${clean.institution}\nAcademic Division: ${clean.grade}\nPrior MUN Experience: ${clean.priorExperience}\nHonors / Accolades: ${clean.priorAccolades || 'None'}\nAccommodation Track: ${clean.hasAccommodation ? 'YES (Residential Package - ₹5,999)' : 'NO (Standard Pass - ₹3,000)'}\n1st Choice Committee: ${clean.firstChoiceCommittee} (Preferred: ${clean.firstChoicePortfolio})\n2nd Choice Committee: ${clean.secondChoiceCommittee || 'None'} (Preferred: ${clean.secondChoicePortfolio || 'None'})\n3rd Choice Committee: ${clean.thirdChoiceCommittee || 'None'} (Preferred: ${clean.thirdChoicePortfolio || 'None'})\nFee Status: ${clean.hasAccommodation ? '₹5,999 (Residential Delegate Remittance Recorded)' : '₹3,000 (Delegate Remittance Recorded)'}\nTransaction / UTR ID: ${clean.transactionId || 'Pending Verification'}\nStatement of Purpose:\n${clean.statement || 'Standard Application'}`,
       status: 'New',
     };
 
@@ -1022,7 +1022,7 @@ async function startServer() {
         phone: phone || '+91 99065 12613',
         eventType: `Aequitas 2026 Delegate: ${comm1} [${port1}]`,
         preferredDate: '2026-10-29',
-        message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nInstitution: ${institution}\nAcademic Division: ${grade}\nPrior MUN Experience: ${experience}\nHonors / Accolades: ${accolades}\n1st Choice Committee: ${comm1} (Preferred: ${port1})\n2nd Choice Committee: ${comm2} (Preferred: ${port2})\n3rd Choice Committee: ${comm3} (Preferred: ${port3})\nFee Status: ₹2,499 (Delegate Remittance Recorded)\nTransaction / UTR ID: ${utrCode || 'Verified (Google Forms Sync)'}\nStatement of Purpose:\n${statement}`,
+        message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nInstitution: ${institution}\nAcademic Division: ${grade}\nPrior MUN Experience: ${experience}\nHonors / Accolades: ${accolades}\n1st Choice Committee: ${comm1} (Preferred: ${port1})\n2nd Choice Committee: ${comm2} (Preferred: ${port2})\n3rd Choice Committee: ${comm3} (Preferred: ${port3})\nFee Status: ₹3,000 (Delegate Remittance Recorded)\nTransaction / UTR ID: ${utrCode || 'Verified (Google Forms Sync)'}\nStatement of Purpose:\n${statement}`,
         status: 'New',
       };
 
@@ -1214,7 +1214,7 @@ async function startServer() {
         phone: phone || '+91 99065 12613',
         eventType: `Aequitas 2026 Delegate: ${comm1} [${port1}]`,
         preferredDate: '2026-10-29',
-        message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nInstitution: ${institution}\nAcademic Division: ${grade}\nPrior MUN Experience: ${experience}\nHonors / Accolades: ${accolades}\n1st Choice Committee: ${comm1} (Preferred: ${port1})\n2nd Choice Committee: ${comm2} (Preferred: ${port2})\n3rd Choice Committee: ${comm3} (Preferred: ${port3})\nFee Status: ₹2,499 (Delegate Remittance Recorded)\nTransaction / UTR ID: ${utrCode || 'Verified (Google Forms Webhook)'}\nStatement of Purpose:\n${statement}`,
+        message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nInstitution: ${institution}\nAcademic Division: ${grade}\nPrior MUN Experience: ${experience}\nHonors / Accolades: ${accolades}\n1st Choice Committee: ${comm1} (Preferred: ${port1})\n2nd Choice Committee: ${comm2} (Preferred: ${port2})\n3rd Choice Committee: ${comm3} (Preferred: ${port3})\nFee Status: ₹3,000 (Delegate Remittance Recorded)\nTransaction / UTR ID: ${utrCode || 'Verified (Google Forms Webhook)'}\nStatement of Purpose:\n${statement}`,
         status: 'New',
       };
 

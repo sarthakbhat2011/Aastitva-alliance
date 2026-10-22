@@ -573,7 +573,7 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
                       <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-black bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse">15 SPOTS LEFT</span>
                     </div>
                     <p className="text-[11px] text-[#C4BBA3]/80 leading-relaxed">
-                      With Accommodation (₹5,999) or Non-Residential (₹2,499). <span className="text-amber-300 font-semibold">Surges to ₹3,000 on 25 Oct.</span>
+                      With Accommodation (₹5,999) or Non-Residential (₹3,000). <span className="text-amber-300 font-semibold">Surges to ₹3,500 on 25 Oct.</span>
                     </p>
                   </div>
 

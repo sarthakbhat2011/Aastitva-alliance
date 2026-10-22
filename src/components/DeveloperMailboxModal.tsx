@@ -174,7 +174,7 @@ function parseDelegateMessage(mail: PartnerMailEntry): ParsedDelegateInfo {
     }
   }
 
-  const feeStatus = getField(/Fee Status:\s*([^\n\r]+)/i) || (mail.message?.includes('5999') || mail.message?.includes('5,999') ? '₹5,999 (Residential Recorded)' : (mail.message?.includes('2499') || mail.message?.includes('2,499') ? '₹2,499 (Recorded)' : (mail.message?.includes('1999') || mail.message?.includes('1,999') ? '₹1,999 (Recorded)' : undefined)));
+  const feeStatus = getField(/Fee Status:\s*([^\n\r]+)/i) || (mail.message?.includes('5999') || mail.message?.includes('5,999') ? '₹5,999 (Residential Recorded)' : (mail.message?.includes('3000') || mail.message?.includes('3,000') ? '₹3,000 (Recorded)' : (mail.message?.includes('2499') || mail.message?.includes('2,499') ? '₹2,499 (Recorded)' : (mail.message?.includes('1999') || mail.message?.includes('1,999') ? '₹1,999 (Recorded)' : undefined))));
   const transactionId = getField(/(?:Transaction \/ UTR ID|Transaction ID|UTR ID|UTR):\s*([^\n\r]+)/i);
 
   let statementOfPurpose = '';
@@ -234,7 +234,7 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
     thirdChoiceCommittee: 'BRICS - BRICS Summit',
     thirdChoicePortfolio: 'General Allocation',
     priorExperience: 'Junior Delegate (1–3 MUNs)',
-    feeStatus: '₹2,499 (Delegate Remittance Recorded)',
+    feeStatus: '₹3,000 (Delegate Remittance Recorded)',
     transactionId: 'Verified',
     statement: '',
   });
@@ -398,7 +398,7 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
           phone: phone || '+91 99065 12613',
           eventType: `Aequitas 2026 Delegate: ${comm1} [${port1}]`,
           preferredDate: '2026-10-29',
-          message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nInstitution: ${institution}\nAcademic Division: ${grade}\nPrior MUN Experience: ${experience}\nHonors / Accolades: ${accolades}\n1st Choice Committee: ${comm1} (Preferred: ${port1})\n2nd Choice Committee: ${comm2} (Preferred: ${port2})\n3rd Choice Committee: ${comm3} (Preferred: ${port3})\nFee Status: ₹2,499 (Delegate Remittance Recorded)\nTransaction / UTR ID: ${utrCode || 'Verified (Google Forms Sync)'}\nStatement of Purpose:\n${statement}`,
+          message: `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nInstitution: ${institution}\nAcademic Division: ${grade}\nPrior MUN Experience: ${experience}\nHonors / Accolades: ${accolades}\n1st Choice Committee: ${comm1} (Preferred: ${port1})\n2nd Choice Committee: ${comm2} (Preferred: ${port2})\n3rd Choice Committee: ${comm3} (Preferred: ${port3})\nFee Status: ₹3,000 (Delegate Remittance Recorded)\nTransaction / UTR ID: ${utrCode || 'Verified (Google Forms Sync)'}\nStatement of Purpose:\n${statement}`,
           status: 'New',
         };
 
@@ -639,7 +639,7 @@ export const DeveloperMailboxModal: React.FC<Props> = ({ isOpen, onClose }) => {
         thirdChoiceCommittee: 'BRICS - BRICS Summit',
         thirdChoicePortfolio: 'General Allocation',
         priorExperience: 'Junior Delegate (1–3 MUNs)',
-        feeStatus: '₹2,499 (Delegate Remittance Recorded)',
+        feeStatus: '₹3,000 (Delegate Remittance Recorded)',
         transactionId: 'Verified',
         statement: '',
       });
@@ -676,7 +676,7 @@ Delegate Name: ${parsed.delegateName}
 Institution: ${parsed.institution}
 Academic Division: ${parsed.division || 'N/A'}
 Experience Level: ${parsed.priorExperience || 'N/A'}
-Fee Remittance: ${parsed.feeStatus || '₹2,499'}
+Fee Remittance: ${parsed.feeStatus || '₹3,000'}
 Transaction / UTR ID: ${parsed.transactionId || 'N/A'}
 Email: ${mail.email}
 Phone: ${mail.phone}
@@ -1136,7 +1136,7 @@ Current Status: ${mail.status}`;
                               <div className="flex items-center flex-wrap gap-2.5">
                                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/35 text-[11px] font-bold">
                                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                                  <span>{parsed.feeStatus || '₹2,499 Fee Recorded'}</span>
+                                  <span>{parsed.feeStatus || '₹3,000 Fee Recorded'}</span>
                                 </span>
                                 {parsed.transactionId ? (
                                   <div className="flex items-center gap-1.5 text-[#C4BBA3]">
