@@ -19,7 +19,7 @@ export const SAMPLE_PARTNER_MAILS: PartnerMailEntry[] = [
     eventType: 'Aequitas 2026 Delegate: CC - Citizen Council [General Allocation]',
     preferredDate: '2026-10-29',
     message:
-      '[DELEGATE APPLICATION - AEQ-2026-9281]\nDelegate Name: Ekansh Mahajan\nEmail: ekanshmahajan@gmail.com\nPhone: +91 99065 12613\nInstitution: Jammu Sanskriti School\nAcademic Division: Senior Secondary School (Grades 11–12)\nPrior MUN Experience: Junior Delegate (1–3 MUNs)\nHonors / Accolades: None\n1st Choice Committee: CC - Citizen Council (Preferred: General Allocation)\n2nd Choice Committee: UNHRC - United Nations Human Rights Council (Preferred: General Allocation)\n3rd Choice Committee: BRICS - BRICS Summit (Preferred: General Allocation)\nFee Status: ₹1,999 (Delegate Remittance Recorded)\nTransaction / UTR ID: Verified (Jammu Sanskriti School)\nStatement of Purpose:\nOfficial delegate registration for Aequitas Summit 2026 representing Jammu Sanskriti School.',
+      '[DELEGATE APPLICATION - AEQ-2026-9281]\nDelegate Name: Ekansh Mahajan\nEmail: ekanshmahajan@gmail.com\nPhone: +91 99065 12613\nInstitution: Jammu Sanskriti School\nAcademic Division: Senior Secondary School (Grades 11–12)\nPrior MUN Experience: Junior Delegate (1–3 MUNs)\nHonors / Accolades: None\n1st Choice Committee: CC - Citizen Council (Preferred: General Allocation)\n2nd Choice Committee: UNHRC - United Nations Human Rights Council (Preferred: General Allocation)\n3rd Choice Committee: BRICS - BRICS Summit (Preferred: General Allocation)\nFee Status: ₹2,499 (Delegate Remittance Recorded)\nTransaction / UTR ID: Verified (Jammu Sanskriti School)\nStatement of Purpose:\nOfficial delegate registration for Aequitas Summit 2026 representing Jammu Sanskriti School.',
     status: 'New',
   },
   {
@@ -146,7 +146,7 @@ export function recoverLocalCachedApplications(): PartnerMailEntry[] {
 
             const message =
               app.message ||
-              `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nInstitution: ${institution}\nAcademic Division: ${grade}\nPrior MUN Experience: ${app.priorExperience || 'None'}\nHonors / Accolades: ${app.priorAccolades || 'None'}\n1st Choice Committee: ${committee} (Preferred: ${portfolio})\n2nd Choice Committee: ${app.secondChoiceCommittee || 'None'} (Preferred: ${app.secondChoicePortfolio || 'None'})\n3rd Choice Committee: ${app.thirdChoiceCommittee || 'None'} (Preferred: ${app.thirdChoicePortfolio || 'None'})\nFee Status: ${app.feePaid || '₹1,999 (Delegate Remittance Recorded)'}\nTransaction / UTR ID: ${app.transactionId || 'Verified'}\nStatement of Purpose:\n${app.statement || 'Official Delegate Application'}`;
+              `[DELEGATE APPLICATION - ${trackingId}]\nDelegate Name: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nInstitution: ${institution}\nAcademic Division: ${grade}\nPrior MUN Experience: ${app.priorExperience || 'None'}\nHonors / Accolades: ${app.priorAccolades || 'None'}\n1st Choice Committee: ${committee} (Preferred: ${portfolio})\n2nd Choice Committee: ${app.secondChoiceCommittee || 'None'} (Preferred: ${app.secondChoicePortfolio || 'None'})\n3rd Choice Committee: ${app.thirdChoiceCommittee || 'None'} (Preferred: ${app.thirdChoicePortfolio || 'None'})\nFee Status: ${app.feePaid || '₹2,499 (Delegate Remittance Recorded)'}\nTransaction / UTR ID: ${app.transactionId || 'Verified'}\nStatement of Purpose:\n${app.statement || 'Official Delegate Application'}`;
 
             recovered.push({
               id: trackingId,

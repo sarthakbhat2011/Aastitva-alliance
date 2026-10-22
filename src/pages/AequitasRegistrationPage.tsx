@@ -57,12 +57,16 @@ import { saveEntryToMailbox, submitRegistrationToServer } from '../utils/mailbox
 import { DeveloperMailboxModal } from '../components/DeveloperMailboxModal';
 
 export const PAYMENT_CONFIG = {
-  standardAmount: '1999',
-  standardFormatted: '₹1,999',
-  accommodationAmount: '4999',
-  accommodationFormatted: '₹4,999',
-  amount: '1999',
-  formattedAmount: '₹1,999',
+  standardAmount: '2499',
+  standardFormatted: '₹2,499',
+  accommodationAmount: '5999',
+  accommodationFormatted: '₹5,999',
+  amount: '2499',
+  formattedAmount: '₹2,499',
+  surgeUpcomingAmount: '3000',
+  surgeUpcomingFormatted: '₹3,000',
+  surgeEffectiveDate: '25th October 2026',
+  spotsRemaining: 15,
   accountNumber: '0116040100017669',
   ifscCode: 'JAKA0GNGYAL',
   bankName: 'Jammu & Kashmir Bank (J&K Bank)',
@@ -764,7 +768,7 @@ export const AequitasRegistrationPage: React.FC = () => {
           ? `Aequitas 2026 Delegate (With Accommodation): ${form.firstChoiceCommittee} [${form.firstChoicePortfolio.trim()}]`
           : `Aequitas 2026 Delegate: ${form.firstChoiceCommittee} [${form.firstChoicePortfolio.trim()}]`,
         preferredDate: '2026-10-29',
-        message: `[DELEGATE APPLICATION - ${finalTrackingId}]\nDelegate Name: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.institution.trim()}\nAcademic Division: ${form.grade}\nPrior MUN Experience: ${form.priorExperience}\nHonors / Accolades: ${form.priorAccolades.trim() || 'None'}\nAccommodation Track: ${hasAccommodation ? 'YES (Residential Package - ₹4,999)' : 'NO (Standard Pass - ₹1,999)'}\n1st Choice Committee: ${form.firstChoiceCommittee} (Preferred: ${form.firstChoicePortfolio.trim()})\n2nd Choice Committee: ${form.secondChoiceCommittee} (Preferred: ${form.secondChoicePortfolio.trim()})\n3rd Choice Committee: ${form.thirdChoiceCommittee} (Preferred: ${form.thirdChoicePortfolio.trim()})\nFee Status: ${hasAccommodation ? '₹4,999 (Residential Delegate Remittance Recorded)' : '₹1,999 (Delegate Remittance Recorded)'}\nTransaction / UTR ID: ${form.transactionId.trim()}\nStatement of Purpose:\n${form.statement.trim()}`,
+        message: `[DELEGATE APPLICATION - ${finalTrackingId}]\nDelegate Name: ${form.fullName.trim()}\nEmail: ${form.email.trim()}\nPhone: ${form.phone.trim()}\nInstitution: ${form.institution.trim()}\nAcademic Division: ${form.grade}\nPrior MUN Experience: ${form.priorExperience}\nHonors / Accolades: ${form.priorAccolades.trim() || 'None'}\nAccommodation Track: ${hasAccommodation ? 'YES (Residential Package - ₹5,999)' : 'NO (Standard Pass - ₹2,499)'}\n1st Choice Committee: ${form.firstChoiceCommittee} (Preferred: ${form.firstChoicePortfolio.trim()})\n2nd Choice Committee: ${form.secondChoiceCommittee} (Preferred: ${form.secondChoicePortfolio.trim()})\n3rd Choice Committee: ${form.thirdChoiceCommittee} (Preferred: ${form.thirdChoicePortfolio.trim()})\nFee Status: ${hasAccommodation ? '₹5,999 (Residential Delegate Remittance Recorded)' : '₹2,499 (Delegate Remittance Recorded)'}\nTransaction / UTR ID: ${form.transactionId.trim()}\nStatement of Purpose:\n${form.statement.trim()}`,
         status: 'New',
       };
       await saveEntryToMailbox(mailboxEntry);
@@ -793,7 +797,7 @@ export const AequitasRegistrationPage: React.FC = () => {
         stored.push({
           trackingId: finalTrackingId,
           timestamp: nowTime,
-          feePaid: hasAccommodation ? '₹4,999' : '₹1,999',
+          feePaid: hasAccommodation ? '₹5,999' : '₹2,499',
           hasAccommodation: Boolean(hasAccommodation),
           transactionId: form.transactionId.trim(),
           ...form,
@@ -996,9 +1000,36 @@ export const AequitasRegistrationPage: React.FC = () => {
                   </p>
                 </div>
 
+                {/* HIGH-CONVERSION BUZZ & SCARCITY ALERT BANNER */}
+                <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-rose-950/80 via-[#1C0F2A]/90 to-amber-950/80 border-2 border-rose-500/60 shadow-[0_0_30px_rgba(244,63,94,0.35)] flex flex-col sm:flex-row items-center justify-between gap-3 text-left font-mono">
+                  <div className="flex items-start sm:items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-rose-500/25 border border-rose-500/50 flex items-center justify-center shrink-0 animate-pulse mt-0.5 sm:mt-0">
+                      <Flame className="w-5 h-5 text-rose-400" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-[10.5px] font-extrabold text-rose-200 uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-rose-500/30 border border-rose-500/50">
+                          ⚡ ONLY 15 SPOTS LEFT
+                        </span>
+                        <span className="text-[10px] text-amber-300 font-bold uppercase tracking-wider">
+                          • PRIORITY ENROLMENT PHASE
+                        </span>
+                      </div>
+                      <p className="text-xs text-white/95 mt-1 leading-snug">
+                        Standard Delegate pass without accommodation is currently <strong className="text-[#FDE047] font-extrabold">₹2,499</strong>. Registration fee will surge to <strong className="text-rose-300 font-extrabold">₹3,000</strong> starting from <strong className="text-amber-300 font-extrabold underline underline-offset-2">25th of October</strong>.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="shrink-0 w-full sm:w-auto text-center sm:text-right">
+                    <span className="inline-block px-3 py-1.5 rounded-xl bg-amber-500/20 border border-amber-500/50 text-amber-200 text-[11px] font-bold uppercase tracking-wider">
+                      Price Surges to ₹3,000 on Oct 25
+                    </span>
+                  </div>
+                </div>
+
                 {/* Two Interactive Selection Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 pt-3 text-left">
-                  {/* OPTION 1: YES - WITH ACCOMMODATION (₹4,999) */}
+                  {/* OPTION 1: YES - WITH ACCOMMODATION (₹5,999) */}
                   <div
                     onClick={() => {
                       sounds.playChime();
@@ -1026,13 +1057,13 @@ export const AequitasRegistrationPage: React.FC = () => {
                             Yes, With Accommodation
                           </h3>
                           <div className="text-2xl sm:text-3xl font-extrabold font-playfair text-[#D4AF37] mt-0.5">
-                            ₹4,999 <span className="text-xs font-mono text-[#C4BBA3] font-normal">/ Delegate</span>
+                            ₹5,999 <span className="text-xs font-mono text-[#C4BBA3] font-normal">/ Delegate</span>
                           </div>
                         </div>
                       </div>
 
                       <p className="text-xs text-[#C4BBA3] leading-relaxed">
-                        Complete residential package curated for outstation & travelling delegates requiring premium hotel stay, meals, and venue transit in Jammu.
+                        Complete residential package curated for outstation &amp; travelling delegates requiring premium hotel stay, meals, and venue transit in Jammu.
                       </p>
 
                       <div className="space-y-2 pt-2 border-t border-[#D4AF37]/20 font-mono text-[11px] text-[#FAF5EF]/90">
@@ -1042,19 +1073,19 @@ export const AequitasRegistrationPage: React.FC = () => {
                         </div>
                         <div className="flex items-center gap-2">
                           <Check className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
-                          <span><strong>Daily Transit Shuttles</strong> between hotel & summit venue</span>
+                          <span><strong>Daily Transit Shuttles</strong> between hotel &amp; summit venue</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Check className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
-                          <span><strong>All Meals Included:</strong> Breakfast, Lunch, High Tea & Dinner</span>
+                          <span><strong>All Meals Included:</strong> Breakfast, Lunch, High Tea &amp; Dinner</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Check className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
-                          <span>Full 2-Day Summit debate pass & committee allocation</span>
+                          <span>Full 2-Day Summit debate pass &amp; committee allocation</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Check className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
-                          <span>Official delegate credentials kit & high-res PNG pass</span>
+                          <span>Official delegate credentials kit &amp; high-res PNG pass</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Check className="w-3.5 h-3.5 text-[#D4AF37] shrink-0" />
@@ -1067,12 +1098,12 @@ export const AequitasRegistrationPage: React.FC = () => {
                       type="button"
                       className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E8A53E] to-[#D4AF37] text-[#070A14] font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(212,175,55,0.4)] group-hover:brightness-110 transition-all cursor-pointer"
                     >
-                      <span>Choose With Accommodation (₹4,999)</span>
+                      <span>Choose With Accommodation (₹5,999)</span>
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </button>
                   </div>
 
-                  {/* OPTION 2: NO - WITHOUT ACCOMMODATION (₹1,999) */}
+                  {/* OPTION 2: NO - WITHOUT ACCOMMODATION (₹2,499) */}
                   <div
                     onClick={() => {
                       sounds.playTap();
@@ -1082,12 +1113,13 @@ export const AequitasRegistrationPage: React.FC = () => {
                     className="group relative rounded-2xl bg-gradient-to-b from-[#0D1427]/90 via-[#070A14]/95 to-[#050811] border-2 border-[#243563] hover:border-[#D4AF37]/60 p-5 sm:p-6 transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-[0_0_30px_rgba(67,24,255,0.25)] cursor-pointer flex flex-col justify-between space-y-4"
                   >
                     <div className="space-y-3">
-                      <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center justify-between gap-2 flex-wrap">
                         <span className="px-2.5 py-1 rounded-full bg-[#16203B] border border-[#243563] text-[#8FB3DE] font-mono font-bold text-[10px] uppercase tracking-wider">
                           Conference Pass Only
                         </span>
-                        <span className="px-2 py-0.5 rounded-full bg-slate-800 text-[#C4BBA3] border border-slate-700 text-[10px] font-mono">
-                          Standard Delegate Tier
+                        <span className="px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[10px] font-mono font-bold flex items-center gap-1 animate-pulse">
+                          <Flame className="w-3 h-3 text-rose-400" />
+                          <span>Only 15 Spots Left!</span>
                         </span>
                       </div>
 
@@ -1099,8 +1131,13 @@ export const AequitasRegistrationPage: React.FC = () => {
                           <h3 className="text-xl sm:text-2xl font-playfair font-bold text-white group-hover:text-[#D4AF37] transition-colors">
                             No, Without Accommodation
                           </h3>
-                          <div className="text-2xl sm:text-3xl font-extrabold font-playfair text-white mt-0.5">
-                            ₹1,999 <span className="text-xs font-mono text-[#C4BBA3] font-normal">/ Delegate</span>
+                          <div className="flex items-baseline gap-2 flex-wrap">
+                            <div className="text-2xl sm:text-3xl font-extrabold font-playfair text-white mt-0.5">
+                              ₹2,499 <span className="text-xs font-mono text-[#C4BBA3] font-normal">/ Delegate</span>
+                            </div>
+                            <span className="text-[10px] font-mono text-amber-300 bg-amber-950/60 border border-amber-500/40 px-2 py-0.5 rounded-md font-bold">
+                              Surges to ₹3,000 on 25 Oct
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -1110,29 +1147,33 @@ export const AequitasRegistrationPage: React.FC = () => {
                       </p>
 
                       <div className="space-y-2 pt-2 border-t border-[#243563] font-mono text-[11px] text-[#C4BBA3]">
-                        <div className="flex items-center gap-2">
-                          <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                          <span>Full 2-Day Summit debate pass (29 & 30 October 2026)</span>
+                        <div className="flex items-center gap-2 text-rose-300 font-bold bg-rose-950/30 p-1.5 rounded-lg border border-rose-500/30">
+                          <Flame className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                          <span><strong>Urgent:</strong> Only 15 spots left at ₹2,499 (increases to ₹3,000 from 25th Oct)</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                          <span>Executive conference lunch & high tea on both days</span>
+                          <span>Full 2-Day Summit debate pass (29 &amp; 30 October 2026)</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                          <span>Committee allocation & preferred portfolio evaluation</span>
+                          <span>Executive conference lunch &amp; high tea on both days</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                          <span>Official delegate stationery, handbook & kit credentials</span>
+                          <span>Committee allocation &amp; preferred portfolio evaluation</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                          <span>High-resolution official delegate pass & certificate</span>
+                          <span>Official delegate stationery, handbook &amp; kit credentials</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                          <span>High-resolution official delegate pass &amp; certificate</span>
                         </div>
                         <div className="flex items-center gap-2 text-[#A39B88]">
                           <span className="text-amber-400 shrink-0 font-bold">•</span>
-                          <span><em>Hotel lodging & local transit arranged independently</em></span>
+                          <span><em>Hotel lodging &amp; local transit arranged independently</em></span>
                         </div>
                       </div>
                     </div>
@@ -1141,7 +1182,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                       type="button"
                       className="w-full py-3 px-4 rounded-xl bg-[#16203B] hover:bg-[#D4AF37] hover:text-[#070A14] text-[#8FB3DE] border border-[#D4AF37]/30 font-extrabold text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer"
                     >
-                      <span>Choose Without Accommodation (₹1,999)</span>
+                      <span>Choose Without Accommodation (₹2,499)</span>
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </button>
                   </div>
@@ -1172,7 +1213,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                       <div>
                         <span className="text-[#C4BBA3] text-[10px] uppercase block">Selected Attendance Track</span>
                         <span className="text-white font-bold text-xs sm:text-sm">
-                          Delegate With Accommodation — <strong className="text-[#D4AF37]">₹4,999</strong>
+                          Delegate With Accommodation — <strong className="text-[#D4AF37]">₹5,999</strong>
                         </span>
                       </div>
                       <span className="hidden md:inline-block px-2 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] text-[10px] font-bold border border-[#D4AF37]/30">
@@ -1186,9 +1227,14 @@ export const AequitasRegistrationPage: React.FC = () => {
                       </div>
                       <div>
                         <span className="text-[#C4BBA3] text-[10px] uppercase block">Selected Attendance Track</span>
-                        <span className="text-white font-bold text-xs sm:text-sm">
-                          Delegate Without Accommodation — <strong className="text-white">₹1,999</strong>
-                        </span>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-white font-bold text-xs sm:text-sm">
+                            Delegate Without Accommodation — <strong className="text-white">₹2,499</strong>
+                          </span>
+                          <span className="text-[9.5px] font-mono text-rose-300 bg-rose-950/60 border border-rose-500/40 px-1.5 py-0.5 rounded">
+                            Only 15 spots left
+                          </span>
+                        </div>
                       </div>
                       <span className="hidden md:inline-block px-2 py-0.5 rounded-full bg-slate-800 text-[#C4BBA3] text-[10px] font-bold border border-slate-700">
                         Standard Day Pass
@@ -1227,8 +1273,8 @@ export const AequitasRegistrationPage: React.FC = () => {
                     {currentStep === 4 && 'Complete Registration Dossier Review'}
                     {currentStep === 5 &&
                       (hasAccommodation
-                        ? 'Delegate Fee Remittance (₹4,999 - With Accommodation)'
-                        : 'Delegate Fee Remittance (₹1,999)')}
+                        ? 'Delegate Fee Remittance (₹5,999 - With Accommodation)'
+                        : 'Delegate Fee Remittance (₹2,499)')}
                   </div>
                 </div>
 
@@ -1964,16 +2010,21 @@ export const AequitasRegistrationPage: React.FC = () => {
                       <div className="p-4 rounded-xl bg-gradient-to-r from-[#D4AF37]/15 via-[#E8A53E]/10 to-transparent border border-[#D4AF37]/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
                           <span className="text-[10px] font-mono uppercase tracking-wider text-[#D4AF37] font-bold block">
-                            {hasAccommodation ? 'Residential Delegation Package (With Accommodation)' : 'Standard Delegate Fee'}
+                            {hasAccommodation ? 'Residential Delegation Package (With Accommodation)' : 'Standard Delegate Fee (Without Accommodation)'}
                           </span>
-                          <div className="text-xl sm:text-2xl font-bold font-playfair text-white mt-0.5">
-                            {hasAccommodation ? '₹4,999' : '₹1,999'}{' '}
+                          <div className="text-xl sm:text-2xl font-bold font-playfair text-white mt-0.5 flex items-baseline gap-2 flex-wrap">
+                            <span>{hasAccommodation ? '₹5,999' : '₹2,499'}</span>
                             <span className="text-xs font-mono text-[#C4BBA3] font-normal">/ Delegate</span>
+                            {!hasAccommodation && (
+                              <span className="text-[10px] font-mono text-rose-300 bg-rose-950/60 border border-rose-500/40 px-2 py-0.5 rounded-md font-bold">
+                                ⚡ Only 15 spots left • Surges to ₹3,000 on 25 Oct
+                              </span>
+                            )}
                           </div>
                           <p className="text-[11px] text-[#C4BBA3] mt-0.5">
                             {hasAccommodation
                               ? 'All-inclusive: Hotel Accommodation, Local Transport Shuttles, 2-day Summit Entry, Committee Allocation, Delegate Kit, High-Res Official Pass, Breakfast, Lunch, High Tea & Dinner.'
-                              : 'All-inclusive: 2-day Summit Entry, Committee Allocation, Delegate Kit, High-Res Official Pass, Lunch & High Tea.'}
+                              : 'All-inclusive: 2-day Summit Entry, Committee Allocation, Delegate Kit, High-Res Official Pass, Lunch & High Tea (Priority Phase Rate).'}
                           </p>
                         </div>
                         <div className="sm:text-right shrink-0 flex items-center gap-2">
@@ -2015,7 +2066,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                     className="space-y-6"
                   >
                     {hasAccommodation ? (
-                      /* RESIDENTIAL PAYMENT INTERFACE (₹4,999 - WITH ACCOMMODATION) */
+                      /* RESIDENTIAL PAYMENT INTERFACE (₹5,999 - WITH ACCOMMODATION) */
                       <>
                         <div>
                           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/35 text-xs font-mono font-semibold mb-2">
@@ -2029,7 +2080,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                             </span>
                           </h2>
                           <p className="text-xs sm:text-sm text-[#C4BBA3] mt-1">
-                            Secure payment of ₹4,999 to finalize your residential conference registration, partner hotel stay in Jammu, and generate your official delegate pass.
+                            Secure payment of ₹5,999 to finalize your residential conference registration, partner hotel stay in Jammu, and generate your official delegate pass.
                           </p>
                         </div>
 
@@ -2045,7 +2096,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                               </span>
                             </div>
                             <div className="text-2xl sm:text-3xl font-playfair font-extrabold text-white flex items-baseline gap-2">
-                              <span className="text-[#D4AF37]">₹4,999</span>
+                              <span className="text-[#D4AF37]">₹5,999</span>
                               <span className="text-xs font-mono font-normal text-emerald-400">
                                 (Residential All-Inclusive Fee)
                               </span>
@@ -2100,7 +2151,7 @@ export const AequitasRegistrationPage: React.FC = () => {
 
                             <div className="space-y-1">
                               <div className="text-sm font-extrabold text-[#D4AF37] font-mono">
-                                Amount: ₹4,999
+                                Amount: ₹5,999
                               </div>
                               <div className="text-[11px] text-emerald-400 font-mono">
                                 Residential Package with Hotel Accommodation
@@ -2149,7 +2200,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                               </div>
 
                               <p className="text-xs text-[#C4BBA3]">
-                                Transfer ₹4,999 directly to the official Aequitas Conclave bank account using net banking or mobile banking:
+                                Transfer ₹5,999 directly to the official Aequitas Conclave bank account using net banking or mobile banking:
                               </p>
 
                               {/* Bank Details Table */}
@@ -2316,7 +2367,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                                 </a>
                                 <a
                                   href={`https://wa.me/${PAYMENT_CONFIG.primaryContact.raw}?text=${encodeURIComponent(
-                                    `Hello Aequitas Secretariat, I have an inquiry regarding residential delegate registration (Fee: ₹4,999 with Accommodation) for ${form.fullName || 'a delegate'}.`
+                                    `Hello Aequitas Secretariat, I have an inquiry regarding residential delegate registration (Fee: ₹5,999 with Accommodation) for ${form.fullName || 'a delegate'}.`
                                   )}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
@@ -2365,7 +2416,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                                     </a>
                                     <a
                                       href={`https://wa.me/${contact.raw}?text=${encodeURIComponent(
-                                        `Hello Aequitas Secretariat, I have an inquiry regarding residential delegate registration (Fee: ₹4,999 with Accommodation) for ${form.fullName || 'a delegate'}.`
+                                        `Hello Aequitas Secretariat, I have an inquiry regarding residential delegate registration (Fee: ₹5,999 with Accommodation) for ${form.fullName || 'a delegate'}.`
                                       )}`}
                                       target="_blank"
                                       rel="noopener noreferrer"
@@ -2397,7 +2448,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                               className="mt-1 w-4 h-4 rounded border-[#D4AF37]/40 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer"
                             />
                             <span className="text-xs text-[#C4BBA3] leading-relaxed">
-                              I confirm that I have remitted <strong>₹4,999</strong> towards the residential delegate registration fee (inclusive of hotel accommodation, transit &amp; all meals) and that the Transaction / UTR ID entered above is genuine. I agree to abide by the official Rules of Procedure, diplomatic decorum, and zero-bias code of conduct established by the Aequitas Summit 2026 Executive Board.
+                              I confirm that I have remitted <strong>₹5,999</strong> towards the residential delegate registration fee (inclusive of hotel accommodation, transit &amp; all meals) and that the Transaction / UTR ID entered above is genuine. I agree to abide by the official Rules of Procedure, diplomatic decorum, and zero-bias code of conduct established by the Aequitas Summit 2026 Executive Board.
                             </span>
                           </label>
                           {validationErrors.agreedToTerms && (
@@ -2409,35 +2460,47 @@ export const AequitasRegistrationPage: React.FC = () => {
                         </div>
                       </>
                     ) : (
-                      /* STANDARD PAYMENT INTERFACE (₹1,999 - WITHOUT ACCOMMODATION) */
+                      /* STANDARD PAYMENT INTERFACE (₹2,499 - WITHOUT ACCOMMODATION) */
                       <>
                         <div>
                           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/35 text-xs font-mono font-semibold mb-2">
                             <QrCode className="w-3 h-3" />
                             <span>Step 05 // Delegate Fee Remittance &amp; Verification</span>
                           </div>
-                          <h2 className="text-xl sm:text-2xl md:text-3xl font-playfair font-bold text-white">
-                            Delegate Fee Remittance
+                          <h2 className="text-xl sm:text-2xl md:text-3xl font-playfair font-bold text-white flex items-center gap-2.5 flex-wrap">
+                            <span>Delegate Fee Remittance</span>
+                            <span className="text-xs font-mono px-2.5 py-0.5 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-300 font-bold flex items-center gap-1 animate-pulse">
+                              <Flame className="w-3 h-3 text-rose-400" />
+                              <span>Only 15 Spots Left!</span>
+                            </span>
                           </h2>
                           <p className="text-xs sm:text-sm text-[#C4BBA3] mt-1">
-                            Secure payment of ₹1,999 to finalize your registration and generate your official delegate pass.
+                            Secure payment of ₹2,499 to finalize your registration and generate your official delegate pass before fee increases to ₹3,000 on 25th October.
                           </p>
                         </div>
 
                         {/* Prominent Amount Header Banner */}
-                        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#16203B] via-[#0D1427] to-[#16203B] border-2 border-[#D4AF37]/50 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#16203B] via-[#0D1427] to-[#1C0F2A] border-2 border-[#D4AF37]/50 shadow-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                           <div>
-                            <span className="text-[10.5px] font-mono uppercase tracking-widest text-[#D4AF37] font-bold block">
-                              Total Amount Payable
-                            </span>
-                            <div className="text-2xl sm:text-3xl font-playfair font-extrabold text-white flex items-baseline gap-2 mt-0.5">
-                              <span>₹1,999</span>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-[10.5px] font-mono uppercase tracking-widest text-[#D4AF37] font-bold block">
+                                Total Amount Payable
+                              </span>
+                              <span className="px-2 py-0.5 rounded-full bg-rose-500/25 border border-rose-500/40 text-rose-300 text-[10px] font-mono font-bold">
+                                ⚡ Only 15 Spots Left
+                              </span>
+                            </div>
+                            <div className="text-2xl sm:text-3xl font-playfair font-extrabold text-white flex items-baseline gap-2 mt-0.5 flex-wrap">
+                              <span>₹2,499</span>
                               <span className="text-xs font-mono font-normal text-emerald-400">
-                                (Delegate All-Inclusive Fee)
+                                (Priority Standard Day Pass)
+                              </span>
+                              <span className="text-[10px] font-mono text-amber-300 bg-amber-950/60 border border-amber-500/40 px-2 py-0.5 rounded-md font-bold">
+                                Surges to ₹3,000 from 25th Oct
                               </span>
                             </div>
                             <p className="text-xs text-[#C4BBA3] mt-1">
-                              Covers 29 &amp; 30 October 2026 Summit entry, official kit, lunch, high tea &amp; pass credentials.
+                              Covers 29 &amp; 30 October 2026 Summit entry, official kit, executive lunch, high tea &amp; pass credentials.
                             </p>
                           </div>
                           <div className="flex items-center gap-2">
@@ -2481,7 +2544,7 @@ export const AequitasRegistrationPage: React.FC = () => {
 
                             <div className="space-y-1">
                               <div className="text-xs font-bold text-white font-mono">
-                                Amount: ₹1,999
+                                Amount: ₹2,499
                               </div>
                               <div className="text-[11px] text-[#C4BBA3] font-mono">
                                 Scan via PhonePe, GPay, Paytm, BHIM, Cred
@@ -2527,7 +2590,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                               </div>
 
                               <p className="text-xs text-[#C4BBA3]">
-                                Transfer ₹1,999 directly to the official Aequitas Conclave bank account using net banking or mobile banking:
+                                Transfer ₹2,499 directly to the official Aequitas Conclave bank account using net banking or mobile banking:
                               </p>
 
                               {/* Bank Details Table */}
@@ -2694,7 +2757,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                                 </a>
                                 <a
                                   href={`https://wa.me/${PAYMENT_CONFIG.primaryContact.raw}?text=${encodeURIComponent(
-                                    `Hello Aequitas Secretariat, I have an inquiry regarding delegate registration (Fee: ₹1,999) for ${form.fullName || 'a delegate'}.`
+                                    `Hello Aequitas Secretariat, I have an inquiry regarding delegate registration (Fee: ₹2,499) for ${form.fullName || 'a delegate'}.`
                                   )}`}
                                   target="_blank"
                                   rel="noopener noreferrer"
@@ -2743,7 +2806,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                                     </a>
                                     <a
                                       href={`https://wa.me/${contact.raw}?text=${encodeURIComponent(
-                                        `Hello Aequitas Secretariat, I have an inquiry regarding delegate registration (Fee: ₹1,999) for ${form.fullName || 'a delegate'}.`
+                                        `Hello Aequitas Secretariat, I have an inquiry regarding delegate registration (Fee: ₹2,499) for ${form.fullName || 'a delegate'}.`
                                       )}`}
                                       target="_blank"
                                       rel="noopener noreferrer"
@@ -2775,7 +2838,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                               className="mt-1 w-4 h-4 rounded border-[#D4AF37]/40 text-[#D4AF37] focus:ring-[#D4AF37] cursor-pointer"
                             />
                             <span className="text-xs text-[#C4BBA3] leading-relaxed">
-                              I confirm that I have remitted <strong>₹1,999</strong> towards the delegate registration fee and that the Transaction / UTR ID entered above is genuine. I agree to abide by the official Rules of Procedure, diplomatic decorum, and zero-bias code of conduct established by the Aequitas Summit 2026 Executive Board.
+                              I confirm that I have remitted <strong>₹2,499</strong> towards the delegate registration fee and that the Transaction / UTR ID entered above is genuine. I agree to abide by the official Rules of Procedure, diplomatic decorum, and zero-bias code of conduct established by the Aequitas Summit 2026 Executive Board.
                             </span>
                           </label>
                           {validationErrors.agreedToTerms && (
@@ -2833,7 +2896,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                     className="px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E8A53E] to-[#D4AF37] text-[#070A14] font-extrabold text-xs sm:text-sm shadow-[0_0_25px_rgba(212,175,55,0.5)] hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 cursor-pointer ml-auto min-h-[44px]"
                   >
                     <CreditCard className="w-4 h-4" />
-                    <span>Proceed to Fee Payment ({hasAccommodation ? '₹4,999' : '₹1,999'})</span>
+                    <span>Proceed to Fee Payment ({hasAccommodation ? '₹5,999' : '₹2,499'})</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 ) : (
@@ -2855,8 +2918,8 @@ export const AequitasRegistrationPage: React.FC = () => {
                         <ShieldCheck className="w-4 h-4" />
                         <span>
                           {hasAccommodation
-                            ? 'Confirm Payment & Complete Registration (₹4,999)'
-                            : 'Confirm Payment & Complete Registration'}
+                            ? 'Confirm Payment & Complete Registration (₹5,999)'
+                            : 'Confirm Payment & Complete Registration (₹2,499)'}
                         </span>
                       </>
                     )}
@@ -2904,7 +2967,7 @@ export const AequitasRegistrationPage: React.FC = () => {
               <div className="flex items-center justify-between pb-2 border-b border-[#D4AF37]/20">
                 <span className="text-[#C4BBA3]">Fee Remittance:</span>
                 <span className="text-emerald-400 font-bold">
-                  {hasAccommodation ? '₹4,999 (Recorded - With Accommodation)' : '₹1,999 (Recorded)'}
+                  {hasAccommodation ? '₹5,999 (Recorded - With Accommodation)' : '₹2,499 (Recorded)'}
                 </span>
               </div>
               <div className="flex items-center justify-between pb-2 border-b border-[#D4AF37]/20">
@@ -3020,7 +3083,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                   <a
                     href={`https://wa.me/${PAYMENT_CONFIG.primaryContact.raw}?text=${encodeURIComponent(
                       `Hello Aequitas Secretariat, I have an inquiry regarding delegate registration (Fee: ${
-                        hasAccommodation ? '₹4,999 with Accommodation' : '₹1,999'
+                        hasAccommodation ? '₹5,999 with Accommodation' : '₹2,499'
                       }) for ${form.fullName || 'a delegate'}.`
                     )}`}
                     target="_blank"
@@ -3136,8 +3199,8 @@ export const AequitasRegistrationPage: React.FC = () => {
                 </h3>
                 <p className="text-xs font-mono text-[#D4AF37] font-extrabold">
                   {hasAccommodation
-                    ? 'Residential Delegate Package: ₹4,999'
-                    : 'Standard Delegate Pass: ₹1,999'}
+                    ? 'Residential Delegate Package: ₹5,999'
+                    : 'Standard Delegate Pass: ₹2,499'}
                 </p>
               </div>
 
