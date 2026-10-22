@@ -576,8 +576,8 @@ export function securityHeadersMiddleware(req: Request, res: Response, next: Nex
     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com data:",
-    "img-src 'self' data: blob: https://images.unsplash.com https://astitva-alliance-1.onrender.com https://*.onrender.com",
-    "connect-src 'self' https://docs.google.com https://astitva-alliance-1.onrender.com https://*.onrender.com http://localhost:* http://127.0.0.1:* ws://localhost:* ws://127.0.0.1:*",
+    "img-src 'self' data: blob: https://images.unsplash.com https://astitva-alliance-1.onrender.com https://*.onrender.com https://aastitvaalliances.in https://*.aastitvaalliances.in",
+    "connect-src 'self' https://docs.google.com https://astitva-alliance-1.onrender.com https://*.onrender.com https://aastitvaalliances.in https://*.aastitvaalliances.in http://localhost:* http://127.0.0.1:* ws://localhost:* ws://127.0.0.1:*",
     "frame-ancestors 'self'",
     "form-action 'self' https://docs.google.com",
     "base-uri 'self'",
@@ -619,15 +619,20 @@ export function corsMiddleware(req: Request, res: Response, next: NextFunction) 
   const allowedOrigins = [
     'https://astitva-alliance-1.onrender.com',
     'https://astitva-alliance.onrender.com',
+    'https://aastitvaalliances.in',
+    'https://www.aastitvaalliances.in',
     process.env.ALLOWED_ORIGIN,
   ].filter(Boolean);
+
+  const isCustomDomain =
+    origin && /^https:\/\/(.*\.)?aastitvaalliances\.in$/.test(origin);
 
   const isLocalhost =
     origin &&
     /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin) &&
     process.env.NODE_ENV !== 'production';
 
-  if (origin && (allowedOrigins.includes(origin) || isLocalhost)) {
+  if (origin && (allowedOrigins.includes(origin) || isCustomDomain || isLocalhost)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
