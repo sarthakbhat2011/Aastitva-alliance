@@ -32,7 +32,6 @@ import {
   Layers,
   CheckCheck,
   Download,
-  QrCode,
   CreditCard,
   Copy,
   PhoneCall,
@@ -44,6 +43,7 @@ import {
   ZoomIn,
   Maximize2,
   X,
+  Smartphone,
 } from 'lucide-react';
 import { COMMITTEES, INITIAL_SUMMIT_CONFIG } from '../data';
 import { sounds } from '../utils/soundEffects';
@@ -67,6 +67,8 @@ export const PAYMENT_CONFIG = {
   surgeUpcomingFormatted: '₹3,500',
   surgeEffectiveDate: '25th October 2026',
   spotsRemaining: 15,
+  upiNumber: '9797937138',
+  upiNumberFormatted: '+91 97979 37138',
   accountNumber: '0116040100017669',
   ifscCode: 'JAKA0GNGYAL',
   bankName: 'Jammu & Kashmir Bank (J&K Bank)',
@@ -223,8 +225,6 @@ export const AequitasRegistrationPage: React.FC = () => {
     }
     return null;
   });
-
-  const [qrModalOpen, setQrModalOpen] = useState(false);
 
   // Ensure document-level scrolling is fully unlocked on the registration portal
   useEffect(() => {
@@ -1295,7 +1295,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                   { step: 2, label: 'Division', icon: Award },
                   { step: 3, label: 'Committees', icon: Layers },
                   { step: 4, label: 'Review', icon: FileText },
-                  { step: 5, label: 'Payment', icon: QrCode },
+                  { step: 5, label: 'Payment', icon: CreditCard },
                 ].map((item) => {
                   const IconComp = item.icon;
                   const isCurrent = currentStep === item.step;
@@ -2049,7 +2049,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                     <div className="p-3.5 rounded-xl bg-[#0D1427]/70 border border-[#D4AF37]/20 text-xs text-[#C4BBA3] flex items-center gap-2.5">
                       <Sparkles className="w-4 h-4 text-[#D4AF37] shrink-0" />
                       <span>
-                        All details verified? Click <strong>Proceed to Fee Payment</strong> below to complete remittance via QR code or direct bank transfer.
+                        All details verified? Click <strong>Proceed to Fee Payment</strong> below to complete remittance via UPI Number (9797937138) or direct bank transfer.
                       </span>
                     </div>
                   </motion.div>
@@ -2117,71 +2117,95 @@ export const AequitasRegistrationPage: React.FC = () => {
                           </div>
                         </div>
 
-                        {/* Dual Payment Channels Grid (QR Code + Direct Bank Transfer) */}
+                        {/* Dual Payment Channels Grid (Direct UPI Mobile Number + Direct Bank Transfer) */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {/* Channel 1: Scan & Pay via UPI QR */}
-                          <div className="rounded-2xl bg-[#070A14]/95 border-2 border-[#D4AF37]/60 p-4 sm:p-5 flex flex-col items-center text-center space-y-3.5 shadow-xl relative overflow-hidden">
+                          {/* Channel 1: Pay via UPI Mobile Number (PhonePe, Google Pay, Paytm, BHIM) */}
+                          <div className="rounded-2xl bg-[#070A14]/95 border-2 border-[#D4AF37]/60 p-4 sm:p-5 flex flex-col justify-between space-y-4 shadow-xl relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-[#D4AF37]/10 rounded-full blur-2xl pointer-events-none" />
-                            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] text-[11px] font-mono font-bold uppercase tracking-wider">
-                              <QrCode className="w-3.5 h-3.5" />
-                              <span>Option 1: Scan &amp; Pay (Residential)</span>
-                            </div>
-                            <p className="text-xs text-[#C4BBA3]">
-                              Open <strong>PhonePe, Google Pay, Paytm, BHIM</strong>, or any UPI app and scan the QR code below:
-                            </p>
 
-                            {/* QR Image Box */}
-                            <div
-                              onClick={() => {
-                                sounds.playTap();
-                                setQrModalOpen(true);
-                              }}
-                              className="relative p-2.5 rounded-2xl bg-white border-2 border-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.3)] max-w-[210px] w-full aspect-square flex items-center justify-center overflow-hidden cursor-pointer group/qr"
-                              title="Click to Enlarge QR Code"
-                            >
-                              <img
-                                src={PAYMENT_CONFIG.qrCodeUrl}
-                                alt="Aequitas Residential Payment QR Code"
-                                className="w-full h-full object-contain rounded-xl transition-transform group-hover/qr:scale-105"
-                              />
-                              <div className="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center opacity-0 group-hover/qr:opacity-100 transition-opacity">
-                                <ZoomIn className="w-6 h-6 text-white drop-shadow" />
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between flex-wrap gap-2">
+                                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] text-[11px] font-mono font-bold uppercase tracking-wider">
+                                  <Smartphone className="w-3.5 h-3.5 text-[#D4AF37]" />
+                                  <span>Option 1: Pay via UPI Number</span>
+                                </div>
+                                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold">
+                                  Instant Processing
+                                </span>
+                              </div>
+
+                              <p className="text-xs text-[#C4BBA3] leading-relaxed">
+                                Pay directly to the official Secretariat UPI mobile number via <strong>PhonePe, Google Pay, Paytm, BHIM</strong>, or <strong>Cred</strong>:
+                              </p>
+
+                              {/* UPI Mobile Number Featured Box */}
+                              <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-[#16203B] via-[#0D1427] to-[#16203B] border-2 border-[#D4AF37] shadow-[0_0_25px_rgba(212,175,55,0.25)] space-y-2.5">
+                                <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-[#A39B88]">
+                                  <span>Official UPI / Mobile Number</span>
+                                  <span className="text-emerald-400 font-bold">Verified Payee</span>
+                                </div>
+
+                                <div className="flex items-center justify-between gap-2 flex-wrap">
+                                  <span className="text-2xl sm:text-3xl font-mono font-black text-white tracking-widest select-all">
+                                    {PAYMENT_CONFIG.upiNumber}
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleCopy(PAYMENT_CONFIG.upiNumber, 'upi-res')}
+                                    className="py-1.5 px-3 rounded-xl bg-[#D4AF37] hover:bg-[#F3E5AB] text-[#070A14] font-mono font-extrabold text-xs transition-all flex items-center gap-1.5 shadow-md cursor-pointer shrink-0"
+                                    title="Copy UPI Number"
+                                  >
+                                    {copiedField === 'upi-res' ? (
+                                      <>
+                                        <CheckCheck className="w-3.5 h-3.5 text-emerald-950 stroke-[3]" />
+                                        <span>Copied!</span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Copy className="w-3.5 h-3.5 text-[#070A14]" />
+                                        <span>Copy Number</span>
+                                      </>
+                                    )}
+                                  </button>
+                                </div>
+
+                                <div className="text-[11px] font-mono text-[#D4AF37] font-semibold pt-1 border-t border-[#D4AF37]/20 flex items-center justify-between flex-wrap gap-1">
+                                  <span>Beneficiary: {PAYMENT_CONFIG.beneficiaryName}</span>
+                                  <span className="text-white font-bold">Amount: ₹5,999</span>
+                                </div>
+                              </div>
+
+                              {/* Why Direct Number Notice */}
+                              <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] font-mono text-amber-200/90 leading-relaxed space-y-1">
+                                <div className="flex items-center gap-1.5 font-bold text-amber-300">
+                                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                                  <span>Direct Mobile Payment</span>
+                                </div>
+                                <p className="text-[10.5px] text-[#C4BBA3]">
+                                  Pay directly to mobile number <strong className="text-white">9797937138</strong> on your UPI app to avoid bank QR limits for amounts exceeding ₹2,000.
+                                </p>
                               </div>
                             </div>
 
-                            <div className="space-y-1">
-                              <div className="text-sm font-extrabold text-[#D4AF37] font-mono">
-                                Amount: ₹5,999
-                              </div>
-                              <div className="text-[11px] text-emerald-400 font-mono">
-                                Residential Package with Hotel Accommodation
-                              </div>
-                              <div className="text-[10px] text-[#A39B88] font-mono">
-                                Scan via PhonePe, GPay, Paytm, BHIM, Cred
-                              </div>
-                            </div>
-
-                            <div className="flex items-center gap-3 pt-1">
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  sounds.playTap();
-                                  setQrModalOpen(true);
-                                }}
-                                className="inline-flex items-center gap-1.5 text-xs text-[#D4AF37] hover:text-[#FAF5EF] font-mono font-bold underline underline-offset-4 cursor-pointer"
-                              >
-                                <Maximize2 className="w-3.5 h-3.5" />
-                                <span>Enlarge QR Code</span>
-                              </button>
-                              <span className="text-[#D4AF37]/40">•</span>
+                            {/* Action Buttons */}
+                            <div className="flex flex-wrap items-center gap-2 pt-1">
                               <a
-                                href={PAYMENT_CONFIG.qrCodeUrl}
+                                href={`upi://pay?pa=${PAYMENT_CONFIG.upiNumber}@upi&pn=${encodeURIComponent(PAYMENT_CONFIG.beneficiaryName)}&am=5999&cu=INR`}
+                                className="flex-1 py-2 px-3 rounded-xl bg-[#16203B] hover:bg-[#D4AF37] hover:text-[#070A14] text-white border border-[#D4AF37]/30 text-xs font-mono font-bold transition-all flex items-center justify-center gap-1.5 min-h-[36px]"
+                              >
+                                <ExternalLink className="w-3.5 h-3.5" />
+                                <span>Open in UPI App</span>
+                              </a>
+                              <a
+                                href={`https://wa.me/91${PAYMENT_CONFIG.upiNumber}?text=${encodeURIComponent(
+                                  `Hello Aequitas Secretariat, I have remitted the residential delegate registration fee (₹5,999) to 9797937138 for ${form.fullName || 'a delegate'}.`
+                                )}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 text-[11px] text-[#C4BBA3] hover:text-white font-mono"
+                                className="py-2 px-3 rounded-xl bg-[#0E3A2F] hover:bg-emerald-500 hover:text-white text-emerald-300 text-xs font-mono font-bold transition-all flex items-center justify-center gap-1.5 min-h-[36px]"
                               >
-                                <ExternalLink className="w-3 h-3" />
-                                <span>New Tab</span>
+                                <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
+                                <span>WhatsApp Receipt</span>
                               </a>
                             </div>
                           </div>
@@ -2464,7 +2488,7 @@ export const AequitasRegistrationPage: React.FC = () => {
                       <>
                         <div>
                           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] border border-[#D4AF37]/35 text-xs font-mono font-semibold mb-2">
-                            <QrCode className="w-3 h-3" />
+                            <CreditCard className="w-3 h-3" />
                             <span>Step 05 // Delegate Fee Remittance &amp; Verification</span>
                           </div>
                           <h2 className="text-xl sm:text-2xl md:text-3xl font-playfair font-bold text-white flex items-center gap-2.5 flex-wrap">
@@ -2511,67 +2535,93 @@ export const AequitasRegistrationPage: React.FC = () => {
                           </div>
                         </div>
 
-                        {/* Dual Payment Channels Grid (QR Code + Direct Bank Transfer) */}
+                        {/* Dual Payment Channels Grid (Direct UPI Mobile Number + Direct Bank Transfer) */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          {/* Channel 1: Scan & Pay via UPI QR */}
-                          <div className="rounded-2xl bg-[#070A14]/95 border-2 border-[#D4AF37]/40 p-4 sm:p-5 flex flex-col items-center text-center space-y-3.5 shadow-lg">
-                            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] text-[11px] font-mono font-bold uppercase tracking-wider">
-                              <QrCode className="w-3.5 h-3.5" />
-                              <span>Option 1: Scan &amp; Pay</span>
-                            </div>
-                            <p className="text-xs text-[#C4BBA3]">
-                              Open <strong>PhonePe, Google Pay, Paytm, BHIM</strong>, or any UPI app and scan the QR code below:
-                            </p>
+                          {/* Channel 1: Pay via UPI Mobile Number (PhonePe, Google Pay, Paytm, BHIM) */}
+                          <div className="rounded-2xl bg-[#070A14]/95 border-2 border-[#D4AF37]/40 p-4 sm:p-5 flex flex-col justify-between space-y-4 shadow-lg relative overflow-hidden">
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between flex-wrap gap-2">
+                                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] text-[11px] font-mono font-bold uppercase tracking-wider">
+                                  <Smartphone className="w-3.5 h-3.5 text-[#D4AF37]" />
+                                  <span>Option 1: Pay via UPI Number</span>
+                                </div>
+                                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold">
+                                  Instant Processing
+                                </span>
+                              </div>
 
-                            {/* QR Image Box */}
-                            <div
-                              onClick={() => {
-                                sounds.playTap();
-                                setQrModalOpen(true);
-                              }}
-                              className="relative p-2.5 rounded-2xl bg-white border-2 border-[#D4AF37] shadow-[0_0_25px_rgba(212,175,55,0.25)] max-w-[210px] w-full aspect-square flex items-center justify-center overflow-hidden cursor-pointer group/qr"
-                              title="Click to Enlarge QR Code"
-                            >
-                              <img
-                                src={PAYMENT_CONFIG.qrCodeUrl}
-                                alt="Aequitas Payment QR Code"
-                                className="w-full h-full object-contain rounded-xl transition-transform group-hover/qr:scale-105"
-                              />
-                              <div className="absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center opacity-0 group-hover/qr:opacity-100 transition-opacity">
-                                <ZoomIn className="w-6 h-6 text-white drop-shadow" />
+                              <p className="text-xs text-[#C4BBA3] leading-relaxed">
+                                Pay directly to the official Secretariat UPI mobile number via <strong>PhonePe, Google Pay, Paytm, BHIM</strong>, or <strong>Cred</strong>:
+                              </p>
+
+                              {/* UPI Mobile Number Featured Box */}
+                              <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-[#16203B] via-[#0D1427] to-[#16203B] border-2 border-[#D4AF37] shadow-[0_0_25px_rgba(212,175,55,0.25)] space-y-2.5">
+                                <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-[#A39B88]">
+                                  <span>Official UPI / Mobile Number</span>
+                                  <span className="text-emerald-400 font-bold">Verified Payee</span>
+                                </div>
+
+                                <div className="flex items-center justify-between gap-2 flex-wrap">
+                                  <span className="text-2xl sm:text-3xl font-mono font-black text-white tracking-widest select-all">
+                                    {PAYMENT_CONFIG.upiNumber}
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleCopy(PAYMENT_CONFIG.upiNumber, 'upi-std')}
+                                    className="py-1.5 px-3 rounded-xl bg-[#D4AF37] hover:bg-[#F3E5AB] text-[#070A14] font-mono font-extrabold text-xs transition-all flex items-center gap-1.5 shadow-md cursor-pointer shrink-0"
+                                    title="Copy UPI Number"
+                                  >
+                                    {copiedField === 'upi-std' ? (
+                                      <>
+                                        <CheckCheck className="w-3.5 h-3.5 text-emerald-950 stroke-[3]" />
+                                        <span>Copied!</span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <Copy className="w-3.5 h-3.5 text-[#070A14]" />
+                                        <span>Copy Number</span>
+                                      </>
+                                    )}
+                                  </button>
+                                </div>
+
+                                <div className="text-[11px] font-mono text-[#D4AF37] font-semibold pt-1 border-t border-[#D4AF37]/20 flex items-center justify-between flex-wrap gap-1">
+                                  <span>Beneficiary: {PAYMENT_CONFIG.beneficiaryName}</span>
+                                  <span className="text-white font-bold">Amount: ₹3,000</span>
+                                </div>
+                              </div>
+
+                              {/* Why Direct Number Notice */}
+                              <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] font-mono text-amber-200/90 leading-relaxed space-y-1">
+                                <div className="flex items-center gap-1.5 font-bold text-amber-300">
+                                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                                  <span>Direct Mobile Payment</span>
+                                </div>
+                                <p className="text-[10.5px] text-[#C4BBA3]">
+                                  Pay directly to mobile number <strong className="text-white">9797937138</strong> on your UPI app to avoid bank QR limits for amounts exceeding ₹2,000.
+                                </p>
                               </div>
                             </div>
 
-                            <div className="space-y-1">
-                              <div className="text-xs font-bold text-white font-mono">
-                                Amount: ₹3,000
-                              </div>
-                              <div className="text-[11px] text-[#C4BBA3] font-mono">
-                                Scan via PhonePe, GPay, Paytm, BHIM, Cred
-                              </div>
-                            </div>
-
-                            <div className="flex items-center gap-3 pt-1">
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  sounds.playTap();
-                                  setQrModalOpen(true);
-                                }}
-                                className="inline-flex items-center gap-1.5 text-xs text-[#D4AF37] hover:text-[#FAF5EF] font-mono font-bold underline underline-offset-4 cursor-pointer"
-                              >
-                                <Maximize2 className="w-3.5 h-3.5" />
-                                <span>Enlarge QR Code</span>
-                              </button>
-                              <span className="text-[#D4AF37]/40">•</span>
+                            {/* Action Buttons */}
+                            <div className="flex flex-wrap items-center gap-2 pt-1">
                               <a
-                                href={PAYMENT_CONFIG.qrCodeUrl}
+                                href={`upi://pay?pa=${PAYMENT_CONFIG.upiNumber}@upi&pn=${encodeURIComponent(PAYMENT_CONFIG.beneficiaryName)}&am=3000&cu=INR`}
+                                className="flex-1 py-2 px-3 rounded-xl bg-[#16203B] hover:bg-[#D4AF37] hover:text-[#070A14] text-white border border-[#D4AF37]/30 text-xs font-mono font-bold transition-all flex items-center justify-center gap-1.5 min-h-[36px]"
+                              >
+                                <ExternalLink className="w-3.5 h-3.5" />
+                                <span>Open in UPI App</span>
+                              </a>
+                              <a
+                                href={`https://wa.me/91${PAYMENT_CONFIG.upiNumber}?text=${encodeURIComponent(
+                                  `Hello Aequitas Secretariat, I have remitted the standard delegate registration fee (₹3,000) to 9797937138 for ${form.fullName || 'a delegate'}.`
+                                )}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 text-[11px] text-[#C4BBA3] hover:text-white font-mono"
+                                className="py-2 px-3 rounded-xl bg-[#0E3A2F] hover:bg-emerald-500 hover:text-white text-emerald-300 text-xs font-mono font-bold transition-all flex items-center justify-center gap-1.5 min-h-[36px]"
                               >
-                                <ExternalLink className="w-3 h-3" />
-                                <span>New Tab</span>
+                                <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
+                                <span>WhatsApp Receipt</span>
                               </a>
                             </div>
                           </div>
@@ -3158,93 +3208,6 @@ export const AequitasRegistrationPage: React.FC = () => {
         isOpen={devMailboxOpen}
         onClose={() => setDevMailboxOpen(false)}
       />
-
-      {/* Enlarged QR Code Lightbox Modal */}
-      <AnimatePresence>
-        {qrModalOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setQrModalOpen(false)}
-            className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 cursor-pointer"
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-[#0A1020] border-2 border-[#D4AF37] rounded-3xl p-6 sm:p-8 max-w-sm w-full text-center relative shadow-[0_0_50px_rgba(212,175,55,0.4)] cursor-default space-y-4"
-            >
-              {/* Close Button */}
-              <button
-                type="button"
-                onClick={() => {
-                  sounds.playTap();
-                  setQrModalOpen(false);
-                }}
-                className="absolute top-4 right-4 p-2 rounded-full bg-[#16203B] text-[#C4BBA3] hover:text-white hover:bg-[#D4AF37] hover:text-[#070A14] transition-all cursor-pointer"
-                aria-label="Close QR Modal"
-              >
-                <X className="w-4 h-4" />
-              </button>
-
-              <div className="space-y-1">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40 text-[#D4AF37] font-mono text-[10px] font-bold uppercase tracking-wider">
-                  <QrCode className="w-3 h-3" />
-                  <span>Official UPI Payment QR</span>
-                </div>
-                <h3 className="text-lg font-playfair font-bold text-white">
-                  Scan to Pay
-                </h3>
-                <p className="text-xs font-mono text-[#D4AF37] font-extrabold">
-                  {hasAccommodation
-                    ? 'Residential Delegate Package: ₹5,999'
-                    : 'Standard Delegate Pass: ₹3,000'}
-                </p>
-              </div>
-
-              {/* Large QR Display */}
-              <div className="p-3 bg-white rounded-2xl border-2 border-[#D4AF37]/60 mx-auto max-w-[260px] aspect-square flex items-center justify-center shadow-inner">
-                <img
-                  src={PAYMENT_CONFIG.qrCodeUrl}
-                  alt="Enlarged Payment QR Code"
-                  className="w-full h-full object-contain rounded-lg"
-                />
-              </div>
-
-              <div className="space-y-1 text-xs font-mono text-[#C4BBA3]">
-                <p className="text-white font-semibold">
-                  Beneficiary: {PAYMENT_CONFIG.beneficiaryName}
-                </p>
-                <p className="text-[11px]">
-                  Compatible with PhonePe, Google Pay, Paytm, BHIM &amp; Cred
-                </p>
-              </div>
-
-              {/* Actions */}
-              <div className="pt-2 flex items-center justify-center gap-2">
-                <a
-                  href={PAYMENT_CONFIG.qrCodeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="py-2 px-4 rounded-xl bg-[#16203B] border border-[#D4AF37]/40 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#070A14] transition-all font-mono text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer"
-                >
-                  <ExternalLink className="w-3.5 h-3.5" />
-                  <span>Open Full Resolution</span>
-                </a>
-                <button
-                  type="button"
-                  onClick={() => setQrModalOpen(false)}
-                  className="py-2 px-4 rounded-xl bg-[#D4AF37] text-[#070A14] font-mono text-xs font-bold hover:bg-[#F3E5AB] transition-all cursor-pointer"
-                >
-                  Done
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };
