@@ -137,27 +137,26 @@ export const Navbar: React.FC<Props> = ({
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => sounds.playTap()}
-                className="hidden md:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#A855F7]/20 border border-[#A855F7]/50 text-[#E9D5FF] hover:bg-[#A855F7] hover:text-white transition-all font-mono font-bold text-[10px] sm:text-[11px] shadow-sm cursor-pointer"
-                title="Register for Prom Night, Recreational Tournaments & MUN Got Latent in New Tab"
+                className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-[#A855F7]/30 via-[#EC4899]/30 to-[#A855F7]/30 border border-[#C084FC]/60 text-[#FDE047] hover:brightness-110 transition-all font-mono font-black text-[10px] sm:text-[11px] shadow-sm cursor-pointer animate-pulse"
+                title="Register for Prom Night, Recreational Tournaments & Fun Events (Open Now!)"
               >
-                <span>Prom &amp; Events</span>
+                <span>🎉 Prom &amp; Events (Live)</span>
                 <ArrowUpRight className="w-2.5 h-2.5" />
               </a>
             </MagneticElement>
 
-            {/* Direct Link to Standalone Registration Portal (New Tab) */}
+            {/* Direct Link to Standalone Registration Portal (Closed Notice) */}
             <MagneticElement strength={0.25}>
               <a
                 href="/register"
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => sounds.playTap()}
-                className="flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-[#D4AF37]/20 border border-[#D4AF37]/50 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#070A14] transition-all font-mono font-bold text-[10px] sm:text-[11px] shadow-sm cursor-pointer"
-                title="Open Interactive Aequitas Summit Registration Portal in New Tab"
+                className="hidden lg:flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-950/40 border border-rose-500/40 text-rose-300 hover:text-white transition-all font-mono font-bold text-[10px] shadow-sm cursor-pointer"
+                title="Delegate Registration Closed"
               >
-                <Sparkles className="w-2.5 h-2.5 animate-pulse" />
-                <span>Register for Summit</span>
-                <ArrowUpRight className="w-2.5 h-2.5" />
+                <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+                <span>Delegate Reg Closed</span>
               </a>
             </MagneticElement>
 
@@ -347,21 +346,6 @@ export const Navbar: React.FC<Props> = ({
                 )}
 
                 <a
-                  href="/register"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => {
-                    sounds.playTap();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#E8A53E] to-[#D4AF37] text-[#070A14] font-extrabold text-center text-xs shadow-lg min-h-[44px] flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <Sparkles className="w-3.5 h-3.5 fill-current" />
-                  <span>Register for Summit 2026 (New Tab)</span>
-                  <ArrowUpRight className="w-4 h-4" />
-                </a>
-
-                <a
                   href="/events-register"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -369,10 +353,25 @@ export const Navbar: React.FC<Props> = ({
                     sounds.playTap();
                     setMobileMenuOpen(false);
                   }}
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#7C3AED] via-[#9333EA] to-[#C084FC] text-white font-extrabold text-center text-xs shadow-lg min-h-[44px] flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] via-[#F3C969] to-[#EC4899] text-[#070A14] font-extrabold text-center text-xs shadow-lg min-h-[44px] flex items-center justify-center gap-2 cursor-pointer animate-pulse"
                 >
                   <Sparkles className="w-3.5 h-3.5 fill-current" />
-                  <span>Register for Prom &amp; Events (New Tab)</span>
+                  <span>Prom &amp; Events Passes (Open Now!)</span>
+                  <ArrowUpRight className="w-4 h-4" />
+                </a>
+
+                <a
+                  href="/register"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => {
+                    sounds.playTap();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full py-2.5 rounded-xl bg-[#16203B] border border-rose-500/40 text-rose-300 font-bold text-center text-xs shadow-md min-h-[44px] flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <span className="w-2 h-2 rounded-full bg-rose-500" />
+                  <span>Delegate Registration Ended</span>
                   <ArrowUpRight className="w-4 h-4" />
                 </a>
 

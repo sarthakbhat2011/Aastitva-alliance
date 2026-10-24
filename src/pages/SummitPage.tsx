@@ -40,6 +40,7 @@ import {
   HeartHandshake,
   BookOpen,
   ArrowRight,
+  Ticket,
 } from 'lucide-react';
 
 interface Props {
@@ -547,53 +548,55 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
 
               <div className="relative z-10 max-w-3xl mx-auto space-y-5">
                 <div className="space-y-2">
-                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#581C87]/40 border border-[#C084FC]/50 text-[#E9D5FF] text-xs font-mono font-bold uppercase tracking-wider shadow-sm">
-                    <Sparkles className="w-3.5 h-3.5 animate-pulse text-[#D4AF37]" />
-                    <span>Official Allocation Gateway • Radisson Blu Hotel Jammu</span>
+                  <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-950/60 border border-rose-500/50 text-rose-300 text-xs font-mono font-bold uppercase tracking-wider shadow-sm">
+                    <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping inline-block" />
+                    <span>Delegate Registration Ended • Prom &amp; Events Live!</span>
                   </div>
                   <p className="text-[10px] sm:text-xs font-mono text-[#D4AF37]/90 italic">
-                    * Venue allocation subject to change under force Majeure or administrative factors.
+                    * Radisson Blu Hotel Jammu • 29 &amp; 30 October 2026
                   </p>
                 </div>
 
                 <h2 className="text-3xl sm:text-5xl lg:text-6xl font-cormorant font-bold text-[#FAF5EF] leading-tight">
-                  Enter The Official <span className="gold-gradient-text">Registration Portal</span>
+                  Delegate Seats Full • <span className="gold-gradient-text">Prom &amp; Events Open</span>
                 </h2>
 
                 <p className="text-xs sm:text-base text-[#DDD6FE] leading-relaxed max-w-2xl mx-auto">
-                  Access the complete interactive registration console to select your residential accommodation track, specify committee &amp; portfolio preferences, and secure your verified delegate seat.
+                  Delegate registrations across all 6 committees are officially ended. However, passes for the grand <strong className="text-white">Aequitas Prom Night 2026</strong> and all <strong className="text-white">Recreational Tournaments</strong> are live! Grab your seats before they sell out!
                 </p>
 
                 {/* Delegate Feature Highlights */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-3 pb-2 text-left">
-                  <div className="p-4 rounded-2xl bg-[#0F0A24]/90 border border-[#A855F7]/30 space-y-1.5">
+                  <div className="p-4 rounded-2xl bg-[#0F0A24]/90 border border-[#D4AF37]/40 space-y-1.5">
                     <div className="flex items-center gap-2 text-xs font-bold text-[#FAF5EF]">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                      <span>Dual Delegate Tracks</span>
-                      <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-black bg-rose-500/20 text-rose-300 border border-rose-500/40 animate-pulse">15 SPOTS LEFT</span>
+                      <Sparkles className="w-4 h-4 text-[#D4AF37] shrink-0" />
+                      <span>Aequitas Prom Night</span>
+                      <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">OPEN</span>
                     </div>
                     <p className="text-[11px] text-[#C4BBA3]/80 leading-relaxed">
-                      With Accommodation (₹5,999) or Non-Residential (₹3,000). <span className="text-amber-300 font-semibold">Surges to ₹3,500 on 25 Oct.</span>
+                      Stag (₹599) • Duo (₹999) • Squad (₹1,999). DJ set, red carpet &amp; gala dinner.
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-[#0F0A24]/90 border border-[#A855F7]/30 space-y-1.5">
+                  <div className="p-4 rounded-2xl bg-[#0F0A24]/90 border border-blue-500/40 space-y-1.5">
                     <div className="flex items-center gap-2 text-xs font-bold text-[#FAF5EF]">
-                      <Landmark className="w-4 h-4 text-[#D4AF37] shrink-0" />
-                      <span>6 Historic Councils</span>
+                      <Zap className="w-4 h-4 text-blue-400 shrink-0" />
+                      <span>E-Sports &amp; Strategy</span>
+                      <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">OPEN</span>
                     </div>
                     <p className="text-[11px] text-[#C4BBA3]/80">
-                      BRICS Summit, UNHRC, UN Women, Lok Sabha, CC (Citizen Council), and IPC.
+                      BGMI, Free Fire, Ludo &amp; Mafia Tournaments (Solo ₹250, Duo ₹450, Squad ₹800).
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-2xl bg-[#0F0A24]/90 border border-[#A855F7]/30 space-y-1.5">
+                  <div className="p-4 rounded-2xl bg-[#0F0A24]/90 border border-amber-500/40 space-y-1.5">
                     <div className="flex items-center gap-2 text-xs font-bold text-[#FAF5EF]">
-                      <ShieldCheck className="w-4 h-4 text-[#A855F7] shrink-0" />
-                      <span>Live Sync &amp; Allocation</span>
+                      <ShieldCheck className="w-4 h-4 text-amber-400 shrink-0" />
+                      <span>Special Activities</span>
+                      <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">OPEN</span>
                     </div>
                     <p className="text-[11px] text-[#C4BBA3]/80">
-                      Instant Secretariat record &amp; verified delegate allotment letter.
+                      Rapunzel's Vanity, Dumb Charades, Musical Chairs &amp; FIFA 24 (₹200).
                     </p>
                   </div>
                 </div>
@@ -602,35 +605,23 @@ export const SummitPage: React.FC<Props> = ({ summitConfig, countdown, onNavigat
                 <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
                   <MagneticElement strength={0.35}>
                     <a
-                      href="/register"
+                      href="/events-register"
                       onClick={() => sounds.playTap()}
-                      className="px-8 sm:px-10 py-4 sm:py-5 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#F3C969] to-[#D4AF37] text-[#070A14] font-extrabold text-sm sm:text-base shadow-[0_0_35px_rgba(212,175,55,0.45)] hover:brightness-110 active:scale-95 transition-all inline-flex items-center gap-3 cursor-pointer group"
+                      className="px-8 sm:px-10 py-4 sm:py-5 rounded-2xl bg-gradient-to-r from-[#D4AF37] via-[#F3C969] to-[#EC4899] text-[#070A14] font-extrabold text-sm sm:text-base shadow-[0_0_35px_rgba(212,175,55,0.45)] hover:brightness-110 active:scale-95 transition-all inline-flex items-center gap-3 cursor-pointer group"
                     >
-                      <Sparkles className="w-5 h-5 fill-current text-[#070A14]" />
-                      <span>Launch Registration Portal</span>
+                      <Ticket className="w-5 h-5 fill-current text-[#070A14]" />
+                      <span>Grab Prom &amp; Events Passes</span>
                       <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </a>
                   </MagneticElement>
 
-                  <button
-                    type="button"
-                    onClick={() => handleOpenQuickRegister()}
-                    className="px-6 py-4 rounded-2xl bg-[#1C103B]/80 hover:bg-[#2A1654] border border-[#A855F7]/40 text-[#FAF5EF] text-xs sm:text-sm font-semibold transition-all inline-flex items-center gap-2 cursor-pointer"
-                  >
-                    <span>Quick Registration Modal</span>
-                    <ExternalLink className="w-4 h-4 text-[#D4AF37]" />
-                  </button>
-
                   <a
-                    href="/events-register"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="/register"
                     onClick={() => sounds.playTap()}
-                    className="px-6 py-4 rounded-2xl bg-[#2E1065]/70 hover:bg-[#3B0764] border border-[#C084FC]/50 text-[#E9D5FF] text-xs sm:text-sm font-semibold transition-all inline-flex items-center gap-2 cursor-pointer shadow-md"
+                    className="px-6 py-4 rounded-2xl bg-[#1C103B]/80 hover:bg-[#2A1654] border border-rose-500/40 text-rose-300 text-xs sm:text-sm font-semibold transition-all inline-flex items-center gap-2 cursor-pointer"
                   >
-                    <Sparkles className="w-4 h-4 text-[#FDE047]" />
-                    <span>Prom Night &amp; Events Portal</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <span>Delegate Registration Ended</span>
+                    <ExternalLink className="w-4 h-4 text-rose-400" />
                   </a>
                 </div>
               </div>
